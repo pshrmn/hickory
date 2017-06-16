@@ -1,0 +1,34 @@
+{
+  "name": "hickory",
+  "version": "0.1.0",
+  "description": "Hickory powers navigation within a single page application",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pshrmn/hickory.git"
+  },
+  "keywords": [
+    "history",
+    "navigation",
+    "single",
+    "page",
+    "application",
+    "link"
+  ],
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pshrmn/hickory/issues"
+  },
+  "homepage": "https://github.com/pshrmn/hickory#readme",
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-jest": "^20.0.3",
+    "babel-preset-env": "^1.5.2",
+    "jest": "^20.0.4",
+    "qs": "^6.4.0"
+  }
+}
