@@ -1,13 +1,13 @@
-import locationFactory from '../src/locationFactory';
+import locationFactory from '../../src/locationFactory';
 import qs from 'qs';
 
 describe('locationFactory', () => {
-  it('returns an object with createLocation and createHref function properties', () => {
+  it('returns an object with createLocation and createPath function properties', () => {
     const createLocation = locationFactory();
     expect(createLocation.createLocation).toBeDefined();
     expect(typeof createLocation.createLocation).toBe('function');
-    expect(createLocation.createHref).toBeDefined();
-    expect(typeof createLocation.createHref).toBe('function');
+    expect(createLocation.createPath).toBeDefined();
+    expect(typeof createLocation.createPath).toBe('function');
   });
 
   describe('createLocation', () => {
@@ -20,7 +20,7 @@ describe('locationFactory', () => {
         expect(loc.query).toBe('query=this');
         expect(loc.hash).toBe('hash');
         expect(typeof loc.key).toBe('string');
-        expect(loc.key.length).toBe(6);
+        expect(loc.key.length).toBe(3);
       });
     });
 
@@ -63,7 +63,7 @@ describe('locationFactory', () => {
         };
         const output = createLocation(input)
         expect(typeof output.key).toBe('string');
-        expect(output.key.length).toBe(6);
+        expect(output.key.length).toBe(3);
       });
 
       it('adds state if provided', () => {
@@ -134,15 +134,15 @@ describe('locationFactory', () => {
     });
   });
 
-  describe('createHref', () => {
-    const { createHref } = locationFactory();
+  describe('createPath', () => {
+    const { createPath } = locationFactory();
 
     describe('pathname', () => {
       it('begins the returned URI with the pathname', () => {
         const input = {
           pathname: '/test'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/test');
       });
 
@@ -150,7 +150,7 @@ describe('locationFactory', () => {
         const input = {
           pathname: 'test'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/test');
       });
     });
@@ -161,7 +161,7 @@ describe('locationFactory', () => {
           pathname: '/',
           query: 'one=two'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/?one=two');
       });
 
@@ -170,7 +170,7 @@ describe('locationFactory', () => {
           pathname: '/',
           query: '?one=two'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/?one=two');
       });
 
@@ -178,7 +178,7 @@ describe('locationFactory', () => {
         const input = {
           pathname: '/'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output.indexOf('?')).toBe(-1);
       });
     });
@@ -189,7 +189,7 @@ describe('locationFactory', () => {
           pathname: '/',
           hash: 'yes'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/#yes');
       });
 
@@ -198,14 +198,14 @@ describe('locationFactory', () => {
           pathname: '/',
           hash: '#no'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/#no');
       });
 
       it('does not include the hash if it is falsy', () => {
         const falsyValues = ['', null, undefined];
         falsyValues.forEach(v => {
-          const output = createHref({ pathname: '/', hash: v });
+          const output = createPath({ pathname: '/', hash: v });
           expect(output.indexOf('#')).toBe(-1);
         });
       });
@@ -216,21 +216,21 @@ describe('locationFactory', () => {
           query: 'before=true',
           hash: 'after'
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output.indexOf('?')).toBeLessThan(output.indexOf('#'))
       });
     });
 
     describe('stringify option', () => {
       it('uses the provided stringify function to turn query into a string', () => {
-        const { createHref } = locationFactory({
+        const { createPath } = locationFactory({
           stringify: qs.stringify
         });
         const input = {
           pathname: '/',
           query: { one: 'two' }
         };
-        const output = createHref(input);
+        const output = createPath(input);
         expect(output).toBe('/?one=two');
       });
     });

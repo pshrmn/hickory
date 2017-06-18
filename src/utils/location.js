@@ -1,7 +1,3 @@
-export function randomKey() {
-  return Math.random().toString(36).slice(2, 8);
-}
-
 function beginsWith(str, char) {
   if (!str) {
     return '';

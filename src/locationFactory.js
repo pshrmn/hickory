@@ -1,9 +1,9 @@
 import {
-  randomKey,
   completePathname,
   completeHash,
   completeQuery
 } from './utils/location';
+import createKeyGen from './utils/keygen';
 
 function defaultParseQuery(query) {
   return query ? query : '';
@@ -18,8 +18,11 @@ export default function locationFactory(options = {}) {
     parse = defaultParseQuery,
     stringify = defaultStringifyQuery,
     decode = true,
-    base = ''
+    base = '',
+    initialKeyID = 0
   } = options;
+
+  const newKey = createKeyGen(initialKeyID);
 
   function parsePath(value) {
     const location = {
@@ -62,7 +65,7 @@ export default function locationFactory(options = {}) {
         location.pathname = '/';
       }
     }
-    location.key = details.key || randomKey();
+    location.key = details.key || newKey();
     location.state = details.state || null;
 
     // it can be more convenient to interact with the decoded pathname,
@@ -82,7 +85,7 @@ export default function locationFactory(options = {}) {
     return location;
   }
 
-  function createHref(location) {
+  function createPath(location) {
     const {
       pathname = '',
       query,
@@ -99,6 +102,6 @@ export default function locationFactory(options = {}) {
 
   return {
     createLocation,
-    createHref
+    createPath
   };
 }

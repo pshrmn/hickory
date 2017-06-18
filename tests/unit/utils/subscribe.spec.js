@@ -1,4 +1,4 @@
-import createSubscriptions from '../src/utils/subscribe';
+import createSubscriptions from '../../../src/utils/subscribe';
 
 describe('createSubscriptions', () => {
 

@@ -1,19 +1,10 @@
 import {
-  randomKey,
   completePathname,
   completeHash,
   completeQuery
-} from '../src/utils/location';
+} from '../../../src/utils/location';
 
 describe('location utils', () => {
-  describe('randomKey', () => {
-    it('returns a string of six characters', () => {
-      const key = randomKey();
-      expect(typeof key).toBe('string');
-      expect(key.length).toBe(6);
-    });
-  });
-
   describe('completePathname', () => {
     it('prepends forward slash if it doesn\'t exist', () => {
       expect(completePathname('test')).toBe('/test');
