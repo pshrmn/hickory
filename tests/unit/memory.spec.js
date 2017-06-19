@@ -136,6 +136,18 @@ describe('Memory history', () => {
       expect(currentMinor).toBe('0');
     });
 
+    it('increments from current location\'s key when not at end of locations', () => {
+      const testHistory = new MemoryHistory({
+        locations: ['/one', '/two', '/three', '/four', '/five'],
+        index: 2
+      });
+
+      testHistory.push('/new-four');
+
+      expect(testHistory.location.key).toBe('3.0');
+
+    });
+
     it('sets history.action to "PUSH"', () => {
       const testHistory = new MemoryHistory();
       testHistory.push('/next');
