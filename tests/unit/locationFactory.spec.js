@@ -15,12 +15,11 @@ describe('locationFactory', () => {
 
     describe('from a string', () => {
       it('returns an object with expected properties', () => {
-        const loc = createLocation('/pathname?query=this#hash');
+        const loc = createLocation('/pathname?query=this#hash', '10.9');
         expect(loc.pathname).toBe('/pathname');
         expect(loc.query).toBe('query=this');
         expect(loc.hash).toBe('hash');
-        expect(typeof loc.key).toBe('string');
-        expect(loc.key.length).toBe(3);
+        expect(loc.key).toBe('10.9');
       });
     });
 
@@ -55,27 +54,27 @@ describe('locationFactory', () => {
         expect(output.hash).toBe('');
       });
 
-      it('adds a key to the location', () => {
+      it('adds provided key to the location', () => {
         const input = {
           pathname: '/test',
           query: 'one=two',
           hash: 'hello'
         };
-        const output = createLocation(input)
-        expect(typeof output.key).toBe('string');
-        expect(output.key.length).toBe(3);
+        const key = '3.22';
+        const output = createLocation(input, key);
+        expect(output.key).toBe(key);
       });
 
       it('adds state if provided', () => {
         const input = {
           pathname: '/',
         };
-        const details = {
-          state: {omg: 'bff'}
-        }
-        const output = createLocation(input, details);
+        const state = {
+          omg: 'bff'
+        };
+        const output = createLocation(input, '1.0', state);
         expect(output.state).toBeDefined();
-        expect(output.state).toBe(details.state);
+        expect(output.state).toEqual(state);
       });
     });
 

@@ -1,3 +1,4 @@
+// this works, but needs to be improved
 export default function createKeyGenerator(initial) {
   let id = initial || 0;
   let current;

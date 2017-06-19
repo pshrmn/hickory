@@ -1,5 +1,4 @@
 import createSubscriptions from './utils/subscribe';
-import locationFactory from './locationFactory';
 
 function noop() {}
 
@@ -10,9 +9,7 @@ class History {
     this.location;
     this.path;
     this.confirm = null;
-
-    this.create = locationFactory(options);
-
+    
     const { subscribe, emit } = createSubscriptions();
     this.subscribe = subscribe;
     this._emit = emit;

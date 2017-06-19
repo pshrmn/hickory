@@ -3,7 +3,6 @@ import {
   completeHash,
   completeQuery
 } from './utils/location';
-import createKeyGen from './utils/keygen';
 
 function defaultParseQuery(query) {
   return query ? query : '';
@@ -18,11 +17,8 @@ export default function locationFactory(options = {}) {
     parse = defaultParseQuery,
     stringify = defaultStringifyQuery,
     decode = true,
-    base = '',
-    initialKeyID = 0
+    base = ''
   } = options;
-
-  const newKey = createKeyGen(initialKeyID);
 
   function parsePath(value) {
     const location = {
@@ -49,7 +45,7 @@ export default function locationFactory(options = {}) {
     return location;
   }
 
-  function createLocation(value, details = {}) {
+  function createLocation(value, key, state = null) {
     let location;
     if (typeof value === 'string') {
       location = parsePath(value)
@@ -65,8 +61,11 @@ export default function locationFactory(options = {}) {
         location.pathname = '/';
       }
     }
-    location.key = details.key || newKey();
-    location.state = details.state || null;
+    location.key = key;
+    // don't set state if it already exists
+    if (state && !location.state) {
+      location.state = state;
+    }
 
     // it can be more convenient to interact with the decoded pathname,
     // but leave the option for using the encoded value

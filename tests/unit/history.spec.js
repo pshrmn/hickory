@@ -13,16 +13,6 @@ describe('History', () => {
       expect(testHistory.confirm).toBe(null);
     })
 
-    it('creates location/path creator functions', () => {
-      const testHistory = new History();
-      const {
-        createLocation,
-        createPath
-      } = testHistory.create;
-      expect(typeof createLocation).toBe('function');
-      expect(typeof createPath).toBe('function');
-    });
-
     it('sets up subscription system', () => {
       const testHistory = new History();
       const loc = { pathname: '/this-is-only-a-test' };
