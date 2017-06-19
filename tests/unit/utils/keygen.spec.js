@@ -1,59 +1,50 @@
 import createKeyGenerator from '../../../src/utils/keygen';
 
 describe('key generator', () => {
-  it('returns a function that returns a string key', () => {
+  it('returns an object with two functions: major and minor', () => {
     const keyGen = createKeyGenerator();
-    const key = keyGen();
-    expect(typeof key).toBe('string');
+    expect(typeof keyGen.major).toBe('function');
+    expect(typeof keyGen.minor).toBe('function');
   });
 
-  describe('key', () => {
-    it('has two parts, the major and the minor version, separated by period', () => {
+  describe('major', () => {
+    it('starts at the provided base', () => {
+      const keyGen = createKeyGenerator(78);
+      const key = keyGen.major();
+      expect(key).toBe('78.0');
+    });
+
+    it('defaults to 0', () => {
       const keyGen = createKeyGenerator();
-      const key = keyGen();
-      expect(key.split('.').length).toBe(2);
+      const key = keyGen.major();
+      expect(key).toBe('0.0');
     });
 
-    describe('major', () => {
-      it('defaults to 0', () => {
-        const keyGen = createKeyGenerator();
-        const key = keyGen();
-        const [ major, minor ] = key.split('.');
-        expect(major).toBe('0');
-      });
-
-      it('starts incrementing from provided integer', () => {
-        const keyGen = createKeyGenerator(78);
-        const key = keyGen();
-        const [ major, minor ] = key.split('.');
-        expect(major).toBe('78');
-      });
-
-      it('increments on successive calls', () => {
-        const keyGen = createKeyGenerator();
-        keyGen();
-        const secondKey = keyGen();
-        const [ major, minor ] = secondKey.split('.');
-        expect(major).toBe('1');
-      });
+    it('increments the major value for successive calls', () => {
+      const keyGen = createKeyGenerator();
+      expect(keyGen.major()).toBe('0.0');
+      expect(keyGen.major()).toBe('1.0');
+      expect(keyGen.major()).toBe('2.0');
+      expect(keyGen.major()).toBe('3.0');
     });
 
-    describe('minor', () => {
-      it('defaults to 0', () => {
-        const keyGen = createKeyGenerator();
-        const key = keyGen();
-        const [ major, minor ] = key.split('.');
-        expect(minor).toBe('0');
-      });
+    it('resets major value when provided', () => {
+      const keyGen = createKeyGenerator();
+      for (let i=0; i<5; i++) {
+        keyGen.major();
+      }
 
-      it('if key provided, increments minor value, but keeps same major', () => {
-        const keyGen = createKeyGenerator();
-        const existingKey = '123.456';
-        const newKey = keyGen(existingKey);
-        const [ major, minor ] = newKey.split('.');
-        expect(major).toBe('123');
-        expect(minor).toBe('457');
-      });
+      expect(keyGen.major()).toBe('5.0');
+      expect(keyGen.major('3.0')).toBe('4.0');
+      expect(keyGen.major()).toBe('5.0');
+    })
+  });
+
+  describe('minor', () => {
+    it('uses the major value from the provided key', () => {
+      const keyGen = createKeyGenerator();
+      const key = keyGen.minor('18.0');
+      expect(key).toBe('18.1');
     });
   });
 });

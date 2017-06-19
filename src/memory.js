@@ -9,7 +9,7 @@ export default class MemoryHistory extends History {
     const { createLocation, createPath } = locationFactory(options);
     this.createLocation = createLocation;
     this.createPath = createPath;
-    this.createKey = createKeyGen();
+    this.keygen = createKeyGen();
 
     // convert the provided values into location objects
     // the values can be a path string, a (partial) location object,
@@ -17,7 +17,7 @@ export default class MemoryHistory extends History {
     // or a partial location object and the second argument is a state object).
     if (options.locations) {
       this.locations = options.locations.map(loc => {
-        const key = this.createKey();
+        const key = this.keygen.major();
         if (Array.isArray(loc)) {
           const [value, state] = loc;
           return this.createLocation(value, key, state);
@@ -27,7 +27,7 @@ export default class MemoryHistory extends History {
       })
     } else {
       this.locations = [
-        this.createLocation({ pathname: '/' }, this.createKey())
+        this.createLocation({ pathname: '/' }, this.keygen.major())
       ];
     }
 
@@ -57,7 +57,9 @@ export default class MemoryHistory extends History {
   }
 
   push(to, state) {
-    const location = this.createLocation(to, this.createKey(), state);
+    const wipingOutHistory = this.index !== this.locations.length - 1;
+    const key = this.keygen.major(wipingOutHistory && this.location.key);
+    const location = this.createLocation(to, key, state);
     this.confirmNavigation  (
       location,
       'PUSH',
@@ -78,7 +80,7 @@ export default class MemoryHistory extends History {
     const location = this.createLocation(
       to,
       // pass the current key to just icnrement the minor portion
-      this.createKey(this.location.key),
+      this.keygen.minor(this.location.key),
       state
     );
     this.confirmNavigation(
