@@ -1,6 +1,11 @@
 {
   "presets":[
-    "env"
+    ["env", {
+      modules: false,
+      targets: {
+        browsers: ['> 1%']
+      }
+    }]
   ],
-  "plugins": ["transform-export-extensions"]
+  "plugins": ["transform-export-extensions", "external-helpers"],
 }
