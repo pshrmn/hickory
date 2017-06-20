@@ -22,7 +22,8 @@ build(
   'ES',
   'rollup -c -f es -o dist/hickory.es.js',
   {
-    NODE_ENV: 'development'
+    NODE_ENV: 'development',
+    BABEL_ENV: 'build'
   }
 );
 
@@ -30,7 +31,8 @@ build(
   'CommonJS',
   'rollup -c -f cjs -o dist/hickory.common.js',
   {
-    NODE_ENV: 'development'
+    NODE_ENV: 'development',
+    BABEL_ENV: 'build'
   }
 );
 
@@ -38,7 +40,8 @@ build(
   'UMD file',
   'rollup -c -f iife -o dist/hickory.js',
   {
-    NODE_ENV: 'development'
+    NODE_ENV: 'development',
+    BABEL_ENV: 'build'
   }
 );
 
@@ -46,7 +49,8 @@ build(
   'UMD min file',
   'rollup -c -f iife -o dist/hickory.min.js',
   {
-    NODE_ENV: 'production'
+    NODE_ENV: 'production',
+    BABEL_ENV: 'build'
   }
 );
 
