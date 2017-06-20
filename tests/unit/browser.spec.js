@@ -139,6 +139,32 @@ describe('Browser history', () => {
       testHistory.push('/next');
       expect(testHistory.action).toBe('PUSH');
     });
+
+    it('emits new location/action when the user confirms the navigation', () => {
+      const testHistory = new BrowserHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        success();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.push('/next');
+      expect(subscriber.mock.calls.length).toBe(1);
+    });
+
+    it('does not emit when the user does not confirm the navigation', () => {
+      const testHistory = new BrowserHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        failure();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.push('/next');
+      expect(subscriber.mock.calls.length).toBe(0);
+    });
   });
 
   describe('replace', () => {
@@ -188,6 +214,32 @@ describe('Browser history', () => {
       testHistory.replace('/same');
       expect(testHistory.action).toBe('REPLACE');
     });
+
+    it('emits new location/action when the user confirms the navigation', () => {
+      const testHistory = new BrowserHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        success();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.replace('/same');
+      expect(subscriber.mock.calls.length).toBe(1);
+    });
+
+    it('does not emit when the user does not confirm the navigation', () => {
+      const testHistory = new BrowserHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        failure();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.replace('/same');
+      expect(subscriber.mock.calls.length).toBe(0);
+    });
   });
 
   describe('go', () => {
@@ -222,14 +274,14 @@ describe('Browser history', () => {
     it('sets the new index/location using the provided number and emits', (done) => {
       const testHistory = new BrowserHistory();
 
-      const subscriber = jest.fn();
-      testHistory.subscribe(subscriber);
-
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
       testHistory.push('/four'); // 3.0
       testHistory.push('/five'); // 4.0
       testHistory.push('/six'); // 5.0
+
+      const subscriber = jest.fn();
+      testHistory.subscribe(subscriber);
 
       testHistory.go(-2);
 
@@ -241,6 +293,50 @@ describe('Browser history', () => {
           key: '3.0'
         });      
         expect(action).toBe('POP');
+        done();
+      }, 10);
+    });
+
+    it('emits new location/action when the user confirms the navigation', (done) => {
+      const testHistory = new BrowserHistory();
+      testHistory.push('/two'); // 1.0
+      testHistory.push('/three'); // 2.0
+
+      testHistory.confirmWith((location, action, success, failure) => {
+        success();
+      });
+      const subscriber = jest.fn();
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
+      setTimeout(() => {
+        expect(testHistory.location).toMatchObject({
+          pathname: '/one',
+          key: '0.0'
+        });
+        expect(subscriber.mock.calls.length).toBe(1);
+        done();
+      }, 10);
+    });
+
+    it('does not emit when the user does not confirm the navigation', (done) => {
+      const testHistory = new BrowserHistory();
+      testHistory.push('/two'); // 1.0
+      testHistory.push('/three'); // 2.0
+
+      testHistory.confirmWith((location, action, success, failure) => {
+        failure();
+      });
+      const subscriber = jest.fn();
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
+      setTimeout(() => {
+        expect(testHistory.location).toMatchObject({
+          pathname: '/three',
+          key: '2.0'
+        });
+        expect(subscriber.mock.calls.length).toBe(0);
         done();
       }, 10);
     });

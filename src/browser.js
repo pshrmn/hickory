@@ -28,8 +28,6 @@ class BrowserHistory extends History {
       return;
     }
 
-    window = window;
-
     this.modern = canUseWindowHistory();
 
     const { createLocation, createPath } = locationFactory(options);
@@ -68,6 +66,7 @@ class BrowserHistory extends History {
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = this.keygen.major();
+      window.history.replaceState({ key, state }, null, path);
     }
     return this.createLocation(path, key, state);
   }
@@ -156,6 +155,14 @@ class BrowserHistory extends History {
   }
 
   _pop(state) {
+    // when we are reverting a pop (the user did not confirm navigation), we
+    // just need to reset the boolean and return. The browser has already taken
+    // care of updating the address bar and we never touched our internal values.
+    if (this._reverting) {
+      this._reverting = false;
+      return;
+    }
+
     const location = this.locationFromBrowser(state);
     const currentKey = this.location.key;
     const diff = diffKeys(currentKey, location.key);
@@ -169,6 +176,8 @@ class BrowserHistory extends History {
         this._emit(this.location, 'POP');
       },
       () => {
+        this._reverting = true;
+
         window.history.go(-1*diff);
       }
     );
