@@ -1,11 +1,3 @@
 {
-  "presets":[
-    ["env", {
-      modules: false,
-      targets: {
-        browsers: ['> 1%']
-      }
-    }]
-  ],
-  "plugins": ["transform-export-extensions", "external-helpers"],
+  "presets": ["./babel/config"]
 }
