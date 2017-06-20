@@ -153,6 +153,32 @@ describe('Memory history', () => {
       testHistory.push('/next');
       expect(testHistory.action).toBe('PUSH');
     });
+
+    it('emits new location/action when the user confirms the navigation', () => {
+      const testHistory = new MemoryHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        success();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.push('/next');
+      expect(subscriber.mock.calls.length).toBe(1);
+    });
+
+    it('does not emit when the user does not confirm the navigation', () => {
+      const testHistory = new MemoryHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        failure();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.push('/next');
+      expect(subscriber.mock.calls.length).toBe(0);
+    });
   });
 
   describe('replace', () => {
@@ -202,6 +228,32 @@ describe('Memory history', () => {
       testHistory.replace('/same');
       expect(testHistory.action).toBe('REPLACE');
     });
+
+    it('emits new location/action when the user confirms the navigation', () => {
+      const testHistory = new MemoryHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        success();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.replace('/same');
+      expect(subscriber.mock.calls.length).toBe(1);
+    });
+
+    it('does not emit when the user does not confirm the navigation', () => {
+      const testHistory = new MemoryHistory();
+      const subscriber = jest.fn();
+      const confirm = (location, action, success, failure) => {
+        failure();
+      };
+      testHistory.confirmWith(confirm);
+      testHistory.subscribe(subscriber);
+
+      testHistory.replace('/same');
+      expect(subscriber.mock.calls.length).toBe(0);
+    });
   });
 
   describe('go', () => {
@@ -241,6 +293,52 @@ describe('Memory history', () => {
         pathname: '/four'
       });      
       expect(action).toBe('POP');
+    });
+
+    it('emits new location/action when the user confirms the navigation', (done) => {
+      const testHistory = new MemoryHistory({
+        locations: ['/one', '/two', '/three'],
+        index: 2
+      });
+
+      testHistory.confirmWith((location, action, success, failure) => {
+        success();
+      });
+      const subscriber = jest.fn();
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
+      setTimeout(() => {
+        expect(testHistory.location).toMatchObject({
+          pathname: '/one',
+          key: '0.0'
+        });
+        expect(subscriber.mock.calls.length).toBe(1);
+        done();
+      }, 10);
+    });
+
+    it('does not emit when the user does not confirm the navigation', (done) => {
+      const testHistory = new MemoryHistory({
+        locations: ['/one', '/two', '/three'],
+        index: 2
+      });
+
+      testHistory.confirmWith((location, action, success, failure) => {
+        failure();
+      });
+      const subscriber = jest.fn();
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
+      setTimeout(() => {
+        expect(testHistory.location).toMatchObject({
+          pathname: '/three',
+          key: '2.0'
+        });
+        expect(subscriber.mock.calls.length).toBe(0);
+        done();
+      }, 10);
     });
   });
 });
