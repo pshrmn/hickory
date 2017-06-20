@@ -33,7 +33,6 @@
     "qs": "^6.4.0"
   },
   "jest": {
-    "testURL": "https://example.com/",
     "testEnvironment": "node"
   }
 }
