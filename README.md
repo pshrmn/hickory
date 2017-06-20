@@ -1,5 +1,7 @@
 # Hickory
 
+[![npm][version-badge]][npm-hickory] [![Travis][build-badge]][build]
+
 A single page application navigation system that works in the browser or in memory.
 
 ### Inspiration
@@ -84,3 +86,9 @@ history.confirmWith(function(location, action, success, failure) {
 
 history.removeConfirmation();
 ```
+
+[version-badge]: https://img.shields.io/npm/v/hickory.svg
+[npm-hickory]: https://npmjs.com/package/hickory
+
+[build-badge]: https://img.shields.io/travis/pshrmn/hickory/master.svg
+[build]: https://travis-ci.org/pshrmn/hickory
