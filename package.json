@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "node ./scripts/build",
-    "prepublish": "in-publish && npm run build",
+    "prepublishOnly": "in-publish && npm run build",
     "test": "jest"
   },
   "repository": {
