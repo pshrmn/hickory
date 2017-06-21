@@ -1,6 +1,6 @@
 # Hickory
 
-[![npm][version-badge]][npm-hickory] [![Travis][build-badge]][build]
+[![npm][version-badge]][npm-hickory] [![Travis][build-badge]][build] [![BrowserStack Status][browserstack-badge]][browserstack-build]
 
 A single page application navigation system that works in the browser or in memory.
 
@@ -92,3 +92,6 @@ history.removeConfirmation();
 
 [build-badge]: https://img.shields.io/travis/pshrmn/hickory/master.svg
 [build]: https://travis-ci.org/pshrmn/hickory
+
+[browserstack-badge]: https://www.browserstack.com/automate/badge.svg?badge_key=bHVBTk00Sm9ucnJ5SDlaOE5MZW80R214K0F3ZlkwVlY5OHd1WjI0OWJaQT0tLVYra3dYSUVOOTlKTnJHZUdDSXZHbVE9PQ==--50fa09de197425afca33b06f04e61e7582f13259
+[browserstack-build]: https://www.browserstack.com/automate/public-build/bHVBTk00Sm9ucnJ5SDlaOE5MZW80R214K0F3ZlkwVlY5OHd1WjI0OWJaQT0tLVYra3dYSUVOOTlKTnJHZUdDSXZHbVE9PQ==--50fa09de197425afca33b06f04e61e7582f13259
