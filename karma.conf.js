@@ -1,40 +1,68 @@
 const buble = require('rollup-plugin-buble');
 const replace = require('rollup-plugin-replace');
 
-module.exports = function(config) {
-  // Example set of browsers to run on Sauce Labs
-  // Check out https://saucelabs.com/platforms for all browser/platform combos
-  var customLaunchers = {
-    sl_chrome: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows 7',
-      version: '35'
-    },
-    sl_firefox: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: '30'
-    },
-    sl_ios_safari: {
-      base: 'SauceLabs',
-      browserName: 'iphone',
-      platform: 'OS X 10.9',
-      version: '7.1'
-    },
-    sl_ie_11: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 8.1',
-      version: '11'
-    }
-  };
+const reporters = ['progress'];
+const frameworks = ['jasmine'];
+const plugins = [
+  'karma-jasmine',
+  'karma-chrome-launcher',
+  'karma-rollup-plugin'
+];
 
+// Example set of browsers to run on Sauce Labs
+// Check out https://saucelabs.com/platforms for all browser/platform combos
+var customLaunchers = {
+  // windows
+  sl_chrome: {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 10',
+    version: '57'
+  },
+  sl_firefox: {
+    base: 'SauceLabs',
+    browserName: 'firefox',
+    version: '53'
+  },
+  sl_ie_11: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    platform: 'Windows 10',
+    version: '11'
+  },
+  sl_edge: {
+    base: 'SauceLabs',
+    browserName: 'edge',
+    platform: 'Windows 10',
+    version: '13'
+  },
+  // os x
+  sl_osx_safari: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.12',
+    version: '10'
+  },
+  // ios
+  sl_ios_safari: {
+    base: 'SauceLabs',
+    browserName: 'Safari',
+    platform: 'iOS 10'
+  },
+  // android
+  sl_android_chrome: {
+    base: 'SauceLabs',
+    browserName: 'Android',
+    platform: 'Android 6.0'
+  }
+};
+
+module.exports = function(config) {
   config.set({
     customLaunchers: customLaunchers,
     browsers: ['Chrome'],
-    frameworks: ['mocha', 'chai'],
-    reporters: ['mocha'],
+    frameworks: frameworks,
+    reporters: reporters,
 
     files: [
       'tests/integration/*.js'
@@ -56,13 +84,7 @@ module.exports = function(config) {
       sourceMap: 'inline'
     },
 
-    plugins: [
-      'karma-mocha',
-      'karma-chai',
-      'karma-chrome-launcher',
-      'karma-mocha-reporter',
-      'karma-rollup-plugin'
-    ]
+    plugins: plugins
     
   });
 
@@ -72,10 +94,10 @@ module.exports = function(config) {
       // The rest of your karma config is here
       // ...
       sauceLabs: {
-          testName: 'Web App Unit Tests'
+        testName: 'Hickory Browser Tests'
       },
       browsers: Object.keys(customLaunchers),
-      reporters: ['dots', 'saucelabs'],
+      reporters: reporters.concat('saucelabs'),
       singleRun: true
     });
   }

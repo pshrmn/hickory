@@ -4,7 +4,7 @@ describe('browser integration tests', () => {
   it('can create a browser history', () => {
     expect(() => {
       const testHistory = new BrowserHistory();
-    }).not.to.throw();
+    }).not.toThrow();
   });
 
   describe('push', () => {
@@ -14,8 +14,8 @@ describe('browser integration tests', () => {
 
       testHistory.push('/the-new-location');
 
-      expect(window.location.pathname).to.equal('/the-new-location');
-      expect(window.history.length).to.equal(lengthBefore + 1);
+      expect(window.location.pathname).toEqual('/the-new-location');
+      expect(window.history.length).toEqual(lengthBefore + 1);
     });
   });
 
@@ -26,8 +26,8 @@ describe('browser integration tests', () => {
 
       testHistory.replace('/the-same-location');
 
-      expect(window.location.pathname).to.equal('/the-same-location');
-      expect(window.history.length).to.equal(lengthBefore);
+      expect(window.location.pathname).toEqual('/the-same-location');
+      expect(window.history.length).toEqual(lengthBefore);
     });
   });
 
@@ -39,7 +39,7 @@ describe('browser integration tests', () => {
       testHistory.push('/three');
 
       function subscriber(location) {
-        expect(location.pathname).to.equal('/one');
+        expect(location.pathname).toEqual('/one');
         done();
       }
       testHistory.subscribe(subscriber);
@@ -56,7 +56,7 @@ describe('browser integration tests', () => {
       testHistory.push('/three');
 
       function subscriber(location) {
-        expect(location.pathname).to.equal('/one');
+        expect(location.pathname).toEqual('/one');
         done();
       }
       testHistory.subscribe(subscriber);
