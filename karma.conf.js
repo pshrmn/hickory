@@ -27,8 +27,8 @@ var customLaunchers = {
   },
   bs_ie_11: {
     base: 'BrowserStack',
-    browser: 'internet explorer',
-    browser_version: '11',
+    browser: 'ie',
+    browser_version: '11.0',
     os: 'Windows',
     os_version: '10'
   },
@@ -44,7 +44,7 @@ var customLaunchers = {
     base: 'BrowserStack',
     browser: 'safari',
     browser_version: '10',
-    os: 'macOS',
+    os: 'OS X',
     os_version: 'Sierra'
   },
   // ios
