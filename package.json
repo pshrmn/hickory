@@ -13,8 +13,8 @@
     "prebuild": "rimraf dist",
     "build": "node ./scripts/build",
     "prepublishOnly": "in-publish && npm run build",
-    "test": "npm run test:unit && npm run test:integration",
-    "test:integration": "karma start --single-run",
+    "test": "npm run test:unit && npm run test:integration -- --single-run",
+    "test:integration": "karma start",
     "test:unit": "jest"
   },
   "repository": {
@@ -24,10 +24,7 @@
   "keywords": [
     "history",
     "navigation",
-    "single",
-    "page",
-    "application",
-    "link"
+    "single page application"
   ],
   "author": "Paul Sherman",
   "license": "MIT",
