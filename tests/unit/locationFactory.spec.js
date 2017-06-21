@@ -234,4 +234,43 @@ describe('locationFactory', () => {
       });
     });
   });
+
+  describe('baseSegment', () => {
+    const { createPath, createLocation } = locationFactory({
+      baseSegment: '/prefix'
+    });
+
+    it('strips the baseSegment off of the path before creating a location', () => {
+      const location = createLocation('/prefix/this/is/the/rest');
+      expect(location.pathname).toBe('/this/is/the/rest');
+    });
+
+    it('adds the baseSegment to the path generated from a location', () => {
+      const location = {
+        pathname: '/one/two/three',
+        search: '',
+        hash: 'four'
+      };
+      const path = createPath(location);
+      expect(path).toBe('/prefix/one/two/three#four');
+    });
+
+    it('throws when attempting to use an invalid baseSegment', () => {
+      const badValues = [
+        'does-not-start-with-a-slash',
+        '/ends-with-slash/',
+        null,
+        0,
+        {},
+        [],
+      ];
+      badValues.forEach((value) => {
+        expect(() => {
+          const creators = locationFactory({
+            baseSegment: value
+          })
+        }).toThrow();
+      });
+    });
+  });
 });

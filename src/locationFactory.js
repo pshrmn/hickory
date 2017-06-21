@@ -1,7 +1,8 @@
 import {
   completePathname,
   completeHash,
-  completeQuery
+  completeQuery,
+  stripBaseSegment
 } from './utils/location';
 
 function defaultParseQuery(query) {
@@ -12,13 +13,27 @@ function defaultStringifyQuery(query) {
   return query ? query : '';
 }
 
+function isValidBase(baseSegment) {
+  return (
+    typeof baseSegment === 'string' &&
+    baseSegment.charAt(0) === '/' &&
+    baseSegment.charAt(baseSegment.length -1) !== '/'
+  );
+}
+
 export default function locationFactory(options = {}) {
   const {
     parse = defaultParseQuery,
     stringify = defaultStringifyQuery,
     decode = true,
-    base = ''
+    baseSegment = ''
   } = options;
+
+  if (baseSegment !== '' && !isValidBase(baseSegment)) {
+    throw new Error('The baseSegment "' + baseSegment + '" is not valid.' +
+      ' The baseSegment must begin with a forward slash and end with a' +
+      ' non-forward slash character.');
+  }
 
   function parsePath(value) {
     const location = {
@@ -40,7 +55,7 @@ export default function locationFactory(options = {}) {
       value = value.substring(0, queryIndex);
     }
 
-    location.pathname = value;
+    location.pathname = stripBaseSegment(value, baseSegment);
 
     return location;
   }
@@ -93,6 +108,7 @@ export default function locationFactory(options = {}) {
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
+      baseSegment +
       completePathname(pathname) +
       completeQuery(stringify(query)) +
       completeHash(hash)

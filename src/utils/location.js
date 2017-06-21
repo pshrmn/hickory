@@ -16,3 +16,11 @@ export function completeHash(hash) {
 export function completeQuery(query) {
   return beginsWith(query, '?');
 }
+
+function hasBaseSegment(path, prefix) {
+  return (new RegExp('^' + prefix + '(\\/|\\?|#|$)', 'i')).test(path);
+}
+
+export function stripBaseSegment(path, prefix) {
+  return hasBaseSegment(path, prefix) ? path.substr(prefix.length) : path;
+}

@@ -1,7 +1,8 @@
 import {
   completePathname,
   completeHash,
-  completeQuery
+  completeQuery,
+  stripBaseSegment
 } from '../../../src/utils/location';
 
 describe('location utils', () => {
@@ -53,6 +54,34 @@ describe('location utils', () => {
       falsy.forEach(value => {
         expect(completeQuery(value)).toBe('');
       });
+    });
+  });
+
+  describe('stripBaseSegment', () => {
+    it('strips the baseSegment off of the beginning of the path', () => {
+      const withBase = '/prefix/this-is-a-test';
+      expect(stripBaseSegment(withBase, '/prefix')).toBe('/this-is-a-test');
+    });
+
+    it('is not case-sensitive', () => {
+      const withBase = '/prefix/this-is-a-test';
+      expect(stripBaseSegment(withBase, '/PREFIX')).toBe('/this-is-a-test');
+    });
+
+    it('works when the first character after the baseSegment is a ?,#, or end of string', () => {
+      expect(stripBaseSegment('/prefix?query=true', '/prefix')).toBe('?query=true');
+      expect(stripBaseSegment('/prefix#yo', '/prefix')).toBe('#yo');
+      expect(stripBaseSegment('/prefix', '/prefix')).toBe('');
+    });
+
+    it('does nothing if the path does not contain the base segment', () => {
+      const noBase = '/this-is-a-test';
+      expect(stripBaseSegment(noBase, '/prefix')).toBe(noBase);
+    });
+
+    it('does not strip for incomplete prefix matches', () => {
+      const incompletePath = '/prefixthis-is-the-path';
+      expect(stripBaseSegment(incompletePath, '/prefix')).toBe(incompletePath);
     });
   });
 });
