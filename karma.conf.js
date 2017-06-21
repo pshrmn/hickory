@@ -107,7 +107,8 @@ module.exports = function(config) {
         username: process.env.BROWSERSTACK_USERNAME,
         accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         build: process.env.TRAVIS_BUILD_NUMBER,
-        name: process.env.TRAVIS_JOB_NUMBER
+        name: process.env.TRAVIS_JOB_NUMBER,
+        video: false
       },
       browserDisconnectTimeout: 10000,
       browserDisconnectTolerance: 3
