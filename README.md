@@ -90,7 +90,8 @@ history.removeConfirmation();
 ### Browser Support
 
 Browser testing is provided thanks to BrowserStack
-<img src='./static/BrowserStackLogo.png' />
+
+[<img src='./static/BrowserStackLogo.png' />](https://www.browserstack.com/start)
 
 The following browsers are currently tested:
 
