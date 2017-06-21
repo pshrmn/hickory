@@ -1,20 +1,26 @@
-function beginsWith(str, char) {
+export function ensureBeginsWith(str, prefix) {
   if (!str) {
     return '';
   }
-  return str.charAt(0) === char ? str : char + str;
+  return str.indexOf(prefix) === 0 ? str : prefix + str;
 }
 
 export function completePathname(pathname) {
-  return beginsWith(pathname, '/');
+  return ensureBeginsWith(pathname, '/');
 }
 
 export function completeHash(hash) {
-  return beginsWith(hash, '#');
+  return ensureBeginsWith(hash, '#');
 }
 
 export function completeQuery(query) {
-  return beginsWith(query, '?');
+  return ensureBeginsWith(query, '?');
+}
+
+export function stripPrefix(str, prefix) {
+  return str.indexOf(prefix) === 0
+    ? str.slice(prefix.length)
+    : str;
 }
 
 function hasBaseSegment(path, prefix) {

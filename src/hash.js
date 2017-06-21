@@ -2,6 +2,10 @@ import History from './history';
 import locationFactory from './locationFactory';
 import createKeyGen from './utils/keygen';
 import {
+  stripPrefix,
+  completeHash
+} from './utils/location'
+import {
   ignorablePopstateEvent,
   canUseWindowHistory,
   needToUseHashchangeEvent,
@@ -20,14 +24,21 @@ function diffKeys(previous, next) {
   return nextMajor - previousMajor;
 }
 
-class BrowserHistory extends History {
+function decodeHashPath(path) {
+  return stripPrefix(path, '#');
+}
+
+function encodeHashPath(path) {
+  return completeHash(path);
+}
+
+class HashHistory extends History {
 
   constructor(options = {}) {
     super(options);
     if (!domExists()) {
       return;
     }
-
     this.modern = canUseWindowHistory();
 
     const { createLocation, createPath } = locationFactory(options);
@@ -44,27 +55,19 @@ class BrowserHistory extends History {
     // e.g. browser back/forward buttons
     this._reverting = false;
 
-    window.addEventListener('popstate', (event) => {
-      if (ignorablePopstateEvent(event)) {
-        return;
-      }
-      this._pop(event.state);
+    window.addEventListener('hashchange', (event) => {
+      this._pop();
     });
-
-    if (needToUseHashchangeEvent()) {
-      window.addEventListener('hashchange', (event) => {
-        this._pop();
-      });
-    }
   }
 
   locationFromBrowser(providedState) {
-    const { pathname, search, hash } = window.location;
-    const path = pathname + search + hash;
+    let { hash } = window.location;
+    const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = this.keygen.major();
-      window.history.replaceState({ key, state }, null, path);
+      // replace with the hash we received, not the decoded path
+      window.history.replaceState({ key, state }, null, hash);
     }
     return this.createLocation(path, key, state);
   }
@@ -89,7 +92,7 @@ class BrowserHistory extends History {
       location,
       'PUSH',
       () => {
-        const path = this.createPath(location);
+        const path = encodeHashPath(this.createPath(location));
 
         if (this.modern) {
           window.history.pushState({ key, state }, null, path);
@@ -123,7 +126,7 @@ class BrowserHistory extends History {
       location,
       'REPLACE',
       () => {
-        const path = this.createPath(location);
+        const path = encodeHashPath(this.createPath(location));
         if (this.modern) {
           window.history.replaceState({ key: location.key, state }, null, path);
         } else {
@@ -160,7 +163,6 @@ class BrowserHistory extends History {
       this._reverting = false;
       return;
     }
-
     const location = this.locationFromBrowser(state);
     const currentKey = this.location.key;
     const diff = diffKeys(currentKey, location.key);
@@ -183,4 +185,4 @@ class BrowserHistory extends History {
 
 }
 
-export default BrowserHistory;
+export default HashHistory;
