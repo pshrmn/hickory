@@ -9,51 +9,59 @@ const plugins = [
   'karma-rollup-plugin'
 ];
 
-// Example set of browsers to run on Sauce Labs
-// Check out https://saucelabs.com/platforms for all browser/platform combos
 var customLaunchers = {
   // windows
-  sl_chrome: {
-    base: 'SauceLabs',
-    browserName: 'chrome',
-    platform: 'Windows 10',
-    version: '57'
+  bs_chrome: {
+    base: 'BrowserStack',
+    browser: 'chrome',
+    browser_version: '57',
+    os: 'Windows',
+    os_version: '10'
   },
-  sl_firefox: {
-    base: 'SauceLabs',
-    browserName: 'firefox',
-    version: '53'
+  bs_firefox: {
+    base: 'BrowserStack',
+    browser: 'firefox',
+    browser_version: '53',
+    os: 'Windows',
+    os_version: '10'
   },
-  sl_ie_11: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 10',
-    version: '11'
+  bs_ie_11: {
+    base: 'BrowserStack',
+    browser: 'internet explorer',
+    browser_version: '11',
+    os: 'Windows',
+    os_version: '10'
   },
-  sl_edge: {
-    base: 'SauceLabs',
-    browserName: 'edge',
-    platform: 'Windows 10',
-    version: '13'
+  bs_edge: {
+    base: 'BrowserStack',
+    browser: 'edge',
+    browser_version: '13',
+    os: 'Windows',
+    os_version: '10'
   },
   // os x
-  sl_osx_safari: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.12',
-    version: '10'
+  bs_osx_safari: {
+    base: 'BrowserStack',
+    browser: 'safari',
+    browser_version: '10',
+    os: 'macOS',
+    os_version: 'Sierra'
   },
   // ios
-  sl_ios_safari: {
-    base: 'SauceLabs',
-    browserName: 'Safari',
-    platform: 'iOS 10'
+  bs_ios_safari: {
+    base: 'BrowserStack',
+    browser: 'Safari',
+    os: 'iOS',
+    os_version: '10.3',
+    real_browser: false
   },
   // android
-  sl_android_chrome: {
-    base: 'SauceLabs',
-    browserName: 'Android',
-    platform: 'Android 6.0'
+  bs_android_chrome: {
+    base: 'BrowserStack',
+    browser: 'chrome',
+    os: 'android',
+    os_version: '4.4',
+    real_browser: false
   }
 };
 
@@ -88,17 +96,21 @@ module.exports = function(config) {
     
   });
 
-  if (process.env.USE_CLOUD) {
+  if (process.env.TRAVIS) {
     config.set({
-
-      // The rest of your karma config is here
-      // ...
-      sauceLabs: {
-        testName: 'Hickory Browser Tests'
-      },
       browsers: Object.keys(customLaunchers),
-      reporters: reporters.concat('saucelabs'),
-      singleRun: true
+      singleRun: true,
+      reporters: reporters.concat('BrowserStack'),
+      plugins: plugins.concat('karma-browserstack-launcher'),
+      browserStack: {
+        project: 'hickory',
+        username: process.env.BROWSERSTACK_USERNAME,
+        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+        build: process.env.TRAVIS_BUILD_NUMBER,
+        name: process.env.TRAVIS_JOB_NUMBER
+      },
+      browserDisconnectTimeout: 10000,
+      browserDisconnectTolerance: 3
     });
   }
 }
