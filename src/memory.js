@@ -60,7 +60,7 @@ export default class MemoryHistory extends History {
     const wipingOutHistory = this.index !== this.locations.length - 1;
     const key = this.keygen.major(wipingOutHistory && this.location.key);
     const location = this.createLocation(to, key, state);
-    this.confirmNavigation  (
+    this._confirmNavigation  (
       location,
       'PUSH',
       () => {
@@ -83,7 +83,7 @@ export default class MemoryHistory extends History {
       this.keygen.minor(this.location.key),
       state
     );
-    this.confirmNavigation(
+    this._confirmNavigation(
       location,
       'REPLACE',
       () => {
@@ -103,7 +103,7 @@ export default class MemoryHistory extends History {
       if (newIndex < 0 || newIndex >= this.locations.length) {
         return;
       } else {
-        this.confirmNavigation(
+        this._confirmNavigation(
           this.locations[newIndex],
           'POP',
           () => {

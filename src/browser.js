@@ -3,7 +3,6 @@ import locationFactory from './locationFactory';
 import createKeyGen from './utils/keygen';
 import {
   ignorablePopstateEvent,
-  canUseWindowHistory,
   needToUseHashchangeEvent,
   getStateFromHistory,
   domExists
@@ -82,7 +81,7 @@ class BrowserHistory extends History {
     const wipingOutHistory = this.index !== this.locations.length - 1;
     const key = this._keygen.major(wipingOutHistory && this.location.key);
     const location = this.createLocation(to, key, state);
-    this.confirmNavigation  (
+    this._confirmNavigation  (
       location,
       'PUSH',
       () => {
@@ -104,7 +103,7 @@ class BrowserHistory extends History {
     // pass the current key to just increment the minor portion
     const key = this._keygen.minor(this.location.key);
     const location = this.createLocation(to, key, state);
-    this.confirmNavigation(
+    this._confirmNavigation(
       location,
       'REPLACE',
       () => {
@@ -142,7 +141,7 @@ class BrowserHistory extends History {
     const location = this.locationFromBrowser(state);
     const currentKey = this.location.key;
     const diff = diffKeys(currentKey, location.key);
-    this.confirmNavigation(
+    this._confirmNavigation(
       location,
       'POP',
       () => {

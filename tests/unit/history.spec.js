@@ -54,7 +54,7 @@ describe('History', () => {
       const success = jest.fn();
       const failure = jest.fn();
 
-      testHistory.confirmNavigation(
+      testHistory._confirmNavigation(
         { pathname: '/this-is-only-a-test' },
         'TEST',
         success,
@@ -73,7 +73,7 @@ describe('History', () => {
       const action = 'TEST';
 
       testHistory.confirmWith(allowNavigation);
-      testHistory.confirmNavigation(
+      testHistory._confirmNavigation(
         loc,
         action,
         success,

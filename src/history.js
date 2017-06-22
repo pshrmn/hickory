@@ -7,7 +7,6 @@ class History {
     this.locations = [];
     this.index = -1;
     this.location;
-    this.path;
     this.confirm = null;
     
     const { subscribe, emit } = createSubscriptions();
@@ -23,7 +22,7 @@ class History {
     this.confirm = null;
   }
 
-  confirmNavigation(location, action, success, failure = noop) {
+  _confirmNavigation(location, action, success, failure = noop) {
     if (!this.confirm) {
       success();
     } else {
