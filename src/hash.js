@@ -7,12 +7,11 @@ import {
 } from './utils/location'
 import {
   ignorablePopstateEvent,
-  canUseWindowHistory,
   needToUseHashchangeEvent,
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
-import warn from './utils/warn';
+
 
 function getMajor(key) {
   return parseInt(key.split('.')[0], 10);
@@ -39,7 +38,6 @@ class HashHistory extends History {
     if (!domExists()) {
       return;
     }
-    this.modern = canUseWindowHistory();
 
     const { createLocation, createPath } = locationFactory(options);
     this.createLocation = createLocation;
@@ -93,15 +91,7 @@ class HashHistory extends History {
       'PUSH',
       () => {
         const path = encodeHashPath(this.createPath(location));
-
-        if (this.modern) {
-          window.history.pushState({ key, state }, null, path);
-        } else {
-          if (state != null) {
-            warn('Cannot use state in browsers that do not support window.history');
-          }
-          window.location.href = path;
-        }
+        window.history.pushState({ key, state }, null, path);
 
         this.location = location;
         this.index++;
@@ -116,25 +106,15 @@ class HashHistory extends History {
   }
 
   replace(to, state) {
-    const location = this.createLocation(
-      to,
-      // pass the current key to just icnrement the minor portion
-      this.keygen.minor(this.location.key),
-      state
-    );
+    // pass the current key to just increment the minor portion
+    const key = this.keygen.minor(this.location.key);
+    const location = this.createLocation(to, key, state);
     this.confirmNavigation(
       location,
       'REPLACE',
       () => {
         const path = encodeHashPath(this.createPath(location));
-        if (this.modern) {
-          window.history.replaceState({ key: location.key, state }, null, path);
-        } else {
-          if (state != null) {
-            warn('Cannot use state in browsers that do not support window.history');
-          }
-          window.location.replace(path);
-        }
+        window.history.replaceState({key, state }, null, path);
 
         this.location = location;
         this.locations[this.index] = this.location;
