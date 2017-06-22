@@ -11,7 +11,7 @@ import {
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
-
+import createEventCoordinator from './utils/eventCoordinator';
 
 function getMajor(key) {
   return parseInt(key.split('.')[0], 10);
@@ -42,7 +42,7 @@ class HashHistory extends History {
     const { createLocation, createPath } = locationFactory(options);
     this.createLocation = createLocation;
     this.createPath = createPath;
-    this.keygen = createKeyGen();
+    this._keygen = createKeyGen();
 
     this.location = this.locationFromBrowser()
     this.index = 0;
@@ -53,9 +53,11 @@ class HashHistory extends History {
     // e.g. browser back/forward buttons
     this._reverting = false;
 
-    window.addEventListener('hashchange', (event) => {
-      this._pop();
-    });
+    this._beforeDestroy.push(
+      createEventCoordinator({
+        hashchange: (event) => { this._pop(); }
+      })
+    );
   }
 
   locationFromBrowser(providedState) {
@@ -63,7 +65,7 @@ class HashHistory extends History {
     const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
-      key = this.keygen.major();
+      key = this._keygen.major();
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, null, hash);
     }
@@ -84,7 +86,7 @@ class HashHistory extends History {
 
   push(to, state) {
     const wipingOutHistory = this.index !== this.locations.length - 1;
-    const key = this.keygen.major(wipingOutHistory && this.location.key);
+    const key = this._keygen.major(wipingOutHistory && this.location.key);
     const location = this.createLocation(to, key, state);
     this._confirmNavigation  (
       location,
@@ -107,7 +109,7 @@ class HashHistory extends History {
 
   replace(to, state) {
     // pass the current key to just increment the minor portion
-    const key = this.keygen.minor(this.location.key);
+    const key = this._keygen.minor(this.location.key);
     const location = this.createLocation(to, key, state);
     this._confirmNavigation(
       location,

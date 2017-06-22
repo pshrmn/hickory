@@ -2,15 +2,16 @@ import BrowserHistory from '../../src/browser';
 
 describe('browser integration tests', () => {
 
+  let testHistory;
+
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
-    window.history.replaceState(null, null, '/');
+    window.history.pushState(null, null, '/');
+    testHistory = new BrowserHistory();
   });
 
-  it('can create a browser history', () => {
-    expect(() => {
-      const testHistory = new BrowserHistory();
-    }).not.toThrow();
+  afterEach(() => {
+    testHistory.destroy();
   });
 
   describe('push', () => {

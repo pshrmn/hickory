@@ -1,4 +1,4 @@
-export default function subscribe() {
+export default function subscriptionCoordinator() {
   let subscribers = [];
 
   function subscribe(fn) {
@@ -20,8 +20,13 @@ export default function subscribe() {
     });
   }
 
+  function removeAllSubscribers() {
+    subscribers = [];
+  }
+
   return {
     subscribe,
-    emit
+    emit,
+    removeAllSubscribers
   };
 }

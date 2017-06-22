@@ -1,4 +1,4 @@
-import createSubscriptions from './utils/subscribe';
+import createSubscriptionCoordinator from './utils/subscriptionCoordinator';
 
 function noop() {}
 
@@ -9,9 +9,12 @@ class History {
     this.location;
     this.confirm = null;
     
-    const { subscribe, emit } = createSubscriptions();
+    this._beforeDestroy = [];
+
+    const { subscribe, emit, removeAllSubscribers } = createSubscriptionCoordinator();
     this.subscribe = subscribe;
     this._emit = emit;
+    this._beforeDestroy.push(removeAllSubscribers);
   }
 
   confirmWith(fn) {
@@ -28,6 +31,10 @@ class History {
     } else {
       this.confirm(location, action, success, failure);
     }
+  }
+
+  destroy() {
+    this._beforeDestroy.forEach(fn => { fn(); });
   }
 };
 

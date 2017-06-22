@@ -2,15 +2,17 @@ import HashHistory from '../../src/hash';
 
 
 describe('hash integration tests', () => {
-  beforeEach(() => {
-    // we cannot fully reset the history, but this can give us a blank state
-    window.history.replaceState(null, null, '/#/');
-  })
 
-  it('can create a hash history', () => {
-    expect(() => {
-      const testHistory = new HashHistory();
-    }).not.toThrow();
+  let testHistory;
+
+  beforeEach(() => {
+    testHistory = new HashHistory();
+    // we cannot fully reset the history, but this can give us a blank state
+    window.history.pushState(null, null, '/#/');
+  });
+
+  afterEach(() => {
+    testHistory.destroy();
   });
 
   describe('push', () => {
@@ -28,6 +30,7 @@ describe('hash integration tests', () => {
       expect(window.location.hash).toEqual('#/the-same-position');
     });
   });
+
 
   describe('go', () => {
     it('can navigate with go', (done) => {

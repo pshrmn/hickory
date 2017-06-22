@@ -86,4 +86,15 @@ describe('History', () => {
       expect(args[3]).toBe(failure);
     });
   });
+
+  describe('destroy', () => {
+    it('calls any registered before destroy methods', () => {
+      const toBeDestroyed = jest.fn();
+      const testHistory = new History();
+      testHistory._beforeDestroy.push(toBeDestroyed);
+
+      testHistory.destroy();
+      expect(toBeDestroyed.mock.calls.length).toBe(1);
+    });
+  });
 });

@@ -7,6 +7,7 @@ import {
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
+import createEventCoordinator from './utils/eventCoordinator';
 
 function getMajor(key) {
   return parseInt(key.split('.')[0], 10);
@@ -40,18 +41,19 @@ class BrowserHistory extends History {
     // e.g. browser back/forward buttons
     this._reverting = false;
 
-    window.addEventListener('popstate', (event) => {
-      if (ignorablePopstateEvent(event)) {
-        return;
-      }
-      this._pop(event.state);
-    });
-
-    if (needToUseHashchangeEvent()) {
-      window.addEventListener('hashchange', (event) => {
-        this._pop();
-      });
-    }
+    this._beforeDestroy.push(
+      createEventCoordinator({
+        popstate: (event) => {
+          if (ignorablePopstateEvent(event)) {
+            return;
+          }
+          this._pop(event.state);
+        },
+        hashchange: needToUseHashchangeEvent()
+          ? (event) => { this._pop(); }
+          : null
+      })
+    );
   }
 
   locationFromBrowser(providedState) {
@@ -137,7 +139,6 @@ class BrowserHistory extends History {
       this._reverting = false;
       return;
     }
-
     const location = this.locationFromBrowser(state);
     const currentKey = this.location.key;
     const diff = diffKeys(currentKey, location.key);
@@ -152,7 +153,6 @@ class BrowserHistory extends History {
       },
       () => {
         this._reverting = true;
-
         window.history.go(-1*diff);
       }
     );

@@ -1,10 +1,10 @@
-import createSubscriptions from '../../../src/utils/subscribe';
+import createSubscriptionCoordinator from '../../../src/utils/subscriptionCoordinator';
 
-describe('createSubscriptions', () => {
+describe('createSubscriptionCoordinator', () => {
 
   describe('subscribe', () => {
     it('throws an error if passed a non-function', () => {
-      const { subscribe } = createSubscriptions();
+      const { subscribe } = createSubscriptionCoordinator();
       const badValues = [
         null,
         undefined,
@@ -22,7 +22,7 @@ describe('createSubscriptions', () => {
     });
 
     it('adds function to subscribers list', () => {
-      const { subscribe, emit } = createSubscriptions();
+      const { subscribe, emit } = createSubscriptionCoordinator();
       let called = false;
       function mockSub() {
         called = true;
@@ -33,7 +33,7 @@ describe('createSubscriptions', () => {
     });
 
     describe('unsubscribe', () => {
-      const { subscribe, emit } = createSubscriptions();
+      const { subscribe, emit } = createSubscriptionCoordinator();
       let calls = 0;
       function mockSub() {
         calls++;
@@ -49,7 +49,7 @@ describe('createSubscriptions', () => {
 
   describe('emit', () => {
     it('calls all subscribed functions', () => {
-      const { subscribe, emit } = createSubscriptions();
+      const { subscribe, emit } = createSubscriptionCoordinator();
       let count = 0;
       function increment() {
         count++;
@@ -62,7 +62,7 @@ describe('createSubscriptions', () => {
     });
 
     it('does not call unsubscribed functions', () => {
-      const { subscribe, emit } = createSubscriptions();
+      const { subscribe, emit } = createSubscriptionCoordinator();
       let count = 0;
       function plusOne() {
         count += 1;
@@ -86,7 +86,7 @@ describe('createSubscriptions', () => {
     });
 
     it('passes emit\'s arguments to the subscribers', () => {
-      const { subscribe, emit } = createSubscriptions();
+      const { subscribe, emit } = createSubscriptionCoordinator();
       const location = { pathname: '/magnitude' };
       const action = 'POP-POP';
       function logger(l, a) {
