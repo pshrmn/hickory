@@ -127,7 +127,7 @@ describe('Browser history', () => {
         testHistory.push('/new-four');
         expect(testHistory.location.key).toBe('3.0');
         done();
-      }, 10);
+      }, 100);
     });
 
     it('sets history.action to "PUSH"', () => {
@@ -293,7 +293,7 @@ describe('Browser history', () => {
         });      
         expect(action).toBe('POP');
         done();
-      }, 10);
+      }, 100);
     });
 
     it('emits new location/action when the user confirms the navigation', (done) => {
@@ -315,7 +315,7 @@ describe('Browser history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(1);
         done();
-      }, 10);
+      }, 100);
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
@@ -337,7 +337,7 @@ describe('Browser history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(0);
         done();
-      }, 10);
+      }, 100);
     });
   });
 });

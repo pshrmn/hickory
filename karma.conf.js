@@ -1,4 +1,4 @@
-const buble = require('rollup-plugin-buble');
+const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
 
 const reporters = ['progress'];
@@ -85,8 +85,9 @@ module.exports = function(config) {
         replace({
           'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
-        // having trouble with babel, but this works
-        buble()
+        babel({
+          exclude: 'node_modules/**'
+        })
       ],
       format: 'iife',
       sourceMap: 'inline'
@@ -111,7 +112,7 @@ module.exports = function(config) {
         video: false
       },
       browserDisconnectTimeout: 10000,
-      browserDisconnectTolerance: 3
+      browserDisconnectTolerance: 1
     });
   }
 }

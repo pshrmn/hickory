@@ -314,10 +314,10 @@ describe('Memory history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(1);
         done();
-      }, 10);
+      }, 100);
     });
 
-    /*it('does not emit when the user does not confirm the navigation', (done) => {
+    it('does not emit when the user does not confirm the navigation', (done) => {
       const testHistory = MemoryHistory({
         locations: ['/one', '/two', '/three'],
         index: 2
@@ -337,7 +337,7 @@ describe('Memory history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(0);
         done();
-      }, 10);
-    });*/
+      }, 100);
+    });
   });
 });

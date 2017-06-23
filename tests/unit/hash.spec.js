@@ -140,7 +140,7 @@ describe('Hash history', () => {
         testHistory.push('/new-four');
         expect(testHistory.location.key).toBe('3.0');
         done();
-      }, 10);
+      }, 100);
     });
 
     it('sets history.action to "PUSH"', () => {
@@ -333,7 +333,7 @@ describe('Hash history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(1);
         done();
-      }, 10);
+      }, 100);
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
@@ -355,7 +355,7 @@ describe('Hash history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(0);
         done();
-      }, 10);
+      }, 100);
     });
   });
 });
