@@ -1,4 +1,4 @@
-import locationFactory from '../../src/locationFactory';
+import locationFactory from '../../../src/utils/locationFactory';
 import qs from 'qs';
 
 describe('locationFactory', () => {

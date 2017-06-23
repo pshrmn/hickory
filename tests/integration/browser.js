@@ -7,7 +7,7 @@ describe('browser integration tests', () => {
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, null, '/');
-    testHistory = new BrowserHistory();
+    testHistory = BrowserHistory();
   });
 
   afterEach(() => {
@@ -16,7 +16,7 @@ describe('browser integration tests', () => {
 
   describe('push', () => {
     it('can navigate with push', () => {
-      const testHistory = new BrowserHistory();
+      const testHistory = BrowserHistory();
       testHistory.push('/the-new-location');
       expect(window.location.pathname).toEqual('/the-new-location');
     });
@@ -24,7 +24,7 @@ describe('browser integration tests', () => {
 
   describe('replace', () => {
     it('can navigate with replace', () => {
-      const testHistory = new BrowserHistory();
+      const testHistory = BrowserHistory();
       testHistory.replace('/the-same-location');
       expect(window.location.pathname).toEqual('/the-same-location');
     });
@@ -32,7 +32,7 @@ describe('browser integration tests', () => {
 
   describe('go', () => {
     it('can navigate with go', (done) => {
-      const testHistory = new BrowserHistory();
+      const testHistory = BrowserHistory();
       testHistory.push('/one');
       testHistory.push('/two');
       testHistory.push('/three');
@@ -52,7 +52,7 @@ describe('browser integration tests', () => {
 
   describe('browser navigation', () => {
     it('can detect navigation triggered by the browser', (done) => {
-      const testHistory = new BrowserHistory();
+      const testHistory = BrowserHistory();
       testHistory.push('/uno');
       testHistory.push('/dos');
       testHistory.push('/tres');

@@ -1,17 +1,13 @@
-import History from './history';
-import locationFactory from './locationFactory';
-import createKeyGen from './utils/keygen';
+import createCommonHistory from './base';
+import createEventCoordinator from './utils/eventCoordinator';
 import {
   stripPrefix,
   completeHash
 } from './utils/location'
 import {
-  ignorablePopstateEvent,
-  needToUseHashchangeEvent,
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
-import createEventCoordinator from './utils/eventCoordinator';
 
 function getMajor(key) {
   return parseInt(key.split('.')[0], 10);
@@ -37,142 +33,148 @@ function ensureHash() {
   }
 }
 
-class HashHistory extends History {
-
-  constructor(options = {}) {
-    super(options);
-    if (!domExists()) {
-      return;
-    }
-
-    const { createLocation, createPath } = locationFactory(options);
-    this.createLocation = createLocation;
-    this.createPath = createPath;
-    this._keygen = createKeyGen();
-
-    ensureHash();
-
-    this.location = this.locationFromBrowser()
-    this.index = 0;
-    this.locations = [this.location];
-    this.action = 'POP';
-
-    // true when undoing an out-of-app navigation
-    // e.g. browser back/forward buttons
-    this._reverting = false;
-
-    this._beforeDestroy.push(
-      createEventCoordinator({
-        hashchange: (event) => { this._pop(); }
-      })
-    );
+export default function HashHistory(options = {}) {
+  if (!domExists()) {
+    return;
   }
 
-  locationFromBrowser(providedState) {
+  const {
+    subscribe,
+    emit,
+    removeAllSubscribers,
+    createLocation,
+    createPath,
+    confirmNavigation,
+    confirmWith,
+    removeConfirmation,
+    keygen
+  } = createCommonHistory(options);
+
+  const beforeDestroy = [removeAllSubscribers];
+
+  // when true, pop will run without attempting to get user confirmation
+  let reverting = false;
+
+  ensureHash();
+
+  function locationFromBrowser(providedState) {
     let { hash } = window.location;
     const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
-      key = this._keygen.major();
+      key = keygen.major();
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, null, hash);
     }
-    return this.createLocation(path, key, state);
+    return createLocation(path, key, state);
   }
 
-  navigate(to, state) {
-    const location = this.createLocation(to, null, state);
-    const path = this.createPath(location);
-    const currentPath = this.createPath(this.location);
+  const hashHistory = {
+    // location
+    location: locationFromBrowser(),
+    action: 'POP',
+    // convenience
+    createLocation,
+    createPath,
+    subscribe,
+    confirmWith,
+    removeConfirmation,
+    destroy: function destroy() {
+      beforeDestroy.forEach(fn => { fn(); });
+    }
+  };
+
+
+  hashHistory.navigate = function navigate(to, state) {
+    const location = createLocation(to, null, state);
+    const path = createPath(location);
+    const currentPath = createPath(hashHistory.location);
     
     if (path === currentPath) {
-      this.replace(to, state);
+      hashHistory.replace(to, state);
     } else {
-      this.push(to, state);
+      hashHistory.push(to, state);
     }
   }
 
-  push(to, state) {
-    const wipingOutHistory = this.index !== this.locations.length - 1;
-    const key = this._keygen.major(wipingOutHistory && this.location.key);
-    const location = this.createLocation(to, key, state);
-    this._confirmNavigation  (
+  hashHistory.push = function push(to, state) {
+    const key = keygen.major(hashHistory.location.key);
+    const location = createLocation(to, key, state);
+    confirmNavigation  (
       location,
       'PUSH',
       () => {
-        const path = encodeHashPath(this.createPath(location));
+        const path = encodeHashPath(createPath(location));
         window.history.pushState({ key, state }, null, path);
 
-        this.location = location;
-        this.index++;
-        this.locations = [
-          ...this.locations.slice(0, this.index),
-          location
-        ];
-        this.action = 'PUSH';
-        this._emit(this.location, 'PUSH');
+        hashHistory.location = location;
+        hashHistory.action = 'PUSH';
+        emit(hashHistory.location, 'PUSH');
       }
     );
   }
 
-  replace(to, state) {
+  hashHistory.replace = function replace(to, state) {
     // pass the current key to just increment the minor portion
-    const key = this._keygen.minor(this.location.key);
-    const location = this.createLocation(to, key, state);
-    this._confirmNavigation(
+    const key = keygen.minor(hashHistory.location.key);
+    const location = createLocation(to, key, state);
+    confirmNavigation(
       location,
       'REPLACE',
       () => {
-        const path = encodeHashPath(this.createPath(location));
+        const path = encodeHashPath(createPath(location));
         window.history.replaceState({key, state }, null, path);
 
-        this.location = location;
-        this.locations[this.index] = this.location;
-        this.action = 'REPLACE';
-        this._emit(this.location, 'REPLACE');
+        hashHistory.location = location;
+        hashHistory.action = 'REPLACE';
+        emit(hashHistory.location, 'REPLACE');
       }
     );
   }
 
-  go(num) {
+  hashHistory.go = function go(num) {
     // calling window.history.go with no value reloads the page, but
     // we will just re-emit instead
     if (!num) {
-      this.action = 'POP';
-      this._emit(this.location, 'POP');
+      hashHistory.action = 'POP';
+      emit(hashHistory.location, 'POP');
     } else {
       window.history.go(num);
     }
   }
 
-  _pop(state) {
+  function pop(state) {
     // when we are reverting a pop (the user did not confirm navigation), we
     // just need to reset the boolean and return. The browser has already taken
     // care of updating the address bar and we never touched our internal values.
-    if (this._reverting) {
-      this._reverting = false;
+    if (reverting) {
+      reverting = false;
       return;
     }
-    const location = this.locationFromBrowser(state);
-    const currentKey = this.location.key;
+    const location = locationFromBrowser(state);
+    const currentKey = hashHistory.location.key;
     const diff = diffKeys(currentKey, location.key);
-    this._confirmNavigation(
+    confirmNavigation(
       location,
       'POP',
       () => {
-        this.location = location;
-        this.index += diff;
-        this.action = 'POP';
-        this._emit(this.location, 'POP');
+        hashHistory.location = location;
+        hashHistory.action = 'POP';
+        emit(hashHistory.location, 'POP');
       },
       () => {
-        this._reverting = true;
+        reverting = true;
 
         window.history.go(-1*diff);
       }
     );
   }
 
-}
+  beforeDestroy.push(
+    createEventCoordinator({
+      hashchange: (event) => { pop(); }
+    })
+  );
 
-export default HashHistory;
+  return hashHistory;
+}

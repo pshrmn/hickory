@@ -3,7 +3,7 @@ import {
   completeHash,
   completeQuery,
   stripBaseSegment
-} from './utils/location';
+} from './location';
 
 function defaultParseQuery(query) {
   return query ? query : '';
