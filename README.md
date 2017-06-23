@@ -21,7 +21,7 @@ Below is a quick introduction to the API of a history object.
 ```js
 import { BrowserHistory } from 'hickory';
 
-const history = new BrowserHistory();
+const history = BrowserHistory();
 
 // You can add a subscription function to the history, and whenever there
 // is navigation, that function will be called.
