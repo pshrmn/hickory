@@ -1,6 +1,9 @@
 const building = process.env.BABEL_ENV === 'build';
 
-const plugins = ['transform-export-extensions'];
+const plugins = [
+  'transform-export-extensions',
+  'transform-object-assign'
+];
 
 if (building) {
   plugins.push('external-helpers');
