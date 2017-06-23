@@ -3,7 +3,6 @@ import locationFactory from './locationFactory';
 import createKeyGen from './utils/keygen';
 import {
   ignorablePopstateEvent,
-  needToUseHashchangeEvent,
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
@@ -48,10 +47,7 @@ class BrowserHistory extends History {
             return;
           }
           this._pop(event.state);
-        },
-        hashchange: needToUseHashchangeEvent()
-          ? (event) => { this._pop(); }
-          : null
+        }
       })
     );
   }
