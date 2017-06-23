@@ -64,7 +64,7 @@ export default function HashHistory(options = {}) {
     if (!key) {
       key = keygen.major();
       // replace with the hash we received, not the decoded path
-      window.history.replaceState({ key, state }, null, hash);
+      window.history.replaceState({ key, state }, '', hash);
     }
     return createLocation(path, key, state);
   }
@@ -105,7 +105,7 @@ export default function HashHistory(options = {}) {
       'PUSH',
       () => {
         const path = encodeHashPath(createPath(location));
-        window.history.pushState({ key, state }, null, path);
+        window.history.pushState({ key, state }, '', path);
 
         hashHistory.location = location;
         hashHistory.action = 'PUSH';
@@ -123,7 +123,7 @@ export default function HashHistory(options = {}) {
       'REPLACE',
       () => {
         const path = encodeHashPath(createPath(location));
-        window.history.replaceState({key, state }, null, path);
+        window.history.replaceState({key, state }, '', path);
 
         hashHistory.location = location;
         hashHistory.action = 'REPLACE';

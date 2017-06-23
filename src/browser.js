@@ -44,7 +44,7 @@ export default function BrowserHistory(options = {}) {
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
-      window.history.replaceState({ key, state }, null, path);
+      window.history.replaceState({ key, state }, '', path);
     }
     return createLocation(path, key, state);
   }
@@ -85,7 +85,7 @@ export default function BrowserHistory(options = {}) {
       'PUSH',
       () => {
         const path = createPath(location);
-        window.history.pushState({ key, state }, null, path);
+        window.history.pushState({ key, state }, '', path);
         browserHistory.location = location;
         browserHistory.action = 'PUSH';
         emit(browserHistory.location, 'PUSH');
@@ -102,7 +102,7 @@ export default function BrowserHistory(options = {}) {
       'REPLACE',
       () => {
         const path = createPath(location);
-        window.history.replaceState({key, state}, null, path);
+        window.history.replaceState({key, state}, '', path);
         browserHistory.location = location;
         browserHistory.action = 'REPLACE';
         emit(browserHistory.location, 'REPLACE');
