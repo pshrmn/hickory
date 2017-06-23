@@ -41,6 +41,13 @@ describe('Hash history', () => {
       const testHistory = new HashHistory();
       expect(testHistory.index).toBe(0);
     }); 
+
+    it('adds root has path if none exists', () => {
+      window.history.pushState(null, '', '/');
+      expect(window.location.hash).toBe('');
+      const testHistory = new HashHistory();
+      expect(window.location.hash).toBe('#/');
+    });
   });
 
   describe('navigate', () => {

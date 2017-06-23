@@ -31,6 +31,12 @@ function encodeHashPath(path) {
   return completeHash(path);
 }
 
+function ensureHash() {
+  if (window.location.hash === '') {
+    window.history.replaceState(null, '', '#/');
+  }
+}
+
 class HashHistory extends History {
 
   constructor(options = {}) {
@@ -43,6 +49,8 @@ class HashHistory extends History {
     this.createLocation = createLocation;
     this.createPath = createPath;
     this._keygen = createKeyGen();
+
+    ensureHash();
 
     this.location = this.locationFromBrowser()
     this.index = 0;
