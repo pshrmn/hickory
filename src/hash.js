@@ -172,7 +172,9 @@ export default function HashHistory(options = {}) {
 
   beforeDestroy.push(
     createEventCoordinator({
-      hashchange: (event) => { pop(); }
+      hashchange: (event) => {
+        pop(event.state);
+      }
     })
   );
 
