@@ -25,6 +25,7 @@ var customLaunchers = {
     os: 'Windows',
     os_version: '10'
   },
+  /*
   bs_ie_11: {
     base: 'BrowserStack',
     browser: 'ie',
@@ -32,6 +33,7 @@ var customLaunchers = {
     os: 'Windows',
     os_version: '10'
   },
+  */
   bs_edge: {
     base: 'BrowserStack',
     browser: 'edge',
