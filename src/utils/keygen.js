@@ -7,9 +7,9 @@ export default function createKeyGenerator(initial) {
   }
 
   return {
-    major: function(after) {
-      if (after) {
-        let [ major ] = parse(after);
+    major: function(previous) {
+      if (previous) {
+        let [ major ] = parse(previous);
         id = major + 1;
       }
       return `${id++}.0`;
