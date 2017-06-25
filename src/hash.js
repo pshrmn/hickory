@@ -1,25 +1,15 @@
 import createCommonHistory from './common';
 import createEventCoordinator from './utils/eventCoordinator';
-import {
-  stripPrefix,
-  completeHash
-} from './utils/location'
+import hashEncoderAndDecoder from './utils/hashTypes';
+
 import {
   getStateFromHistory,
   domExists
 } from './utils/domCompat';
 
-function decodeHashPath(path) {
-  return stripPrefix(path, '#');
-}
-
-function encodeHashPath(path) {
-  return completeHash(path);
-}
-
-function ensureHash() {
+function ensureHash(encode) {
   if (window.location.hash === '') {
-    window.history.replaceState(null, '', '#/');
+    window.history.replaceState(null, '', encode('/'));
   }
 }
 
@@ -40,12 +30,17 @@ export default function Hash(options = {}) {
     keygen
   } = createCommonHistory(options);
 
+  const {
+    decode: decodeHashPath,
+    encode: encodeHashPath
+  } = hashEncoderAndDecoder(options.hashType);
+
   const beforeDestroy = [removeAllSubscribers];
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
 
-  ensureHash();
+  ensureHash(encodeHashPath);
 
   function locationFromBrowser(providedState) {
     let { hash } = window.location;

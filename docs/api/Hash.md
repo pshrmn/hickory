@@ -14,6 +14,14 @@ const history = Hash();
 
 * `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
+* `hashType` - The `hashType` specifies how we translate `window.location.hash` to a location (and vice versa). The options are `default`, `bang`. and `clean`.
+
+  * `default` - The encoded path begins with `#/`. If you do not provide a `hashType` option, this one will be used.
+
+  * `bang` - The encoded path begins with `#!/`.
+
+  * `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
+
 ## Properties
 
 ### location

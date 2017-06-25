@@ -45,11 +45,69 @@ describe('Hash history', () => {
       });
     });
 
-    it('adds root hash path if none exists', () => {
-      window.history.pushState(null, '', '/');
-      expect(window.location.hash).toBe('');
-      const testHistory = Hash();
-      expect(window.location.hash).toBe('#/');
+    describe('no initial hash path', () => {
+      beforeEach(() => {
+        window.history.pushState(null, '', '/');
+      });
+
+      describe('no hashType', () => {
+        it('sets the expected hash format', () => {
+          expect(window.location.hash).toBe('');
+          const testHistory = Hash();
+          expect(window.location.hash).toBe('#/');
+        });
+      });
+
+      describe('default hashType', () => {
+        it('sets the expected hash format', () => {
+          expect(window.location.hash).toBe('');
+          const testHistory = Hash({ hashType: 'default' });
+          expect(window.location.hash).toBe('#/');
+        });
+      });
+
+      describe('bang hashType', () => {
+        it('sets the expected hash format', () => {
+          expect(window.location.hash).toBe('');
+          const testHistory = Hash({ hashType: 'bang' });
+          expect(window.location.hash).toBe('#!/');
+        });
+      });
+
+      describe('clean hashType', () => {
+        it('sets the expected hash format', () => {
+          expect(window.location.hash).toBe('');
+          const testHistory = Hash({ hashType: 'clean' });
+          expect(window.location.hash).toBe('#/');
+        });
+      });
+    });
+
+    it('decodes from browser based on options.hashType', () => {
+      // default and basic should be the same
+      window.history.replaceState(null, '', '#/the-path')
+      const noTypeHistory = Hash();
+      expect(noTypeHistory.location).toMatchObject({
+        pathname: '/the-path'
+      });
+      const defaultHistory = Hash({ hashType: 'default' });
+      expect(defaultHistory.location).toMatchObject({
+        pathname: '/the-path'
+      });
+
+      // bang expects an exclamation point before the leading slash
+      window.history.replaceState(null, '', '#!/the-path')
+      const bangHistory = Hash({ hashType: 'bang' });
+      expect(bangHistory.location).toMatchObject({
+        pathname: '/the-path'
+      });
+
+      // clean expects no leading slash
+      window.history.replaceState(null, '', '#the-path')
+      const cleanHistory = Hash({ hashType: 'clean' });
+      expect(cleanHistory.location).toMatchObject({
+        pathname: '/the-path'
+      });      
     });
   });
 
@@ -375,6 +433,20 @@ describe('Hash history', () => {
 
       const currentPath = testHistory.toHref(testHistory.location);
       expect(currentPath).toBe('#/one?test=query');
+    });
+
+    it('has different output for different hash types', () => {
+      const noTypeHistory = Hash();
+      const defaultHistory = Hash({ hashType: 'default' });
+      const bangHistory = Hash({ hashType: 'bang' });
+      const cleanHistory = Hash({ hashType: 'clean' });
+
+      const location = { pathname: '/simple-path' };
+
+      expect(noTypeHistory.toHref(location)).toBe('#/simple-path');
+      expect(defaultHistory.toHref(location)).toBe('#/simple-path');
+      expect(bangHistory.toHref(location)).toBe('#!/simple-path');
+      expect(cleanHistory.toHref(location)).toBe('#simple-path');
     });
   });
 });
