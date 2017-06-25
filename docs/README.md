@@ -7,4 +7,4 @@
 * API
   * [Browser](./api/Browser.md)
   * [Hash](./api/Hash.md)
-  * InMemory
+  * [InMemory](./api/InMemory.md)
