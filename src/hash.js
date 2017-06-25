@@ -75,7 +75,7 @@ export default function Hash(options = {}) {
   };
 
 
-  hashHistory.navigate = function navigate(to, state) {
+  hashHistory.update = function update(to, state) {
     const location = createLocation(to, null, state);
     const path = createPath(location);
     const currentPath = createPath(hashHistory.location);

@@ -54,7 +54,7 @@ export default function Browser(options = {}) {
     }
   };
 
-  browserHistory.navigate = function navigate(to, state) {
+  browserHistory.update = function update(to, state) {
     const location = createLocation(to, null, state);
     const path = createPath(location);
     const currentPath = createPath(browserHistory.location);

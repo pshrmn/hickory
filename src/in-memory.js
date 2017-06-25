@@ -54,7 +54,7 @@ export default function InMemory(options = {}) {
     }
   };
 
-  memoryHistory.navigate = function navigate(to, state) {
+  memoryHistory.update = function update(to, state) {
     const location = createLocation(to, state, null);
     const path = createPath(location);
     const currentPath = createPath(memoryHistory.location);

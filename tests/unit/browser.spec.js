@@ -36,13 +36,13 @@ describe('Browser history', () => {
     });
   });
 
-  describe('navigate', () => {
+  describe('update', () => {
     it('pushes when given a location that creates a new path', () => {
       const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.navigate({ pathname: 'next', hash: 'not-a-test' });
+      testHistory.update({ pathname: 'next', hash: 'not-a-test' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('PUSH');
@@ -53,7 +53,7 @@ describe('Browser history', () => {
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.navigate({ pathname: '/one' });
+      testHistory.update({ pathname: '/one' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('REPLACE');

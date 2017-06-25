@@ -63,7 +63,7 @@ describe('Memory history', () => {
     });
   });
 
-  describe('navigate', () => {
+  describe('update', () => {
     it('pushes when given a location that creates a new path', () => {
       const testHistory = InMemory({
         locations: ['/first#test']
@@ -71,7 +71,7 @@ describe('Memory history', () => {
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.navigate({ pathname: 'first', hash: 'not-a-test' });
+      testHistory.update({ pathname: 'first', hash: 'not-a-test' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('PUSH');
@@ -84,7 +84,7 @@ describe('Memory history', () => {
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.navigate({ pathname: 'first', hash: 'test' });
+      testHistory.update({ pathname: 'first', hash: 'test' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('REPLACE');
