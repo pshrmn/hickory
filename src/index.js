@@ -1,3 +1,3 @@
-export BrowserHistory from './browser';
-export MemoryHistory from './memory';
-export HashHistory from './hash';
+export Browser from './browser';
+export InMemory from './in-memory';
+export Hash from './hash';

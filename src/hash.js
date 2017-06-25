@@ -23,7 +23,7 @@ function ensureHash() {
   }
 }
 
-export default function HashHistory(options = {}) {
+export default function Hash(options = {}) {
   if (!domExists()) {
     return;
   }

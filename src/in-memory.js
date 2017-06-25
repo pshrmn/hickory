@@ -1,6 +1,6 @@
 import createCommonHistory from './base';
 
-export default function MemoryHistory(options = {}) {
+export default function InMemory(options = {}) {
   const {
     subscribe,
     emit,

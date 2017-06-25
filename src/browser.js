@@ -6,7 +6,7 @@ import {
   domExists
 } from './utils/domCompat';
 
-export default function BrowserHistory(options = {}) {
+export default function Browser(options = {}) {
   if (!domExists()) {
     return;
   }

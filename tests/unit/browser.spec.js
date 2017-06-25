@@ -1,4 +1,4 @@
-import BrowserHistory from '../../src/browser';
+import Browser from '../../src/browser';
 import { jsdom } from 'jsdom';
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -21,13 +21,13 @@ describe('Browser history', () => {
 
   describe('constructor', () => {
     it('creates location/path creator functions', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       expect(typeof testHistory.createLocation).toBe('function');
       expect(typeof testHistory.createPath).toBe('function');
     });
 
     it('initializes using window.location', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       expect(testHistory.location).toMatchObject({
         pathname: '/one',
         hash: '',
@@ -38,7 +38,7 @@ describe('Browser history', () => {
 
   describe('navigate', () => {
     it('pushes when given a location that creates a new path', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -49,7 +49,7 @@ describe('Browser history', () => {
     });
 
     it('replace when given a new location that creates the same path', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -62,7 +62,7 @@ describe('Browser history', () => {
 
   describe('push', () => {
     it('pushes new location with incremented key', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       let [initialMajor] = testHistory.location.key.split('.');
       initialMajor = parseInt(initialMajor, 10);
@@ -79,7 +79,7 @@ describe('Browser history', () => {
     });
 
     it('emits the new location and action to any subscribers', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -93,7 +93,7 @@ describe('Browser history', () => {
     });
 
     it('adds key with incremented major value and minor set to 0', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
 
       let [ initMajor ] = testHistory.location.key.split('.');
@@ -112,7 +112,7 @@ describe('Browser history', () => {
     });
 
     it('increments from current location\'s key when not at end of locations', (done) => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
@@ -131,13 +131,13 @@ describe('Browser history', () => {
     });
 
     it('sets history.action to "PUSH"', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       testHistory.push('/next');
       expect(testHistory.action).toBe('PUSH');
     });
 
     it('emits new location/action when the user confirms the navigation', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         success();
@@ -150,7 +150,7 @@ describe('Browser history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         failure();
@@ -165,7 +165,7 @@ describe('Browser history', () => {
 
   describe('replace', () => {
     it('replaces current location, but maintains major key', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       let [initialMajor] = testHistory.location.key.split('.');
       initialMajor = parseInt(initialMajor, 10);
@@ -182,7 +182,7 @@ describe('Browser history', () => {
     });
 
     it('emits the new location and action to any subscribers', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -196,7 +196,7 @@ describe('Browser history', () => {
     });
 
     it('creates location object with key\'s minor value incremented', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       let [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
       firstMinor = parseInt(firstMinor, 10);
@@ -209,13 +209,13 @@ describe('Browser history', () => {
     });
 
     it('sets history.action to "REPLACE"', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       testHistory.replace('/same');
       expect(testHistory.action).toBe('REPLACE');
     });
 
     it('emits new location/action when the user confirms the navigation', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         success();
@@ -228,7 +228,7 @@ describe('Browser history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         failure();
@@ -243,7 +243,7 @@ describe('Browser history', () => {
 
   describe('go', () => {
     it('does nothing if the value is outside of the range', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -253,7 +253,7 @@ describe('Browser history', () => {
     });
 
     it('re-emits the current location if called with no value', () => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       let hasBeenCalled = false;
       const subscriber = jest.fn();
@@ -271,7 +271,7 @@ describe('Browser history', () => {
     });
 
     it('sets the new index/location using the provided number and emits', (done) => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
 
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
@@ -297,7 +297,7 @@ describe('Browser history', () => {
     });
 
     it('emits new location/action when the user confirms the navigation', (done) => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
 
@@ -319,7 +319,7 @@ describe('Browser history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
-      const testHistory = BrowserHistory();
+      const testHistory = Browser();
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
 

@@ -1,15 +1,15 @@
-import MemoryHistory from '../../src/memory';
+import InMemory from '../../src/in-memory';
 
 describe('Memory history', () => {
   describe('constructor', () => {
     it('creates location/path creator functions', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       expect(typeof testHistory.createLocation).toBe('function');
       expect(typeof testHistory.createPath).toBe('function');
     });
 
     it('initializes with root location (/) if none provided', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       expect(testHistory.locations.length).toBe(1);
       expect(testHistory.index).toBe(0);
       expect(testHistory.location).toMatchObject({
@@ -20,7 +20,7 @@ describe('Memory history', () => {
     });
 
     it('converts passed location values to location objects', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: [
           '/one',
           { pathname: '/two' },
@@ -45,7 +45,7 @@ describe('Memory history', () => {
     });
 
     it('sets the index if provided', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/one', '/two', '/three'],
         index: 2
       });
@@ -54,7 +54,7 @@ describe('Memory history', () => {
 
     it('defaults to index 0 if provided value is out of bounds', () => {
       [-1, 3].forEach(value => {
-        const testHistory = MemoryHistory({
+        const testHistory = InMemory({
           locations: ['/one', '/two', '/three'],
           index: value
         });
@@ -65,7 +65,7 @@ describe('Memory history', () => {
 
   describe('navigate', () => {
     it('pushes when given a location that creates a new path', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/first#test']
       });
       const subscriber = jest.fn();
@@ -78,7 +78,7 @@ describe('Memory history', () => {
     });
 
     it('replace when given a new location that creates the same path', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/first#test']
       });
       const subscriber = jest.fn();
@@ -93,7 +93,7 @@ describe('Memory history', () => {
 
   describe('push', () => {
     it('pushes new location onto locations array', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       expect(testHistory.locations.length).toBe(1);
       expect(testHistory.index).toBe(0);
 
@@ -107,7 +107,7 @@ describe('Memory history', () => {
     });
 
     it('emits the new location and action to any subscribers', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -121,7 +121,7 @@ describe('Memory history', () => {
     });
 
     it('adds key with incremented major value and minor set to 0', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
 
       let [ initMajor ] = testHistory.location.key.split('.');
       initMajor = parseInt(initMajor, 10);
@@ -137,7 +137,7 @@ describe('Memory history', () => {
     });
 
     it('increments from current location\'s key when not at end of locations', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/one', '/two', '/three', '/four', '/five'],
         index: 2
       });
@@ -148,13 +148,13 @@ describe('Memory history', () => {
     });
 
     it('sets history.action to "PUSH"', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       testHistory.push('/next');
       expect(testHistory.action).toBe('PUSH');
     });
 
     it('emits new location/action when the user confirms the navigation', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         success();
@@ -167,7 +167,7 @@ describe('Memory history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         failure();
@@ -182,7 +182,7 @@ describe('Memory history', () => {
 
   describe('replace', () => {
     it('pushes new location onto locations array', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       expect(testHistory.locations.length).toBe(1);
       expect(testHistory.index).toBe(0);
 
@@ -196,7 +196,7 @@ describe('Memory history', () => {
     });
 
     it('emits the new location and action to any subscribers', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -210,7 +210,7 @@ describe('Memory history', () => {
     });
 
     it('creates location object with key\'s minor value incremented', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
 
       let [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
       firstMinor = parseInt(firstMinor, 10);
@@ -223,13 +223,13 @@ describe('Memory history', () => {
     });
 
     it('sets history.action to "REPLACE"', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       testHistory.replace('/same');
       expect(testHistory.action).toBe('REPLACE');
     });
 
     it('emits new location/action when the user confirms the navigation', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         success();
@@ -242,7 +242,7 @@ describe('Memory history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       const confirm = (location, action, success, failure) => {
         failure();
@@ -257,7 +257,7 @@ describe('Memory history', () => {
 
   describe('go', () => {
     it('does nothing if the value is outside of the range', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -267,7 +267,7 @@ describe('Memory history', () => {
     });
 
     it('re-emits the current location if called with no value, but POPs', () => {
-      const testHistory = MemoryHistory();
+      const testHistory = InMemory();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
@@ -279,7 +279,7 @@ describe('Memory history', () => {
     });
 
     it('sets the new index/location using the provided number and emits', () => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/one', '/two', '/three', '/four', '/five']
       });
 
@@ -295,7 +295,7 @@ describe('Memory history', () => {
     });
 
     it('emits new location/action when the user confirms the navigation', (done) => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/one', '/two', '/three'],
         index: 2
       });
@@ -318,7 +318,7 @@ describe('Memory history', () => {
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
-      const testHistory = MemoryHistory({
+      const testHistory = InMemory({
         locations: ['/one', '/two', '/three'],
         index: 2
       });
