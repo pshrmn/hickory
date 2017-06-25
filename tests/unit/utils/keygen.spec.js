@@ -47,4 +47,14 @@ describe('key generator', () => {
       expect(key).toBe('18.1');
     });
   });
+
+  describe('diff', () => {
+    it('returns the different between the major value of two keys', () => {
+      const keyGen = createKeyGenerator();
+      const first = '5.3';
+      const second = '10.4';
+      expect(keyGen.diff(first, second)).toBe(5);
+      expect(keyGen.diff(second, first)).toBe(-5);
+    });
+  });
 });

@@ -9,16 +9,6 @@ import {
   domExists
 } from './utils/domCompat';
 
-function getMajor(key) {
-  return parseInt(key.split('.')[0], 10);
-}
-
-function diffKeys(previous, next) {
-  const previousMajor = getMajor(previous);
-  const nextMajor = getMajor(next);
-  return nextMajor - previousMajor;
-}
-
 function decodeHashPath(path) {
   return stripPrefix(path, '#');
 }
@@ -153,7 +143,7 @@ export default function HashHistory(options = {}) {
     }
     const location = locationFromBrowser(state);
     const currentKey = hashHistory.location.key;
-    const diff = diffKeys(currentKey, location.key);
+    const diff = keygen.diff(currentKey, location.key);
     confirmNavigation(
       location,
       'POP',
