@@ -8,7 +8,19 @@ const history = Hash();
 
 ## Options
 
-## push
+## Properties
+
+### location
+
+The current location object.
+
+### action
+
+The action used to get to the current location object.
+
+## Methods
+
+### push
 
 ```js
 history.push('/the-producers');
@@ -24,7 +36,7 @@ The `push` function is used to navigate to a new location. It adds the new locat
 
 `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
-## replace
+### replace
 
 ```js
 history.replace('/cats');
@@ -40,7 +52,7 @@ The `replace` function is used to navigate to a new location. It replaces the cu
 
 `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
-## update
+### update
 
 ```js
 history.update('/hairspray');
@@ -56,7 +68,7 @@ The `update` function decides whether to `push` or `replace` for you. The path s
 
 * `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
-## go
+### go
 
 ```js
 history.go(-1);
@@ -70,7 +82,7 @@ The `go` function is used to jump forward and backward to already visited locati
 
 * `num` - The number of steps forward or backward to go.
 
-## createPath
+### createPath
 
 ```js
 history.createPath({ pathname: '/spamalat' });
@@ -82,7 +94,7 @@ The `createPath` function allows you to generate the path string for a location 
 
 * `location` - The location to create a path for.
 
-## subscribe
+### subscribe
 
 ```js
 let unsubscribe = history.subscribe((location, action) => {
@@ -98,7 +110,7 @@ Each function will be passed two arguments: `location` and `action`. The locatio
 
 * `fn` - The function to be called when the location changes.
 
-## confirmWith
+### confirmWith
 
 ```js
 history.confirmWith((location, action, success, failure) => {
@@ -119,7 +131,7 @@ Only one confirmation function can be registered at a time, so if you call `conf
 
 * `fn` - The function to be called to confirm the navigation. This will receive four arguments. The first one is the location that is being navigated to. The second is the navigation action (`PUSH`, `REPLACE`, or `POP`). The third is a success function, which you should call when you want the navigation to happen. The fourth is a failulre function, which you should call when you want to stop the navigation.
 
-## removeConfirmation
+### removeConfirmation
 
 ```js
 history.removeConfirmation();
@@ -127,7 +139,7 @@ history.removeConfirmation();
 
 The `removeConfirmation` function will remove the current confirmation function (if one exists). After calling `removeConfirmation`, navigation will happen automatically (until another confirmation function is added).
 
-## destroy
+### destroy
 
 ```js
 history.destroy();
