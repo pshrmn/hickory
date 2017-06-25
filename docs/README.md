@@ -5,6 +5,6 @@
   * [Choosing your history type](./about/choosing.md)
   * [Glossary](./about/glossary.md)
 * API
-  * Browser
+  * [Browser](./api/Browser.md)
   * Hash
   * InMemory
