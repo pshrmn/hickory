@@ -56,7 +56,7 @@ export default function Hash(options = {}) {
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, '', hash);
     }
-    return createLocation(path, key, state);
+    return createLocation(path, key);
   }
 
   const hashHistory = {
@@ -75,21 +75,21 @@ export default function Hash(options = {}) {
   };
 
 
-  hashHistory.update = function update(to, state) {
-    const location = createLocation(to, null, state);
+  hashHistory.update = function update(to) {
+    const location = createLocation(to, null);
     const path = createPath(location);
     const currentPath = createPath(hashHistory.location);
     
     if (path === currentPath) {
-      hashHistory.replace(to, state);
+      hashHistory.replace(to);
     } else {
-      hashHistory.push(to, state);
+      hashHistory.push(to);
     }
   }
 
-  hashHistory.push = function push(to, state) {
+  hashHistory.push = function push(to) {
     const key = keygen.major(hashHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation  (
       location,
       'PUSH',
@@ -104,10 +104,10 @@ export default function Hash(options = {}) {
     );
   }
 
-  hashHistory.replace = function replace(to, state) {
+  hashHistory.replace = function replace(to) {
     // pass the current key to just increment the minor portion
     const key = keygen.minor(hashHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation(
       location,
       'REPLACE',

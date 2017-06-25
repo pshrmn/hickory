@@ -18,14 +18,8 @@ export default function InMemory(options = {}) {
   let initialLocations;
   if (options.locations) {
     initialLocations = options.locations.map(loc => {
-      const key = keygen.major();
-      if (Array.isArray(loc)) {
-        const [value, state] = loc;
-        return createLocation(value, key, state);
-      } else {
-        return createLocation(loc, key);
-      }
-    })
+      return createLocation(loc, keygen.major())
+    });
   } else {
     initialLocations = [
       createLocation({ pathname: '/' }, keygen.major())
@@ -54,20 +48,20 @@ export default function InMemory(options = {}) {
     }
   };
 
-  memoryHistory.update = function update(to, state) {
-    const location = createLocation(to, state, null);
+  memoryHistory.update = function update(to) {
+    const location = createLocation(to, null);
     const path = createPath(location);
     const currentPath = createPath(memoryHistory.location);
     if (path === currentPath) {
-      memoryHistory.replace(to, state);
+      memoryHistory.replace(to);
     } else {
-      memoryHistory.push(to, state);
+      memoryHistory.push(to);
     }
   }
 
-  memoryHistory.push = function push(to, state) {
+  memoryHistory.push = function push(to) {
     const key = keygen.major(memoryHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation  (
       location,
       'PUSH',
@@ -84,9 +78,9 @@ export default function InMemory(options = {}) {
     );
   }
 
-  memoryHistory.replace = function replace(to, state) {
+  memoryHistory.replace = function replace(to) {
     const key = keygen.minor(memoryHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation(
       location,
       'REPLACE',

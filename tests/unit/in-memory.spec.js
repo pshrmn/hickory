@@ -24,7 +24,7 @@ describe('Memory history', () => {
         locations: [
           '/one',
           { pathname: '/two' },
-          [ '/three', { tres: 3 }]
+          { pathname: '/three', state: { tres: 3 }}
         ]
       });
 

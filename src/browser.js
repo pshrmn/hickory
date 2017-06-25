@@ -54,22 +54,22 @@ export default function Browser(options = {}) {
     }
   };
 
-  browserHistory.update = function update(to, state) {
-    const location = createLocation(to, null, state);
+  browserHistory.update = function update(to) {
+    const location = createLocation(to, null);
     const path = createPath(location);
     const currentPath = createPath(browserHistory.location);
     
     if (path === currentPath) {
-      browserHistory.replace(to, state);
+      browserHistory.replace(to);
     } else {
-      browserHistory.push(to, state);
+      browserHistory.push(to);
     }
   };
 
-  browserHistory.push = function push(to, state) {
+  browserHistory.push = function push(to) {
     // the major version should be the current key + 1
     const key = keygen.major(browserHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation(
       location,
       'PUSH',
@@ -84,10 +84,10 @@ export default function Browser(options = {}) {
     );
   };
 
-  browserHistory.replace = function replace(to, state) {
+  browserHistory.replace = function replace(to) {
     // pass the current key to just increment the minor portion
     const key = keygen.minor(browserHistory.location.key);
-    const location = createLocation(to, key, state);
+    const location = createLocation(to, key);
     confirmNavigation(
       location,
       'REPLACE',
