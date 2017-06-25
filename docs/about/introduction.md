@@ -118,3 +118,7 @@ history.subscribe((location, action) => {
   // any code in here will run whenever navigation happens
 });
 ```
+
+## One history
+
+If you are running your application in a browser, it is important that you only use one history object. It is fine to have multiple applications on the same page, but they should all use the same history object. If you were to use multiple history objects, then when one triggered navigation, the others would not detect the navigation because they do not share a subscription system.
