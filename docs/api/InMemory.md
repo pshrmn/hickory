@@ -54,7 +54,7 @@ The `push` function is used to navigate to a new location. It adds the new locat
 
 ```js
 history.replace('/cats');
-history.replacell({
+history.replace({
   pathname: '/rent',
   state: { musical: true }
 });
