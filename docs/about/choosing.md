@@ -64,7 +64,19 @@ For example, imagine that you have a simple website with three routes: `/`, `/ab
 
 However, when you are using a file server, the requested file must exist. That means that if a user requests `https://example.com/`, your server needs to have an `index.html` file in the root directory. If the user requests `https://example.com/about`, then you better also have an `about` folder that contains its own `index.html` file. Any requests for files that do not exist will result in 404 responses and your application will fail to load.
 
-The best way to deal with this is to only have one valid route **on the server**, ideally the root `index.html`. All requests will then be made for that resource. How can you do that while still having any route that you want for your application? Encode the "real" location in the URI's `hash`. The hash segment of the URI is not used for requesting resources, so the server will only see your request for the application. Once your application has loaded, your `Hash` history will parse `window.location.hash` to determine the "real" location. As stated before, if you use this, you will end up with uglier URIs. Of course, if you are using a static file server, this is the best option you have. In theory, you could create a file on your server for every single valid route, but this would 1. quickly become cumbersome and 2. still fail for bad routes.
+The best way to deal with this is to only have one valid route **on the server**, ideally the root `index.html`. All requests will then be made for that resource. How can you do that while still having any route that you want for your application? Encode the "real" location in the URI's `hash`. The hash segment of the URI is not used for requesting resources, so the server will only see your request for the application. Once your application has loaded, your `Hash` history will parse `window.location.hash` to determine the "real" location.
+
+```js
+// https://example.com/#/about
+// requests /index.html
+// creates location { pathname: '/about' }
+
+// https://example.com/#/contact 
+// requests /index.html
+// creates location { pathname: '/contact' }
+```
+
+As stated before, if you use this, you will end up with uglier URIs. Of course, if you are using a static file server, this is the best option you have. In theory, you could create a file on your server for every single valid route, but this would 1. quickly become cumbersome and 2. still fail for bad routes.
 
 ### Setting up your server to support `Browser` history.
 
