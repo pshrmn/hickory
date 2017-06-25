@@ -20,12 +20,22 @@ describe('Browser history', () => {
   });
 
   describe('constructor', () => {
-    it('creates location/path creator functions', () => {
+    it('returns object with expected API', () => {
       const testHistory = Browser();
-      expect(typeof testHistory.createLocation).toBe('function');
-      expect(typeof testHistory.createPath).toBe('function');
+      const expectedProperties = [
+        'location',
+        'action',
+        'createLocation',
+        'createPath',
+        'subscribe',
+        'confirmWith',
+        'removeConfirmation',
+        'destroy'
+      ];
+      expectedProperties.forEach(property => {
+        expect(testHistory.hasOwnProperty(property)).toBe(true);
+      });
     });
-
     it('initializes using window.location', () => {
       const testHistory = Browser();
       expect(testHistory.location).toMatchObject({
@@ -92,7 +102,7 @@ describe('Browser history', () => {
       expect(args[1]).toBe('PUSH');
     });
 
-    it('adds key with incremented major value and minor set to 0', () => {
+    it('increments current major key value by 1, sets minor value to 0', () => {
       const testHistory = Browser();
 
 
@@ -119,15 +129,23 @@ describe('Browser history', () => {
       testHistory.push('/four'); // 3.0
       testHistory.push('/five'); // 4.0
 
-      testHistory.go(-2); // 2.0
-
-      // popstate is async, so we need to wait for the event to be dispatched
-      // before we can check our history
-      setTimeout(() => {
+      let calls = 0;
+      let unsubscribe;
+      function subscribe(location) {
+        calls++;
+        if (calls > 1) {
+          unsubscribe();
+          return;
+        }
         testHistory.push('/new-four');
         expect(testHistory.location.key).toBe('3.0');
         done();
-      }, 100);
+      }
+
+      unsubscribe = testHistory.subscribe(subscribe);
+
+      testHistory.go(-2); // 2.0
+
     });
 
     it('sets history.action to "PUSH"', () => {
@@ -271,7 +289,7 @@ describe('Browser history', () => {
       expect(secondCall[1]).toBe('POP');
     });
 
-    it('sets the new index/location using the provided number and emits', (done) => {
+    it('sets the new location/action using the provided number and emits', (done) => {
       const testHistory = Browser();
 
       testHistory.push('/two'); // 1.0
@@ -280,21 +298,17 @@ describe('Browser history', () => {
       testHistory.push('/five'); // 4.0
       testHistory.push('/six'); // 5.0
 
-      const subscriber = jest.fn();
-      testHistory.subscribe(subscriber);
-
-      testHistory.go(-2);
-
-      setTimeout(() => {
-        const calls = subscriber.mock.calls;
-        const [ location, action ] = calls[calls.length - 1];
+      function subscriber(location, action) {
         expect(location).toMatchObject({
           pathname: '/four',
           key: '3.0'
         });      
         expect(action).toBe('POP');
         done();
-      }, 100);
+      }
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
     });
 
     it('emits new location/action when the user confirms the navigation', (done) => {
@@ -305,18 +319,17 @@ describe('Browser history', () => {
       testHistory.confirmWith((location, action, success, failure) => {
         success();
       });
-      const subscriber = jest.fn();
-      testHistory.subscribe(subscriber);
-
-      testHistory.go(-2);
-      setTimeout(() => {
+      
+      function subscriber(location) {
         expect(testHistory.location).toMatchObject({
           pathname: '/one',
           key: '0.0'
         });
-        expect(subscriber.mock.calls.length).toBe(1);
         done();
-      }, 100);
+      }
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
@@ -338,7 +351,7 @@ describe('Browser history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(0);
         done();
-      }, 100);
+      }, 10);
     });
   });
 });

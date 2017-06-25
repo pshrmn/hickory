@@ -2,12 +2,24 @@ import locationFactory from '../../../src/utils/locationFactory';
 import qs from 'qs';
 
 describe('locationFactory', () => {
-  it('returns an object with createLocation and createPath function properties', () => {
-    const createLocation = locationFactory();
-    expect(createLocation.createLocation).toBeDefined();
-    expect(typeof createLocation.createLocation).toBe('function');
-    expect(createLocation.createPath).toBeDefined();
-    expect(typeof createLocation.createPath).toBe('function');
+  describe('constructor', () => {
+    it('throws when attempting to use an invalid baseSegment', () => {
+      const badValues = [
+        'does-not-start-with-a-slash',
+        '/ends-with-slash/',
+        null,
+        0,
+        {},
+        [],
+      ];
+      badValues.forEach((value) => {
+        expect(() => {
+          const creators = locationFactory({
+            baseSegment: value
+          })
+        }).toThrow();
+      });
+    });
   });
 
   describe('createLocation', () => {
@@ -138,6 +150,14 @@ describe('locationFactory', () => {
         });
       });
     });
+
+    describe('baseSegment', () => {
+      const { createLocation } = locationFactory({ baseSegment: '/prefix' });
+      it('strips the baseSegment off of the path before creating a location', () => {
+        const location = createLocation('/prefix/this/is/the/rest');
+        expect(location.pathname).toBe('/this/is/the/rest');
+      });
+    });
   });
 
   describe('createPath', () => {
@@ -240,43 +260,17 @@ describe('locationFactory', () => {
         expect(output).toBe('/?one=two');
       });
     });
-  });
 
-  describe('baseSegment', () => {
-    const { createPath, createLocation } = locationFactory({
-      baseSegment: '/prefix'
-    });
-
-    it('strips the baseSegment off of the path before creating a location', () => {
-      const location = createLocation('/prefix/this/is/the/rest');
-      expect(location.pathname).toBe('/this/is/the/rest');
-    });
-
-    it('adds the baseSegment to the path generated from a location', () => {
-      const location = {
-        pathname: '/one/two/three',
-        search: '',
-        hash: 'four'
-      };
-      const path = createPath(location);
-      expect(path).toBe('/prefix/one/two/three#four');
-    });
-
-    it('throws when attempting to use an invalid baseSegment', () => {
-      const badValues = [
-        'does-not-start-with-a-slash',
-        '/ends-with-slash/',
-        null,
-        0,
-        {},
-        [],
-      ];
-      badValues.forEach((value) => {
-        expect(() => {
-          const creators = locationFactory({
-            baseSegment: value
-          })
-        }).toThrow();
+    describe('baseSegment', () => {
+      it('adds the baseSegment to the path generated from a location', () => {
+        const { createPath } = locationFactory({ baseSegment: '/prefix' });
+        const location = {
+          pathname: '/one/two/three',
+          search: '',
+          hash: 'four'
+        };
+        const path = createPath(location);
+        expect(path).toBe('/prefix/one/two/three#four');
       });
     });
   });

@@ -2,10 +2,23 @@ import InMemory from '../../src/in-memory';
 
 describe('Memory history', () => {
   describe('constructor', () => {
-    it('creates location/path creator functions', () => {
+    it('returns object with expected API', () => {
       const testHistory = InMemory();
-      expect(typeof testHistory.createLocation).toBe('function');
-      expect(typeof testHistory.createPath).toBe('function');
+      const expectedProperties = [
+        'location',
+        'locations',
+        'index',
+        'action',
+        'createLocation',
+        'createPath',
+        'subscribe',
+        'confirmWith',
+        'removeConfirmation',
+        'destroy'
+      ];
+      expectedProperties.forEach(property => {
+        expect(testHistory.hasOwnProperty(property)).toBe(true);
+      });
     });
 
     it('initializes with root location (/) if none provided', () => {
@@ -120,7 +133,7 @@ describe('Memory history', () => {
       expect(args[1]).toBe('PUSH');
     });
 
-    it('adds key with incremented major value and minor set to 0', () => {
+    it('increments current major key value by 1, sets minor value to 0', () => {
       const testHistory = InMemory();
 
       let [ initMajor ] = testHistory.location.key.split('.');
@@ -303,18 +316,18 @@ describe('Memory history', () => {
       testHistory.confirmWith((location, action, success, failure) => {
         success();
       });
-      const subscriber = jest.fn();
-      testHistory.subscribe(subscriber);
 
-      testHistory.go(-2);
-      setTimeout(() => {
-        expect(testHistory.location).toMatchObject({
+      function subscriber(location, action) {
+        expect(location).toMatchObject({
           pathname: '/one',
           key: '0.0'
         });
-        expect(subscriber.mock.calls.length).toBe(1);
+        expect(action).toBe('POP');
         done();
-      }, 100);
+      }
+      testHistory.subscribe(subscriber);
+
+      testHistory.go(-2);
     });
 
     it('does not emit when the user does not confirm the navigation', (done) => {
@@ -337,7 +350,7 @@ describe('Memory history', () => {
         });
         expect(subscriber.mock.calls.length).toBe(0);
         done();
-      }, 100);
+      }, 10);
     });
   });
 });

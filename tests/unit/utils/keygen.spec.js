@@ -1,12 +1,6 @@
 import createKeyGenerator from '../../../src/utils/keygen';
 
 describe('key generator', () => {
-  it('returns an object with two functions: major and minor', () => {
-    const keyGen = createKeyGenerator();
-    expect(typeof keyGen.major).toBe('function');
-    expect(typeof keyGen.minor).toBe('function');
-  });
-
   describe('major', () => {
     it('starts at the provided base', () => {
       const keyGen = createKeyGenerator(78);
