@@ -19,9 +19,9 @@ npm install hickory
 Below is a quick introduction to the API of a history object.
 
 ```js
-import { BrowserHistory } from 'hickory';
+import { Browser } from 'hickory';
 
-const history = BrowserHistory();
+const history = Browser();
 
 // You can add a subscription function to the history, and whenever there
 // is navigation, that function will be called.
@@ -45,13 +45,13 @@ history.push('/next-location');
 
 history.push('/same-location');
 
-// navigate will determine whether it should push or replace by comparing
+// update will determine whether it should push or replace by comparing
 // the path it is navigating to to the current path. If they are the
 // same, then it will use replace and if they are different it will use push
 
 // current path = '/here'
-history.navigate('/here'); // replace
-history.navigate('/somewhere-else'); // push
+history.update('/here'); // replace
+history.update('/somewhere-else'); // push
 
 // go takes a number and adds that value to the current index to get the
 // new index
