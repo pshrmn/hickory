@@ -4,7 +4,7 @@ There are three history types that `hickory` provides: `Browser`, `Hash`, and `I
 
 The fastest way to determine which history type to use is via this flow chart:
 
-<img src='../../static/choose-a-type.png' />
+<img src='../../static/Choose-A-Type.png' />
 
 To get a better understanding of why each works the way it does, please read on.
 

@@ -1,8 +1,8 @@
 # Hickory Documentation
 
 * About
-  * Introduction
-  * Choosing your history type
+  * [Introduction](./about/introduction.md)
+  * [Choosing your history type](./about/choosing.md)
 * API
   * Browser
   * Hash
