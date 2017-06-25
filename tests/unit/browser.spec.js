@@ -161,6 +161,7 @@ describe('Browser history', () => {
       testHistory.push('/next');
       expect(subscriber.mock.calls.length).toBe(0);
     });
+
   });
 
   describe('replace', () => {

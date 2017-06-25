@@ -75,6 +75,7 @@ export default function Browser(options = {}) {
       'PUSH',
       () => {
         const path = createPath(location);
+        const { key, state } = location;
         window.history.pushState({ key, state }, '', path);
         browserHistory.location = location;
         browserHistory.action = 'PUSH';
@@ -92,6 +93,7 @@ export default function Browser(options = {}) {
       'REPLACE',
       () => {
         const path = createPath(location);
+        const { key, state } = location;
         window.history.replaceState({key, state}, '', path);
         browserHistory.location = location;
         browserHistory.action = 'REPLACE';

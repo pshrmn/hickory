@@ -76,6 +76,13 @@ describe('locationFactory', () => {
         expect(output.state).toBeDefined();
         expect(output.state).toEqual(state);
       });
+
+      it('prefers location.state over state', () => {
+        const locState = { fromLocation: true };
+        const justState = { fromLocation: false };
+        const output = createLocation({ pathname: '/', state: locState}, '1.2', justState);
+        expect(output.state).toEqual(locState);
+      });
     });
 
     describe('parse option', () => {

@@ -19,12 +19,28 @@ describe('browser integration tests', () => {
       testHistory.push('/the-new-location');
       expect(window.location.pathname).toEqual('/the-new-location');
     });
+
+    it('sets the state', () => {
+      const providedState = { isSet: true };
+      testHistory.push('/next', providedState);
+      const { state, key } = testHistory.location;
+      expect(window.history.state.state).toEqual(state);
+      expect(window.history.state.key).toBe(key);
+    });
   });
 
   describe('replace', () => {
     it('can navigate with replace', () => {
       testHistory.replace('/the-same-location');
       expect(window.location.pathname).toEqual('/the-same-location');
+    });
+
+    it('sets the state', () => {
+      const providedState = { isSet: true };
+      testHistory.replace('/next', providedState);
+      const { state, key } = testHistory.location;
+      expect(window.history.state.state).toEqual(state);
+      expect(window.history.state.key).toBe(key);
     });
   });
 

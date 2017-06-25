@@ -95,8 +95,8 @@ export default function Hash(options = {}) {
       'PUSH',
       () => {
         const path = encodeHashPath(createPath(location));
+        const { key, state } = location;
         window.history.pushState({ key, state }, '', path);
-
         hashHistory.location = location;
         hashHistory.action = 'PUSH';
         emit(hashHistory.location, 'PUSH');
@@ -113,8 +113,8 @@ export default function Hash(options = {}) {
       'REPLACE',
       () => {
         const path = encodeHashPath(createPath(location));
+        const { key, state } = location;
         window.history.replaceState({key, state }, '', path);
-
         hashHistory.location = location;
         hashHistory.action = 'REPLACE';
         emit(hashHistory.location, 'REPLACE');

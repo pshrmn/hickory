@@ -20,12 +20,28 @@ describe('hash integration tests', () => {
       testHistory.push('/a-new-position');
       expect(window.location.hash).toEqual('#/a-new-position');
     });
+
+    it('sets the state', () => {
+      const providedState = { isSet: true };
+      testHistory.push('/next', providedState);
+      const { state, key } = testHistory.location;
+      expect(window.history.state.state).toEqual(state);
+      expect(window.history.state.key).toBe(key);
+    });
   });
 
   describe('replace', () => {
     it('can navigate with replace', () => {
       testHistory.replace('/the-same-position');
       expect(window.location.hash).toEqual('#/the-same-position');
+    });
+
+    it('sets the state', () => {
+      const providedState = { isSet: true };
+      testHistory.replace('/next', providedState);
+      const { state, key } = testHistory.location;
+      expect(window.history.state.state).toEqual(state);
+      expect(window.history.state.key).toBe(key);
     });
   });
 
