@@ -6,7 +6,7 @@ describe('browser integration tests', () => {
 
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
-    window.history.pushState(null, null, '/');
+    window.history.pushState(null, '', '/');
     testHistory = Browser();
   });
 
