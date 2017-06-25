@@ -1,4 +1,4 @@
-import createCommonHistory from './base';
+import createCommonHistory from './common';
 import createEventCoordinator from './utils/eventCoordinator';
 import {
   stripPrefix,

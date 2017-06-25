@@ -1,4 +1,4 @@
-import createCommonHistory from './base';
+import createCommonHistory from './common';
 
 export default function InMemory(options = {}) {
   const {
