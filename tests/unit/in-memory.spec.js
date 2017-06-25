@@ -9,7 +9,7 @@ describe('Memory history', () => {
         'locations',
         'index',
         'action',
-        'createPath',
+        'toHref',
         'subscribe',
         'confirmWith',
         'removeConfirmation',
@@ -350,6 +350,17 @@ describe('Memory history', () => {
         expect(subscriber.mock.calls.length).toBe(0);
         done();
       }, 10);
+    });
+  });
+
+  describe('toHref', () => {
+    it('returns the location formatted as a string', () => {
+      const testHistory = InMemory({
+        locations: [{ pathname: '/one', query: 'test=query' }]
+      });
+
+      const currentPath = testHistory.toHref(testHistory.location);
+      expect(currentPath).toBe('/one?test=query');
     });
   });
 });

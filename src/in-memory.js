@@ -31,6 +31,10 @@ export default function InMemory(options = {}) {
     initialIndex = options.index;
   }
 
+  function toHref(location) {
+    return createPath(location);
+  }
+
   const memoryHistory = {
     // location
     location: initialLocations[initialIndex],
@@ -38,7 +42,7 @@ export default function InMemory(options = {}) {
     index: initialIndex,
     action: 'POP',
     // convenience
-    createPath,
+    toHref,
     subscribe,
     confirmWith,
     removeConfirmation,

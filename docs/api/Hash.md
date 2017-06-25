@@ -88,13 +88,14 @@ The `go` function is used to jump forward and backward to already visited locati
 
 * `num` - The number of steps forward or backward to go.
 
-### createPath
+### toHref
 
 ```js
-history.createPath({ pathname: '/spamalat' });
+history.toHref({ pathname: '/spamalat' });
+// #/spamalot
 ```
 
-The `createPath` function allows you to generate the path string for a location object. This string will be prepended with the `baseSegment` (if you provided one).
+The `toHref` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
 
 #### arguments
 

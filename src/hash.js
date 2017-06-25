@@ -59,12 +59,16 @@ export default function Hash(options = {}) {
     return createLocation(path, key);
   }
 
+  function toHref(location) {
+    return encodeHashPath(createPath(location));
+  }
+
   const hashHistory = {
     // location
     location: locationFromBrowser(),
     action: 'POP',
     // convenience
-    createPath,
+    toHref,
     subscribe,
     confirmWith,
     removeConfirmation,
@@ -93,7 +97,7 @@ export default function Hash(options = {}) {
       location,
       'PUSH',
       () => {
-        const path = encodeHashPath(createPath(location));
+        const path = toHref(location);
         const { key, state } = location;
         window.history.pushState({ key, state }, '', path);
         hashHistory.location = location;
@@ -111,7 +115,7 @@ export default function Hash(options = {}) {
       location,
       'REPLACE',
       () => {
-        const path = encodeHashPath(createPath(location));
+        const path = toHref(location);
         const { key, state } = location;
         window.history.replaceState({key, state }, '', path);
         hashHistory.location = location;

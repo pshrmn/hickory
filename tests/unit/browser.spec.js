@@ -25,7 +25,7 @@ describe('Browser history', () => {
       const expectedProperties = [
         'location',
         'action',
-        'createPath',
+        'toHref',
         'subscribe',
         'confirmWith',
         'removeConfirmation',
@@ -351,6 +351,17 @@ describe('Browser history', () => {
         expect(subscriber.mock.calls.length).toBe(0);
         done();
       }, 10);
+    });
+  });
+
+  describe('toHref', () => {
+    it('returns the location formatted as a string', () => {
+      const testHistory = Browser();
+
+      testHistory.push({ pathname: '/one', query: 'test=query' });
+
+      const currentPath = testHistory.toHref(testHistory.location);
+      expect(currentPath).toBe('/one?test=query');
     });
   });
 });

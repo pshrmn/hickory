@@ -25,7 +25,7 @@ describe('Hash history', () => {
       const expectedProperties = [
         'location',
         'action',
-        'createPath',
+        'toHref',
         'subscribe',
         'confirmWith',
         'removeConfirmation',
@@ -364,6 +364,17 @@ describe('Hash history', () => {
         expect(subscriber.mock.calls.length).toBe(0);
         done();
       }, 100);
+    });
+  });
+
+  describe('toHref', () => {
+    it('returns the location formatted as a string', () => {
+      const testHistory = Hash();
+
+      testHistory.push({ pathname: '/one', query: 'test=query' });
+
+      const currentPath = testHistory.toHref(testHistory.location);
+      expect(currentPath).toBe('#/one?test=query');
     });
   });
 });

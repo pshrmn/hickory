@@ -39,12 +39,16 @@ export default function Browser(options = {}) {
     return createLocation(path, key, state);
   }
 
+  function toHref(location) {
+    return createPath(location);
+  }
+
   const browserHistory = {
     // location
     location: locationFromBrowser(),
     action: 'POP',
     // convenience
-    createPath,
+    toHref,
     subscribe,
     confirmWith,
     removeConfirmation,
@@ -73,7 +77,7 @@ export default function Browser(options = {}) {
       location,
       'PUSH',
       () => {
-        const path = createPath(location);
+        const path = toHref(location);
         const { key, state } = location;
         window.history.pushState({ key, state }, '', path);
         browserHistory.location = location;
@@ -91,7 +95,7 @@ export default function Browser(options = {}) {
       location,
       'REPLACE',
       () => {
-        const path = createPath(location);
+        const path = toHref(location);
         const { key, state } = location;
         window.history.replaceState({key, state}, '', path);
         browserHistory.location = location;
