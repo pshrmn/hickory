@@ -25,7 +25,6 @@ describe('Browser history', () => {
       const expectedProperties = [
         'location',
         'action',
-        'createLocation',
         'createPath',
         'subscribe',
         'confirmWith',

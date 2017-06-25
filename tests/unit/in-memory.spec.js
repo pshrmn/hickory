@@ -9,7 +9,6 @@ describe('Memory history', () => {
         'locations',
         'index',
         'action',
-        'createLocation',
         'createPath',
         'subscribe',
         'confirmWith',

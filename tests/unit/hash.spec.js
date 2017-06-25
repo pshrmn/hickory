@@ -25,7 +25,6 @@ describe('Hash history', () => {
       const expectedProperties = [
         'location',
         'action',
-        'createLocation',
         'createPath',
         'subscribe',
         'confirmWith',

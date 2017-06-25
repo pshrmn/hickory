@@ -44,7 +44,6 @@ export default function Browser(options = {}) {
     location: locationFromBrowser(),
     action: 'POP',
     // convenience
-    createLocation,
     createPath,
     subscribe,
     confirmWith,

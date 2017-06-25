@@ -38,7 +38,6 @@ export default function InMemory(options = {}) {
     index: initialIndex,
     action: 'POP',
     // convenience
-    createLocation,
     createPath,
     subscribe,
     confirmWith,
