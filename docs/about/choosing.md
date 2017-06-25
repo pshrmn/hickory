@@ -8,79 +8,36 @@ The fastest way to determine which history type to use is via this flow chart:
 
 To get a better understanding of why each works the way it does, please read on.
 
-The first question to ask yourself is "Where is my application running?". If the answer is not "in a browser", then you need to use the `InMemory` history.
+Each type of history has the same core functionality. The differences lie largely in 1. how the history is stored and 2. how a location is represented as a path.
 
-## `InMemory`
+## `Browser`
 
-```js
-import { InMemory } from 'hickory';
+The `Browser` history relies on the user's browser to handle keeping track of locations. It uses the [`window.history`](https://developer.mozilla.org/en-US/docs/Web/API/Window/history) API to update the internal list of visited locations. It also uses an event listener to detect navigation triggered outside of your application (e.g. the user pressing the browser's forward/back buttons).
 
-const history = InMemory();
-```
-
-The `InMemory` history keeps track of its own list of visited locations. It does this simply by storing them in an array and keeping an index value to track the current position. This mimics the behavior of a browser, but the code can be run anywhere. This makes `InMemory` a great choice if you are doing server side rendering for an application, testing out some code that needs to be location-aware, or running in a mobile application.
-
-When creating an `InMemory` history, you can pass initial locations and the initial index. This can be helpful for restoring a session.
+Whenever the `Browser` history needs to create a location from the browser, it uses the `pathname`, `search`, and `hash` properties from `window.location` to create a path string. It then parses that string to create a location object. The parsing step is important because it will parse the search value to create the correct `query` value for your application. Parsing will also strip the `baseSegment` off of the `pathname` (if you are using that feature).
 
 ```js
-const history = InMemory({
-  locations: [
-    '/one',
-    '/two',
-    { pathname: '/three' }
-  ],
-  index: 2
-});
-// history.location = { pathname: '/three' }
+// the following window.location
+window.location = {
+  pathname: '/the-page',
+  search: '?one=uno',
+  hash: ''
+}
+// can create the location object (if you provide
+// a query parsing function)
+location = {
+  pathname: '/the-page',
+  query: { one: 'uno' },
+  hash: '',
+  ...
+}
 ```
 
-## `Browser` or `Hash`
-
-If the answer to the first question was "in a browser", then you have to determine whether to use a `Browser` or a `Hash` history. Functionally, the two are identical. Both have the same methods and respond to the same browser actions. The difference between the two is how they translate locations into URIs (and vice versa). Generally speaking, you almost always will want to use `Browser`. However, this is not always possible.
-
-When a browser history creates a location from the current URI, it looks at the current `window.location` object's `pathname`, `search`, and `hash` strings. Those are concatenated together and the result is parsed to create a location object. When a hash history creates a loaction from the current URI, it only looks at `window.location.hash`. An obvious effect of this is that the `Hash` history has uglier URIs:
-
-```js
-import { Browser, Hash } from 'hickory';
-
-const browser = Browser();
-const hash = Hash();
-
-const location = {
-  pathname: '/check-me-out'
-};
-
-browser.push(location);
-// http://example.com/check-me-out
-
-hash.push(location);
-// https://example.com/#/check-me-out
-
-```
-
-So why would you ever want to use `Hash`? `Hash` is the only reasonable option when you are hosting your application on a static file server. 
-
-For example, imagine that you have a simple website with three routes: `/`, `/about`, and `/contact`. If you have a dynamic server, your website can match requests for those paths and respond with your application. For any requests to routes that do not exist, your server can recover and still respond with your application (which would detect that the current URI is a bad route and render accordingly).
-
-However, when you are using a file server, the requested file must exist. That means that if a user requests `https://example.com/`, your server needs to have an `index.html` file in the root directory. If the user requests `https://example.com/about`, then you better also have an `about` folder that contains its own `index.html` file. Any requests for files that do not exist will result in 404 responses and your application will fail to load.
-
-The best way to deal with this is to only have one valid route **on the server**, ideally the root `index.html`. All requests will then be made for that resource. How can you do that while still having any route that you want for your application? Encode the "real" location in the URI's `hash`. The hash segment of the URI is not used for requesting resources, so the server will only see your request for the application. Once your application has loaded, your `Hash` history will parse `window.location.hash` to determine the "real" location.
-
-```js
-// https://example.com/#/about
-// requests /index.html
-// creates location { pathname: '/about' }
-
-// https://example.com/#/contact 
-// requests /index.html
-// creates location { pathname: '/contact' }
-```
-
-As stated before, if you use this, you will end up with uglier URIs. Of course, if you are using a static file server, this is the best option you have. In theory, you could create a file on your server for every single valid route, but this would 1. quickly become cumbersome and 2. still fail for bad routes.
+Generally speaking, if you are running your application in a browser, you will want to use the `Browser` history. However, whether or not you _can_ use it depends on the server that is serving your application. If you can configure your server to respond to any possible pathname request, then you can use the `Browser` history. However, if your application is hosted on a static file server, then you will have to use the `Hash` history.
 
 ### Setting up your server to support `Browser` history.
 
-So how do you make your server capable of working with the `Browser` history? There is no one correct solution and this will vary based on what your server is. The basic idea for all of the, however, is the same. You will want a catch-all request handler (somewhere after you have defined your static file handler) that will always respond with your `index.html` file. That `index.html` file will have a `<script>` tag that downloads your application's JavaScript files and gets your application running.
+How do you make your server capable of working with the `Browser` history? There is no one correct solution and this will vary based on what your server is. The basic idea for all of the, however, is the same. You will want a catch-all request handler (somewhere after you have defined your static file handler) that will always respond with your `index.html` file. That `index.html` file will have a `<script>` tag that downloads your application's JavaScript files and gets your application running.
 
 A simple example of this can be demonstrated with Express:
 
@@ -97,4 +54,36 @@ app.use('/static', express.static(__dirname, '/public/'));
 app.get('*', function(request, response) {
   response.sendFile('./index.html');
 });
+```
+
+## `Hash`
+
+The `Hash` history is nearly identical to the `Browser` history. The only difference is how location objects are created from the URI and how location objects are transformed into path strings that are pushed to the browser.
+
+As stated above, the `Hash` history is what you need to use if you are using a static file server. Why is this? When you enter a URI into your browser, a request is sent off to the website's server, and it attempts to match the requested URI's pathname to a resource on the server. For dynamic servers, this does not have to correspond to an actual file. Instead, the server just has to recognize the path and serve some HTML that corresponds to the requested pathname. However, on a static file server, each requested resource actually has to exist. That means that if a user attempts to visit `https://example.com/about/`, then that server better have an `/about` folder that contains an `index.html` file. If it does not, then it will serve a 404 error.
+
+Now, in theory you could create a file on your server for every valid route in your application, but that would 1. quickly become unfeasible (especially if you want to have path parameters) and 2. defeat the purpose of having a single-page application. Instead, what you want is for every route in your application to request the same resource from the server. The way to do this is to remove your application's routing to the `hash` segment of the URI. This works because the hash is not used for resource identification, only the pathname is. That means that `https://example.com/#/` and `https://example.com/#/some-other-page` both request the same resource from the server (the `index.html` in the root folder).
+
+## `InMemory`
+
+```js
+import { InMemory } from 'hickory';
+
+const history = InMemory();
+```
+
+The `InMemory` history does not have a browser to rely on to keep track of visited locations, so it does this itself. This is done by storing visited locations in an array and keeping an index value to track the current position. This mimics the behavior of a browser, but the code can be run anywhere. This makes `InMemory` a great choice if you are doing server side rendering for an application, testing out some code that needs to be location-aware, or running in a mobile application. The `InMemory` history could also be used in a browser if you have an application that needs to perform navigation, but you don't want it to affect the URI.
+
+There is a small amount of additional functionality that the `InMemory` history provides. When creating an `InMemory` history, you can pass initial locations and the initial index. This can be helpful for restoring a session. You are also able to directly access these values as the `locations` and `index` properties of the history object.
+
+```js
+const history = InMemory({
+  locations: [
+    '/one',
+    '/two',
+    { pathname: '/three' }
+  ],
+  index: 2
+});
+// history.location = { pathname: '/three' }
 ```

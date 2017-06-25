@@ -16,7 +16,7 @@ Each type can be passed an `options` object, which will customize the history ob
 
 ## Locations
 
-Location objects are at the core of how history object works. These are objects with a number of properties. Some of these (`pathname`, `query`, and `hash`) can be mapped to a string and used to generate the URI for a location. Others (`state` and `key`) are used for attaching additional information to a location. Location objects are similar to the [`Window.location`](https://developer.mozilla.org/en-US/docs/Web/API/Window/location) available in your browser, but make a few deviations for convenience.
+Location objects are at the core of how history object works. These are objects with a number of properties. Some of these (`pathname`, `query`, and `hash`) can be mapped to a string and used to generate the URI for a location. Others (`state` and `key`) are used for attaching additional information to a location. Location objects are similar to the [`window.location`](https://developer.mozilla.org/en-US/docs/Web/API/Window/location) available in your browser, but make a few deviations for convenience.
 
 ```js
 {
