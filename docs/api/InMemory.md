@@ -80,7 +80,7 @@ The `update` function decides whether to `push` or `replace` for you. The path s
 
 #### arguments
 
-* `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
+`to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
 ### go
 
@@ -94,7 +94,7 @@ The `go` function is used to jump forward and backward to already visited locati
 
 #### arguments
 
-* `num` - The number of steps forward or backward to go.
+`num` - The number of steps forward or backward to go.
 
 ### toHref
 
@@ -107,7 +107,7 @@ The `toHref` function generates the string representation of the location object
 
 #### arguments
 
-* `location` - The location to create a path for.
+`location` - The location to create a path for.
 
 ### subscribe
 
@@ -123,7 +123,7 @@ Each function will be passed two arguments: `location` and `action`. The locatio
 
 #### arguments
 
-* `fn` - The function to be called when the location changes.
+`fn` - The function to be called when the location changes.
 
 ### confirmWith
 
@@ -144,7 +144,7 @@ Only one confirmation function can be registered at a time, so if you call `conf
 
 #### arguments
 
-* `fn` - The function to be called to confirm the navigation. This will receive four arguments. The first one is the location that is being navigated to. The second is the navigation action (`PUSH`, `REPLACE`, or `POP`). The third is a success function, which you should call when you want the navigation to happen. The fourth is a failulre function, which you should call when you want to stop the navigation.
+`fn` - The function to be called to confirm the navigation. This will receive four arguments. The first one is the location that is being navigated to. The second is the navigation action (`PUSH`, `REPLACE`, or `POP`). The third is a success function, which you should call when you want the navigation to happen. The fourth is a failulre function, which you should call when you want to stop the navigation.
 
 ### removeConfirmation
 
