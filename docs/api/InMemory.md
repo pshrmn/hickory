@@ -8,6 +8,12 @@ const history = InMemory();
 
 ## Options
 
+* `parse` - A function that will convert a search string to a query value. This function should return a default value when it is called with no arguments.
+
+* `stringify` - A function that will convert a query value into a search string. This function should return an empty string when it is called with no arguments.
+
+* `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
+
 ## Properties
 
 ### location
