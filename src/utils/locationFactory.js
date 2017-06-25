@@ -65,7 +65,7 @@ export default function locationFactory(options = {}) {
     if (typeof value === 'string') {
       location = parsePath(value)
     } else {
-      location = value;
+      location = Object.assign({}, value);
       if (location.hash == null) {
         location.hash = ''
       }

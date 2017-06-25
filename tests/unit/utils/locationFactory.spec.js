@@ -36,6 +36,17 @@ describe('locationFactory', () => {
     });
 
     describe('from an object', () => {
+      it('returns a new object', () => {
+        const input = {
+          pathname: '/test',
+          query: 'one=two',
+          hash: 'hello'
+        };
+        const output = createLocation(input);
+        input.pathname = '/not-a-test';
+        expect(output.pathname).toBe('/test');
+      });
+
       it('uses provided properties', () => {
         const input = {
           pathname: '/test',
