@@ -6,5 +6,5 @@
   * [Glossary](./about/glossary.md)
 * API
   * [Browser](./api/Browser.md)
-  * Hash
+  * [Hash](./api/Hash.md)
   * InMemory
