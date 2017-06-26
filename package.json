@@ -1,6 +1,6 @@
 {
   "name": "hickory",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Hickory powers navigation within a single page application",
   "main": "dist/hickory.common.js",
   "module": "dist/hickory.es.js",
