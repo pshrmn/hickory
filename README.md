@@ -68,18 +68,18 @@ history.go(-2); // new index = 2
 // switching pages. To do this, pass a confirmation function to the
 // confirmWith method.
 
-history.confirmWith(function(location, action, success, failure) {
-  const confirm = window.confirm('Are you sure you want to navigate?');
-  if (confirm) {
-    success();
+history.confirmWith(function(info, confirm, prevent) {
+  const confirmed = window.confirm('Are you sure you want to navigate?');
+  if (confirmed) {
+    confirm();
   } else {
-    failure();
+    prevent();
   }
 });
 
 // Now, whenever there is navigation (the user clicks a link or the browser's
 // forward/back buttons), the confirmation function will be run and the
-// navigation will be cancelled if the failure function is called.
+// navigation will be cancelled if the prevent function is called.
 
 // In the above example, if the user clicks the cancel button of the
 // "confirm" popup, then the navigation will be cancelled. If the user clicks

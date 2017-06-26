@@ -156,8 +156,8 @@ describe('Browser history', () => {
     it('emits new location/action when the user confirms the navigation', () => {
       const testHistory = Browser();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        success();
+      const confirm = (info, confirm, prevent) => {
+        confirm();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -166,11 +166,11 @@ describe('Browser history', () => {
       expect(subscriber.mock.calls.length).toBe(1);
     });
 
-    it('does not emit when the user does not confirm the navigation', () => {
+    it('does not emit when the user prevents the navigation', () => {
       const testHistory = Browser();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        failure();
+      const confirm = (info, confirm, prevent) => {
+        prevent();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -235,8 +235,8 @@ describe('Browser history', () => {
     it('emits new location/action when the user confirms the navigation', () => {
       const testHistory = Browser();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        success();
+      const confirm = (info, confirm, prevent) => {
+        confirm();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -245,11 +245,11 @@ describe('Browser history', () => {
       expect(subscriber.mock.calls.length).toBe(1);
     });
 
-    it('does not emit when the user does not confirm the navigation', () => {
+    it('does not emit when the user prevents the navigation', () => {
       const testHistory = Browser();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        failure();
+      const confirm = (info, confirm, prevent) => {
+        prevent();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -315,9 +315,10 @@ describe('Browser history', () => {
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
 
-      testHistory.confirmWith((location, action, success, failure) => {
-        success();
-      });
+      const confirm = (info, confirm, prevent) => {
+        confirm();
+      };
+      testHistory.confirmWith(confirm);
       
       function subscriber(location) {
         expect(testHistory.location).toMatchObject({
@@ -331,14 +332,16 @@ describe('Browser history', () => {
       testHistory.go(-2);
     });
 
-    it('does not emit when the user does not confirm the navigation', (done) => {
+    it('does not emit when the user prevents the navigation', (done) => {
       const testHistory = Browser();
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
 
-      testHistory.confirmWith((location, action, success, failure) => {
-        failure();
-      });
+      const confirm = (info, confirm, prevent) => {
+        prevent();
+      };
+      testHistory.confirmWith(confirm);
+
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 

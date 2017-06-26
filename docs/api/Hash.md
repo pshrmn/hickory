@@ -128,12 +128,12 @@ Each function will be passed two arguments: `location` and `action`. The locatio
 ### confirmWith
 
 ```js
-history.confirmWith((location, action, success, failure) => {
+history.confirmWith((info, confirm, prevent) => {
   const result = window.confirm("Are you sure you want to navigate?");
   if (result) {
-    success();
+    confirm();
   } else {
-    failure();
+    prevent();
   }
 });
 ```
@@ -144,7 +144,7 @@ Only one confirmation function can be registered at a time, so if you call `conf
 
 #### arguments
 
-`fn` - The function to be called to confirm the navigation. This will receive four arguments. The first one is the location that is being navigated to. The second is the navigation action (`PUSH`, `REPLACE`, or `POP`). The third is a success function, which you should call when you want the navigation to happen. The fourth is a failulre function, which you should call when you want to stop the navigation.
+`fn` - The function to be called to confirm the navigation. This will receive three arguments. The first one is an object with three properties: `to` is the locatin that you are navigating to, `from` is the location that you are navigating from, and `action` is the type of navigation. The second is a `confirm` function, which you should call when you want the navigation to happen. The third is a `prevent` function, which you should call when you want to stop the navigation.
 
 ### removeConfirmation
 

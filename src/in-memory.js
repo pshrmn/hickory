@@ -66,8 +66,11 @@ export default function InMemory(options = {}) {
     const key = keygen.major(memoryHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation  (
-      location,
-      'PUSH',
+      {
+        to: location,
+        from: memoryHistory.location,
+        action: 'PUSH'
+      },
       () => {
         memoryHistory.location = location;
         memoryHistory.index++;
@@ -85,8 +88,11 @@ export default function InMemory(options = {}) {
     const key = keygen.minor(memoryHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation(
-      location,
-      'REPLACE',
+      {
+        to: location,
+        from: memoryHistory.location,
+        action: 'REPLACE'
+      },
       () => {
         memoryHistory.location = location;
         memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
@@ -105,12 +111,16 @@ export default function InMemory(options = {}) {
       if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
         return;
       } else {
+        const location = memoryHistory.locations[newIndex]
         confirmNavigation(
-          memoryHistory.locations[newIndex],
-          'POP',
+          {
+            to: location,
+            from: memoryHistory.location,
+            action: 'PUSH'
+          },
           () => {
             memoryHistory.index = newIndex;
-            memoryHistory.location = memoryHistory.locations[memoryHistory.index];
+            memoryHistory.location = location;
             memoryHistory.action = 'POP';
             emit(memoryHistory.location, 'POP');
           }

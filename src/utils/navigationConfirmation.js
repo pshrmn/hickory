@@ -4,11 +4,11 @@ export default function createNavigationConfirmation() {
 
   let confirmFunction;
 
-  function confirmNavigation(location, action, success, failure = noop) {
+  function confirmNavigation(info, confirm, prevent = noop) {
     if (!confirmFunction) {
-      success();
+      confirm();
     } else {
-      confirmFunction(location, action, success, failure);
+      confirmFunction(info, confirm, prevent);
     }
   }
 

@@ -168,8 +168,8 @@ describe('Memory history', () => {
     it('emits new location/action when the user confirms the navigation', () => {
       const testHistory = InMemory();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        success();
+      const confirm = (info, confirm, prevent) => {
+        confirm();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -178,11 +178,11 @@ describe('Memory history', () => {
       expect(subscriber.mock.calls.length).toBe(1);
     });
 
-    it('does not emit when the user does not confirm the navigation', () => {
+    it('does not emit when the user prevents the navigation', () => {
       const testHistory = InMemory();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        failure();
+      const confirm = (info, confirm, prevent) => {
+        prevent();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -243,8 +243,8 @@ describe('Memory history', () => {
     it('emits new location/action when the user confirms the navigation', () => {
       const testHistory = InMemory();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        success();
+      const confirm = (info, confirm, prevent) => {
+        confirm();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -253,11 +253,11 @@ describe('Memory history', () => {
       expect(subscriber.mock.calls.length).toBe(1);
     });
 
-    it('does not emit when the user does not confirm the navigation', () => {
+    it('does not emit when the user prevents the navigation', () => {
       const testHistory = InMemory();
       const subscriber = jest.fn();
-      const confirm = (location, action, success, failure) => {
-        failure();
+      const confirm = (info, confirm, prevent) => {
+        prevent();
       };
       testHistory.confirmWith(confirm);
       testHistory.subscribe(subscriber);
@@ -312,9 +312,11 @@ describe('Memory history', () => {
         index: 2
       });
 
-      testHistory.confirmWith((location, action, success, failure) => {
-        success();
-      });
+      const confirm = (info, confirm, prevent) => {
+        confirm();
+      };
+
+      testHistory.confirmWith(confirm);
 
       function subscriber(location, action) {
         expect(location).toMatchObject({
@@ -329,15 +331,17 @@ describe('Memory history', () => {
       testHistory.go(-2);
     });
 
-    it('does not emit when the user does not confirm the navigation', (done) => {
+    it('does not emit when the user prevents the navigation', (done) => {
       const testHistory = InMemory({
         locations: ['/one', '/two', '/three'],
         index: 2
       });
+      const confirm = (info, confirm, prevent) => {
+        prevent();
+      }
 
-      testHistory.confirmWith((location, action, success, failure) => {
-        failure();
-      });
+      testHistory.confirmWith(confirm);
+      
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 

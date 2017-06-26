@@ -5,13 +5,13 @@ describe('createNavigationConfirmation', () => {
     it('registers the function passed to it', () => {
       const { confirmWith, confirmNavigation } = createNavigationConfirmation();
       const allowNavigation = jest.fn();
-      const success = () => {};
-      const failure = () => {};
+      const confirm = () => {};
+      const prevent = () => {};
       
       confirmWith(allowNavigation);
       expect(allowNavigation.mock.calls.length).toBe(0);
       
-      confirmNavigation(null, null, success, failure);
+      confirmNavigation(null, confirm, prevent);
       expect(allowNavigation.mock.calls.length).toBe(1);
     });
   });
@@ -24,43 +24,46 @@ describe('createNavigationConfirmation', () => {
         removeConfirmation
       } = createNavigationConfirmation();
       const allowNavigation = jest.fn();
-      const success = () => {};
-      const failure = () => {};
+      const confirm = () => {};
+      const prevent = () => {};
 
       confirmWith(allowNavigation);
       expect(allowNavigation.mock.calls.length).toBe(0);
       
-      confirmNavigation(null, null, success, failure);
+      confirmNavigation(null, confirm, prevent);
       expect(allowNavigation.mock.calls.length).toBe(1);
 
       removeConfirmation();
-      confirmNavigation(null, null, success, failure);
+      confirmNavigation(null, confirm, prevent);
       expect(allowNavigation.mock.calls.length).toBe(1);
     });
   });
 
   describe('confirmNavigation', () => {
-    it('calls success function if there is no confirm function', () => {
+    it('calls confirm function if there is no confirmation function', () => {
       const {
         confirmWith,
         confirmNavigation,
         removeConfirmation
       } = createNavigationConfirmation();
       
-      const success = jest.fn();
-      const failure = jest.fn();
+      const confirm = jest.fn();
+      const prevent = jest.fn();
 
       confirmNavigation(
-        { pathname: '/this-is-only-a-test' },
-        'TEST',
-        success,
-        failure
+        {
+          to: { pathname: '/this-is-only-a-test' },
+          from: { pathname: '/this-was-not-a-test' },
+          action: 'TEST'
+        },
+        confirm,
+        prevent
       );
-      expect(success.mock.calls.length).toBe(1);
-      expect(failure.mock.calls.length).toBe(0);
+      expect(confirm.mock.calls.length).toBe(1);
+      expect(prevent.mock.calls.length).toBe(0);
     });
 
-    it('calls the confirm function with the new location, action and success/failure fns', () => {
+    it('calls the confirm function with the info confirm/prevent fns', () => {
       const {
         confirmWith,
         confirmNavigation,
@@ -68,23 +71,30 @@ describe('createNavigationConfirmation', () => {
       } = createNavigationConfirmation();
       
       const allowNavigation = jest.fn();
-      const success = () => {};
-      const failure = () => {};
-      const loc = { pathname: '/this-is-only-a-test' };
+      const confirm = () => {};
+      const prevent = () => {};
+      const toLoc = { pathname: '/this-is-only-a-test' };
+      const fromLoc = { pathname: '/this-was-not-a-test' };
       const action = 'TEST';
 
       confirmWith(allowNavigation);
       confirmNavigation(
-        loc,
-        action,
-        success,
-        failure
+        {
+          to: toLoc,
+          from: fromLoc,
+          action  
+        },
+        confirm,
+        prevent
       );
       const args = allowNavigation.mock.calls[0];
-      expect(args[0]).toEqual(loc);
-      expect(args[1]).toBe(action);
-      expect(args[2]).toBe(success);
-      expect(args[3]).toBe(failure);
+      expect(args[0]).toEqual({
+        to: toLoc,
+        from: fromLoc,
+        action
+      });
+      expect(args[1]).toBe(confirm);
+      expect(args[2]).toBe(prevent);
     });
   });
 

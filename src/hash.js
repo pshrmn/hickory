@@ -89,8 +89,11 @@ export default function Hash(options = {}) {
     const key = keygen.major(hashHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation  (
-      location,
-      'PUSH',
+      {
+        to: location,
+        from: hashHistory.location,
+        action: 'PUSH'
+      },
       () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -107,8 +110,11 @@ export default function Hash(options = {}) {
     const key = keygen.minor(hashHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation(
-      location,
-      'REPLACE',
+      {
+        to: location,
+        from: hashHistory.location,
+        action: 'REPLACE'
+      },
       () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -143,8 +149,11 @@ export default function Hash(options = {}) {
     const currentKey = hashHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
     confirmNavigation(
-      location,
-      'POP',
+      {
+        to: location,
+        from: hashHistory.location,
+        action: 'POP'
+      },
       () => {
         hashHistory.location = location;
         hashHistory.action = 'POP';

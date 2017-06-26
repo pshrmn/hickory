@@ -74,8 +74,11 @@ export default function Browser(options = {}) {
     const key = keygen.major(browserHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation(
-      location,
-      'PUSH',
+      {
+        to: location,
+        from: browserHistory.location,
+        action: 'PUSH'
+      },
       () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -92,8 +95,11 @@ export default function Browser(options = {}) {
     const key = keygen.minor(browserHistory.location.key);
     const location = createLocation(to, key);
     confirmNavigation(
-      location,
-      'REPLACE',
+      {
+        to: location,
+        from: browserHistory.location,
+        action: 'REPLACE'
+      },
       () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -128,8 +134,11 @@ export default function Browser(options = {}) {
     const currentKey = browserHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
     confirmNavigation(
-      location,
-      'POP',
+      {
+        to: location,
+        from: browserHistory.location,
+        action: 'POP'
+      },
       () => {
         browserHistory.location = location;
         browserHistory.action = 'POP';
