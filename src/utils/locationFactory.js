@@ -4,6 +4,7 @@ import {
   completeQuery,
   stripBaseSegment
 } from './location';
+import warn from './warn';
 
 function defaultParseQuery(query) {
   return query ? query : '';
@@ -21,13 +22,55 @@ function isValidBase(baseSegment) {
   );
 }
 
+function validateQueryOption(query) {
+  let parse, stringify;
+  if (!query) {
+    parse = defaultParseQuery;
+    stringify = defaultStringifyQuery;
+  } else {
+    let completeQuery = true;
+    if (typeof query.parse !== 'function') {
+      warn(
+        true,
+        'The query option must contain a parse function property'
+      );
+      completeQuery = false;
+    }
+    if (typeof query.stringify !== 'function') {
+      warn(
+        true,
+        'The query option must contain a stringify function property'
+      );
+      completeQuery = false;
+    }
+
+    if (completeQuery) {
+      parse = query.parse;
+      stringify = query.stringify;
+    } else {
+      // when either property is invalid, we use the defaults for both
+      parse = defaultParseQuery;
+      stringify = defaultStringifyQuery;
+    }
+  }
+
+  return {
+    parse,
+    stringify
+  }
+}
+
 export default function locationFactory(options = {}) {
   const {
-    parse = defaultParseQuery,
-    stringify = defaultStringifyQuery,
+    query,
     decode = true,
     baseSegment = ''
   } = options;
+
+  const {
+    parse,
+    stringify
+  } = validateQueryOption(query);
 
   if (baseSegment !== '' && !isValidBase(baseSegment)) {
     throw new Error('The baseSegment "' + baseSegment + '" is not valid.' +
@@ -36,23 +79,23 @@ export default function locationFactory(options = {}) {
   }
 
   function parsePath(value) {
-    const location = {
-      pathname: '',
-      query: parse(),
-      hash: ''
-    };
+    const location = {};
 
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf('#');
     if (hashIndex !== -1) {
       location.hash = value.substring(hashIndex+1);
       value = value.substring(0, hashIndex);
+    } else {
+      location.hash = '';
     }
 
     const queryIndex = value.indexOf('?');
     if (queryIndex !== -1) {
       location.query = parse(value.substring(queryIndex+1));
       value = value.substring(0, queryIndex);
+    } else {
+      location.query = parse();
     }
 
     location.pathname = stripBaseSegment(value, baseSegment);

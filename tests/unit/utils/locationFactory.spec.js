@@ -20,6 +20,88 @@ describe('locationFactory', () => {
         }).toThrow();
       });
     });
+
+    describe('query option', () => {
+
+      const consoleWarn = console.warn;
+
+      beforeEach(() => {
+        console.warn = jest.fn();
+      });
+
+      afterEach(() => {
+        console.warn = consoleWarn;
+      });
+
+      describe('bad query.parse value', () => {
+        it('warns that query.parse must be a function', () => {
+          const creators = locationFactory({
+            query: {
+              stringify: function() {}
+            }
+          });
+          const { calls } = console.warn.mock;
+          expect(calls.length).toBe(1);
+          expect(calls[0][0]).toBe('The query option must contain a parse function property');
+        });
+        
+        it('uses default stringify function', () => {
+          const stringify = jest.fn();
+          const creators = locationFactory({
+            query: { stringify }
+          });
+
+          creators.createPath({ pathname: '/test' });
+          expect(stringify.mock.calls.length).toBe(0);
+        });
+      });
+
+      describe('bad query.stringify value', () => {
+        it('warns that query.stringify is not a function', () => {
+          const creators = locationFactory({
+            query: {
+              parse: function() {}
+            }
+          });
+          const { calls } = console.warn.mock;
+          expect(calls.length).toBe(1);
+          expect(calls[0][0]).toBe('The query option must contain a stringify function property');
+        });
+
+        it('uses default parse function', () => {
+          const parse = jest.fn();
+          const creators = locationFactory({
+            query: { parse }
+          });
+
+          creators.createLocation('/test?one=uno');
+          expect(parse.mock.calls.length).toBe(0);
+        });
+      });
+
+      describe('valid query option', () => {
+        it('calls parse when creating a location', () => {
+          const parse = jest.fn();
+          const stringify = jest.fn();
+          const creators = locationFactory({
+            query: { parse, stringify }
+          });
+          const location = creators.createLocation('/test?two=dos');
+          expect(parse.mock.calls.length).toBe(1);
+        });
+
+        it('calls stringify when creating a path', () => {
+          const parse = jest.fn();
+          const stringify = jest.fn();
+          const creators = locationFactory({
+            query: { parse, stringify }
+          });
+          const path = creators.createPath({ pathname: '/test' });
+          expect(stringify.mock.calls.length).toBe(1);
+        });
+
+      });
+    });
   });
 
   describe('createLocation', () => {
@@ -108,10 +190,13 @@ describe('locationFactory', () => {
       });
     });
 
-    describe('parse option', () => {
+    describe('query.parse optino', () => {
       it('uses the provided query parsing function to make the query value', () => {
         const { createLocation } = locationFactory({
-          parse: qs.parse
+          query: {
+            parse: qs.parse,
+            stringify: qs.stringify
+          }
         });
         const loc = createLocation('/pathname?query=this#hash');
         expect(loc.query).toEqual({ query: 'this' });
@@ -258,10 +343,13 @@ describe('locationFactory', () => {
       });
     });
 
-    describe('stringify option', () => {
+    describe('query.stringify option', () => {
       it('uses the provided stringify function to turn query into a string', () => {
         const { createPath } = locationFactory({
-          stringify: qs.stringify
+          query: {
+            parse: qs.parse,
+            stringify: qs.stringify
+          }
         });
         const input = {
           pathname: '/',
