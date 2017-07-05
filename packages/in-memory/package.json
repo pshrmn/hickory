@@ -1,0 +1,53 @@
+{
+  "name": "@hickory/in-memory",
+  "version": "0.6.0",
+  "description": "Hickory's in-memory history",
+  "main": "dist/hickory-in-memory.common.js",
+  "module": "dist/hickory-in-memory.es.js",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "node ./scripts/build",
+    "prepublishOnly": "in-publish && npm run build",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pshrmn/hickory/tree/master/packages/in-memory"
+  },
+  "keywords": [
+    "Hickory",
+    "history",
+    "memory"
+  ],
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "dependencies": {
+    "@hickory/root": "^0.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-preset-env": "^1.6.0",
+    "cross-env": "^5.0.1",
+    "gzip-size": "^3.0.0",
+    "in-publish": "^2.0.0",
+    "jest": "^20.0.4",
+    "pretty-bytes": "^4.0.2",
+    "qs": "^6.5.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.43.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}

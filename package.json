@@ -10,12 +10,9 @@
     "README.md"
   ],
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "node ./scripts/build",
-    "prepublishOnly": "in-publish && npm run build",
-    "test": "npm run test:unit && npm run test:integration -- --single-run",
-    "test:integration": "cross-env BABEL_ENV=build karma start",
-    "test:unit": "jest"
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "repository": {
     "type": "git",
@@ -50,6 +47,7 @@
     "karma-chrome-launcher": "^2.1.1",
     "karma-jasmine": "^1.1.0",
     "karma-rollup-plugin": "^0.2.4",
+    "lerna": "^2.0.0-rc.5",
     "pretty-bytes": "^4.0.2",
     "qs": "^6.4.0",
     "rimraf": "^2.6.1",
@@ -58,12 +56,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^2.0.1"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/tests/unit/**/*.spec.js"
-    ]
-  },
-  "dependencies": {}
+  }
 }

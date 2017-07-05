@@ -16,13 +16,11 @@ const build = (name, command, extraEnv) => {
   buildStats[name] = buildEndTime - buildStartTime;
 }
 
-module.exports = build;
-
 const startTime = new Date();
 
 build(
   'ES',
-  'rollup -c -f es -o dist/hickory.es.js',
+  'rollup -c -f es -o dist/hickory-root.es.js',
   {
     NODE_ENV: 'development',
     BABEL_ENV: 'build'
@@ -31,7 +29,7 @@ build(
 
 build(
   'CommonJS',
-  'rollup -c -f cjs -o dist/hickory.common.js',
+  'rollup -c -f cjs -o dist/hickory-root.common.js',
   {
     NODE_ENV: 'development',
     BABEL_ENV: 'build'
@@ -40,7 +38,7 @@ build(
 
 build(
   'UMD file',
-  'rollup -c -f iife -o dist/hickory.js',
+  'rollup -c -f iife -o dist/hickory-root.js',
   {
     NODE_ENV: 'development',
     BABEL_ENV: 'build'
@@ -49,7 +47,7 @@ build(
 
 build(
   'UMD min file',
-  'rollup -c -f iife -o dist/hickory.min.js',
+  'rollup -c -f iife -o dist/hickory-root.min.js',
   {
     NODE_ENV: 'production',
     BABEL_ENV: 'build'
@@ -59,9 +57,9 @@ build(
 const endTime = new Date();
 const buildTime = endTime - startTime;
 
-const size = fs.statSync('./dist/hickory.js').size;
+const size = fs.statSync('./dist/hickory-root.js').size;
 const minSize = gzipSize.sync(
-  fs.readFileSync('./dist/hickory.min.js')
+  fs.readFileSync('./dist/hickory-root.min.js')
 );
 
 console.log('Build time\n----------');

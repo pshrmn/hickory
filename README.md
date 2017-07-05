@@ -23,7 +23,7 @@ npm install hickory
 Below is a quick introduction to the API of a history object.
 
 ```js
-import { Browser } from 'hickory';
+import Browser from '@hickory/browser';
 
 const history = Browser();
 
