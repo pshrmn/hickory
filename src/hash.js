@@ -58,10 +58,12 @@ export default function Hash(options = {}) {
     return encodeHashPath(createPath(location));
   }
 
+  const initialAction = getStateFromHistory().key !== undefined ? 'POP' : 'PUSH';
+
   const hashHistory = {
     // location
     location: locationFromBrowser(),
-    action: 'POP',
+    action: initialAction,
     // convenience
     toHref,
     subscribe,

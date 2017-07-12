@@ -43,10 +43,12 @@ export default function Browser(options = {}) {
     return createPath(location);
   }
 
+  const initialAction = getStateFromHistory().key !== undefined ? 'POP' : 'PUSH';
+
   const browserHistory = {
     // location
     location: locationFromBrowser(),
-    action: 'POP',
+    action: initialAction,
     // convenience
     toHref,
     subscribe,

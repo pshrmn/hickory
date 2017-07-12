@@ -45,6 +45,18 @@ describe('Hash history', () => {
       });
     });
 
+    it('sets initial action to PUSH when page has not been previously visited', () => {
+      window.history.pushState(null, '', '/#has-no-key');
+      const testHistory = Hash();
+      expect(testHistory.action).toBe('PUSH');
+    });
+
+    it('sets initial action to POP when page has not been previously visited', () => {
+      window.history.pushState({ key: '17.0' }, '', '/#has-key');
+      const testHistory = Hash();
+      expect(testHistory. action).toBe('POP');
+    });
+
     describe('no initial hash path', () => {
       beforeEach(() => {
         window.history.pushState(null, '', '/');

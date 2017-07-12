@@ -40,7 +40,7 @@ export default function InMemory(options = {}) {
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
-    action: 'POP',
+    action: 'PUSH',
     // convenience
     toHref,
     subscribe,

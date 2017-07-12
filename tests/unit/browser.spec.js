@@ -35,6 +35,7 @@ describe('Browser history', () => {
         expect(testHistory.hasOwnProperty(property)).toBe(true);
       });
     });
+
     it('initializes using window.location', () => {
       const testHistory = Browser();
       expect(testHistory.location).toMatchObject({
@@ -42,6 +43,18 @@ describe('Browser history', () => {
         hash: '',
         query: ''
       });
+    });
+
+    it('sets initial action to PUSH when page has not been previously visited', () => {
+      window.history.pushState(null, '', '/has-no-key');
+      const testHistory = Browser();
+      expect(testHistory.action).toBe('PUSH');
+    });
+
+    it('sets initial action to POP when page has not been previously visited', () => {
+      window.history.pushState({ key: '17.0' }, '', '/has-key');
+      const testHistory = Browser();
+      expect(testHistory. action).toBe('POP');
     });
   });
 

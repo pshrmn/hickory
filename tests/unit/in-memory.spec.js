@@ -73,6 +73,14 @@ describe('Memory history', () => {
         expect(testHistory.index).toBe(0);
       });
     });
+
+    it('sets initial action to PUSH', () => {
+      const testHistory = InMemory({
+        locations: ['/one', '/two', '/three'],
+        index: 0
+      });
+      expect(testHistory.action).toBe('PUSH');
+    });
   });
 
   describe('update', () => {
