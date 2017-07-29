@@ -5,7 +5,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "postinstall": "lerna bootstrap --stream",
+    "postinstall": "lerna bootstrap --stream && npm run build",
     "test": "lerna run test"
   },
   "repository": {
