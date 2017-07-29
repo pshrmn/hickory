@@ -1,13 +1,13 @@
 # Introduction to Hickory
 
-The `hickory` package allows you to easily power navigation within your single-page application.
+Hickory provides a three packages that allow you to easily power navigation within your single-page application. These packages, `@hickory/browser`, `@hickory/hash`, and `@hickory/in-memory`, all share a nearly identical API, but are intended to be used in different environments.
 
 ## Creation
 
 At the root of your project, you will create a history object. There are three choices: `Browser`, `Hash`, and `InMemory`. You can read more about how to pick the right one for your application in the [choosing your history type](./choosing.md) documentation. For simplicity, all example code here will use the `Browser` history type.
 
 ```js
-import { Browser } from 'hickory';
+import Browser from '@hickory/Browser';
 
 const history = Browser();
 ```
