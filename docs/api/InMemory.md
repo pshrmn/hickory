@@ -1,7 +1,7 @@
 # InMemory API
 
 ```js
-import { InMemory } from 'hickory';
+import InMemory from '@hickory/in-memory';
 
 const history = InMemory();
 ```

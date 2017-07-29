@@ -1,7 +1,7 @@
 # Hash API
 
 ```js
-import { Hash } from 'hickory';
+import Hash from '@hickory/hash';
 
 const history = Hash();
 ```

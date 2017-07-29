@@ -1,7 +1,7 @@
 # Browser API
 
 ```js
-import { Browser } from 'hickory';
+import Browser from '@hickory/browser';
 
 const history = Browser();
 ```
