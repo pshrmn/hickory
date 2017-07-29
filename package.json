@@ -12,6 +12,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
+    "postinstall": "lerna bootstrap --stream",
     "test": "lerna run test"
   },
   "repository": {
