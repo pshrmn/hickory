@@ -1,6 +1,6 @@
 {
   "name": "@hickory/location-utils",
-  "version": "0.6.0",
+  "version": "1.0.0-beta.0",
   "description": "Simple location/path utility functions used by hickory",
   "main": "dist/hickory-location-utils.common.js",
   "module": "dist/hickory-location-utils.es.js",

@@ -1,6 +1,6 @@
 {
   "name": "@hickory/hash",
-  "version": "0.6.0",
+  "version": "1.0.0-beta.0",
   "description": "Hickory's hash history",
   "main": "dist/hickory-hash.common.js",
   "module": "dist/hickory-hash.es.js",
@@ -29,8 +29,8 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "dependencies": {
-    "@hickory/location-utils": "^0.6.0",
-    "@hickory/root": "^0.6.0"
+    "@hickory/location-utils": "^1.0.0-beta.0",
+    "@hickory/root": "^1.0.0-beta.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
