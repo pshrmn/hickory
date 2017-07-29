@@ -7,6 +7,9 @@ const config = {
   entry: 'src/index.js',
   moduleName: 'HickoryBrowser',
   sourceMap: true,
+  globals: {
+    '@hickory/root': 'HickoryRoot'
+  },
   plugins: [
     babel({
       exclude: 'node_modules/**'

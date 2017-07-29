@@ -7,6 +7,10 @@ const config = {
   entry: 'src/index.js',
   moduleName: 'HickoryHash',
   sourceMap: true,
+  globals: {
+    '@hickory/location-utils': 'HickoryLocationUtils',
+    '@hickory/root': 'HickoryRoot'
+  },
   plugins: [
     babel({
       exclude: 'node_modules/**'

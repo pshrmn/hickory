@@ -18,9 +18,14 @@ const build = (name, command, extraEnv) => {
 
 const startTime = new Date();
 
+// don't bundle dependencies for es/cjs builds
+const pkg = require('../package.json')
+const deps = Object.keys(pkg.dependencies).map(key => key);
+const depsString = deps.join(',');
+
 build(
   'ES',
-  'rollup -c -f es -o dist/hickory-browser.es.js',
+  `rollup -c -f es -o dist/hickory-browser.es.js -e ${depsString}`,
   {
     NODE_ENV: 'development',
     BABEL_ENV: 'build'
@@ -29,7 +34,7 @@ build(
 
 build(
   'CommonJS',
-  'rollup -c -f cjs -o dist/hickory-browser.common.js',
+  `rollup -c -f cjs -o dist/hickory-browser.common.js -e ${depsString}`,
   {
     NODE_ENV: 'development',
     BABEL_ENV: 'build'
