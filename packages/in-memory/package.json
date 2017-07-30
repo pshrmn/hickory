@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "node ./scripts/build",
-    "prepublishOnly": "in-publish && npm run build",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "repository": {
@@ -35,11 +35,7 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-object-assign": "^6.22.0",
     "babel-preset-env": "^1.6.0",
-    "cross-env": "^5.0.1",
-    "gzip-size": "^3.0.0",
-    "in-publish": "^2.0.0",
     "jest": "^20.0.4",
-    "pretty-bytes": "^4.0.2",
     "qs": "^6.5.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.45.2",

@@ -7,7 +7,7 @@ const frameworks = ['jasmine'];
 const plugins = [
   'karma-jasmine',
   'karma-chrome-launcher',
-  'karma-rollup-plugin'
+  'karma-rollup-preprocessor'
 ];
 
 var customLaunchers = {
