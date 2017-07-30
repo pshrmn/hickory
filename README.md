@@ -12,11 +12,25 @@ You can learn about Hickory and read up on the APIs in the [documentation](./doc
 
 Hickory is heavily inspired by the [history](https://github.com/ReactTraining/history) package and the `history` modules from [`vue-router`](https://github.com/vuejs/vue-router).
 
-### Installation
+### Packages
 
-```bash
-npm install hickory
-```
+This repository is a monorepo for the Hickory packages. Unless you are creating your own customized history type, you only need to know about three of them:
+
+| Package | Version | Repo | API |
+|---|---|---|---|
+| browser | [![npm][browser-version-badge]][npm-browser] | [repo](./packages/browser) | [API](./docs/api/Browser.md) |
+| hash | [![npm][hash-version-badge]][npm-hash] | [Repo](./packages/hash) | [API] | [API](./docs/api/Hash.md) |
+| in-memory | [![npm][in-memory-version-badge]][npm-in-memory] | [repo](./packages/in-memory) | [API](./docs/api/InMemory.md) |
+
+[browser-version-badge]: https://img.shields.io/npm/v/@hickory/browser.svg
+[npm-browser]: https://npmjs.com/package/@hickory/browser
+
+[hash-version-badge]: https://img.shields.io/npm/v/@hickory/hash.svg
+[npm-hash]: https://npmjs.com/package/@hickory/hash
+
+[in-memory-version-badge]: https://img.shields.io/npm/v/@hickory/in-memory.svg
+[npm-browser]: https://npmjs.com/package/@hickory/in-memory
+
 
 ### Usage
 
