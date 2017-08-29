@@ -2,7 +2,8 @@ import createCommonHistory from '@hickory/root';
 import {
   getStateFromHistory,
   domExists,
-  createEventCoordinator
+  createEventCoordinator,
+  ensureEncodedPathname
 } from '@hickory/dom-utils';
 import hashEncoderAndDecoder from './hashTypes';
 
@@ -15,6 +16,10 @@ function ensureHash(encode) {
 export default function Hash(options = {}) {
   if (!domExists()) {
     return;
+  }
+
+  if (!options.raw) {
+    options.raw = ensureEncodedPathname;
   }
 
   const {

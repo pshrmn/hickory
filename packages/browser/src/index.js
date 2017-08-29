@@ -3,12 +3,17 @@ import {
   ignorablePopstateEvent,
   getStateFromHistory,
   domExists,
-  createEventCoordinator
+  createEventCoordinator,
+  ensureEncodedPathname
 } from '@hickory/dom-utils';
 
 export default function Browser(options = {}) {
   if (!domExists()) {
     return;
+  }
+
+  if (!options.raw) {
+    options.raw = ensureEncodedPathname;
   }
 
   const {

@@ -13,10 +13,12 @@ describe('Hash history', () => {
       url: 'http://example.com/#/one'
     });
     window = global.window = dom.defaultView;
+    global.document = dom;
   });
 
   afterEach(() => {
     dom.close();
+    global.document = undefined;
   });
 
   describe('constructor', () => {

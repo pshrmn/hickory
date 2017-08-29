@@ -28,6 +28,17 @@ describe('hash integration tests', () => {
       expect(window.history.state.state).toEqual(state);
       expect(window.history.state.key).toBe(key);
     });
+
+    it('pushes URL using rawPathname, not pathname', done => {
+      testHistory.subscribe(loc => {
+        expect(loc.pathname).toEqual('/encoded-percent%')
+        done();
+      })
+      testHistory.push({
+        pathname: '/encoded-percent%25'
+      });
+      expect(window.location.hash).toEqual('#/encoded-percent%25');
+    });
   });
 
   describe('replace', () => {
