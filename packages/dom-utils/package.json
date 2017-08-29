@@ -1,0 +1,44 @@
+{
+  "name": "@hickory/dom-utils",
+  "version": "1.0.0-beta.0",
+  "description": "DOM utility functions for hickory browser/hash",
+  "main": "dist/hickory-dom-utils.common.js",
+  "module": "dist/hickory-dom-utils.es.js",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "node ./scripts/build",
+    "prepublishOnly": "in-publish && npm run build",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pshrmn/hickory/tree/master/packages/dom-utils"
+  },
+  "keywords": [
+    "hickory",
+    "dom"
+  ],
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.0",
+    "jest": "^20.0.4",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.49.1",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testURL": "https://example.com"
+  }
+}
