@@ -57,7 +57,8 @@ export default function locationFactory(options = {}) {
   const {
     query,
     decode = true,
-    baseSegment = ''
+    baseSegment = '',
+    raw = p => p
   } = options;
 
   const {
@@ -118,6 +119,8 @@ export default function locationFactory(options = {}) {
       location.state = state;
     }
 
+    location.rawPathname = raw(location.pathname);
+
     // it can be more convenient to interact with the decoded pathname,
     // but leave the option for using the encoded value
     if (decode) {
@@ -136,18 +139,13 @@ export default function locationFactory(options = {}) {
   }
 
   function createPath(location) {
-    const {
-      pathname = '',
-      query,
-      hash = ''
-    } = location;
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
       baseSegment +
-      completePathname(pathname) +
-      completeQuery(stringify(query)) +
-      completeHash(hash)
+      completePathname(location.rawPathname || location.pathname || '') +
+      completeQuery(stringify(location.query)) +
+      completeHash(location.hash)
     );
   }
 

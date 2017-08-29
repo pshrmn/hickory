@@ -190,7 +190,23 @@ describe('locationFactory', () => {
       });
     });
 
-    describe('query.parse optino', () => {
+    describe('using raw option fn to set location.rawPathname', () => {
+      it('calls user provided option', () => {
+        const { createLocation } = locationFactory({
+          raw: path => path.split('').reverse().join('')
+        });
+        const output = createLocation({ pathname: '/test' });
+        expect(output.rawPathname).toBe('tset/');
+      });
+
+      it('uses default fn if raw option is not provided', () => {
+        const output = createLocation({ pathname: '/test%20ing' });
+        expect(output.pathname).toBe('/test ing');
+        expect(output.rawPathname).toBe('/test%20ing');
+      });
+    });
+
+    describe('query.parse option', () => {
       it('uses the provided query parsing function to make the query value', () => {
         const { createLocation } = locationFactory({
           query: {
