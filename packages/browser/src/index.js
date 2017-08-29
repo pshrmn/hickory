@@ -1,10 +1,10 @@
 import createCommonHistory from '@hickory/root';
-import createEventCoordinator from './events';
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
-  domExists
-} from './dom';
+  domExists,
+  createEventCoordinator
+} from '@hickory/dom-utils';
 
 export default function Browser(options = {}) {
   if (!domExists()) {

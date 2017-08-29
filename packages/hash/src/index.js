@@ -1,10 +1,10 @@
 import createCommonHistory from '@hickory/root';
-import createEventCoordinator from './events';
-import hashEncoderAndDecoder from './hashTypes';
 import {
   getStateFromHistory,
-  domExists
-} from './dom';
+  domExists,
+  createEventCoordinator
+} from '@hickory/dom-utils';
+import hashEncoderAndDecoder from './hashTypes';
 
 function ensureHash(encode) {
   if (window.location.hash === '') {

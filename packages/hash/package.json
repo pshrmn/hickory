@@ -1,6 +1,6 @@
 {
   "name": "@hickory/hash",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Hickory's hash history",
   "main": "dist/hickory-hash.common.js",
   "module": "dist/hickory-hash.es.js",
@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "node ./scripts/build",
-    "prepublishOnly": "in-publish && npm run build",
+    "prepublishOnly": "npm run build",
     "test": "node ./scripts/test"
   },
   "repository": {
@@ -27,6 +27,7 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "dependencies": {
+    "@hickory/dom-utils": "^1.0.0-beta.0",
     "@hickory/location-utils": "^1.0.0-beta.0",
     "@hickory/root": "^1.0.0-beta.1"
   },
