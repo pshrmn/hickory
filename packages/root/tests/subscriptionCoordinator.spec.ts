@@ -1,26 +1,9 @@
+import 'jest';
 import createSubscriptionCoordinator from '../src/subscriptionCoordinator';
 
 describe('createSubscriptionCoordinator', () => {
 
   describe('subscribe', () => {
-    it('throws an error if passed a non-function', () => {
-      const { subscribe } = createSubscriptionCoordinator();
-      const badValues = [
-        null,
-        undefined,
-        0,
-        1,
-        'these',
-        ['values', 'are'],
-        { boundTo: fail }
-      ];
-      badValues.forEach(value => {
-        expect(() => {
-          subscribe(value);
-        }).toThrow();
-      });
-    });
-
     it('adds function to subscribers list', () => {
       const { subscribe, emit } = createSubscriptionCoordinator();
       let called = false;
@@ -28,7 +11,7 @@ describe('createSubscriptionCoordinator', () => {
         called = true;
       }
       subscribe(mockSub);
-      emit();
+      emit({ pathname: '/', rawPathname: '/', query: '', hash: '', key: '1' }, 'PUSH');
       expect(called).toBe(true);
     });
 
@@ -39,10 +22,10 @@ describe('createSubscriptionCoordinator', () => {
         calls++;
       }
       const unsub = subscribe(mockSub);
-      emit();
+      emit({ pathname: '/1', rawPathname: '/1', query: '', hash: '', key: '1' }, 'PUSH');
       expect(calls).toBe(1);
       unsub();
-      emit();
+      emit({ pathname: '/2', rawPathname: '/2', query: '', hash: '', key: '2' }, 'PUSH');
       expect(calls).toBe(1);
     });
   });
@@ -57,7 +40,7 @@ describe('createSubscriptionCoordinator', () => {
       for (let i=0; i<5; i++) {
         subscribe(increment);
       }
-      emit();
+      emit({ pathname: '/1', rawPathname: '/1', query: '', hash: '', key: '1' }, 'PUSH');
       expect(count).toBe(5);
     });
 
@@ -76,18 +59,18 @@ describe('createSubscriptionCoordinator', () => {
       subscribe(plusOne);
       const unsub = subscribe(plusTwo);
       subscribe(plusThree);
-      emit();
+      emit({ pathname: '/1', rawPathname: '/1', query: '', hash: '', key: '1' }, 'PUSH');
       expect(count).toBe(6);
 
       count = 0;
       unsub();
-      emit();
+      emit({ pathname: '/2', rawPathname: '/2', query: '', hash: '', key: '2' }, 'PUSH');
       expect(count).toBe(4);
     });
 
     it('passes emit\'s arguments to the subscribers', () => {
       const { subscribe, emit } = createSubscriptionCoordinator();
-      const location = { pathname: '/magnitude' };
+      const location = { pathname: '/1', rawPathname: '/1', query: '', hash: '', key: '1' };
       const action = 'POP-POP';
       function logger(l, a) {
         expect(l).toEqual(location);

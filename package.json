@@ -26,6 +26,7 @@
   "devDependencies": {
     "gzip-size": "^3.0.0",
     "lerna": "^2.0.0",
-    "pretty-bytes": "^4.0.2"
+    "pretty-bytes": "^4.0.2",
+    "typescript": "^2.5.2"
   }
 }

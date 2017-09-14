@@ -1,16 +1,13 @@
+import 'jest';
 import locationFactory from '../src/locationFactory';
-import qs from 'qs';
+import * as qs from 'qs';
 
 describe('locationFactory', () => {
   describe('constructor', () => {
     it('throws when attempting to use an invalid baseSegment', () => {
       const badValues = [
         'does-not-start-with-a-slash',
-        '/ends-with-slash/',
-        null,
-        0,
-        {},
-        [],
+        '/ends-with-slash/'
       ];
       badValues.forEach((value) => {
         expect(() => {
@@ -33,49 +30,16 @@ describe('locationFactory', () => {
         console.warn = consoleWarn;
       });
 
-      describe('bad query.parse value', () => {
-        it('warns that query.parse must be a function', () => {
-          const creators = locationFactory({
-            query: {
-              stringify: function() {}
-            }
+      describe('undefined', () => {
+        it('returns object with default parse/stringify fns', () => {
+          const creator = locationFactory();
+          const parsed = creator.createLocation('/test?one=two');
+          expect(parsed.query).toBe('one=two');
+          const stringified = creator.createPath({
+            pathname: '/test',
+            query: '?three=four'
           });
-          const { calls } = console.warn.mock;
-          expect(calls.length).toBe(1);
-          expect(calls[0][0]).toBe('The query option must contain a parse function property');
-        });
-        
-        it('uses default stringify function', () => {
-          const stringify = jest.fn();
-          const creators = locationFactory({
-            query: { stringify }
-          });
-
-          creators.createPath({ pathname: '/test' });
-          expect(stringify.mock.calls.length).toBe(0);
-        });
-      });
-
-      describe('bad query.stringify value', () => {
-        it('warns that query.stringify is not a function', () => {
-          const creators = locationFactory({
-            query: {
-              parse: function() {}
-            }
-          });
-          const { calls } = console.warn.mock;
-          expect(calls.length).toBe(1);
-          expect(calls[0][0]).toBe('The query option must contain a stringify function property');
-        });
-
-        it('uses default parse function', () => {
-          const parse = jest.fn();
-          const creators = locationFactory({
-            query: { parse }
-          });
-
-          creators.createLocation('/test?one=uno');
-          expect(parse.mock.calls.length).toBe(0);
+          expect(stringified).toBe('/test?three=four');
         });
       });
 
