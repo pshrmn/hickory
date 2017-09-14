@@ -1,4 +1,6 @@
+import 'jest';
 import createNavigationConfirmation from '../src/navigationConfirmation';
+import { HickoryLocation } from '../src/interface';
 
 describe('createNavigationConfirmation', () => {
   describe('confirmWith', () => {
@@ -52,8 +54,8 @@ describe('createNavigationConfirmation', () => {
 
       confirmNavigation(
         {
-          to: { pathname: '/this-is-only-a-test' },
-          from: { pathname: '/this-was-not-a-test' },
+          to: { pathname: '/this-is-only-a-test' } as HickoryLocation,
+          from: { pathname: '/this-was-not-a-test' } as HickoryLocation,
           action: 'TEST'
         },
         confirm,
@@ -80,8 +82,8 @@ describe('createNavigationConfirmation', () => {
       confirmWith(allowNavigation);
       confirmNavigation(
         {
-          to: toLoc,
-          from: fromLoc,
+          to: toLoc as HickoryLocation,
+          from: fromLoc as HickoryLocation,
           action  
         },
         confirm,

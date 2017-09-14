@@ -1,27 +1,28 @@
 export default function createKeyGenerator(initial) {
-  let id = initial || 0;
-  let current;
-
-  function parse(key) {
-    return key.split('.').map(value => parseInt(value, 10));
-  }
-
-  return {
-    major: function(previous) {
-      if (previous) {
-        let [ major ] = parse(previous);
-        id = major + 1;
-      }
-      return `${id++}.0`;
-    },
-    minor: function(current) {
-      let [ major, minor ] = parse(current);
-      return `${major}.${minor + 1}`;
-    },
-    diff: function(first, second) {
-      const [ firstMajor ] = parse(first);
-      const [ secondMajor ] = parse(second);
-      return secondMajor - firstMajor;
+    var id = initial || 0;
+    function parse(key) {
+        return key
+            .split('.')
+            .map(function (value) { return parseInt(value, 10); });
     }
-  }
+    return {
+        keygen: {
+            major: function (previous) {
+                if (previous) {
+                    var major = parse(previous)[0];
+                    id = major + 1;
+                }
+                return id++ + ".0";
+            },
+            minor: function (current) {
+                var _a = parse(current), major = _a[0], minor = _a[1];
+                return major + "." + (minor + 1);
+            },
+            diff: function (first, second) {
+                var firstMajor = parse(first)[0];
+                var secondMajor = parse(second)[0];
+                return secondMajor - firstMajor;
+            }
+        }
+    };
 }

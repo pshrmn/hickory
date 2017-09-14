@@ -1,31 +1,28 @@
-function noop() {}
-
+function noop() { }
 export default function createNavigationConfirmation() {
-
-  let confirmFunction;
-
-  function confirmNavigation(info, confirm, prevent = noop) {
-    if (!confirmFunction) {
-      confirm();
-    } else {
-      confirmFunction(info, confirm, prevent);
+    var confirmFunction;
+    function confirmNavigation(info, confirm, prevent) {
+        if (!confirmFunction) {
+            confirm();
+        }
+        else {
+            confirmFunction(info, confirm, prevent || noop);
+        }
     }
-  }
-
-  function confirmWith(fn) {
-    if (typeof fn !== 'function') {
-      return;
+    function confirmWith(fn) {
+        if (typeof fn !== 'function') {
+            return;
+        }
+        confirmFunction = fn;
     }
-    confirmFunction = fn;
-  };
-
-  function removeConfirmation() {
-    confirmFunction = null;
-  };
-
-  return {
-    confirmNavigation,
-    confirmWith,
-    removeConfirmation
-  }
+    ;
+    function removeConfirmation() {
+        confirmFunction = null;
+    }
+    ;
+    return {
+        confirmNavigation: confirmNavigation,
+        confirmWith: confirmWith,
+        removeConfirmation: removeConfirmation
+    };
 }
