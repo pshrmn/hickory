@@ -24,6 +24,25 @@ const history = Hash();
 
   * `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
 
+* `raw` - A function that will be used to set the `rawPathname` property of location objects. When creating a location from a string, this function will be passed the `pathname` section parsed from the string. When creating a location from an object, this function will be passed the `pathname` section of that object. The default value of this option is an identity function.
+
+* `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+
+**Note:** While you _can_ use the `baseSegment` with a `Hash` history, you probably should not. The `baseSegment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
+
+```js
+const history = Hash({ baseSegment: '/test' });
+```
+
+The `/test` segment will be stripped from and included in the hash segment of the full URI.
+
+```js
+const uri = history.toHref({ pathname: '/pathname' });
+// uri === '#/test/pathname'
+```
+
+Any pathname segments that exist prior to the hash section (or the full URI) will be ignored.
+
 ## Properties
 
 ### location
@@ -101,7 +120,7 @@ The `go` function is used to jump forward and backward to already visited locati
 ### toHref
 
 ```js
-history.toHref({ pathname: '/spamalat' });
+history.toHref({ pathname: '/spamalot' });
 // #/spamalot
 ```
 
