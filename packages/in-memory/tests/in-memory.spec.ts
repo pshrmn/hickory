@@ -1,3 +1,4 @@
+import 'jest';
 import InMemory from '../src';
 
 describe('Memory history', () => {
@@ -143,16 +144,16 @@ describe('Memory history', () => {
     it('increments current major key value by 1, sets minor value to 0', () => {
       const testHistory = InMemory();
 
-      let [ initMajor ] = testHistory.location.key.split('.');
-      initMajor = parseInt(initMajor, 10);
+      const [ initMajor ] = testHistory.location.key.split('.');
+      const initMajorNum = parseInt(initMajor, 10);
 
       testHistory.push('/next');
 
       const current = testHistory.location;
-      let [ currentMajor, currentMinor ] = current.key.split('.');
-      currentMajor = parseInt(currentMajor, 10);
+      const [ currentMajor, currentMinor ] = current.key.split('.');
+      const currentMajorNum = parseInt(currentMajor, 10);
 
-      expect(currentMajor).toEqual(initMajor + 1);
+      expect(currentMajorNum).toEqual(initMajorNum + 1);
       expect(currentMinor).toBe('0');
     });
 
@@ -176,10 +177,10 @@ describe('Memory history', () => {
     it('emits new location/action when the user confirms the navigation', () => {
       const testHistory = InMemory();
       const subscriber = jest.fn();
-      const confirm = (info, confirm, prevent) => {
+      const confirmer = (info, confirm, prevent) => {
         confirm();
       };
-      testHistory.confirmWith(confirm);
+      testHistory.confirmWith(confirmer);
       testHistory.subscribe(subscriber);
 
       testHistory.push('/next');
@@ -232,14 +233,14 @@ describe('Memory history', () => {
     it('creates location object with key\'s minor value incremented', () => {
       const testHistory = InMemory();
 
-      let [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
-      firstMinor = parseInt(firstMinor, 10);
+      const [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
+      const firstMinorNum: number = parseInt(firstMinor, 10);
 
       testHistory.replace('/same');
-      let [ secondMajor, secondMinor ] = testHistory.location.key.split('.');
-      secondMinor = parseInt(secondMinor, 10);
+      const [ secondMajor, secondMinor ] = testHistory.location.key.split('.');
+      const secondMinorNum: number = parseInt(secondMinor, 10);
 
-      expect(secondMinor).toBe(firstMinor + 1)
+      expect(secondMinorNum).toBe(firstMinorNum + 1)
     });
 
     it('sets history.action to "REPLACE"', () => {

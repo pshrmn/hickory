@@ -1,17 +1,19 @@
 {
   "name": "@hickory/in-memory",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Hickory's in-memory history",
   "main": "dist/hickory-in-memory.common.js",
   "module": "dist/hickory-in-memory.es.js",
+  "types": "types/index.d.ts",
   "files": [
     "dist",
+    "types",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "node ./scripts/build",
+    "prebuild": "rimraf dist && rimraf types",
+    "build": "tsc && node ./scripts/build",
     "prepublishOnly": "npm run build",
     "test": "jest"
   },
@@ -27,24 +29,38 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "dependencies": {
-    "@hickory/root": "^1.0.0-beta.2"
+    "@hickory/root": "^1.0.0-beta.3"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-jest": "^20.0.3",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-preset-env": "^1.6.0",
-    "jest": "^20.0.4",
+    "@types/jest": "^20.0.8",
+    "@types/node": "^8.0.28",
+    "jest": "^21.1.0",
     "qs": "^6.5.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.45.2",
-    "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-uglify": "^2.0.1"
+    "rollup-plugin-typescript2": "^0.5.2",
+    "rollup-plugin-uglify": "^2.0.1",
+    "ts-jest": "^21.0.1",
+    "typescript": "^2.5.2"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "<rootDir>/tests/*.spec.ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "module": "es6"
+      }
+    }
   }
 }
