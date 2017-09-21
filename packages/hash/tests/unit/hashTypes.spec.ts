@@ -1,3 +1,4 @@
+import "jest";
 import hashEncoderAndDecoder from '../../src/hashTypes';
 
 function runTestCases(fn, cases) {
@@ -25,7 +26,7 @@ describe('hash types', () => {
       runTestCases(encode, testCases);
     });
 
-    it('is the default option', () => {
+    describe('basic is the default option', () => {
       const { encode, decode } = hashEncoderAndDecoder();
       it('decode removes #, ensures leading /', () => {
         const testCases = [
@@ -44,7 +45,7 @@ describe('hash types', () => {
       });
     });
 
-    it('is used when provided an invalid hash type', () => {
+    describe('basic is used when provided an invalid hash type', () => {
       const { encode, decode } = hashEncoderAndDecoder('invalid-type');
       it('decode removes #, ensures leading /', () => {
         const testCases = [

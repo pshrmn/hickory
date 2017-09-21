@@ -1,4 +1,4 @@
-const babel = require('rollup-plugin-babel');
+const typescript = require('rollup-plugin-typescript2');
 const replace = require('rollup-plugin-replace');
 const resolve = require('rollup-plugin-node-resolve');
 
@@ -85,11 +85,9 @@ module.exports = function(config) {
 
     rollupPreprocessor: {
       plugins: [
+        typescript(),
         replace({
           'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-        }),
-        babel({
-          exclude: 'node_modules/**'
         }),
         resolve()
       ],

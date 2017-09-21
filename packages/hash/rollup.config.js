@@ -1,10 +1,10 @@
-import babel from 'rollup-plugin-babel';
+import typescript from 'rollup-plugin-typescript2';
 import uglify from 'rollup-plugin-uglify';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 
 const config = {
-  entry: 'src/index.js',
+  entry: 'src/index.ts',
   moduleName: 'HickoryHash',
   sourceMap: true,
   globals: {
@@ -12,8 +12,8 @@ const config = {
     '@hickory/root': 'HickoryRoot'
   },
   plugins: [
-    babel({
-      exclude: 'node_modules/**'
+    typescript({
+      useTsconfigDeclarationDir: true
     }),
     replace({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
