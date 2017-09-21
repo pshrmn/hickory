@@ -59,7 +59,6 @@ var customLaunchers = {
     real_mobile: false
   },
   // android
-  /*
   bs_android_chrome: {
     base: 'BrowserStack',
     browser: 'chrome',
@@ -67,7 +66,6 @@ var customLaunchers = {
     os_version: '4.4',
     real_mobile: false
   }
-  */
 };
 
 module.exports = function(config) {
