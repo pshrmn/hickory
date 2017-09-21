@@ -1,3 +1,4 @@
+///<reference path="../../node_modules/@types/jasmine/index.d.ts"/>
 import Hash from '../../src';
 
 describe('hash integration tests', () => {
