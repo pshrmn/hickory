@@ -1,3 +1,4 @@
+import "jest";
 import {
 	ensureEncodedPathname
 } from '../src';

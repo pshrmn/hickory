@@ -1,11 +1,11 @@
-export function ensureEncodedPathname(pathname) {
+export function ensureEncodedPathname(pathname: string): string {
 	const a = document.createElement('a');
 	a.setAttribute('href', pathname);
 	return a.pathname;
 }
 
-export function domExists() {
-  return window && window.location;
+export function domExists(): boolean {
+  return !!(window && window.location);
 }
 
 /*
@@ -14,7 +14,7 @@ export function domExists() {
  * events where event.state is undefined when you click
  * the back button)
  */
-export function ignorablePopstateEvent(event) {
+export function ignorablePopstateEvent(event: PopStateEvent) {
   return (
     event.state === undefined &&
     navigator.userAgent.indexOf('CriOS') === -1
@@ -32,20 +32,21 @@ export function getStateFromHistory() {
   }
 }
 
-export function createEventCoordinator(events) {
+export type EventHandler = (event: Event) => void;
+export interface EventsObject {
+  [key: string]: EventHandler
+}
+
+export function createEventCoordinator(events: EventsObject): () => void {
   for (let event in events) {
     let fn = events[event];
-    if (fn) {
-      window.addEventListener(event, fn, false);
-    }
+    window.addEventListener(event, fn, false);
   }
 
-  return function destroyEvents() {
+  return function destroyEvents(): void {
     for (let event in events) {
       let fn = events[event];
-      if (fn) {
-        window.removeEventListener(event, fn, false);
-      }
+      window.removeEventListener(event, fn, false);
     }
   }
 }
