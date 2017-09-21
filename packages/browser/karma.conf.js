@@ -92,7 +92,7 @@ module.exports = function(config) {
     rollupPreprocessor: {
       plugins: [
         typescript({
-          include: [ './src/**/*' ]
+          tsconfig: 'tests/integration/tsconfig.json'
         }),
         resolve()
       ],
