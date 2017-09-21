@@ -14,4 +14,4 @@ function run(command, extraEnv) {
 run('jest');
 
 // integration tests
-/*run('karma start --single-run');*/
+run('karma start --single-run');
