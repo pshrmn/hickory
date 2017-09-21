@@ -14,6 +14,4 @@ function run(command, extraEnv) {
 run('jest');
 
 // integration tests
-run('karma start --single-run', {
-  BABEL_ENV: 'build'
-});
+/*run('karma start --single-run');*/
