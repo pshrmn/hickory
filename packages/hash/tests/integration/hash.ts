@@ -1,6 +1,5 @@
 import Hash from '../../src';
 
-
 describe('hash integration tests', () => {
 
   let testHistory;

@@ -76,16 +76,22 @@ module.exports = function(config) {
     reporters: reporters,
 
     files: [
-      'tests/integration/*.js'
+      'tests/integration/*.ts'
     ],
 
     preprocessors: {
-     'tests/integration/*.js': ['rollup']
+     'tests/integration/*.ts': ['rollup']
+    },
+
+    mime: {
+      'text/x-typescript': ['ts','tsx']
     },
 
     rollupPreprocessor: {
       plugins: [
-        typescript(),
+        typescript({
+          include: [ './src/**/*' ]
+        }),
         replace({
           'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),

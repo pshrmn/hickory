@@ -161,15 +161,15 @@ describe('Hash history', () => {
     it('pushes new location with incremented key', () => {
       const testHistory = Hash();
 
-      let [initialMajor] = testHistory.location.key.split('.');
-      initialMajor = parseInt(initialMajor, 10);
+      const  [initialMajor] = testHistory.location.key.split('.');
+      const initialMajorNum = parseInt(initialMajor, 10);
 
       testHistory.push('/next');
 
-      let [replacedMajor] = testHistory.location.key.split('.');
-      replacedMajor = parseInt(replacedMajor, 10);
+      const [replacedMajor] = testHistory.location.key.split('.');
+      const replacedMajorNum = parseInt(replacedMajor, 10);
 
-      expect(replacedMajor).toBe(initialMajor + 1);
+      expect(replacedMajorNum).toBe(initialMajorNum + 1);
       expect(testHistory.location).toMatchObject({
         pathname: '/next'
       });
@@ -198,16 +198,16 @@ describe('Hash history', () => {
     it('increments current major key value by 1, sets minor value to 0', () => {
       const testHistory = Hash();
 
-      let [ initMajor ] = testHistory.location.key.split('.');
-      initMajor = parseInt(initMajor, 10);
+      const [ initMajor ] = testHistory.location.key.split('.');
+      const initMajorNum = parseInt(initMajor, 10);
 
       testHistory.push('/next');
 
       const current = testHistory.location;
-      let [ currentMajor, currentMinor ] = current.key.split('.');
-      currentMajor = parseInt(currentMajor, 10);
+      const [ currentMajor, currentMinor ] = current.key.split('.');
+      const currentMajorNum = parseInt(currentMajor, 10);
 
-      expect(currentMajor).toEqual(initMajor + 1);
+      expect(currentMajorNum).toEqual(initMajorNum + 1);
       expect(currentMinor).toBe('0');
     });
 
@@ -272,15 +272,15 @@ describe('Hash history', () => {
     it('replaces current location, but maintains major key', () => {
       const testHistory = Hash();
 
-      let [initialMajor] = testHistory.location.key.split('.');
-      initialMajor = parseInt(initialMajor, 10);
+      const [initialMajor] = testHistory.location.key.split('.');
+      const initialMajorNum = parseInt(initialMajor, 10);
 
       testHistory.replace('/same');
 
-      let [replacedMajor] = testHistory.location.key.split('.');
-      replacedMajor = parseInt(replacedMajor, 10);
+      const [replacedMajor] = testHistory.location.key.split('.');
+      const replacedMajorNum = parseInt(replacedMajor, 10);
 
-      expect(replacedMajor).toEqual(initialMajor);
+      expect(replacedMajorNum).toEqual(initialMajorNum);
       expect(testHistory.location).toMatchObject({
         pathname: '/same'
       });
@@ -309,14 +309,14 @@ describe('Hash history', () => {
     it('creates location object with key\'s minor value incremented', () => {
       const testHistory = Hash();
 
-      let [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
-      firstMinor = parseInt(firstMinor, 10);
+      const [ firstMajor, firstMinor ] = testHistory.location.key.split('.');
+      const firstMinorNum = parseInt(firstMinor, 10);
 
       testHistory.replace('/same');
-      let [ secondMajor, secondMinor ] = testHistory.location.key.split('.');
-      secondMinor = parseInt(secondMinor, 10);
+      const [ secondMajor, secondMinor ] = testHistory.location.key.split('.');
+      const secondMinorNum = parseInt(secondMinor, 10);
 
-      expect(secondMinor).toBe(firstMinor + 1)
+      expect(secondMinorNum).toBe(firstMinorNum + 1)
     });
 
     it('sets history.action to "REPLACE"', () => {
