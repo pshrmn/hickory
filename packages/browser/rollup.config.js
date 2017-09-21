@@ -4,9 +4,9 @@ import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 
 const config = {
-  entry: 'src/index.ts',
-  moduleName: 'HickoryBrowser',
-  sourceMap: true,
+  input: 'src/index.ts',
+  name: 'HickoryBrowser',
+  sourcemap: true,
   globals: {
     '@hickory/root': 'HickoryRoot'
   },

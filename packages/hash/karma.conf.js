@@ -92,7 +92,7 @@ module.exports = function(config) {
         resolve()
       ],
       format: 'iife',
-      sourceMap: 'inline'
+      sourcemap: 'inline'
     },
 
     plugins: plugins

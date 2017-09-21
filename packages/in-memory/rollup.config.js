@@ -3,9 +3,9 @@ import uglify from 'rollup-plugin-uglify';
 import resolve from 'rollup-plugin-node-resolve';
 
 const config = {
-  entry: 'src/index.ts',
-  moduleName: 'HickoryInMemory',
-  sourceMap: true,
+  input: 'src/index.ts',
+  name: 'HickoryInMemory',
+  sourcemap: true,
   globals: {
     '@hickory/root': 'HickoryRoot'
   },

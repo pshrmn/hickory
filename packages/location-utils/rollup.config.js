@@ -3,9 +3,9 @@ import uglify from 'rollup-plugin-uglify';
 import replace from 'rollup-plugin-replace';
 
 const config = {
-  entry: 'src/index.ts',
-  moduleName: 'HickoryLocationUtils',
-  sourceMap: true,
+  input: 'src/index.ts',
+  name: 'HickoryLocationUtils',
+  sourcemap: true,
   plugins: [
     typescript({
       useTsconfigDeclarationDir: true

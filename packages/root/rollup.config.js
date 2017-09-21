@@ -4,9 +4,9 @@ import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 
 const config = {
-  entry: 'src/index.ts',
-  moduleName: 'HickoryRoot',
-  sourceMap: true,
+  input: 'src/index.ts',
+  name: 'HickoryRoot',
+  sourcemap: true,
   globals: {
     '@hickory/location-utils': 'HickoryLocationUtils'
   },
