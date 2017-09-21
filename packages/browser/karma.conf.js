@@ -57,7 +57,17 @@ var customLaunchers = {
     os: 'iOS',
     os_version: '10.3',
     real_mobile: false
+  },
+  // android
+  /*
+  bs_android_chrome: {
+    base: 'BrowserStack',
+    browser: 'chrome',
+    os: 'android',
+    os_version: '4.4',
+    real_mobile: false
   }
+  */
 };
 
 module.exports = function(config) {
