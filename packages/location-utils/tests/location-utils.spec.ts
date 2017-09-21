@@ -1,3 +1,4 @@
+import 'jest';
 import {
   completePathname,
   completeHash,

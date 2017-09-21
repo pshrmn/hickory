@@ -24,7 +24,7 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^20.0.4",
+    "jest": "^21.1.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
@@ -51,5 +51,8 @@
         "module": "commonjs"
       }
     }
+  },
+  "dependencies": {
+    "@types/jest": "^20.0.8"
   }
 }
