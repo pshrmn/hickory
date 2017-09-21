@@ -1,5 +1,13 @@
+import "jest";
 import Hash from '../../src';
 import { jsdom } from 'jsdom';
+
+declare namespace NodeJS {
+  interface Global {
+    window: any;
+    document: any;
+  }
+}
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
