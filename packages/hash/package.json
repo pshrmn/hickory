@@ -31,7 +31,7 @@
   "dependencies": {
     "@hickory/dom-utils": "^1.0.0-beta.1",
     "@hickory/location-utils": "^1.0.0-beta.1",
-    "@hickory/root": "^1.0.0-beta.3"
+    "@hickory/root": "^1.0.0-beta.4"
   },
   "devDependencies": {
     "@types/jasmine": "^2.6.0",
