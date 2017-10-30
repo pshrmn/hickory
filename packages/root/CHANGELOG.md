@@ -1,3 +1,7 @@
+## 1.0.0-beta.4
+
+* Create a `NavFn` type for navigation methods.
+
 ## 1.0.0-beta.3
 
 * Switch to TypeScript.

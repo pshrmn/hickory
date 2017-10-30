@@ -21,8 +21,8 @@ export interface HickoryLocation {
 }
 
 export type AnyLocation = HickoryLocation | PartialLocation;
-
 export type ToArgument = string | PartialLocation;
+export type NavFn = (to: ToArgument) => void;
 
 export interface History {
   location: HickoryLocation;
@@ -32,8 +32,8 @@ export interface History {
   confirmWith: (fn?: ConfirmationFunction) => void;
   removeConfirmation: () => void;
   destroy: () => void;
-  update: (to: ToArgument) => void;
-  push: (to: ToArgument) => void;
-  replace: (to: ToArgument) => void;
+  update: NavFn;
+  push: NavFn;
+  replace: NavFn;
   go: (num?: number) => void;
 }
