@@ -133,13 +133,13 @@ describe('Hash history', () => {
     });
   });
 
-  describe('update', () => {
+  describe('navigate', () => {
     it('pushes when given a location that creates a new path', () => {
       const testHistory = Hash();
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.update({ pathname: 'next', hash: 'not-a-test' });
+      testHistory.navigate({ pathname: 'next', hash: 'not-a-test' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('PUSH');
@@ -150,7 +150,7 @@ describe('Hash history', () => {
       const subscriber = jest.fn();
       testHistory.subscribe(subscriber);
 
-      testHistory.update({ pathname: '/one' });
+      testHistory.navigate({ pathname: '/one' });
 
       const args = subscriber.mock.calls[0];
       expect(args[1]).toBe('REPLACE');

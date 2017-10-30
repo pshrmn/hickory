@@ -68,7 +68,7 @@ export default function InMemory(options: Options = {}): History {
     destroy: function destroy(): void {
       beforeDestroy.forEach(fn => { fn(); });
     },
-    update: function update(to: ToArgument): void {
+    navigate: function navigate(to: ToArgument): void {
       const location: HickoryLocation = createLocation(to, null);
       const path: string = createPath(location);
       const currentPath: string = createPath(memoryHistory.location);

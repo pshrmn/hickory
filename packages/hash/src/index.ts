@@ -95,7 +95,7 @@ export default function Hash(options: Options = {}): History {
     destroy: function destroy() {
       beforeDestroy.forEach(fn => { fn(); });
     },
-    update: function update(to: ToArgument): void {
+    navigate: function navigate(to: ToArgument): void {
       const location = createLocation(to, null);
       const path = createPath(location);
       const currentPath = createPath(hashHistory.location);

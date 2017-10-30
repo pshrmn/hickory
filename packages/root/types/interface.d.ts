@@ -26,7 +26,7 @@ export interface History {
     confirmWith: (fn?: ConfirmationFunction) => void;
     removeConfirmation: () => void;
     destroy: () => void;
-    update: NavFn;
+    navigate: NavFn;
     push: NavFn;
     replace: NavFn;
     go: (num?: number) => void;
