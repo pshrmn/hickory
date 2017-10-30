@@ -72,17 +72,17 @@ The `replace` function is used to navigate to a new location. It replaces the cu
 
 `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
-### update
+### navigate
 
 ```js
-history.update('/hairspray');
-history.update({
+history.navigate('/hairspray');
+history.navigate({
   pathname: '/hamilton',
   state: { musical: true }
 });
 ```
 
-The `update` function decides whether to `push` or `replace` for you. The path string that it creates is compared to the path string of the current location. If they are the same, then it will call `replace`. If they are different, then it will call `push`. This is done to mimic browser behavior and **unless you have a reason not to, you should prefer this over `push` and `replace`.**
+The `navigate` function decides whether to `push` or `replace` for you. The path string that it creates is compared to the path string of the current location. If they are the same, then it will call `replace`. If they are different, then it will call `push`. This is done to mimic browser behavior and **unless you have a reason not to, you should prefer this over `push` and `replace`.**
 
 #### arguments
 
