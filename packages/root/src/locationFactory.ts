@@ -5,7 +5,12 @@ import {
   stripBaseSegment
 } from '@hickory/location-utils';
 
-import { HickoryLocation, PartialLocation, AnyLocation } from './interface';
+import {
+  HickoryLocation,
+  PartialLocation,
+  ToArgument,
+  AnyLocation
+} from './interface';
 
 export interface QueryFunctions {
   parse: (query?:string) => any;
@@ -98,7 +103,7 @@ export default function locationFactory(
   }
 
   function createLocation(
-    value: PartialLocation | string,
+    value: ToArgument,
     key?: string,
     state: any = null
   ): HickoryLocation {
