@@ -1,3 +1,7 @@
+## Next
+
+* Default function returns an `InMemoryHistory` instead of just a `History`. `InMemoryHistory` extends `History`, but also includes `locations` and `index` properties.
+
 ## 1.0.0-beta.2
 
 * Rename `update` to `navigate`.

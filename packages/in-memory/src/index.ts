@@ -23,7 +23,7 @@ export interface InMemoryHistory extends History {
   index: number
 }
 
-export default function InMemory(options: Options = {}): History {
+export default function InMemory(options: Options = {}): InMemoryHistory {
   const {
     subscribe,
     emit,
