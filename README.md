@@ -115,13 +115,11 @@ The following browsers are currently tested:
 
 * Chrome 57 on Windows 10
 * Firefox 53 on Windows 10
-* Internet Explorer 11 on Windows 10*
+* Internet Explorer 11 on Windows 10
 * Edge 13 on Windows 10
 * Safari 10 on macOS Sierra
 * Safari on iOS 10.3
 * Chrome on Android 4.4
-
-\* IE 11 is currently not included in the automated tests due to a bug that happens in the Karma tests, but not during manual testing. Tests for that will be restored once I determine the cause of the bug.
 
 [version-badge]: https://img.shields.io/npm/v/hickory.svg
 [npm-hickory]: https://npmjs.com/package/hickory
