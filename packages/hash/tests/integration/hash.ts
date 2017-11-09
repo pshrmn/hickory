@@ -6,13 +6,50 @@ describe('hash integration tests', () => {
   let testHistory;
 
   beforeEach(() => {
-    testHistory = Hash();
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, '', '/#/');
+    testHistory = Hash();
   });
 
   afterEach(() => {
     testHistory.destroy();
+  });
+
+  describe('navigate', () => {
+    beforeEach(() => {
+      spyOn(window.history, 'pushState').and.callThrough();
+      spyOn(window.history, 'replaceState').and.callThrough();
+    });
+
+    afterEach(() => {
+      (window.history.pushState as jasmine.Spy).calls.reset();
+      (window.history.replaceState as jasmine.Spy).calls.reset();
+    });
+
+    it('can navigate with navigate', () => {
+      testHistory.navigate('/the-new-location');
+      expect(window.location.hash).toEqual('#/the-new-location');
+    });
+
+    it('sets the state', () => {
+      const providedState = { isSet: true };
+      testHistory.navigate('/next', providedState);
+      const { state, key } = testHistory.location;
+      expect(window.history.state.state).toEqual(state);
+      expect(window.history.state.key).toBe(key);
+    });
+
+    it('calls history.pushState when navigating to a new location', () => {
+      testHistory.navigate('/new-location');
+      expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(1);
+      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(0);
+    });
+
+    it('calls history.replaceState when navigating to the same location', () => {
+      testHistory.navigate('/');
+      expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(0);
+      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(1);
+    });
   });
 
   describe('push', () => {
