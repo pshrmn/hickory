@@ -1,4 +1,3 @@
-import { SubscriberFn } from './subscriptionCoordinator';
 import { ConfirmationFunction } from './navigationConfirmation';
 export interface PartialLocation {
     pathname?: string;
@@ -17,17 +16,25 @@ export interface HickoryLocation {
 }
 export declare type AnyLocation = HickoryLocation | PartialLocation;
 export declare type ToArgument = string | PartialLocation;
+export declare type Action = 'PUSH' | 'REPLACE' | 'POP';
+export interface PendingNavigation {
+    location: HickoryLocation;
+    action: Action;
+    finish(): void;
+    cancel(nextAction?: Action): void;
+}
 export declare type NavFn = (to: ToArgument) => void;
+export declare type ResponseHandler = (resp: PendingNavigation) => void;
 export interface History {
     location: HickoryLocation;
-    action: string;
-    toHref: (to: AnyLocation) => string;
-    subscribe: (fn: SubscriberFn) => () => void;
-    confirmWith: (fn?: ConfirmationFunction) => void;
-    removeConfirmation: () => void;
-    destroy: () => void;
+    action: Action;
+    toHref(to: AnyLocation): string;
+    respondWith(fn: ResponseHandler): void;
+    confirmWith(fn?: ConfirmationFunction): void;
+    removeConfirmation(): void;
+    destroy(): void;
     navigate: NavFn;
     push: NavFn;
     replace: NavFn;
-    go: (num?: number) => void;
+    go(num?: number): void;
 }

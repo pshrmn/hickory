@@ -3,7 +3,10 @@ export {
   PartialLocation,
   HickoryLocation,
   AnyLocation,
-  ToArgument
+  ToArgument,
+  ResponseHandler,
+  PendingNavigation,
+  Action
 } from './interface';
 
 export { Options, CommonHistory } from './common';
@@ -18,12 +21,6 @@ export {
   ConfirmationFunction,
   ConfirmationMethods
 } from './navigationConfirmation';
-export {
-  SubscriberFn,
-  UnsubscribeFn,
-  SubscriptionMethods
-} from './subscriptionCoordinator';
-
 
 import Common from './common';
 export default Common;
