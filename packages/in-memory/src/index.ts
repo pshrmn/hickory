@@ -5,10 +5,12 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  SubscriberFn,
   ConfirmationFunction,
   Options as RootOptions,
-  ToArgument
+  ToArgument,
+  ResponseHandler,
+  PendingNavigation,
+  Action
 } from '@hickory/root';
 
 export { History, HickoryLocation, PartialLocation, AnyLocation };
@@ -25,9 +27,6 @@ export interface InMemoryHistory extends History {
 
 export default function InMemory(options: Options = {}): InMemoryHistory {
   const {
-    subscribe,
-    emit,
-    removeAllSubscribers,
     createLocation,
     createPath,
     confirmNavigation,
@@ -36,7 +35,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     keygen
   } = createCommonHistory(options);
 
-  const beforeDestroy: Array<() => void> = [removeAllSubscribers];
+  const beforeDestroy: Array<() => void> = [];
 
   let initialLocations: Array<HickoryLocation>
   if (options.locations) {
@@ -54,15 +53,46 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     return createPath(location);
   }
 
+  let responseHandler: ResponseHandler;
+
+  function finalizePush(location: HickoryLocation) {
+    return () => {
+      memoryHistory.location = location;
+      memoryHistory.index++;
+      memoryHistory.locations = [
+        ...memoryHistory.locations.slice(0, memoryHistory.index),
+        location
+      ];
+      memoryHistory.action = 'PUSH';
+    }
+  }
+
+  function finalizeReplace(location: HickoryLocation) {
+    return () => {
+      memoryHistory.location = location;
+      memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
+      memoryHistory.action = 'REPLACE';
+    }
+  }
+
   const memoryHistory: InMemoryHistory = {
     // location
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
     action: 'PUSH',
+    // set response handler
+    respondWith: function(fn: ResponseHandler) {
+      responseHandler = fn;
+      responseHandler({
+        location: memoryHistory.location,
+        action: memoryHistory.action,
+        finish: () => {},
+        cancel: () => {}
+      });
+    },
     // convenience
     toHref,
-    subscribe,
     confirmWith,
     removeConfirmation,
     destroy: function destroy(): void {
@@ -88,14 +118,15 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           action: 'PUSH'
         },
         () => {
-          memoryHistory.location = location;
-          memoryHistory.index++;
-          memoryHistory.locations = [
-            ...memoryHistory.locations.slice(0, memoryHistory.index),
-            location
-          ];
-          memoryHistory.action = 'PUSH';
-          emit(memoryHistory.location, 'PUSH');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'PUSH',
+            finish: finalizePush(location),
+            cancel: () => {}
+          });
         }
       );
     },
@@ -109,17 +140,31 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           action: 'REPLACE'
         },
         () => {
-          memoryHistory.location = location;
-          memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
-          memoryHistory.action = 'REPLACE';
-          emit(memoryHistory.location, 'REPLACE');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'REPLACE',
+            finish: finalizeReplace(location),
+            cancel: () => {}
+          });
         }
       );
     },
     go: function go(num?: number): void {
       if (num == null || num === 0) {
-        memoryHistory.action = 'POP';
-        emit(memoryHistory.location, 'POP');
+        if (!responseHandler) {
+          return;
+        }
+        responseHandler({
+          location: memoryHistory.location,
+          action: 'POP',
+          finish: () => {
+            memoryHistory.action = 'POP';
+          },
+          cancel: () => {}
+        });
       } else {
         const newIndex: number = memoryHistory.index + num;
         if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
@@ -133,10 +178,19 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
               action: 'PUSH'
             },
             () => {
-              memoryHistory.index = newIndex;
-              memoryHistory.location = location;
-              memoryHistory.action = 'POP';
-              emit(memoryHistory.location, 'POP');
+              if (!responseHandler) {
+                return;
+              }
+              responseHandler({
+                location,
+                action: 'POP',
+                finish: () => {
+                  memoryHistory.index = newIndex;
+                  memoryHistory.location = location;
+                  memoryHistory.action = 'POP';
+                },
+                cancel: () => {}
+              });
             }
           );
         }

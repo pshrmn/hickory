@@ -10,7 +10,7 @@ describe('Memory constructor', () => {
       'index',
       'action',
       'toHref',
-      'subscribe',
+      'respondWith',
       'confirmWith',
       'removeConfirmation',
       'destroy'
