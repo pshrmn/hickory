@@ -41,10 +41,13 @@ import Browser from '@hickory/browser';
 
 const history = Browser();
 
-// You can add a subscription function to the history, and whenever there
-// is navigation, that function will be called.
-history.subscribe((location, action) => {
-  console.log('Navigated to:', location);
+// You must add a respond handler function. Whenever there
+// is navigation, that function will be called. It is responsible
+// for finishing the navigation. "finish" should not be called until
+// after any route matching/data loaded has finished running.
+history.respondWith(({ location, action, finish, cancel }) => {
+  console.log('Navigating to:', location);
+  finish();
 });
 
 // All of the locations that are visited by the user of your

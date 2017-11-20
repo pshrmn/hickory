@@ -111,14 +111,16 @@ history.go(-2);
 
 ## Detecting Navigation
 
-Triggering navigation does not do a whole lot if your application does not know that the navigation happened. Hickory uses a subscriber model to notify your application of navigation. You pass a function to your history object using its `subscribe` method and any time that navigation happens, your subscribed function will be called. The function will be passed two arguments: the new location object and the navigation type (`PUSH`, `REPLACE`, or `POP`).
+Triggering navigation does not do a whole lot if your application does not know that the navigation happened. Hickory expects to be paired with a router, which is added using your history instance's `respondWith` method. Whenever a location change happens, your Hickory history object will call the function passed to `respondWith`. That function call will be passed a "pending navigation" object, which contains the new `location` object, the navigation's `action` type, a `finish` function, and a `cancel` function. Once the router has finished performing any initialization for the new location (e.g. fetching data from your server based on a param from the location), the `finish` function should be called. That will finalize the navigation (e.g. in a browser, it will update the URI displayed in the address bar). If another location change occurs prior to the previous one finishing, that previous location change's `cancel` method should be called. This allows Hickory to prevent unnecessary entries in the history array of locations.
 
 ```js
-history.subscribe((location, action) => {
-  // any code in here will run whenever navigation happens
-});
+history.respondWith(function(pending) {
+  // do any route matching/data loading, and once that
+  // is done, call finish.
+  pending.finish();
+})
 ```
 
 ## One history
 
-If you are running your application in a browser, it is important that you only use one history object. It is fine to have multiple applications on the same page, but they should all use the same history object. If you were to use multiple history objects, then when one triggered navigation, the others would not detect the navigation because they do not share a subscription system.
+If you are running your application in a browser, it is important that you only use one history object. It is fine to have multiple applications on the same page, but they should all use the same history object. If you were to use multiple history objects, then when one triggered navigation, the others would not know that the navigation occurred.

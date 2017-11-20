@@ -115,17 +115,23 @@ The `toHref` function generates the string representation of the location object
 
 `location` - The location to create a path for.
 
-### subscribe
+### respondWith
 
 ```js
-let unsubscribe = history.subscribe((location, action) => {
-  console.log(action, location);
+history.respondWith(pendingNavigation => {
+  console.log(pendingNavigation.action, pendingNavigation.location);
+  pendingNavigation.finish();
 });
 ```
 
-The `subscribe` function allows you to register a function that will be called whenever the location changes. It will return a "unsubscribe" function, which you can call to stop the subscribed function from being called. You can register as many subscriber functions as you would like. When navigation happens, they will be called in the order that they were subscribed.
+The `respondWith` function is used to pass a response handler to the history instance. The function passed will be called every time that a location change occurs. Any route matching/data loading that you need to perform should be triggered by this function.
 
-Each function will be passed two arguments: `location` and `action`. The location argument is the new location object. The action argument is the type of navigation that occurred.
+The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
+
+* `location` - This is the location object that is being navigated to.
+* `action` - This is the string (`POP`, `PUSH`, or `REPLACE`) for the navigation type.
+* `finish` -  Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
+* `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. **Note:** This function is used by the browser and hash histories, but isn't actually necessary for the in-memory history.
 
 #### arguments
 
@@ -166,4 +172,4 @@ The `removeConfirmation` function will remove the current confirmation function 
 history.destroy();
 ```
 
-The `destroy` function allows you to remove all subscribers and event listeners. Generally speaking, you will not need to call this. However, if for some reason you want to create a new history object, you should call this one on the existing history object .
+The `destroy` function allows you to remove all event listeners. Generally speaking, you will not need to call this. However, if for some reason you want to create a new history object, you should call this one on the existing history object .
