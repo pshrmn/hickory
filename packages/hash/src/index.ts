@@ -12,10 +12,12 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  SubscriberFn,
   ConfirmationFunction,
   Options as RootOptions,
-  ToArgument
+  ToArgument,
+  ResponseHandler,
+  PendingNavigation,
+  Action
 } from '@hickory/root';
 
 export { History, HickoryLocation, PartialLocation, AnyLocation };
@@ -42,9 +44,6 @@ export default function Hash(options: Options = {}): History {
   }
 
   const {
-    subscribe,
-    emit,
-    removeAllSubscribers,
     createLocation,
     createPath,
     confirmNavigation,
@@ -58,7 +57,7 @@ export default function Hash(options: Options = {}): History {
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
 
-  const beforeDestroy: Array<() => void> = [removeAllSubscribers];
+  const beforeDestroy: Array<() => void> = [];
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
@@ -81,15 +80,44 @@ export default function Hash(options: Options = {}): History {
     return encodeHashPath(createPath(location));
   }
 
-  const initialAction = getStateFromHistory().key !== undefined ? 'POP' : 'PUSH';
+  let responseHandler: ResponseHandler;
+  
+    function finalizePush(location: HickoryLocation) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        window.history.pushState({ key, state }, '', path);
+        hashHistory.location = location;
+        hashHistory.action = 'PUSH';
+      }
+    }
+  
+    function finalizeReplace(location: HickoryLocation) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        window.history.replaceState({ key, state }, '', path);
+        hashHistory.location = location;
+        hashHistory.action = 'REPLACE';
+      }
+    }
 
   const hashHistory: History = {
     // location
+    action: (getStateFromHistory().key !== undefined ? 'POP' : 'PUSH') as Action,
     location: locationFromBrowser(),
-    action: initialAction,
+    // set response handler
+    respondWith: function(fn: ResponseHandler) {
+      responseHandler = fn;
+      responseHandler({
+        location: hashHistory.location,
+        action: hashHistory.action,
+        finish: () => {},
+        cancel: () => {}
+      });
+    },
     // convenience
     toHref,
-    subscribe,
     confirmWith,
     removeConfirmation,
     destroy: function destroy() {
@@ -116,12 +144,15 @@ export default function Hash(options: Options = {}): History {
           action: 'PUSH'
         },
         () => {
-          const path = toHref(location);
-          const { key, state } = location;
-          window.history.pushState({ key, state }, '', path);
-          hashHistory.location = location;
-          hashHistory.action = 'PUSH';
-          emit(hashHistory.location, 'PUSH');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'PUSH',
+            finish: finalizePush(location),
+            cancel: () => {}
+          });          
         }
       );
     },
@@ -136,12 +167,15 @@ export default function Hash(options: Options = {}): History {
           action: 'REPLACE'
         },
         () => {
-          const path = toHref(location);
-          const { key, state } = location;
-          window.history.replaceState({key, state }, '', path);
-          hashHistory.location = location;
-          hashHistory.action = 'REPLACE';
-          emit(hashHistory.location, 'REPLACE');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'REPLACE',
+            finish: finalizeReplace(location),
+            cancel: () => {}
+          });
         }
       );
     },
@@ -149,8 +183,17 @@ export default function Hash(options: Options = {}): History {
       // calling window.history.go with no value reloads the page, but
       // we will just re-emit instead
       if (!num) {
-        hashHistory.action = 'POP';
-        emit(hashHistory.location, 'POP');
+        if (!responseHandler) {
+          return;
+        }
+        responseHandler({
+          location: hashHistory.location,
+          action: 'POP',
+          finish: () => {
+            hashHistory.action = 'POP';
+          },
+          cancel: () => {}
+        });
       } else {
         window.history.go(num);
       }
@@ -175,13 +218,27 @@ export default function Hash(options: Options = {}): History {
         action: 'POP'
       },
       () => {
-        hashHistory.location = location;
-        hashHistory.action = 'POP';
-        emit(hashHistory.location, 'POP');
+        if (!responseHandler) {
+          return;
+        }
+        responseHandler({
+          location,
+          action: 'POP',
+          finish: () => {
+            hashHistory.location = location;
+            hashHistory.action = 'POP';
+          },
+          cancel: (nextAction: Action) => {
+            if (nextAction === 'POP') {
+              return;
+            }
+            reverting = true;
+            window.history.go(-1*diff);
+          }
+        });
       },
       () => {
         reverting = true;
-
         window.history.go(-1*diff);
       }
     );

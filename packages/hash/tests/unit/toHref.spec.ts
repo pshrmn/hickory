@@ -23,10 +23,7 @@ describe('toHref', () => {
 
   it('returns the location formatted as a string', () => {
     const testHistory = Hash();
-
-    testHistory.push({ pathname: '/one', query: 'test=query' });
-
-    const currentPath = testHistory.toHref(testHistory.location);
+    const currentPath = testHistory.toHref({ pathname: '/one', query: 'test=query' });
     expect(currentPath).toBe('#/one?test=query');
   });
 
