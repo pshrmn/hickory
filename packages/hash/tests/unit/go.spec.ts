@@ -58,7 +58,7 @@ describe('go', () => {
     // trigger the history's event handler
     setTimeout(() => {
       expect(router.mock.calls.length).toBe(1);
-    }, 10);
+    }, 5);
   });
 
   it('calls response handler with expected location and action', (done) => {
@@ -108,6 +108,10 @@ describe('go', () => {
         const pushRouter = ignoreFirstCall(
           function(pending) {
             cancelGo('PUSH');
+            setTimeout(() => {
+              expect(window.location.hash).toBe('#/six');
+              done();
+            }, 5);
           }
         );
 
@@ -120,11 +124,6 @@ describe('go', () => {
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
-
-        setTimeout(() => {
-          expect(window.location.hash).toBe('#/six');
-          done();
-        }, 50);
       });
 
       it('undoes the pop if replacing before pending response finishes', done => {
@@ -147,6 +146,10 @@ describe('go', () => {
         const replaceRouter = ignoreFirstCall(
           function(pending) {
             cancelGo('REPLACE');
+            setTimeout(() => {
+              expect(window.location.hash).toBe('#/six');
+              done();
+            }, 5);
           }
         );
 
@@ -159,11 +162,6 @@ describe('go', () => {
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
-
-        setTimeout(() => {
-          expect(window.location.hash).toBe('#/six');
-          done();
-        }, 50);
       });
 
       it('does nothing if popping before pending response finishes', done => {
@@ -186,6 +184,10 @@ describe('go', () => {
         const popRouter = ignoreFirstCall(
           function(pending) {
             cancelGo('POP');
+            setTimeout(() => {
+              expect(window.location.hash).toBe('#/three');
+              done();
+            }, 5);
           }
         );
 
@@ -198,11 +200,6 @@ describe('go', () => {
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
-
-        setTimeout(() => {
-          expect(window.location.hash).toBe('#/three');
-          done();
-        }, 50);
       });
     });
   });
@@ -259,7 +256,7 @@ describe('go', () => {
           key: '2.0'
         });
         done();
-      }, 10);
+      }, 5);
     });
   });
 });

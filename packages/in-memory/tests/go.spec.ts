@@ -39,9 +39,7 @@ describe('go', () => {
     testHistory.go(10);
     // just verifying that a popstate event hasn't emitted to
     // trigger the history's event handler
-    setTimeout(() => {
-      expect(router.mock.calls.length).toBe(1);
-    }, 10);
+    expect(router.mock.calls.length).toBe(1);
   });
 
   it('calls response handler with expected location and action', (done) => {
@@ -137,7 +135,7 @@ describe('go', () => {
       testHistory.go(-2);
     });
 
-    it('does not call response handler when the user prevents the navigation', (done) => {
+    it('does not call response handler when the user prevents the navigation', () => {
       const testHistory = InMemory();
       const confirm = (info, confirm, prevent) => {
         prevent();
@@ -152,15 +150,11 @@ describe('go', () => {
       // don't add function until we have setup the history
       testHistory.confirmWith(confirm);
       testHistory.go(-2);
-
-      // need to wait for testHistory.history.go to emit a popstate event
-      setTimeout(() => {
-        expect(testHistory.location).toMatchObject({
-          pathname: '/three',
-          key: '2.0'
-        });
-        done();
-      }, 10);
+      
+      expect(testHistory.location).toMatchObject({
+        pathname: '/three',
+        key: '2.0'
+      });
     });
   });
 });
