@@ -12,10 +12,12 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  SubscriberFn,
   ConfirmationFunction,
   Options as RootOptions,
-  ToArgument
+  ToArgument,
+  ResponseHandler,
+  PendingNavigation,
+  Action
 } from '@hickory/root';
 
 export { History, HickoryLocation, PartialLocation, AnyLocation };
@@ -34,9 +36,6 @@ export default function Browser(options: Options = {}): History {
   }
 
   const {
-    subscribe,
-    emit,
-    removeAllSubscribers,
     createLocation,
     createPath,
     confirmNavigation,
@@ -45,7 +44,7 @@ export default function Browser(options: Options = {}): History {
     keygen
   } = createCommonHistory(options);
 
-  const beforeDestroy: Array<() => void> = [removeAllSubscribers];
+  const beforeDestroy: Array<() => void> = [];
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
@@ -65,20 +64,50 @@ export default function Browser(options: Options = {}): History {
     return createPath(location);
   }
 
-  const initialAction = getStateFromHistory().key !== undefined ? 'POP' : 'PUSH';
+  let responseHandler: ResponseHandler;
+
+  function finalizePush(location: HickoryLocation) {
+    return () => {
+      const path = toHref(location);
+      const { key, state } = location;
+      window.history.pushState({ key, state }, '', path);
+      browserHistory.location = location;
+      browserHistory.action = 'PUSH';
+    }
+  }
+
+  function finalizeReplace(location: HickoryLocation) {
+    return () => {
+      const path = toHref(location);
+      const { key, state } = location;
+      window.history.replaceState({ key, state }, '', path);
+      browserHistory.location = location;
+      browserHistory.action = 'REPLACE';
+    }
+  }
 
   const browserHistory = {
-    // location
+    // set action before location because locationFromBrowser enforces that the location has a key
+    action: (getStateFromHistory().key !== undefined ? 'POP' : 'PUSH') as Action,
     location: locationFromBrowser(),
-    action: initialAction,
+    // set response handler
+    respondWith: function(fn: ResponseHandler) {
+      responseHandler = fn;
+      responseHandler({
+        location: browserHistory.location,
+        action: browserHistory.action,
+        finish: () => {},
+        cancel: () => {}
+      });
+    },
     // convenience
     toHref,
-    subscribe,
     confirmWith,
     removeConfirmation,
     destroy: function destroy() {
       beforeDestroy.forEach(fn => { fn(); });
     },
+    // navigation
     navigate: function navigate(to: ToArgument): void {
       const location = createLocation(to, null);
       const path = createPath(location);
@@ -101,12 +130,15 @@ export default function Browser(options: Options = {}): History {
           action: 'PUSH'
         },
         () => {
-          const path = toHref(location);
-          const { key, state } = location;
-          window.history.pushState({ key, state }, '', path);
-          browserHistory.location = location;
-          browserHistory.action = 'PUSH';
-          emit(browserHistory.location, 'PUSH');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'PUSH',
+            finish: finalizePush(location),
+            cancel: () => {}
+          });
         }
       );
     },
@@ -121,21 +153,33 @@ export default function Browser(options: Options = {}): History {
           action: 'REPLACE'
         },
         () => {
-          const path = toHref(location);
-          const { key, state } = location;
-          window.history.replaceState({key, state}, '', path);
-          browserHistory.location = location;
-          browserHistory.action = 'REPLACE';
-          emit(browserHistory.location, 'REPLACE');
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: 'REPLACE',
+            finish: finalizeReplace(location),
+            cancel: () => {}
+          });
         }
       );
     },
     go: function go(num: number): void {
-      // calling window.history.go with no value reloads the page, but
-      // we will just re-emit instead
+      // Calling window.history.go with no value reloads the page. Instead
+      // we will just call the responseHandler with the current location
       if (!num) {
-        browserHistory.action = 'POP';
-        emit(browserHistory.location, 'POP');
+        if (!responseHandler) {
+          return;
+        }
+        responseHandler({
+          location: browserHistory.location,
+          action: 'POP',
+          finish: () => {
+            browserHistory.action = 'POP';
+          },
+          cancel: () => {}
+        });
       } else {
         window.history.go(num);
       }
@@ -160,9 +204,24 @@ export default function Browser(options: Options = {}): History {
         action: 'POP'
       },
       () => {
-        browserHistory.location = location;
-        browserHistory.action = 'POP';
-        emit(browserHistory.location, 'POP');
+        if (!responseHandler) {
+          return;
+        }
+        responseHandler({
+          location,
+          action: 'POP',
+          finish: () => {
+            browserHistory.location = location;
+            browserHistory.action = 'POP';
+          },
+          cancel: (nextAction: Action) => {
+            if (nextAction === 'POP') {
+              return;
+            }
+            reverting = true;
+            window.history.go(-1*diff);
+          }
+        });
       },
       () => {
         reverting = true;

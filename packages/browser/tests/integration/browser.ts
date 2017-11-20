@@ -1,6 +1,17 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts"/>
 import Browser from '../../src';
 
+function ignoreFirstCall(fn) {
+  let notCalled = true;
+  return function() {
+    if (notCalled) {
+      notCalled = false;
+      return;
+    }
+    fn.apply(null, arguments);
+  }
+}
+
 describe('browser integration tests', () => {
 
   let testHistory;
@@ -9,6 +20,10 @@ describe('browser integration tests', () => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, '', '/');
     testHistory = Browser();
+    function router(pending) {
+      pending.finish();
+    }
+    testHistory.respondWith(router);
   });
 
   afterEach(() => {
@@ -66,15 +81,12 @@ describe('browser integration tests', () => {
       expect(window.history.state.key).toBe(key);
     });
 
-    it('pushes URL using rawPathname, not pathname', done => {
-      testHistory.subscribe(loc => {
-        expect(loc.pathname).toEqual('/encoded-percent%')
-        done();
-      })
+    it('pushes URL using rawPathname, not pathname', () => {
       testHistory.push({
         pathname: '/encoded-percent%25'
       });
       expect(window.location.pathname).toEqual('/encoded-percent%25');
+      expect(testHistory.location.pathname).toEqual('/encoded-percent%')
     });
   });
 
@@ -99,15 +111,13 @@ describe('browser integration tests', () => {
       testHistory.push('/two');
       testHistory.push('/three');
 
-      let unsubscribe;
-
-      function subscriber(location) {
-        expect(location.pathname).toEqual('/one');
-        unsubscribe();
-        done();
-      }
-      unsubscribe = testHistory.subscribe(subscriber);
-
+      const goRouter = ignoreFirstCall(
+        function(pending) {
+          expect(pending.location.pathname).toEqual('/one');
+          done();
+        }
+      );
+      testHistory.respondWith(goRouter);
       testHistory.go(-2);
     });
   });
@@ -118,14 +128,13 @@ describe('browser integration tests', () => {
       testHistory.push('/dos');
       testHistory.push('/tres');
 
-      let unsubscribe;
-
-      function subscriber(location) {
-        expect(location.pathname).toEqual('/uno');
-        unsubscribe();
-        done();
-      }
-      unsubscribe = testHistory.subscribe(subscriber);
+      const goRouter = ignoreFirstCall(
+        function(pending) {
+          expect(pending.location.pathname).toEqual('/uno');
+          done();
+        }
+      );
+      testHistory.respondWith(goRouter);
 
       window.history.go(-2);
     });

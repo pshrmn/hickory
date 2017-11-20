@@ -27,7 +27,7 @@ describe('Browser constructor', () => {
       'location',
       'action',
       'toHref',
-      'subscribe',
+      'respondWith',
       'confirmWith',
       'removeConfirmation',
       'destroy'
