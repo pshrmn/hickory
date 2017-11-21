@@ -1,6 +1,6 @@
 {
   "name": "@hickory/root",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "description": "Shared hickory functionality",
   "main": "dist/hickory-root.common.js",
   "module": "dist/hickory-root.es.js",
