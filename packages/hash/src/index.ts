@@ -33,6 +33,7 @@ export interface Options extends RootOptions {
   hashType?: string
 }
 
+function noop() {}
 
 export default function Hash(options: Options = {}): History {
   if (!domExists()) {
@@ -112,8 +113,8 @@ export default function Hash(options: Options = {}): History {
       responseHandler({
         location: hashHistory.location,
         action: hashHistory.action,
-        finish: () => {},
-        cancel: () => {}
+        finish: noop,
+        cancel: noop
       });
     },
     // convenience
@@ -151,7 +152,7 @@ export default function Hash(options: Options = {}): History {
             location,
             action: 'PUSH',
             finish: finalizePush(location),
-            cancel: () => {}
+            cancel: noop
           });          
         }
       );
@@ -174,7 +175,7 @@ export default function Hash(options: Options = {}): History {
             location,
             action: 'REPLACE',
             finish: finalizeReplace(location),
-            cancel: () => {}
+            cancel: noop
           });
         }
       );
@@ -192,7 +193,7 @@ export default function Hash(options: Options = {}): History {
           finish: () => {
             hashHistory.action = 'POP';
           },
-          cancel: () => {}
+          cancel: noop
         });
       } else {
         window.history.go(num);

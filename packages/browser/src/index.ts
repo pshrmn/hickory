@@ -26,6 +26,8 @@ export interface Options extends RootOptions {
   raw?: (pathname: string) => string;
 }
 
+function noop() {}
+
 export default function Browser(options: Options = {}): History {
   if (!domExists()) {
     return;
@@ -96,8 +98,8 @@ export default function Browser(options: Options = {}): History {
       responseHandler({
         location: browserHistory.location,
         action: browserHistory.action,
-        finish: () => {},
-        cancel: () => {}
+        finish: noop,
+        cancel: noop
       });
     },
     // convenience
@@ -137,7 +139,7 @@ export default function Browser(options: Options = {}): History {
             location,
             action: 'PUSH',
             finish: finalizePush(location),
-            cancel: () => {}
+            cancel: noop
           });
         }
       );
@@ -160,7 +162,7 @@ export default function Browser(options: Options = {}): History {
             location,
             action: 'REPLACE',
             finish: finalizeReplace(location),
-            cancel: () => {}
+            cancel: noop
           });
         }
       );
@@ -178,7 +180,7 @@ export default function Browser(options: Options = {}): History {
           finish: () => {
             browserHistory.action = 'POP';
           },
-          cancel: () => {}
+          cancel: noop
         });
       } else {
         window.history.go(num);

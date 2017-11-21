@@ -25,6 +25,8 @@ export interface InMemoryHistory extends History {
   index: number
 }
 
+function noop() {}
+
 export default function InMemory(options: Options = {}): InMemoryHistory {
   const {
     createLocation,
@@ -87,8 +89,8 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
       responseHandler({
         location: memoryHistory.location,
         action: memoryHistory.action,
-        finish: () => {},
-        cancel: () => {}
+        finish: noop,
+        cancel: noop
       });
     },
     // convenience
@@ -125,7 +127,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
             location,
             action: 'PUSH',
             finish: finalizePush(location),
-            cancel: () => {}
+            cancel: noop
           });
         }
       );
@@ -147,7 +149,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
             location,
             action: 'REPLACE',
             finish: finalizeReplace(location),
-            cancel: () => {}
+            cancel: noop
           });
         }
       );
@@ -163,7 +165,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           finish: () => {
             memoryHistory.action = 'POP';
           },
-          cancel: () => {}
+          cancel: noop
         });
       } else {
         const newIndex: number = memoryHistory.index + num;
@@ -189,7 +191,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
                   memoryHistory.location = location;
                   memoryHistory.action = 'POP';
                 },
-                cancel: () => {}
+                cancel: noop
               });
             }
           );
