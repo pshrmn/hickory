@@ -22,6 +22,7 @@ export interface PendingNavigation {
     action: Action;
     finish(): void;
     cancel(nextAction?: Action): void;
+    cancelled?: boolean;
 }
 export declare type NavFn = (to: ToArgument) => void;
 export declare type ResponseHandler = (resp: PendingNavigation) => void;
