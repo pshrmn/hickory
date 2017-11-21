@@ -113,7 +113,7 @@ module.exports = function(config) {
         build: process.env.TRAVIS_BUILD_NUMBER,
         name: process.env.TRAVIS_JOB_NUMBER,
         video: false,
-        timeout: 80
+        timeout: 120
       },
       browserDisconnectTimeout: 10000,
       browserDisconnectTolerance: 1
