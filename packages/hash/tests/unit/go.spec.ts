@@ -58,7 +58,7 @@ describe('go', () => {
     // trigger the history's event handler
     setTimeout(() => {
       expect(router.mock.calls.length).toBe(1);
-    }, 5);
+    }, 50);
   });
 
   it('calls response handler with expected location and action', (done) => {
@@ -111,7 +111,7 @@ describe('go', () => {
             setTimeout(() => {
               expect(window.location.hash).toBe('#/six');
               done();
-            }, 5);
+            }, 50);
           }
         );
 
@@ -149,7 +149,7 @@ describe('go', () => {
             setTimeout(() => {
               expect(window.location.hash).toBe('#/six');
               done();
-            }, 5);
+            }, 50);
           }
         );
 
@@ -187,7 +187,7 @@ describe('go', () => {
             setTimeout(() => {
               expect(window.location.hash).toBe('#/three');
               done();
-            }, 5);
+            }, 50);
           }
         );
 
@@ -256,7 +256,7 @@ describe('go', () => {
           key: '2.0'
         });
         done();
-      }, 5);
+      }, 50);
     });
   });
 });
