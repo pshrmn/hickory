@@ -3,6 +3,7 @@ import {
   completePathname,
   completeHash,
   completeQuery,
+  stripPrefix,
   stripBaseSegment
 } from '../src';
 
@@ -55,6 +56,16 @@ describe('location utils', () => {
       falsy.forEach(value => {
         expect(completeQuery(value)).toBe('');
       });
+    });
+  });
+
+  describe('stripPrefix', () => {
+    it('removes the prefix from provided string', () => {
+      expect(stripPrefix('/test/string', '/test')).toBe('/string');
+    });
+
+    it('does nothing when the string does not begin with the prefix', () => {
+      expect(stripPrefix('/string', '/test')).toBe('/string');
     });
   });
 
