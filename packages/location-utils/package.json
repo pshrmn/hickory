@@ -49,7 +49,8 @@
       "ts-jest": {
         "module": "commonjs"
       }
-    }
+    },
+    "mapCoverage": true
   },
   "dependencies": {
     "@types/jest": "^20.0.8"

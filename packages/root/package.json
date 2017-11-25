@@ -58,6 +58,7 @@
       "ts-jest": {
         "module": "commonjs"
       }
-    }
+    },
+    "mapCoverage": true
   }
 }
