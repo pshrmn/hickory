@@ -16,6 +16,13 @@ function ignoreFirstCall(fn) {
 // so that we can reset the DOM between tests
 describe('go', () => {
   describe('with no value', () => {
+    it('does nothing if there is no responseHandler', () => {
+      const testHistory = InMemory();
+      expect(() => {
+        testHistory.go();
+      }).not.toThrow();
+    });
+
     it('calls response handler with current location and "POP" action', (done) => {
       const testHistory = InMemory();
       const router = ignoreFirstCall(
@@ -30,41 +37,67 @@ describe('go', () => {
       testHistory.respondWith(router); // calls router
       testHistory.go();
     });
+
+    it('sets history.action to "POP" when calling "finish"', done => {
+      const testHistory = InMemory();
+      expect(testHistory.action).toBe('PUSH');
+      const router = ignoreFirstCall(
+        function(pending) {
+          pending.finish();
+          expect(testHistory.action).toBe('POP');
+          done();
+        }
+      )
+      testHistory.respondWith(router);
+      testHistory.go();
+    });        
   });
 
-  it('does nothing if the value is outside of the range', () => {
-    const testHistory = InMemory();
-    const router = jest.fn();
-    testHistory.respondWith(router);
-    testHistory.go(10);
-    // just verifying that a popstate event hasn't emitted to
-    // trigger the history's event handler
-    expect(router.mock.calls.length).toBe(1);
-  });
+  describe('with a value', () => {
+    it('does nothing if the value is outside of the range', () => {
+      const testHistory = InMemory();
+      const router = jest.fn();
+      testHistory.respondWith(router);
+      testHistory.go(10);
+      // just verifying that a popstate event hasn't emitted to
+      // trigger the history's event handler
+      expect(router.mock.calls.length).toBe(1);
+    });
 
-  it('calls response handler with expected location and action', (done) => {
-    const testHistory = InMemory();
-    let setup = false;
-    function router(pending) {
-      pending.finish();
-      if (!setup) {
-        return;
+    it('calls response handler with expected location and action', (done) => {
+      const testHistory = InMemory();
+      let setup = false;
+      function router(pending) {
+        pending.finish();
+        if (!setup) {
+          return;
+        }
+        expect(pending.location).toMatchObject({
+          pathname: '/four',
+          key: '3.0'
+        });      
+        expect(pending.action).toBe('POP');
+        done();
       }
-      expect(pending.location).toMatchObject({
-        pathname: '/four',
-        key: '3.0'
-      });      
-      expect(pending.action).toBe('POP');
-      done();
-    }
-    testHistory.respondWith(router);
-    testHistory.push('/two'); // 1.0
-    testHistory.push('/three'); // 2.0
-    testHistory.push('/four'); // 3.0
-    testHistory.push('/five'); // 4.0
-    testHistory.push('/six'); // 5.0
-    setup = true;
-    testHistory.go(-2);
+      testHistory.respondWith(router);
+      testHistory.push('/two'); // 1.0
+      testHistory.push('/three'); // 2.0
+      testHistory.push('/four'); // 3.0
+      testHistory.push('/five'); // 4.0
+      testHistory.push('/six'); // 5.0
+      setup = true;
+      testHistory.go(-2);
+    });
+
+    it('does nothing if there is no responseHandler', () => {
+      const testHistory = InMemory({
+        locations: ['/one', '/two'],
+        index: 1
+      });
+      expect(() => {
+        testHistory.go(-1);
+      }).not.toThrow();
+    });
   });
 
   describe('respondWith', () => {

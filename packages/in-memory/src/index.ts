@@ -37,7 +37,12 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     keygen
   } = createCommonHistory(options);
 
-  const beforeDestroy: Array<() => void> = [];
+  const beforeDestroy: Array<() => void> = [
+    () => {
+      memoryHistory.locations = [];
+      memoryHistory.index = undefined;
+    }
+  ];
 
   let initialLocations: Array<HickoryLocation>
   if (options.locations) {

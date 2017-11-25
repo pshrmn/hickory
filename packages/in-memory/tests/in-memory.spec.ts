@@ -81,4 +81,15 @@ describe('Memory constructor', () => {
     });
     expect(testHistory.action).toBe('PUSH');
   });
+
+  it("removes saved locations when destroying", () => {
+    const testHistory = InMemory({
+      locations: ['/one', '/two', '/three']
+    });
+    expect(testHistory.locations.length).toBe(3);
+    expect(testHistory.index).toBe(0);
+    testHistory.destroy();
+    expect(testHistory.locations.length).toBe(0);
+    expect(testHistory.index).toBeUndefined();
+  });
 });
