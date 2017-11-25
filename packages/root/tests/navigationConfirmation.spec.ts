@@ -98,6 +98,55 @@ describe('createNavigationConfirmation', () => {
       expect(args[1]).toBe(confirm);
       expect(args[2]).toBe(prevent);
     });
+
+    it('will call a no-op function when cancelling if prevent function not provided', () => {
+      const {
+        confirmWith,
+        confirmNavigation,
+        removeConfirmation
+      } = createNavigationConfirmation();
+      
+      function autoPrevent(info, confirm, prevent) {
+        prevent();
+      }
+
+      const confirm = () => {};
+      const toLoc = { pathname: '/this-is-only-a-test' };
+      const fromLoc = { pathname: '/this-was-not-a-test' };
+      const action = 'TEST';
+
+      confirmWith(autoPrevent);
+      expect(() => {
+        confirmNavigation(
+          {
+            to: toLoc as HickoryLocation,
+            from: fromLoc as HickoryLocation,
+            action  
+          },
+          confirm
+        );
+      }).not.toThrow();
+    });
+
+    it('does not set confirm function if confirmWith is passed a non-function', () => {
+      const {
+        confirmWith,
+        confirmNavigation,
+        removeConfirmation
+      } = createNavigationConfirmation();
+      
+      const confirm = jest.fn();
+      const toLoc = { pathname: '/this-is-only-a-test' };
+      const fromLoc = { pathname: '/this-was-not-a-test' };
+      const action = 'TEST';
+
+      const nonFuncs = [null, undefined, 'test', 1, [1,2,3], { key: 'value' }];
+      nonFuncs.forEach(nf => {
+        expect(() => {
+          confirmWith()
+        }).toThrow('confirmWith can only be passed a function')
+      })
+    });
   });
 
 });

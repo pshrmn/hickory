@@ -143,11 +143,9 @@ export default function locationFactory(
       try {
         location.pathname = decodeURI(location.pathname);
       } catch (e) {
-        throw e instanceof URIError
-          ? new URIError('Pathname "' + location.pathname + '" could not be decoded. ' +
-              'This is most likely due to a bad percent-encoding. For more information, ' +
-              'see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4')
-          : e;
+        throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' +
+          'This is most likely due to a bad percent-encoding. For more information, ' +
+          'see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4');
       }
       
     }

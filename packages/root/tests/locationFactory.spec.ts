@@ -105,6 +105,12 @@ describe('locationFactory', () => {
         });
       });
 
+      it('sets pathname to "/" if none is provided', () => {
+        const input = {};
+        const output = createLocation(input);
+        expect(output.pathname).toBe('/');
+      });
+
       it('sets default query value if none is provided', () => {
         const input = {
           pathname: '/test',
@@ -246,6 +252,20 @@ describe('locationFactory', () => {
         };
         const output = createPath(input);
         expect(output).toBe('/test');
+      });
+
+      it('uses rawPathname is pathname not provided', () => {
+        const input = {
+          rawPathname: '/test'
+        };
+        const output = createPath(input);
+        expect(output).toBe('/test');
+      });
+
+      it('uses empty string for pathname if neither pathname or rawPathname provided', () => {
+        const input = { hash: 'test' };
+        const output = createPath(input);
+        expect(output).toBe('#test');
       });
 
       it('prepends forward slash if pathname does not have one', () => {
