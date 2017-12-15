@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve';
 const config = {
   input: 'src/index.ts',
   name: 'HickoryBrowser',
-  sourcemap: true,
+  sourcemap: false,
   globals: {
     '@hickory/root': 'HickoryRoot'
   },

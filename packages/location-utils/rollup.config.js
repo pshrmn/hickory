@@ -5,7 +5,7 @@ import replace from 'rollup-plugin-replace';
 const config = {
   input: 'src/index.ts',
   name: 'HickoryLocationUtils',
-  sourcemap: true,
+  sourcemap: false,
   plugins: [
     typescript({
       useTsconfigDeclarationDir: true

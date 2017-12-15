@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve';
 const config = {
   input: 'src/index.ts',
   name: 'HickoryRoot',
-  sourcemap: true,
+  sourcemap: false,
   globals: {
     '@hickory/location-utils': 'HickoryLocationUtils'
   },

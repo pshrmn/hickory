@@ -1,3 +1,7 @@
+## Next
+
+* Don't publish source maps.
+
 ## 1.0.0-beta.5
 
 * Switch to using a response handler (assigned using `respondWith`) instead of the `subscriber` model.

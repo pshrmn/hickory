@@ -1,3 +1,7 @@
+## Next
+
+* Don't publish source maps.
+
 ## 1.0.0-beta.6
 
 * Add `cancelled` property to `PendingNavigation`. This allows the response handler to more easily track if a navigation has been cancelled.
