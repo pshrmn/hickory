@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import InMemory from '../src';
 
 function ignoreFirstCall(fn) {
@@ -9,7 +9,7 @@ function ignoreFirstCall(fn) {
       return;
     }
     fn.apply(null, arguments);
-  }
+  };
 }
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -23,17 +23,15 @@ describe('go', () => {
       }).not.toThrow();
     });
 
-    it('calls response handler with current location and "POP" action', (done) => {
+    it('calls response handler with current location and "POP" action', done => {
       const testHistory = InMemory();
-      const router = ignoreFirstCall(
-        function(pending) {
-          expect(pending.location).toMatchObject({
-            pathname: '/'
-          });
-          expect(pending.action).toBe('POP');
-          done();
-        }
-      )
+      const router = ignoreFirstCall(function(pending) {
+        expect(pending.location).toMatchObject({
+          pathname: '/'
+        });
+        expect(pending.action).toBe('POP');
+        done();
+      });
       testHistory.respondWith(router); // calls router
       testHistory.go();
     });
@@ -41,16 +39,14 @@ describe('go', () => {
     it('sets history.action to "POP" when calling "finish"', done => {
       const testHistory = InMemory();
       expect(testHistory.action).toBe('PUSH');
-      const router = ignoreFirstCall(
-        function(pending) {
-          pending.finish();
-          expect(testHistory.action).toBe('POP');
-          done();
-        }
-      )
+      const router = ignoreFirstCall(function(pending) {
+        pending.finish();
+        expect(testHistory.action).toBe('POP');
+        done();
+      });
       testHistory.respondWith(router);
       testHistory.go();
-    });        
+    });
   });
 
   describe('with a value', () => {
@@ -64,7 +60,7 @@ describe('go', () => {
       expect(router.mock.calls.length).toBe(1);
     });
 
-    it('calls response handler with expected location and action', (done) => {
+    it('calls response handler with expected location and action', done => {
       const testHistory = InMemory();
       let setup = false;
       function router(pending) {
@@ -75,7 +71,7 @@ describe('go', () => {
         expect(pending.location).toMatchObject({
           pathname: '/four',
           key: '3.0'
-        });      
+        });
         expect(pending.action).toBe('POP');
         done();
       }
@@ -109,20 +105,16 @@ describe('go', () => {
           pending.finish();
         }
         let cancelGo;
-        const goRouter = ignoreFirstCall(
-          function(pending) {
-            expect(testHistory.location.pathname).toBe('/six');
-            cancelGo = pending.cancel;
-            // trigger a push call and don't resolve the go
-            testHistory.respondWith(pushRouter);
-            testHistory.push('/seven');
-          }
-        );
-        const pushRouter = ignoreFirstCall(
-          function(pending) {
-            cancelGo('PUSH');
-          }
-        );
+        const goRouter = ignoreFirstCall(function(pending) {
+          expect(testHistory.location.pathname).toBe('/six');
+          cancelGo = pending.cancel;
+          // trigger a push call and don't resolve the go
+          testHistory.respondWith(pushRouter);
+          testHistory.push('/seven');
+        });
+        const pushRouter = ignoreFirstCall(function(pending) {
+          cancelGo('PUSH');
+        });
 
         testHistory.respondWith(initialRouter);
         testHistory.push('/two'); // 1.0
@@ -140,22 +132,20 @@ describe('go', () => {
   });
 
   describe('with user confirmation', () => {
-    it('calls response handler after the user confirms the navigation', (done) => {
+    it('calls response handler after the user confirms the navigation', done => {
       const testHistory = InMemory();
       let setup = false;
-      const router = ignoreFirstCall(
-        function(pending) {
-          pending.finish();
-          if (!setup) {
-            return;
-          }
-          expect(testHistory.location).toMatchObject({
-            pathname: '/',
-            key: '0.0'
-          });
-          done();
+      const router = ignoreFirstCall(function(pending) {
+        pending.finish();
+        if (!setup) {
+          return;
         }
-      );
+        expect(testHistory.location).toMatchObject({
+          pathname: '/',
+          key: '0.0'
+        });
+        done();
+      });
       const confirm = (info, confirm, prevent) => {
         confirm();
       };
@@ -177,13 +167,13 @@ describe('go', () => {
         pending.finish();
       }
       testHistory.respondWith(router);
-      
+
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
       // don't add function until we have setup the history
       testHistory.confirmWith(confirm);
       testHistory.go(-2);
-      
+
       expect(testHistory.location).toMatchObject({
         pathname: '/three',
         key: '2.0'

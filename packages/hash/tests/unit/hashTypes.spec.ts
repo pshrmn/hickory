@@ -1,8 +1,8 @@
-import "jest";
+import 'jest';
 import hashEncoderAndDecoder from '../../src/hashTypes';
 
 function runTestCases(fn, cases) {
-  cases.forEach(([ input, output ]) => {
+  cases.forEach(([input, output]) => {
     expect(fn(input)).toBe(output);
   });
 }
@@ -86,7 +86,8 @@ describe('hash types', () => {
     it('encodes with leading slash when at the root', () => {
       const testCases = [
         ['/', '#/'],
-        ['/?query=true', '#/?query=true'],,
+        ['/?query=true', '#/?query=true'],
+        ,
         ['/#hash', '#/#hash']
       ];
       runTestCases(encode, testCases);

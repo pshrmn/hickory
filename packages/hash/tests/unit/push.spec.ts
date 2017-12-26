@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Hash from '../../src';
 import { jsdom } from 'jsdom';
 
@@ -10,7 +10,7 @@ function ignoreFirstCall(fn) {
       return;
     }
     fn.apply(null, arguments);
-  }
+  };
 }
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -52,28 +52,24 @@ describe('push', () => {
     describe('location', () => {
       it('is a location object created from pushed string', () => {
         const testHistory = Hash();
-        const router = ignoreFirstCall(
-          function(pending) {
-            expect(pending.location).toMatchObject({
-              pathname: '/two',
-              query: 'test=ing'
-            });
-          }
-        );
+        const router = ignoreFirstCall(function(pending) {
+          expect(pending.location).toMatchObject({
+            pathname: '/two',
+            query: 'test=ing'
+          });
+        });
         testHistory.respondWith(router);
         testHistory.push('/two?test=ing');
       });
 
       it('is a location object created from pushed object', () => {
         const testHistory = Hash();
-        const router = ignoreFirstCall(
-          function(pending) {
-            expect(pending.location).toMatchObject({
-              pathname: '/two',
-              hash: 'test'
-            });
-          }
-        );
+        const router = ignoreFirstCall(function(pending) {
+          expect(pending.location).toMatchObject({
+            pathname: '/two',
+            hash: 'test'
+          });
+        });
         testHistory.respondWith(router);
         testHistory.push({ pathname: '/two', hash: 'test' });
       });
@@ -84,27 +80,30 @@ describe('push', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-    
-        const [ initMajor ] = testHistory.location.key.split('.');
+
+        const [initMajor] = testHistory.location.key.split('.');
         const initMajorNum = parseInt(initMajor, 10);
-    
+
         testHistory.push('/next');
-    
+
         const current = testHistory.location;
-        const [ currentMajor, currentMinor ] = current.key.split('.');
+        const [currentMajor, currentMinor] = current.key.split('.');
         const currentMajorNum = parseInt(currentMajor, 10);
-    
+
         expect(currentMajorNum).toEqual(initMajorNum + 1);
         expect(currentMinor).toBe('0');
       });
 
-      it('increments from current location\'s key when not at end of locations', (done) => {
+      it("increments from current location's key when not at end of locations", done => {
         // async test because history.go needs to listen for a popstate event
         const testHistory = Hash();
         let afterPop = false;
         function router(pending) {
           pending.finish();
-          if (pending.action === 'POP' && pending.location.pathname === '/three') {
+          if (
+            pending.action === 'POP' &&
+            pending.location.pathname === '/three'
+          ) {
             testHistory.push('/new-four');
             afterPop = true;
           }
@@ -126,12 +125,10 @@ describe('push', () => {
     describe('action', () => {
       it('is "PUSH"', () => {
         const testHistory = Hash();
-        const router = ignoreFirstCall(
-          function router(pending) {
-            expect(pending.action).toBe('PUSH');
-            pending.finish();
-          }
-        )
+        const router = ignoreFirstCall(function router(pending) {
+          expect(pending.action).toBe('PUSH');
+          pending.finish();
+        });
         testHistory.respondWith(router); // calls router
         testHistory.push('/next');
       });
@@ -140,17 +137,15 @@ describe('push', () => {
     describe('finish', () => {
       it('updates Hash history when finish function is called', () => {
         const testHistory = Hash();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(window.location.hash).toBe('#/one');
-            pending.finish();
-            expect(window.location.hash).toBe('#/two');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(window.location.hash).toBe('#/one');
+          pending.finish();
+          expect(window.location.hash).toBe('#/two');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.push('/two');
       });
-  
+
       it('does nothing if update is not called', () => {
         const testHistory = Hash();
         let call = 0;
@@ -186,26 +181,22 @@ describe('push', () => {
     describe('cancel', () => {
       it('does not update Hash history when cancel function is called', () => {
         const testHistory = Hash();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(window.location.hash).toBe('#/one');
-            pending.cancel();
-            expect(window.location.hash).toBe('#/one');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(window.location.hash).toBe('#/one');
+          pending.cancel();
+          expect(window.location.hash).toBe('#/one');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.push('/two');
       });
 
       it('does not update the action value', () => {
         const testHistory = Hash();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(testHistory.action).toBe('PUSH');
-            pending.cancel();
-            expect(testHistory.action).toBe('PUSH');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(testHistory.action).toBe('PUSH');
+          pending.cancel();
+          expect(testHistory.action).toBe('PUSH');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.push('/two');
       });

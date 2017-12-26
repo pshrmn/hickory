@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Browser from '../../src';
 import { jsdom } from 'jsdom';
 
@@ -55,6 +55,6 @@ describe('Browser constructor', () => {
   it('sets initial action to POP when page has been previously visited', () => {
     window.history.pushState({ key: '17.0' }, '', '/has-key');
     const testHistory = Browser();
-    expect(testHistory. action).toBe('POP');
+    expect(testHistory.action).toBe('POP');
   });
 });

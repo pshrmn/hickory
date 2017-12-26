@@ -16,13 +16,13 @@ import {
 export { History, HickoryLocation, PartialLocation, AnyLocation };
 
 export interface Options extends RootOptions {
-  locations?: Array<string|PartialLocation>;
+  locations?: Array<string | PartialLocation>;
   index?: number;
 }
 
 export interface InMemoryHistory extends History {
-  locations: Array<HickoryLocation>,
-  index: number
+  locations: Array<HickoryLocation>;
+  index: number;
 }
 
 function noop() {}
@@ -44,15 +44,21 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     }
   ];
 
-  let initialLocations: Array<HickoryLocation>
+  let initialLocations: Array<HickoryLocation>;
   if (options.locations) {
-    initialLocations = options.locations.map(loc => createLocation(loc, keygen.major()));
+    initialLocations = options.locations.map(loc =>
+      createLocation(loc, keygen.major())
+    );
   } else {
-    initialLocations = [ createLocation({ pathname: '/' }, keygen.major()) ];
+    initialLocations = [createLocation({ pathname: '/' }, keygen.major())];
   }
 
   let initialIndex = 0;
-  if (options.index && options.index > 0 && options.index < initialLocations.length) {
+  if (
+    options.index &&
+    options.index > 0 &&
+    options.index < initialLocations.length
+  ) {
     initialIndex = options.index;
   }
 
@@ -71,7 +77,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         location
       ];
       memoryHistory.action = 'PUSH';
-    }
+    };
   }
 
   function finalizeReplace(location: HickoryLocation) {
@@ -79,7 +85,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
       memoryHistory.location = location;
       memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
       memoryHistory.action = 'REPLACE';
-    }
+    };
   }
 
   const memoryHistory: InMemoryHistory = {
@@ -103,7 +109,9 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     confirmWith,
     removeConfirmation,
     destroy: function destroy(): void {
-      beforeDestroy.forEach(fn => { fn(); });
+      beforeDestroy.forEach(fn => {
+        fn();
+      });
     },
     navigate: function navigate(to: ToArgument): void {
       const location: HickoryLocation = createLocation(to, null);

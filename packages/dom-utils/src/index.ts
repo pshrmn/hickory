@@ -1,7 +1,7 @@
 export function ensureEncodedPathname(pathname: string): string {
-	const a = document.createElement('a');
-	a.setAttribute('href', pathname);
-	return a.pathname;
+  const a = document.createElement('a');
+  a.setAttribute('href', pathname);
+  return a.pathname;
 }
 
 export function domExists(): boolean {
@@ -16,8 +16,7 @@ export function domExists(): boolean {
  */
 export function ignorablePopstateEvent(event: PopStateEvent) {
   return (
-    event.state === undefined &&
-    navigator.userAgent.indexOf('CriOS') === -1
+    event.state === undefined && navigator.userAgent.indexOf('CriOS') === -1
   );
 }
 
@@ -26,15 +25,15 @@ export function ignorablePopstateEvent(event: PopStateEvent) {
  */
 export function getStateFromHistory() {
   try {
-    return window.history.state || {}
+    return window.history.state || {};
   } catch (e) {
-    return {}
+    return {};
   }
 }
 
 export type EventHandler = (event: Event) => void;
 export interface EventsObject {
-  [key: string]: EventHandler
+  [key: string]: EventHandler;
 }
 
 export function createEventCoordinator(events: EventsObject): () => void {
@@ -48,5 +47,5 @@ export function createEventCoordinator(events: EventsObject): () => void {
       let fn = events[event];
       window.removeEventListener(event, fn, false);
     }
-  }
+  };
 }

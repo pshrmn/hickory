@@ -21,13 +21,11 @@ export function completeQuery(query: string): string {
 }
 
 export function stripPrefix(str: string, prefix: string): string {
-  return str.indexOf(prefix) === 0
-    ? str.slice(prefix.length)
-    : str;
+  return str.indexOf(prefix) === 0 ? str.slice(prefix.length) : str;
 }
 
 function hasBaseSegment(path: string, prefix: string): boolean {
-  return (new RegExp('^' + prefix + '(\\/|\\?|#|$)', 'i')).test(path);
+  return new RegExp('^' + prefix + '(\\/|\\?|#|$)', 'i').test(path);
 }
 
 export function stripBaseSegment(path: string, prefix: string): string {

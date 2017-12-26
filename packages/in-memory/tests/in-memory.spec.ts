@@ -36,7 +36,7 @@ describe('Memory constructor', () => {
       locations: [
         '/one',
         { pathname: '/two' },
-        { pathname: '/three', state: { tres: 3 }}
+        { pathname: '/three', state: { tres: 3 } }
       ]
     });
 
@@ -82,7 +82,7 @@ describe('Memory constructor', () => {
     expect(testHistory.action).toBe('PUSH');
   });
 
-  it("removes saved locations when destroying", () => {
+  it('removes saved locations when destroying', () => {
     const testHistory = InMemory({
       locations: ['/one', '/two', '/three']
     });

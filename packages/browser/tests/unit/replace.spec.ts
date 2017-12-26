@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Browser from '../../src';
 import { jsdom } from 'jsdom';
 
@@ -10,7 +10,7 @@ function ignoreFirstCall(fn) {
       return;
     }
     fn.apply(null, arguments);
-  }
+  };
 }
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -52,28 +52,24 @@ describe('replace', () => {
     describe('location', () => {
       it('is a location object created from pushed string', () => {
         const testHistory = Browser();
-        const router = ignoreFirstCall(
-          function(pending) {
-            expect(pending.location).toMatchObject({
-              pathname: '/two',
-              query: 'test=ing'
-            });
-          }
-        );
+        const router = ignoreFirstCall(function(pending) {
+          expect(pending.location).toMatchObject({
+            pathname: '/two',
+            query: 'test=ing'
+          });
+        });
         testHistory.respondWith(router);
         testHistory.replace('/two?test=ing');
       });
 
       it('is a location object created from pushed object', () => {
         const testHistory = Browser();
-        const router = ignoreFirstCall(
-          function(pending) {
-            expect(pending.location).toMatchObject({
-              pathname: '/two',
-              hash: 'test'
-            });
-          }
-        );
+        const router = ignoreFirstCall(function(pending) {
+          expect(pending.location).toMatchObject({
+            pathname: '/two',
+            hash: 'test'
+          });
+        });
         testHistory.respondWith(router);
         testHistory.replace({ pathname: '/two', hash: 'test' });
       });
@@ -84,18 +80,18 @@ describe('replace', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-    
-        const [ initMajor, initMinor ] = testHistory.location.key.split('.');
+
+        const [initMajor, initMinor] = testHistory.location.key.split('.');
         const initMajorNum = parseInt(initMajor, 10);
         const initMinorNum = parseInt(initMinor, 10);
-    
+
         testHistory.replace('/next');
-    
+
         const current = testHistory.location;
-        const [ currentMajor, currentMinor ] = current.key.split('.');
+        const [currentMajor, currentMinor] = current.key.split('.');
         const currentMajorNum = parseInt(currentMajor, 10);
         const currentMinorNum = parseInt(currentMinor, 10);
-    
+
         expect(currentMajorNum).toEqual(initMajorNum);
         expect(currentMinorNum).toBe(initMinorNum + 1);
       });
@@ -104,12 +100,10 @@ describe('replace', () => {
     describe('action', () => {
       it('is "REPLACE"', () => {
         const testHistory = Browser();
-        const router = ignoreFirstCall(
-          function router(pending) {
-            expect(pending.action).toBe('REPLACE');
-            pending.finish();
-          }
-        )
+        const router = ignoreFirstCall(function router(pending) {
+          expect(pending.action).toBe('REPLACE');
+          pending.finish();
+        });
         testHistory.respondWith(router); // calls router
         testHistory.replace('/next');
       });
@@ -118,17 +112,15 @@ describe('replace', () => {
     describe('finish', () => {
       it('updates browser history when finish function is called', () => {
         const testHistory = Browser();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(window.location.pathname).toBe('/one');
-            pending.finish();
-            expect(window.location.pathname).toBe('/two');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(window.location.pathname).toBe('/one');
+          pending.finish();
+          expect(window.location.pathname).toBe('/two');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.replace('/two');
       });
-  
+
       it('does nothing if update is not called', () => {
         const testHistory = Browser();
         let call = 0;
@@ -164,26 +156,22 @@ describe('replace', () => {
     describe('cancel', () => {
       it('does not update browser history when cancel function is called', () => {
         const testHistory = Browser();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(window.location.pathname).toBe('/one');
-            pending.cancel();
-            expect(window.location.pathname).toBe('/one');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(window.location.pathname).toBe('/one');
+          pending.cancel();
+          expect(window.location.pathname).toBe('/one');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.replace('/two');
       });
 
       it('does not update the action value', () => {
         const testHistory = Browser();
-        let router = ignoreFirstCall(
-          function (pending) {
-            expect(testHistory.action).toBe('PUSH');
-            pending.cancel();
-            expect(testHistory.action).toBe('PUSH');
-          }
-        );
+        let router = ignoreFirstCall(function(pending) {
+          expect(testHistory.action).toBe('PUSH');
+          pending.cancel();
+          expect(testHistory.action).toBe('PUSH');
+        });
         testHistory.respondWith(router); // calls router
         testHistory.replace('/two');
       });

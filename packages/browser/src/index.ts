@@ -75,7 +75,7 @@ export default function Browser(options: Options = {}): History {
       window.history.pushState({ key, state }, '', path);
       browserHistory.location = location;
       browserHistory.action = 'PUSH';
-    }
+    };
   }
 
   function finalizeReplace(location: HickoryLocation) {
@@ -85,12 +85,14 @@ export default function Browser(options: Options = {}): History {
       window.history.replaceState({ key, state }, '', path);
       browserHistory.location = location;
       browserHistory.action = 'REPLACE';
-    }
+    };
   }
 
   const browserHistory = {
     // set action before location because locationFromBrowser enforces that the location has a key
-    action: (getStateFromHistory().key !== undefined ? 'POP' : 'PUSH') as Action,
+    action: (getStateFromHistory().key !== undefined
+      ? 'POP'
+      : 'PUSH') as Action,
     location: locationFromBrowser(),
     // set response handler
     respondWith: function(fn: ResponseHandler) {
@@ -107,14 +109,16 @@ export default function Browser(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     destroy: function destroy() {
-      beforeDestroy.forEach(fn => { fn(); });
+      beforeDestroy.forEach(fn => {
+        fn();
+      });
     },
     // navigation
     navigate: function navigate(to: ToArgument): void {
       const location = createLocation(to, null);
       const path = createPath(location);
       const currentPath = createPath(browserHistory.location);
-      
+
       if (path === currentPath) {
         browserHistory.replace(to);
       } else {
@@ -221,13 +225,13 @@ export default function Browser(options: Options = {}): History {
               return;
             }
             reverting = true;
-            window.history.go(-1*diff);
+            window.history.go(-1 * diff);
           }
         });
       },
       () => {
         reverting = true;
-        window.history.go(-1*diff);
+        window.history.go(-1 * diff);
       }
     );
   }

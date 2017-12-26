@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Hash from '../../src';
 import { jsdom } from 'jsdom';
 
@@ -23,7 +23,10 @@ describe('toHref', () => {
 
   it('returns the location formatted as a string', () => {
     const testHistory = Hash();
-    const currentPath = testHistory.toHref({ pathname: '/one', query: 'test=query' });
+    const currentPath = testHistory.toHref({
+      pathname: '/one',
+      query: 'test=query'
+    });
     expect(currentPath).toBe('#/one?test=query');
   });
 

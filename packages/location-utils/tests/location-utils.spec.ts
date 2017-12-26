@@ -9,7 +9,7 @@ import {
 
 describe('location utils', () => {
   describe('completePathname', () => {
-    it('prepends forward slash if it doesn\'t exist', () => {
+    it("prepends forward slash if it doesn't exist", () => {
       expect(completePathname('test')).toBe('/test');
     });
 
@@ -26,7 +26,7 @@ describe('location utils', () => {
   });
 
   describe('completeHash', () => {
-    it('prepends pound sign if it doesn\'t exist', () => {
+    it("prepends pound sign if it doesn't exist", () => {
       expect(completeHash('test')).toBe('#test');
     });
 
@@ -43,7 +43,7 @@ describe('location utils', () => {
   });
 
   describe('completeQuery', () => {
-    it('prepends forward slash if it doesn\'t exist', () => {
+    it("prepends forward slash if it doesn't exist", () => {
       expect(completeQuery('test=one')).toBe('?test=one');
     });
 
@@ -81,7 +81,9 @@ describe('location utils', () => {
     });
 
     it('works when the first character after the baseSegment is a ?,#, or end of string', () => {
-      expect(stripBaseSegment('/prefix?query=true', '/prefix')).toBe('?query=true');
+      expect(stripBaseSegment('/prefix?query=true', '/prefix')).toBe(
+        '?query=true'
+      );
       expect(stripBaseSegment('/prefix#yo', '/prefix')).toBe('#yo');
       expect(stripBaseSegment('/prefix', '/prefix')).toBe('');
     });

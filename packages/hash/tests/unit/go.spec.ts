@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Hash from '../../src';
 import { jsdom } from 'jsdom';
 
@@ -10,7 +10,7 @@ function ignoreFirstCall(fn) {
       return;
     }
     fn.apply(null, arguments);
-  }
+  };
 }
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -31,19 +31,17 @@ describe('go', () => {
     dom.close();
     global.document = undefined;
   });
-  
+
   describe('with no value', () => {
-    it('calls response handler with current location and "POP" action', (done) => {
+    it('calls response handler with current location and "POP" action', done => {
       const testHistory = Hash();
-      const router = ignoreFirstCall(
-        function(pending) {
-          expect(pending.location).toMatchObject({
-            pathname: '/one'
-          });
-          expect(pending.action).toBe('POP');
-          done();
-        }
-      )
+      const router = ignoreFirstCall(function(pending) {
+        expect(pending.location).toMatchObject({
+          pathname: '/one'
+        });
+        expect(pending.action).toBe('POP');
+        done();
+      });
       testHistory.respondWith(router); // calls router
       testHistory.go();
     });
@@ -61,7 +59,7 @@ describe('go', () => {
     }, 50);
   });
 
-  it('calls response handler with expected location and action', (done) => {
+  it('calls response handler with expected location and action', done => {
     const testHistory = Hash();
     let setup = false;
     function router(pending) {
@@ -72,7 +70,7 @@ describe('go', () => {
       expect(pending.location).toMatchObject({
         pathname: '/four',
         key: '3.0'
-      });      
+      });
       expect(pending.action).toBe('POP');
       done();
     }
@@ -95,25 +93,21 @@ describe('go', () => {
           pending.finish();
         }
         let cancelGo;
-        const goRouter = ignoreFirstCall(
-          function(pending) {
-            // at this point, the Hash has popped
-            expect(window.location.hash).toBe('#/four');
-            cancelGo = pending.cancel;
-            // trigger a push call and don't resolve the go
-            testHistory.respondWith(pushRouter);
-            testHistory.push('/seven');
-          }
-        );
-        const pushRouter = ignoreFirstCall(
-          function(pending) {
-            cancelGo('PUSH');
-            setTimeout(() => {
-              expect(window.location.hash).toBe('#/six');
-              done();
-            }, 50);
-          }
-        );
+        const goRouter = ignoreFirstCall(function(pending) {
+          // at this point, the Hash has popped
+          expect(window.location.hash).toBe('#/four');
+          cancelGo = pending.cancel;
+          // trigger a push call and don't resolve the go
+          testHistory.respondWith(pushRouter);
+          testHistory.push('/seven');
+        });
+        const pushRouter = ignoreFirstCall(function(pending) {
+          cancelGo('PUSH');
+          setTimeout(() => {
+            expect(window.location.hash).toBe('#/six');
+            done();
+          }, 50);
+        });
 
         testHistory.respondWith(initialRouter);
         testHistory.push('/two'); // 1.0
@@ -133,25 +127,21 @@ describe('go', () => {
           pending.finish();
         }
         let cancelGo;
-        const goRouter = ignoreFirstCall(
-          function(pending) {
-            // at this point, the Hash has popped
-            expect(window.location.hash).toBe('#/four');
-            cancelGo = pending.cancel;
-            // trigger a push call and don't resolve the go
-            testHistory.respondWith(replaceRouter);
-            testHistory.replace('/seven');
-          }
-        );
-        const replaceRouter = ignoreFirstCall(
-          function(pending) {
-            cancelGo('REPLACE');
-            setTimeout(() => {
-              expect(window.location.hash).toBe('#/six');
-              done();
-            }, 50);
-          }
-        );
+        const goRouter = ignoreFirstCall(function(pending) {
+          // at this point, the Hash has popped
+          expect(window.location.hash).toBe('#/four');
+          cancelGo = pending.cancel;
+          // trigger a push call and don't resolve the go
+          testHistory.respondWith(replaceRouter);
+          testHistory.replace('/seven');
+        });
+        const replaceRouter = ignoreFirstCall(function(pending) {
+          cancelGo('REPLACE');
+          setTimeout(() => {
+            expect(window.location.hash).toBe('#/six');
+            done();
+          }, 50);
+        });
 
         testHistory.respondWith(initialRouter);
         testHistory.push('/two'); // 1.0
@@ -171,25 +161,21 @@ describe('go', () => {
           pending.finish();
         }
         let cancelGo;
-        const goRouter = ignoreFirstCall(
-          function(pending) {
-            // at this point, the Hash has popped
-            expect(window.location.hash).toBe('#/four');
-            cancelGo = pending.cancel;
-            // trigger a push call and don't resolve the go
-            testHistory.respondWith(popRouter);
-            testHistory.go(-1);
-          }
-        );
-        const popRouter = ignoreFirstCall(
-          function(pending) {
-            cancelGo('POP');
-            setTimeout(() => {
-              expect(window.location.hash).toBe('#/three');
-              done();
-            }, 50);
-          }
-        );
+        const goRouter = ignoreFirstCall(function(pending) {
+          // at this point, the Hash has popped
+          expect(window.location.hash).toBe('#/four');
+          cancelGo = pending.cancel;
+          // trigger a push call and don't resolve the go
+          testHistory.respondWith(popRouter);
+          testHistory.go(-1);
+        });
+        const popRouter = ignoreFirstCall(function(pending) {
+          cancelGo('POP');
+          setTimeout(() => {
+            expect(window.location.hash).toBe('#/three');
+            done();
+          }, 50);
+        });
 
         testHistory.respondWith(initialRouter);
         testHistory.push('/two'); // 1.0
@@ -205,22 +191,20 @@ describe('go', () => {
   });
 
   describe('with user confirmation', () => {
-    it('calls response handler after the user confirms the navigation', (done) => {
+    it('calls response handler after the user confirms the navigation', done => {
       const testHistory = Hash();
       let setup = false;
-      const router = ignoreFirstCall(
-        function(pending) {
-          pending.finish();
-          if (!setup) {
-            return;
-          }
-          expect(testHistory.location).toMatchObject({
-            pathname: '/one',
-            key: '0.0'
-          });
-          done();
+      const router = ignoreFirstCall(function(pending) {
+        pending.finish();
+        if (!setup) {
+          return;
         }
-      );
+        expect(testHistory.location).toMatchObject({
+          pathname: '/one',
+          key: '0.0'
+        });
+        done();
+      });
       const confirm = (info, confirm, prevent) => {
         confirm();
       };
@@ -233,7 +217,7 @@ describe('go', () => {
       testHistory.go(-2);
     });
 
-    it('does not call response handler when the user prevents the navigation', (done) => {
+    it('does not call response handler when the user prevents the navigation', done => {
       const testHistory = Hash();
       const confirm = (info, confirm, prevent) => {
         prevent();
@@ -242,7 +226,7 @@ describe('go', () => {
         pending.finish();
       }
       testHistory.respondWith(router);
-      
+
       testHistory.push('/two'); // 1.0
       testHistory.push('/three'); // 2.0
       // don't add function until we have setup the history

@@ -30,7 +30,7 @@ function ensureHash(encode: (path: string) => string): void {
 
 export interface Options extends RootOptions {
   raw?: (pathname: string) => string;
-  hashType?: string
+  hashType?: string;
 }
 
 function noop() {}
@@ -82,30 +82,32 @@ export default function Hash(options: Options = {}): History {
   }
 
   let responseHandler: ResponseHandler;
-  
-    function finalizePush(location: HickoryLocation) {
-      return () => {
-        const path = toHref(location);
-        const { key, state } = location;
-        window.history.pushState({ key, state }, '', path);
-        hashHistory.location = location;
-        hashHistory.action = 'PUSH';
-      }
-    }
-  
-    function finalizeReplace(location: HickoryLocation) {
-      return () => {
-        const path = toHref(location);
-        const { key, state } = location;
-        window.history.replaceState({ key, state }, '', path);
-        hashHistory.location = location;
-        hashHistory.action = 'REPLACE';
-      }
-    }
+
+  function finalizePush(location: HickoryLocation) {
+    return () => {
+      const path = toHref(location);
+      const { key, state } = location;
+      window.history.pushState({ key, state }, '', path);
+      hashHistory.location = location;
+      hashHistory.action = 'PUSH';
+    };
+  }
+
+  function finalizeReplace(location: HickoryLocation) {
+    return () => {
+      const path = toHref(location);
+      const { key, state } = location;
+      window.history.replaceState({ key, state }, '', path);
+      hashHistory.location = location;
+      hashHistory.action = 'REPLACE';
+    };
+  }
 
   const hashHistory: History = {
     // location
-    action: (getStateFromHistory().key !== undefined ? 'POP' : 'PUSH') as Action,
+    action: (getStateFromHistory().key !== undefined
+      ? 'POP'
+      : 'PUSH') as Action,
     location: locationFromBrowser(),
     // set response handler
     respondWith: function(fn: ResponseHandler) {
@@ -122,13 +124,15 @@ export default function Hash(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     destroy: function destroy() {
-      beforeDestroy.forEach(fn => { fn(); });
+      beforeDestroy.forEach(fn => {
+        fn();
+      });
     },
     navigate: function navigate(to: ToArgument): void {
       const location = createLocation(to, null);
       const path = createPath(location);
       const currentPath = createPath(hashHistory.location);
-      
+
       if (path === currentPath) {
         hashHistory.replace(to);
       } else {
@@ -138,7 +142,7 @@ export default function Hash(options: Options = {}): History {
     push: function push(to: ToArgument): void {
       const key = keygen.major(hashHistory.location.key);
       const location = createLocation(to, key);
-      confirmNavigation  (
+      confirmNavigation(
         {
           to: location,
           from: hashHistory.location,
@@ -153,7 +157,7 @@ export default function Hash(options: Options = {}): History {
             action: 'PUSH',
             finish: finalizePush(location),
             cancel: noop
-          });          
+          });
         }
       );
     },
@@ -234,13 +238,13 @@ export default function Hash(options: Options = {}): History {
               return;
             }
             reverting = true;
-            window.history.go(-1*diff);
+            window.history.go(-1 * diff);
           }
         });
       },
       () => {
         reverting = true;
-        window.history.go(-1*diff);
+        window.history.go(-1 * diff);
       }
     );
   }

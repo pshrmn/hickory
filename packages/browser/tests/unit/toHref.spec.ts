@@ -1,4 +1,4 @@
-import "jest";
+import 'jest';
 import Browser from '../../src';
 import { jsdom } from 'jsdom';
 

@@ -9,11 +9,10 @@ function ignoreFirstCall(fn) {
       return;
     }
     fn.apply(null, arguments);
-  }
+  };
 }
 
 describe('browser integration tests', () => {
-
   let testHistory;
 
   beforeEach(() => {
@@ -57,13 +56,17 @@ describe('browser integration tests', () => {
     it('calls history.pushState when navigating to a new location', () => {
       testHistory.navigate('/new-location');
       expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(1);
-      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(0);
+      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
+        0
+      );
     });
 
     it('calls history.replaceState when navigating to the same location', () => {
       testHistory.navigate('/');
       expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(0);
-      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(1);
+      expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
+        1
+      );
     });
   });
 
@@ -86,7 +89,7 @@ describe('browser integration tests', () => {
         pathname: '/encoded-percent%25'
       });
       expect(window.location.pathname).toEqual('/encoded-percent%25');
-      expect(testHistory.location.pathname).toEqual('/encoded-percent%')
+      expect(testHistory.location.pathname).toEqual('/encoded-percent%');
     });
   });
 
@@ -106,34 +109,30 @@ describe('browser integration tests', () => {
   });
 
   describe('go', () => {
-    it('can navigate with go', (done) => {
+    it('can navigate with go', done => {
       testHistory.push('/one');
       testHistory.push('/two');
       testHistory.push('/three');
 
-      const goRouter = ignoreFirstCall(
-        function(pending) {
-          expect(pending.location.pathname).toEqual('/one');
-          done();
-        }
-      );
+      const goRouter = ignoreFirstCall(function(pending) {
+        expect(pending.location.pathname).toEqual('/one');
+        done();
+      });
       testHistory.respondWith(goRouter);
       testHistory.go(-2);
     });
   });
 
   describe('browser navigation', () => {
-    it('can detect navigation triggered by the browser', (done) => {
+    it('can detect navigation triggered by the browser', done => {
       testHistory.push('/uno');
       testHistory.push('/dos');
       testHistory.push('/tres');
 
-      const goRouter = ignoreFirstCall(
-        function(pending) {
-          expect(pending.location.pathname).toEqual('/uno');
-          done();
-        }
-      );
+      const goRouter = ignoreFirstCall(function(pending) {
+        expect(pending.location.pathname).toEqual('/uno');
+        done();
+      });
       testHistory.respondWith(goRouter);
 
       window.history.go(-2);

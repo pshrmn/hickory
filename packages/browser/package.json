@@ -15,6 +15,7 @@
     "prebuild": "rimraf dist & rimraf types",
     "build": "node ./scripts/build",
     "prepublishOnly": "npm run build",
+    "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
     "test": "node ./scripts/test"
   },
   "repository": {
@@ -43,6 +44,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.0",
     "karma-rollup-preprocessor": "^5.0.1",
+    "prettier": "^1.9.2",
     "qs": "^6.5.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.50.0",
