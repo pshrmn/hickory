@@ -15,7 +15,7 @@ import {
   QueryFunctions,
   LocationFactoryOptions,
   LocationMethods
-} from './types/locationFactory'
+} from './types/locationFactory';
 
 function defaultParseQuery(query?: string): string {
   return query ? query : '';
@@ -29,11 +29,13 @@ function isValidBase(baseSegment: string): boolean {
   return (
     typeof baseSegment === 'string' &&
     baseSegment.charAt(0) === '/' &&
-    baseSegment.charAt(baseSegment.length -1) !== '/'
+    baseSegment.charAt(baseSegment.length - 1) !== '/'
   );
 }
 
-function validateQueryOption(query: QueryFunctions | undefined): QueryFunctions {
+function validateQueryOption(
+  query: QueryFunctions | undefined
+): QueryFunctions {
   let parse, stringify;
   return query
     ? query
@@ -50,18 +52,19 @@ export default function locationFactory(
     query,
     decode = true,
     baseSegment = '',
-    raw = (p:string): string => p
+    raw = (p: string): string => p
   } = options;
 
-  const {
-    parse,
-    stringify
-  } = validateQueryOption(query);
+  const { parse, stringify } = validateQueryOption(query);
 
   if (baseSegment !== '' && !isValidBase(baseSegment)) {
-    throw new Error('The baseSegment "' + baseSegment + '" is not valid.' +
-      ' The baseSegment must begin with a forward slash and end with a' +
-      ' non-forward slash character.');
+    throw new Error(
+      'The baseSegment "' +
+        baseSegment +
+        '" is not valid.' +
+        ' The baseSegment must begin with a forward slash and end with a' +
+        ' non-forward slash character.'
+    );
   }
 
   function parsePath(value: string): PartialLocation {
@@ -70,7 +73,7 @@ export default function locationFactory(
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf('#');
     if (hashIndex !== -1) {
-      location.hash = value.substring(hashIndex+1);
+      location.hash = value.substring(hashIndex + 1);
       value = value.substring(0, hashIndex);
     } else {
       location.hash = '';
@@ -78,7 +81,7 @@ export default function locationFactory(
 
     const queryIndex = value.indexOf('?');
     if (queryIndex !== -1) {
-      location.query = parse(value.substring(queryIndex+1));
+      location.query = parse(value.substring(queryIndex + 1));
       value = value.substring(0, queryIndex);
     } else {
       location.query = parse();
@@ -96,11 +99,11 @@ export default function locationFactory(
   ): HickoryLocation {
     let partial: PartialLocation;
     if (typeof value === 'string') {
-      partial = parsePath(value)
+      partial = parsePath(value);
     } else {
-      partial = {...value} as PartialLocation;
+      partial = { ...value } as PartialLocation;
       if (partial.hash == null) {
-        partial.hash = ''
+        partial.hash = '';
       }
       if (partial.query == null) {
         partial.query = parse();
@@ -115,7 +118,7 @@ export default function locationFactory(
     }
 
     const location: HickoryLocation = {
-      ...partial as HickoryLocation,
+      ...(partial as HickoryLocation),
       key: key,
       rawPathname: raw(partial.pathname)
     };
@@ -130,11 +133,14 @@ export default function locationFactory(
       try {
         location.pathname = decodeURI(location.pathname);
       } catch (e) {
-        throw new URIError('Pathname "' + location.pathname + '" could not be decoded. ' +
-          'This is most likely due to a bad percent-encoding. For more information, ' +
-          'see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4');
+        throw new URIError(
+          'Pathname "' +
+            location.pathname +
+            '" could not be decoded. ' +
+            'This is most likely due to a bad percent-encoding. For more information, ' +
+            'see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4'
+        );
       }
-      
     }
     return location;
   }
@@ -145,9 +151,7 @@ export default function locationFactory(
     return (
       baseSegment +
       completePathname(
-        (<HickoryLocation>location).rawPathname ||
-        location.pathname ||
-        ''
+        (<HickoryLocation>location).rawPathname || location.pathname || ''
       ) +
       completeQuery(stringify(location.query)) +
       completeHash(location.hash)

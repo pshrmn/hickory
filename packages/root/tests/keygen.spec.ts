@@ -25,14 +25,14 @@ describe('key generator', () => {
 
     it('resets major value when provided', () => {
       const { keygen } = createKeyGenerator();
-      for (let i=0; i<5; i++) {
+      for (let i = 0; i < 5; i++) {
         keygen.major();
       }
 
       expect(keygen.major()).toBe('5.0');
       expect(keygen.major('3.0')).toBe('4.0');
       expect(keygen.major()).toBe('5.0');
-    })
+    });
   });
 
   describe('minor', () => {

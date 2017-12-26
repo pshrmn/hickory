@@ -9,10 +9,10 @@ describe('createNavigationConfirmation', () => {
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
-      
+
       confirmWith(allowNavigation);
       expect(allowNavigation.mock.calls.length).toBe(0);
-      
+
       confirmNavigation(null, confirm, prevent);
       expect(allowNavigation.mock.calls.length).toBe(1);
     });
@@ -31,7 +31,7 @@ describe('createNavigationConfirmation', () => {
 
       confirmWith(allowNavigation);
       expect(allowNavigation.mock.calls.length).toBe(0);
-      
+
       confirmNavigation(null, confirm, prevent);
       expect(allowNavigation.mock.calls.length).toBe(1);
 
@@ -48,7 +48,7 @@ describe('createNavigationConfirmation', () => {
         confirmNavigation,
         removeConfirmation
       } = createNavigationConfirmation();
-      
+
       const confirm = jest.fn();
       const prevent = jest.fn();
 
@@ -71,7 +71,7 @@ describe('createNavigationConfirmation', () => {
         confirmNavigation,
         removeConfirmation
       } = createNavigationConfirmation();
-      
+
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
@@ -84,7 +84,7 @@ describe('createNavigationConfirmation', () => {
         {
           to: toLoc as HickoryLocation,
           from: fromLoc as HickoryLocation,
-          action  
+          action
         },
         confirm,
         prevent
@@ -105,7 +105,7 @@ describe('createNavigationConfirmation', () => {
         confirmNavigation,
         removeConfirmation
       } = createNavigationConfirmation();
-      
+
       function autoPrevent(info, confirm, prevent) {
         prevent();
       }
@@ -121,7 +121,7 @@ describe('createNavigationConfirmation', () => {
           {
             to: toLoc as HickoryLocation,
             from: fromLoc as HickoryLocation,
-            action  
+            action
           },
           confirm
         );
@@ -134,19 +134,25 @@ describe('createNavigationConfirmation', () => {
         confirmNavigation,
         removeConfirmation
       } = createNavigationConfirmation();
-      
+
       const confirm = jest.fn();
       const toLoc = { pathname: '/this-is-only-a-test' };
       const fromLoc = { pathname: '/this-was-not-a-test' };
       const action = 'TEST';
 
-      const nonFuncs = [null, undefined, 'test', 1, [1,2,3], { key: 'value' }];
+      const nonFuncs = [
+        null,
+        undefined,
+        'test',
+        1,
+        [1, 2, 3],
+        { key: 'value' }
+      ];
       nonFuncs.forEach(nf => {
         expect(() => {
-          confirmWith()
-        }).toThrow('confirmWith can only be passed a function')
-      })
+          confirmWith();
+        }).toThrow('confirmWith can only be passed a function');
+      });
     });
   });
-
 });

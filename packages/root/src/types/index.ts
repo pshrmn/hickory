@@ -1,8 +1,4 @@
-export {
-  PartialLocation,
-  HickoryLocation,
-  AnyLocation
-} from './location';
+export { PartialLocation, HickoryLocation, AnyLocation } from './location';
 
 export {
   History,
@@ -15,10 +11,7 @@ export {
   CommonHistory
 } from './hickory';
 
-export {
-  KeyMethods,
-  KeyFns
-} from './keygen';
+export { KeyMethods, KeyFns } from './keygen';
 
 export {
   QueryFunctions,

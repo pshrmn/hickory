@@ -1,7 +1,10 @@
 import { HickoryLocation, AnyLocation, PartialLocation } from './location';
 import { LocationFactoryOptions, LocationMethods } from './locationFactory';
 import { KeyMethods } from './keygen';
-import { ConfirmationFunction, ConfirmationMethods } from './navigationConfirmation';
+import {
+  ConfirmationFunction,
+  ConfirmationMethods
+} from './navigationConfirmation';
 
 export type ToArgument = string | PartialLocation;
 export type Action = 'PUSH' | 'REPLACE' | 'POP';
@@ -32,8 +35,4 @@ export interface History {
 
 export type Options = LocationFactoryOptions;
 
-export type CommonHistory = (
-  LocationMethods &
-  ConfirmationMethods &
-  KeyMethods
-);
+export type CommonHistory = LocationMethods & ConfirmationMethods & KeyMethods;

@@ -5,21 +5,17 @@ import * as qs from 'qs';
 describe('locationFactory', () => {
   describe('constructor', () => {
     it('throws when attempting to use an invalid baseSegment', () => {
-      const badValues = [
-        'does-not-start-with-a-slash',
-        '/ends-with-slash/'
-      ];
-      badValues.forEach((value) => {
+      const badValues = ['does-not-start-with-a-slash', '/ends-with-slash/'];
+      badValues.forEach(value => {
         expect(() => {
           const creators = locationFactory({
             baseSegment: value
-          })
+          });
         }).toThrow();
       });
     });
 
     describe('query option', () => {
-
       const consoleWarn = console.warn;
 
       beforeEach(() => {
@@ -63,7 +59,6 @@ describe('locationFactory', () => {
           const path = creators.createPath({ pathname: '/test' });
           expect(stringify.mock.calls.length).toBe(1);
         });
-
       });
     });
   });
@@ -142,7 +137,7 @@ describe('locationFactory', () => {
 
       it('adds state if provided', () => {
         const input = {
-          pathname: '/',
+          pathname: '/'
         };
         const state = {
           omg: 'bff'
@@ -155,7 +150,11 @@ describe('locationFactory', () => {
       it('prefers location.state over state', () => {
         const locState = { fromLocation: true };
         const justState = { fromLocation: false };
-        const output = createLocation({ pathname: '/', state: locState}, '1.2', justState);
+        const output = createLocation(
+          { pathname: '/', state: locState },
+          '1.2',
+          justState
+        );
         expect(output.state).toEqual(locState);
       });
     });
@@ -163,7 +162,11 @@ describe('locationFactory', () => {
     describe('using raw option fn to set location.rawPathname', () => {
       it('calls user provided option', () => {
         const { createLocation } = locationFactory({
-          raw: path => path.split('').reverse().join('')
+          raw: path =>
+            path
+              .split('')
+              .reverse()
+              .join('')
         });
         const output = createLocation({ pathname: '/test' });
         expect(output.rawPathname).toBe('tset/');
@@ -339,7 +342,7 @@ describe('locationFactory', () => {
           hash: 'after'
         };
         const output = createPath(input);
-        expect(output.indexOf('?')).toBeLessThan(output.indexOf('#'))
+        expect(output.indexOf('?')).toBeLessThan(output.indexOf('#'));
       });
     });
 

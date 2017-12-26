@@ -7,7 +7,6 @@ import {
 function noop(): void {}
 
 export default function createNavigationConfirmation(): ConfirmationMethods {
-
   let confirmFunction: ConfirmationFunction;
 
   function confirmNavigation(
@@ -22,16 +21,16 @@ export default function createNavigationConfirmation(): ConfirmationMethods {
     }
   }
 
-  function confirmWith(fn?: ConfirmationFunction ): void {
+  function confirmWith(fn?: ConfirmationFunction): void {
     if (typeof fn !== 'function') {
       throw new Error('confirmWith can only be passed a function');
     }
     confirmFunction = fn;
-  };
+  }
 
   function removeConfirmation(): void {
     confirmFunction = null;
-  };
+  }
 
   return {
     confirmNavigation,

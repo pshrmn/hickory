@@ -1,8 +1,8 @@
 import { HickoryLocation, PartialLocation } from './location';
 
 export interface QueryFunctions {
-  parse: (query?:string) => any;
-  stringify: (query?:any) => string;
+  parse: (query?: string) => any;
+  stringify: (query?: any) => string;
 }
 
 export interface LocationFactoryOptions {
@@ -13,7 +13,11 @@ export interface LocationFactoryOptions {
 }
 
 export interface LocationMethods {
-  createLocation(value: string | object, key?: string, state?: any): HickoryLocation;
+  createLocation(
+    value: string | object,
+    key?: string,
+    state?: any
+  ): HickoryLocation;
   createPath(location: HickoryLocation): string;
   createPath(location: PartialLocation): string;
 }

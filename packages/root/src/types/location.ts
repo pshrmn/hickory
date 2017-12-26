@@ -2,7 +2,7 @@ export interface PartialLocation {
   pathname?: string;
   rawPathname?: string;
   query?: any;
-  hash?: string
+  hash?: string;
   state?: any;
 }
 
@@ -18,4 +18,3 @@ export interface HickoryLocation {
 }
 
 export type AnyLocation = HickoryLocation | PartialLocation;
-

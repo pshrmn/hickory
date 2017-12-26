@@ -1,5 +1,5 @@
 export interface KeyMethods {
-  keygen: KeyFns
+  keygen: KeyFns;
 }
 
 export interface KeyFns {
