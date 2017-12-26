@@ -1,27 +1,11 @@
-import { ConfirmationFunction } from './navigationConfirmation';
+import { HickoryLocation, AnyLocation, PartialLocation } from './location';
+import { LocationFactoryOptions, LocationMethods } from './locationFactory';
+import { KeyMethods } from './keygen';
+import { ConfirmationFunction, ConfirmationMethods } from './navigationConfirmation';
 
-export interface PartialLocation {
-  pathname?: string;
-  rawPathname?: string;
-  query?: any;
-  hash?: string
-  state?: any;
-}
-
-// use HickoryLocation instead of Location to prevent
-// errors from colling with window.Location interface
-export interface HickoryLocation {
-  pathname: string;
-  query: any;
-  hash: string;
-  state?: any;
-  key: string;
-  rawPathname: string;
-}
-
-export type AnyLocation = HickoryLocation | PartialLocation;
 export type ToArgument = string | PartialLocation;
 export type Action = 'PUSH' | 'REPLACE' | 'POP';
+
 export interface PendingNavigation {
   location: HickoryLocation;
   action: Action;
@@ -45,3 +29,11 @@ export interface History {
   replace: NavFn;
   go(num?: number): void;
 }
+
+export type Options = LocationFactoryOptions;
+
+export type CommonHistory = (
+  LocationMethods &
+  ConfirmationMethods &
+  KeyMethods
+);

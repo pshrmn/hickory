@@ -1,19 +1,10 @@
 import createLocationUtils from './locationFactory';
-import { LocationMethods, LocationFactoryOptions } from './locationFactory';
-
 import createNavigationConfirmation from './navigationConfirmation';
-import { ConfirmationMethods } from './navigationConfirmation';
-
 import createKeyGenerator from './keygen';
-import { KeyMethods } from './keygen';
 
-export type Options = LocationFactoryOptions;
-
-export type CommonHistory = (
-  LocationMethods &
-  ConfirmationMethods &
-  KeyMethods
-);
+import { CommonHistory, Options } from './types/hickory';
+import { LocationMethods, LocationFactoryOptions } from './types/locationFactory';
+import { ConfirmationMethods } from './types/navigationConfirmation';
 
 export default function Common(options: Options): CommonHistory {
   return {

@@ -1,20 +1,7 @@
-import { ConfirmationFunction } from './navigationConfirmation';
-export interface PartialLocation {
-    pathname?: string;
-    rawPathname?: string;
-    query?: any;
-    hash?: string;
-    state?: any;
-}
-export interface HickoryLocation {
-    pathname: string;
-    query: any;
-    hash: string;
-    state?: any;
-    key: string;
-    rawPathname: string;
-}
-export declare type AnyLocation = HickoryLocation | PartialLocation;
+import { HickoryLocation, AnyLocation, PartialLocation } from './location';
+import { LocationFactoryOptions, LocationMethods } from './locationFactory';
+import { KeyMethods } from './keygen';
+import { ConfirmationFunction, ConfirmationMethods } from './navigationConfirmation';
 export declare type ToArgument = string | PartialLocation;
 export declare type Action = 'PUSH' | 'REPLACE' | 'POP';
 export interface PendingNavigation {
@@ -39,3 +26,5 @@ export interface History {
     replace: NavFn;
     go(num?: number): void;
 }
+export declare type Options = LocationFactoryOptions;
+export declare type CommonHistory = (LocationMethods & ConfirmationMethods & KeyMethods);

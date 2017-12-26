@@ -1,6 +1,6 @@
 import 'jest';
 import createNavigationConfirmation from '../src/navigationConfirmation';
-import { HickoryLocation } from '../src/interface';
+import { HickoryLocation } from '../src/types/location';
 
 describe('createNavigationConfirmation', () => {
   describe('confirmWith', () => {
