@@ -62,7 +62,7 @@ var customLaunchers = {
     base: 'BrowserStack',
     browser: 'chrome',
     os: 'android',
-    os_version: '4.4',
+    os_version: '7.0',
     device: 'Samsung Galaxy S8',
     real_mobile: true
   }
