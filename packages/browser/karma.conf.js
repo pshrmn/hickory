@@ -54,6 +54,7 @@ var customLaunchers = {
     browser: 'Safari',
     os: 'iOS',
     os_version: '10.3',
+    device: 'iPhone 7',
     real_mobile: true
   },
   // android
@@ -62,6 +63,7 @@ var customLaunchers = {
     browser: 'chrome',
     os: 'android',
     os_version: '4.4',
+    device: 'Samsung Galaxy S8',
     real_mobile: true
   }
 };
