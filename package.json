@@ -6,17 +6,14 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "postinstall": "lerna bootstrap --stream && npm run build",
+    "precommit": "pretty-quick --staged",
     "test": "lerna run test --stream"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pshrmn/hickory.git"
   },
-  "keywords": [
-    "history",
-    "navigation",
-    "single page application"
-  ],
+  "keywords": ["history", "navigation", "single page application"],
   "author": "Paul Sherman",
   "license": "MIT",
   "bugs": {
@@ -25,8 +22,11 @@
   "homepage": "https://github.com/pshrmn/hickory#readme",
   "devDependencies": {
     "gzip-size": "^3.0.0",
+    "husky": "^0.14.3",
     "lerna": "^2.0.0",
+    "prettier": "^1.10.2",
     "pretty-bytes": "^4.0.2",
+    "pretty-quick": "^1.2.0",
     "typescript": "^2.5.2"
   }
 }
