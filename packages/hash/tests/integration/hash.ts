@@ -135,12 +135,12 @@ describe("hash integration tests", () => {
     }
 
     it("can detect navigation triggered by the browser", done => {
-      testHistory.push("/one");
-      testHistory.push("/two");
-      testHistory.push("/three");
+      testHistory.push("/uno");
+      testHistory.push("/dos");
+      testHistory.push("/tres");
 
       const goRouter = ignoreFirstCall(function(pending) {
-        expect(pending.location.pathname).toEqual("/one");
+        expect(pending.location.pathname).toEqual("/uno");
         done();
       });
       testHistory.respondWith(goRouter);
