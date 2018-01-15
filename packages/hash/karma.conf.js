@@ -48,13 +48,15 @@ module.exports = function(config) {
       singleRun: true,
       reporters: reporters.concat("BrowserStack"),
       plugins: plugins.concat("karma-browserstack-launcher"),
+      captureTimeout: 120000,
       browserStack: {
         project: "hickory",
         username: process.env.BROWSERSTACK_USERNAME,
         accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
         build: process.env.TRAVIS_BUILD_NUMBER,
         name: process.env.TRAVIS_JOB_NUMBER,
-        video: false
+        video: false,
+        retryLimit: 0
       },
       browserDisconnectTimeout: 10000,
       browserDisconnectTolerance: 1
