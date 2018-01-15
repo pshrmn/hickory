@@ -114,12 +114,12 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("can navigate with go", done => {
-      testHistory.push("/one");
-      testHistory.push("/two");
-      testHistory.push("/three");
+      testHistory.push("/eins");
+      testHistory.push("/zwei");
+      testHistory.push("/drei");
 
       const goRouter = ignoreFirstCall(function(pending) {
-        expect(pending.location.pathname).toEqual("/one");
+        expect(pending.location.pathname).toEqual("/eins");
         done();
       });
       testHistory.respondWith(goRouter);
