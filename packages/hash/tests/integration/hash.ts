@@ -12,10 +12,6 @@ function ignoreFirstCall(fn) {
   };
 }
 
-function isIE11() {
-  return /Trident\//.test(navigator.userAgent);
-}
-
 describe("hash integration tests", () => {
   let testHistory;
 
@@ -129,11 +125,6 @@ describe("hash integration tests", () => {
   });
 
   describe("browser navigation", () => {
-    if (isIE11()) {
-      console.log("[NEEDS FIX] IE11 swallows hash change, skipping test");
-      return;
-    }
-
     it("can detect navigation triggered by the browser", done => {
       testHistory.push("/uno");
       testHistory.push("/dos");

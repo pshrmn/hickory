@@ -12,7 +12,7 @@ const plugins = [
 ];
 
 // don't test IE11 until hash loss issue is resolved
-delete customLaunchers["bs_ie_11"];
+// delete customLaunchers["bs_ie_11"];
 
 module.exports = function(config) {
   config.set({
