@@ -41,8 +41,8 @@ const customLaunchers = {
     base: "BrowserStack",
     browser: "safari",
     os: "iOS",
-    os_version: "11.0",
-    device: "iPhone 8",
+    os_version: "10.3",
+    device: "iPhone 7",
     real_mobile: true
   },
   // android
