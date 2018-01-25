@@ -13,7 +13,11 @@
     "type": "git",
     "url": "git+https://github.com/pshrmn/hickory.git"
   },
-  "keywords": ["history", "navigation", "single page application"],
+  "keywords": [
+    "history",
+    "navigation",
+    "single page application"
+  ],
   "author": "Paul Sherman",
   "license": "MIT",
   "bugs": {
