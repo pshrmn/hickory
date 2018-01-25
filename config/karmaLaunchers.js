@@ -43,7 +43,7 @@ const customLaunchers = {
     os: "iOS",
     os_version: "11.0",
     device: "iPhone 8",
-    real_mobile: true
+    real_mobile: false
   },
   // android
   bs_android_chrome: {
