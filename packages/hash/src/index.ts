@@ -1,14 +1,20 @@
-import createCommonHistory from '@hickory/root';
+import createCommonHistory from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
   createEventCoordinator,
   ensureEncodedPathname
-} from '@hickory/dom-utils';
-import hashEncoderAndDecoder from './hashTypes';
+} from "@hickory/dom-utils";
+import hashEncoderAndDecoder from "./hashTypes";
 
 import {
   History,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State,
+  LocationDetails,
   HickoryLocation,
   PartialLocation,
   AnyLocation,
@@ -18,13 +24,24 @@ import {
   ResponseHandler,
   PendingNavigation,
   Action
-} from '@hickory/root';
+} from "@hickory/root";
 
-export { History, HickoryLocation, PartialLocation, AnyLocation };
+export {
+  History,
+  HickoryLocation,
+  PartialLocation,
+  AnyLocation,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State,
+  LocationDetails
+};
 
 function ensureHash(encode: (path: string) => string): void {
-  if (window.location.hash === '') {
-    window.history.replaceState(null, '', encode('/'));
+  if (window.location.hash === "") {
+    window.history.replaceState(null, "", encode("/"));
   }
 }
 
@@ -35,7 +52,7 @@ export interface Options extends RootOptions {
 
 function noop() {}
 
-export default function Hash(options: Options = {}): History {
+export default function HashHistory(options: Options = {}): History {
   if (!domExists()) {
     return;
   }
@@ -72,7 +89,7 @@ export default function Hash(options: Options = {}): History {
     if (!key) {
       key = keygen.major();
       // replace with the hash we received, not the decoded path
-      window.history.replaceState({ key, state }, '', hash);
+      window.history.replaceState({ key, state }, "", hash);
     }
     return createLocation(path, key);
   }
@@ -87,9 +104,9 @@ export default function Hash(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.pushState({ key, state }, '', path);
+      window.history.pushState({ key, state }, "", path);
       hashHistory.location = location;
-      hashHistory.action = 'PUSH';
+      hashHistory.action = "PUSH";
     };
   }
 
@@ -97,17 +114,17 @@ export default function Hash(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.replaceState({ key, state }, '', path);
+      window.history.replaceState({ key, state }, "", path);
       hashHistory.location = location;
-      hashHistory.action = 'REPLACE';
+      hashHistory.action = "REPLACE";
     };
   }
 
   const hashHistory: History = {
     // location
     action: (getStateFromHistory().key !== undefined
-      ? 'POP'
-      : 'PUSH') as Action,
+      ? "POP"
+      : "PUSH") as Action,
     location: locationFromBrowser(),
     // set response handler
     respondWith: function(fn: ResponseHandler) {
@@ -146,7 +163,7 @@ export default function Hash(options: Options = {}): History {
         {
           to: location,
           from: hashHistory.location,
-          action: 'PUSH'
+          action: "PUSH"
         },
         () => {
           if (!responseHandler) {
@@ -154,7 +171,7 @@ export default function Hash(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: 'PUSH',
+            action: "PUSH",
             finish: finalizePush(location),
             cancel: noop
           });
@@ -169,7 +186,7 @@ export default function Hash(options: Options = {}): History {
         {
           to: location,
           from: hashHistory.location,
-          action: 'REPLACE'
+          action: "REPLACE"
         },
         () => {
           if (!responseHandler) {
@@ -177,7 +194,7 @@ export default function Hash(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: 'REPLACE',
+            action: "REPLACE",
             finish: finalizeReplace(location),
             cancel: noop
           });
@@ -193,9 +210,9 @@ export default function Hash(options: Options = {}): History {
         }
         responseHandler({
           location: hashHistory.location,
-          action: 'POP',
+          action: "POP",
           finish: () => {
-            hashHistory.action = 'POP';
+            hashHistory.action = "POP";
           },
           cancel: noop
         });
@@ -220,7 +237,7 @@ export default function Hash(options: Options = {}): History {
       {
         to: location,
         from: hashHistory.location,
-        action: 'POP'
+        action: "POP"
       },
       () => {
         if (!responseHandler) {
@@ -228,13 +245,13 @@ export default function Hash(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: 'POP',
+          action: "POP",
           finish: () => {
             hashHistory.location = location;
-            hashHistory.action = 'POP';
+            hashHistory.action = "POP";
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === 'POP') {
+            if (nextAction === "POP") {
               return;
             }
             reverting = true;

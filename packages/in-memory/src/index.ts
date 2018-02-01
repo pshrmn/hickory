@@ -1,7 +1,13 @@
-import createCommonHistory from '@hickory/root';
+import createCommonHistory from "@hickory/root";
 
 import {
   History,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State,
+  LocationDetails,
   HickoryLocation,
   PartialLocation,
   AnyLocation,
@@ -11,9 +17,20 @@ import {
   ResponseHandler,
   PendingNavigation,
   Action
-} from '@hickory/root';
+} from "@hickory/root";
 
-export { History, HickoryLocation, PartialLocation, AnyLocation };
+export {
+  History,
+  HickoryLocation,
+  PartialLocation,
+  AnyLocation,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State,
+  LocationDetails
+};
 
 export interface Options extends RootOptions {
   locations?: Array<string | PartialLocation>;
@@ -50,7 +67,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
       createLocation(loc, keygen.major())
     );
   } else {
-    initialLocations = [createLocation({ pathname: '/' }, keygen.major())];
+    initialLocations = [createLocation({ pathname: "/" }, keygen.major())];
   }
 
   let initialIndex = 0;
@@ -76,7 +93,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         ...memoryHistory.locations.slice(0, memoryHistory.index),
         location
       ];
-      memoryHistory.action = 'PUSH';
+      memoryHistory.action = "PUSH";
     };
   }
 
@@ -84,7 +101,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     return () => {
       memoryHistory.location = location;
       memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
-      memoryHistory.action = 'REPLACE';
+      memoryHistory.action = "REPLACE";
     };
   }
 
@@ -93,7 +110,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
-    action: 'PUSH',
+    action: "PUSH",
     // set response handler
     respondWith: function(fn: ResponseHandler) {
       responseHandler = fn;
@@ -130,7 +147,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         {
           to: location,
           from: memoryHistory.location,
-          action: 'PUSH'
+          action: "PUSH"
         },
         () => {
           if (!responseHandler) {
@@ -138,7 +155,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           }
           responseHandler({
             location,
-            action: 'PUSH',
+            action: "PUSH",
             finish: finalizePush(location),
             cancel: noop
           });
@@ -152,7 +169,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         {
           to: location,
           from: memoryHistory.location,
-          action: 'REPLACE'
+          action: "REPLACE"
         },
         () => {
           if (!responseHandler) {
@@ -160,7 +177,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           }
           responseHandler({
             location,
-            action: 'REPLACE',
+            action: "REPLACE",
             finish: finalizeReplace(location),
             cancel: noop
           });
@@ -174,9 +191,9 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         }
         responseHandler({
           location: memoryHistory.location,
-          action: 'POP',
+          action: "POP",
           finish: () => {
-            memoryHistory.action = 'POP';
+            memoryHistory.action = "POP";
           },
           cancel: noop
         });
@@ -190,7 +207,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
             {
               to: location,
               from: memoryHistory.location,
-              action: 'PUSH'
+              action: "PUSH"
             },
             () => {
               if (!responseHandler) {
@@ -198,11 +215,11 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
               }
               responseHandler({
                 location,
-                action: 'POP',
+                action: "POP",
                 finish: () => {
                   memoryHistory.index = newIndex;
                   memoryHistory.location = location;
-                  memoryHistory.action = 'POP';
+                  memoryHistory.action = "POP";
                 },
                 cancel: noop
               });

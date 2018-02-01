@@ -1,16 +1,22 @@
-import createCommonHistory from '@hickory/root';
+import createCommonHistory from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
   domExists,
   createEventCoordinator,
   ensureEncodedPathname
-} from '@hickory/dom-utils';
+} from "@hickory/dom-utils";
 
 import {
   History,
-  HickoryLocation,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State,
+  LocationDetails,
   PartialLocation,
+  HickoryLocation,
   AnyLocation,
   ConfirmationFunction,
   Options as RootOptions,
@@ -18,12 +24,23 @@ import {
   ResponseHandler,
   PendingNavigation,
   Action
-} from '@hickory/root';
+} from "@hickory/root";
 
-export { History, HickoryLocation, PartialLocation, AnyLocation };
+export {
+  History,
+  HickoryLocation,
+  PartialLocation,
+  AnyLocation,
+  LocationDetails,
+  Key,
+  Pathname,
+  Query,
+  Hash,
+  State
+};
 
 export interface Options extends RootOptions {
-  raw?: (pathname: string) => string;
+  raw?: (pathname: Pathname) => Pathname;
 }
 
 function noop() {}
@@ -57,7 +74,7 @@ export default function Browser(options: Options = {}): History {
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
-      window.history.replaceState({ key, state }, '', path);
+      window.history.replaceState({ key, state }, "", path);
     }
     return createLocation(path, key, state);
   }
@@ -72,9 +89,9 @@ export default function Browser(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.pushState({ key, state }, '', path);
+      window.history.pushState({ key, state }, "", path);
       browserHistory.location = location;
-      browserHistory.action = 'PUSH';
+      browserHistory.action = "PUSH";
     };
   }
 
@@ -82,17 +99,17 @@ export default function Browser(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.replaceState({ key, state }, '', path);
+      window.history.replaceState({ key, state }, "", path);
       browserHistory.location = location;
-      browserHistory.action = 'REPLACE';
+      browserHistory.action = "REPLACE";
     };
   }
 
   const browserHistory = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: (getStateFromHistory().key !== undefined
-      ? 'POP'
-      : 'PUSH') as Action,
+      ? "POP"
+      : "PUSH") as Action,
     location: locationFromBrowser(),
     // set response handler
     respondWith: function(fn: ResponseHandler) {
@@ -133,7 +150,7 @@ export default function Browser(options: Options = {}): History {
         {
           to: location,
           from: browserHistory.location,
-          action: 'PUSH'
+          action: "PUSH"
         },
         () => {
           if (!responseHandler) {
@@ -141,7 +158,7 @@ export default function Browser(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: 'PUSH',
+            action: "PUSH",
             finish: finalizePush(location),
             cancel: noop
           });
@@ -156,7 +173,7 @@ export default function Browser(options: Options = {}): History {
         {
           to: location,
           from: browserHistory.location,
-          action: 'REPLACE'
+          action: "REPLACE"
         },
         () => {
           if (!responseHandler) {
@@ -164,7 +181,7 @@ export default function Browser(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: 'REPLACE',
+            action: "REPLACE",
             finish: finalizeReplace(location),
             cancel: noop
           });
@@ -180,9 +197,9 @@ export default function Browser(options: Options = {}): History {
         }
         responseHandler({
           location: browserHistory.location,
-          action: 'POP',
+          action: "POP",
           finish: () => {
-            browserHistory.action = 'POP';
+            browserHistory.action = "POP";
           },
           cancel: noop
         });
@@ -207,7 +224,7 @@ export default function Browser(options: Options = {}): History {
       {
         to: location,
         from: browserHistory.location,
-        action: 'POP'
+        action: "POP"
       },
       () => {
         if (!responseHandler) {
@@ -215,13 +232,13 @@ export default function Browser(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: 'POP',
+          action: "POP",
           finish: () => {
             browserHistory.location = location;
-            browserHistory.action = 'POP';
+            browserHistory.action = "POP";
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === 'POP') {
+            if (nextAction === "POP") {
               return;
             }
             reverting = true;
