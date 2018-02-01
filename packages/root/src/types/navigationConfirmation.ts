@@ -1,9 +1,10 @@
-import { HickoryLocation } from './location';
+import { HickoryLocation } from "./location";
+import { Action } from "./hickory";
 
 export interface NavigationInfo {
   to: HickoryLocation;
   from: HickoryLocation;
-  action: string;
+  action: Action;
 }
 
 export type ConfirmationFunction = (

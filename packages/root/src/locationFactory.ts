@@ -3,33 +3,38 @@ import {
   completeHash,
   completeQuery,
   stripBaseSegment
-} from '@hickory/location-utils';
+} from "@hickory/location-utils";
 
 import {
   HickoryLocation,
   PartialLocation,
-  AnyLocation
-} from './types/location';
-import { ToArgument } from './types/hickory';
+  AnyLocation,
+  Pathname,
+  Key,
+  Query,
+  Hash,
+  State
+} from "./types/location";
+import { ToArgument } from "./types/hickory";
 import {
   QueryFunctions,
   LocationFactoryOptions,
   LocationMethods
-} from './types/locationFactory';
+} from "./types/locationFactory";
 
-function defaultParseQuery(query?: string): string {
-  return query ? query : '';
+function defaultParseQuery(query: string): Query {
+  return query ? query : "";
 }
 
-function defaultStringifyQuery(query?: string): string {
-  return query ? query : '';
+function defaultStringifyQuery(query: Query): string {
+  return query ? query : "";
 }
 
 function isValidBase(baseSegment: string): boolean {
   return (
-    typeof baseSegment === 'string' &&
-    baseSegment.charAt(0) === '/' &&
-    baseSegment.charAt(baseSegment.length - 1) !== '/'
+    typeof baseSegment === "string" &&
+    baseSegment.charAt(0) === "/" &&
+    baseSegment.charAt(baseSegment.length - 1) !== "/"
   );
 }
 
@@ -51,19 +56,19 @@ export default function locationFactory(
   const {
     query,
     decode = true,
-    baseSegment = '',
-    raw = (p: string): string => p
+    baseSegment = "",
+    raw = (p: Pathname): Pathname => p
   } = options;
 
   const { parse, stringify } = validateQueryOption(query);
 
-  if (baseSegment !== '' && !isValidBase(baseSegment)) {
+  if (baseSegment !== "" && !isValidBase(baseSegment)) {
     throw new Error(
       'The baseSegment "' +
         baseSegment +
         '" is not valid.' +
-        ' The baseSegment must begin with a forward slash and end with a' +
-        ' non-forward slash character.'
+        " The baseSegment must begin with a forward slash and end with a" +
+        " non-forward slash character."
     );
   }
 
@@ -71,15 +76,15 @@ export default function locationFactory(
     const location: PartialLocation = {} as PartialLocation;
 
     // hash is always after query, so split it off first
-    const hashIndex = value.indexOf('#');
+    const hashIndex = value.indexOf("#");
     if (hashIndex !== -1) {
       location.hash = value.substring(hashIndex + 1);
       value = value.substring(0, hashIndex);
     } else {
-      location.hash = '';
+      location.hash = "";
     }
 
-    const queryIndex = value.indexOf('?');
+    const queryIndex = value.indexOf("?");
     if (queryIndex !== -1) {
       location.query = parse(value.substring(queryIndex + 1));
       value = value.substring(0, queryIndex);
@@ -94,22 +99,25 @@ export default function locationFactory(
 
   function createLocation(
     value: ToArgument,
-    key?: string,
-    state: any = null
+    key?: Key,
+    state?: State
   ): HickoryLocation {
     let partial: PartialLocation;
-    if (typeof value === 'string') {
+    if (state === undefined) {
+      state = null;
+    }
+    if (typeof value === "string") {
       partial = parsePath(value);
     } else {
       partial = { ...value } as PartialLocation;
       if (partial.hash == null) {
-        partial.hash = '';
+        partial.hash = "";
       }
       if (partial.query == null) {
         partial.query = parse();
       }
       if (partial.pathname == null) {
-        partial.pathname = '/';
+        partial.pathname = "/";
       }
     }
     // don't set state if it already exists
@@ -137,8 +145,8 @@ export default function locationFactory(
           'Pathname "' +
             location.pathname +
             '" could not be decoded. ' +
-            'This is most likely due to a bad percent-encoding. For more information, ' +
-            'see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4'
+            "This is most likely due to a bad percent-encoding. For more information, " +
+            "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
         );
       }
     }
@@ -150,9 +158,7 @@ export default function locationFactory(
     // with a question mark, and hash begins with a pound sign
     return (
       baseSegment +
-      completePathname(
-        (<HickoryLocation>location).rawPathname || location.pathname || ''
-      ) +
+      completePathname(location.rawPathname || location.pathname || "") +
       completeQuery(stringify(location.query)) +
       completeHash(location.hash)
     );
