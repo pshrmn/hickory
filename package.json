@@ -7,7 +7,8 @@
     "build": "lerna run build",
     "postinstall": "lerna bootstrap --stream && npm run build",
     "precommit": "pretty-quick --staged",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "versions": "lerna publish --skip-git --skip-npm"
   },
   "repository": {
     "type": "git",
