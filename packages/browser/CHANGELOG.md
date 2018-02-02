@@ -1,5 +1,6 @@
 ## Next
 
+* Re-export `LocationDetails`.
 * Don't publish source maps.
 
 ## 1.0.0-beta.5

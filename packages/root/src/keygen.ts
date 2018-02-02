@@ -1,10 +1,10 @@
-import { KeyMethods } from './types/keygen';
+import { KeyMethods } from "./types/keygen";
 
 export default function createKeyGenerator(initial?: number): KeyMethods {
   let id: number = initial || 0;
 
   function parse(key: string): Array<number> {
-    return key.split('.').map((value: string): number => parseInt(value, 10));
+    return key.split(".").map((value: string): number => parseInt(value, 10));
   }
 
   return {

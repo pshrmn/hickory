@@ -1,9 +1,12 @@
-export interface PartialLocation {
-  pathname?: string;
-  rawPathname?: string;
+export interface LocationDetails {
   query?: any;
   hash?: string;
   state?: any;
+}
+
+export interface PartialLocation extends LocationDetails {
+  pathname?: string;
+  rawPathname?: string;
 }
 
 // use HickoryLocation instead of Location to prevent

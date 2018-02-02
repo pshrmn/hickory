@@ -1,4 +1,9 @@
-export { PartialLocation, HickoryLocation, AnyLocation } from './location';
+export {
+  LocationDetails,
+  PartialLocation,
+  HickoryLocation,
+  AnyLocation
+} from "./location";
 
 export {
   History,
@@ -9,18 +14,18 @@ export {
   ResponseHandler,
   Options,
   CommonHistory
-} from './hickory';
+} from "./hickory";
 
-export { KeyMethods, KeyFns } from './keygen';
+export { KeyMethods, KeyFns } from "./keygen";
 
 export {
   QueryFunctions,
   LocationFactoryOptions,
   LocationMethods
-} from './locationFactory';
+} from "./locationFactory";
 
 export {
   NavigationInfo,
   ConfirmationFunction,
   ConfirmationMethods
-} from './navigationConfirmation';
+} from "./navigationConfirmation";
