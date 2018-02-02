@@ -9,11 +9,6 @@ import hashEncoderAndDecoder from "./hashTypes";
 
 import {
   History,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails,
   HickoryLocation,
   PartialLocation,
@@ -31,11 +26,6 @@ export {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails
 };
 

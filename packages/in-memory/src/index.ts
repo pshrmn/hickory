@@ -2,11 +2,6 @@ import createCommonHistory from "@hickory/root";
 
 import {
   History,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails,
   HickoryLocation,
   PartialLocation,
@@ -24,11 +19,6 @@ export {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails
 };
 

@@ -1,6 +1,6 @@
 ## Next
 
-* More detailed types.
+* Export `LocationDetails` interface to describe `query`, `hash`, and `state`.
 * Don't publish source maps.
 
 ## 1.0.0-beta.6

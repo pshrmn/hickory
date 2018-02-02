@@ -1,9 +1,4 @@
 export {
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails,
   PartialLocation,
   HickoryLocation,

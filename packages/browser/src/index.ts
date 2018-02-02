@@ -9,11 +9,6 @@ import {
 
 import {
   History,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State,
   LocationDetails,
   PartialLocation,
   HickoryLocation,
@@ -31,16 +26,11 @@ export {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  LocationDetails,
-  Key,
-  Pathname,
-  Query,
-  Hash,
-  State
+  LocationDetails
 };
 
 export interface Options extends RootOptions {
-  raw?: (pathname: Pathname) => Pathname;
+  raw?: (pathname: string) => string;
 }
 
 function noop() {}

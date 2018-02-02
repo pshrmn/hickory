@@ -8,12 +8,7 @@ import {
 import {
   HickoryLocation,
   PartialLocation,
-  AnyLocation,
-  Pathname,
-  Key,
-  Query,
-  Hash,
-  State
+  AnyLocation
 } from "./types/location";
 import { ToArgument } from "./types/hickory";
 import {
@@ -22,11 +17,11 @@ import {
   LocationMethods
 } from "./types/locationFactory";
 
-function defaultParseQuery(query: string): Query {
+function defaultParseQuery(query: string): any {
   return query ? query : "";
 }
 
-function defaultStringifyQuery(query: Query): string {
+function defaultStringifyQuery(query: any): string {
   return query ? query : "";
 }
 
@@ -57,7 +52,7 @@ export default function locationFactory(
     query,
     decode = true,
     baseSegment = "",
-    raw = (p: Pathname): Pathname => p
+    raw = (p: string): string => p
   } = options;
 
   const { parse, stringify } = validateQueryOption(query);
@@ -99,8 +94,8 @@ export default function locationFactory(
 
   function createLocation(
     value: ToArgument,
-    key?: Key,
-    state?: State
+    key?: string,
+    state?: any
   ): HickoryLocation {
     let partial: PartialLocation;
     if (state === undefined) {
