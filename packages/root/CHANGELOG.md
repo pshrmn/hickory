@@ -1,4 +1,4 @@
-## Next
+## 1.0.0-beta.7
 
 * Export `LocationDetails` interface to describe `query`, `hash`, and `state`.
 * Don't publish source maps.
