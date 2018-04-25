@@ -193,23 +193,7 @@ export default function HashHistory(options: Options = {}): History {
       );
     },
     go: function go(num: number): void {
-      // calling window.history.go with no value reloads the page, but
-      // we will just re-emit instead
-      if (!num) {
-        if (!responseHandler) {
-          return;
-        }
-        responseHandler({
-          location: hashHistory.location,
-          action: "POP",
-          finish: () => {
-            hashHistory.action = "POP";
-          },
-          cancel: noop
-        });
-      } else {
-        window.history.go(num);
-      }
+      window.history.go(num);
     }
   };
 

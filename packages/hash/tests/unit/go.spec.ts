@@ -32,31 +32,16 @@ describe("go", () => {
     global.document = undefined;
   });
 
-  describe("with no value", () => {
-    it('calls response handler with current location and "POP" action', done => {
-      const testHistory = Hash();
-      const router = ignoreFirstCall(function(pending) {
-        expect(pending.location).toMatchObject({
-          pathname: "/one"
-        });
-        expect(pending.action).toBe("POP");
-        done();
-      });
-      testHistory.respondWith(router); // calls router
-      testHistory.go();
-    });
-  });
-
-  it("does nothing if the value is outside of the range", () => {
+  it("calls window.history.go with provided value", () => {
+    const realGo = window.history.go;
+    const mockGo = (window.history.go = jest.fn());
     const testHistory = Hash();
-    const router = jest.fn();
-    testHistory.respondWith(router);
-    testHistory.go(10);
-    // just verifying that a popstate event hasn't emitted to
-    // trigger the history's event handler
-    setTimeout(() => {
-      expect(router.mock.calls.length).toBe(1);
-    }, 50);
+
+    [undefined, 0, 1, -1].forEach((value, index) => {
+      testHistory.go(value);
+      expect(mockGo.mock.calls[index][0]).toBe(value);
+    });
+    window.history.go = realGo;
   });
 
   it("calls response handler with expected location and action", done => {
