@@ -1,5 +1,5 @@
-import 'jest';
-import InMemory from '../src';
+import "jest";
+import InMemory from "../src";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -14,47 +14,47 @@ function ignoreFirstCall(fn) {
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
-describe('replace', () => {
-  describe('without a response handler', () => {
-    it('does nothing', () => {
+describe('update(..., "REPLACE")', () => {
+  describe("without a response handler", () => {
+    it("does nothing", () => {
       const testHistory = InMemory();
-      testHistory.replace('/two');
-      expect(testHistory.location.pathname).toBe('/');
+      testHistory.update("/two", "REPLACE");
+      expect(testHistory.location.pathname).toBe("/");
     });
   });
 
-  describe('respondWith', () => {
-    it('triggers a response handler call', () => {
+  describe("respondWith", () => {
+    it("triggers a response handler call", () => {
       const testHistory = InMemory();
       const router = jest.fn();
       testHistory.respondWith(router); // calls router
-      testHistory.replace('/two');
+      testHistory.update("/two", "REPLACE");
       expect(router.mock.calls.length).toBe(2);
     });
 
-    describe('location', () => {
-      it('is a location object created from pushed string', () => {
+    describe("location", () => {
+      it("is a location object created from pushed string", () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(function(pending) {
           expect(pending.location).toMatchObject({
-            pathname: '/two',
-            query: 'test=ing'
+            pathname: "/two",
+            query: "test=ing"
           });
         });
         testHistory.respondWith(router);
-        testHistory.replace('/two?test=ing');
+        testHistory.update("/two?test=ing", "REPLACE");
       });
 
-      it('is a location object created from pushed object', () => {
+      it("is a location object created from pushed object", () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(function(pending) {
           expect(pending.location).toMatchObject({
-            pathname: '/two',
-            hash: 'test'
+            pathname: "/two",
+            hash: "test"
           });
         });
         testHistory.respondWith(router);
-        testHistory.replace({ pathname: '/two', hash: 'test' });
+        testHistory.update({ pathname: "/two", hash: "test" }, "REPLACE");
       });
 
       it("key maintains current location's major value, increments the minor value", () => {
@@ -64,14 +64,14 @@ describe('replace', () => {
         }
         testHistory.respondWith(router); // calls router
 
-        const [initMajor, initMinor] = testHistory.location.key.split('.');
+        const [initMajor, initMinor] = testHistory.location.key.split(".");
         const initMajorNum = parseInt(initMajor, 10);
         const initMinorNum = parseInt(initMinor, 10);
 
-        testHistory.replace('/next');
+        testHistory.update("/next", "REPLACE");
 
         const current = testHistory.location;
-        const [currentMajor, currentMinor] = current.key.split('.');
+        const [currentMajor, currentMinor] = current.key.split(".");
         const currentMajorNum = parseInt(currentMajor, 10);
         const currentMinorNum = parseInt(currentMinor, 10);
 
@@ -80,48 +80,48 @@ describe('replace', () => {
       });
     });
 
-    describe('action', () => {
+    describe("action", () => {
       it('is "REPLACE"', () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(function router(pending) {
-          expect(pending.action).toBe('REPLACE');
+          expect(pending.action).toBe("REPLACE");
           pending.finish();
         });
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/next');
+        testHistory.update("/next", "REPLACE");
       });
     });
 
-    describe('finish', () => {
-      it('updates InMemory history when finish function is called', () => {
+    describe("finish", () => {
+      it("updates InMemory history when finish function is called", () => {
         const testHistory = InMemory();
         let router = ignoreFirstCall(function(pending) {
-          expect(testHistory.location.pathname).toBe('/');
+          expect(testHistory.location.pathname).toBe("/");
           pending.finish();
-          expect(testHistory.location.pathname).toBe('/two');
+          expect(testHistory.location.pathname).toBe("/two");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/two');
+        testHistory.update("/two", "REPLACE");
       });
 
-      it('does nothing if update is not called', () => {
+      it("does nothing if update is not called", () => {
         const testHistory = InMemory();
         let call = 0;
         function router(pending) {}
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/two');
-        expect(testHistory.location.pathname).toBe('/');
+        testHistory.update("/two", "REPLACE");
+        expect(testHistory.location.pathname).toBe("/");
       });
 
-      it('sets history.location to new location object', () => {
+      it("sets history.location to new location object", () => {
         const testHistory = InMemory();
         function router(pending) {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/next');
+        testHistory.update("/next", "REPLACE");
         expect(testHistory.location).toMatchObject({
-          pathname: '/next'
+          pathname: "/next"
         });
       });
 
@@ -131,38 +131,38 @@ describe('replace', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/next');
-        expect(testHistory.action).toBe('REPLACE');
+        testHistory.update("/next", "REPLACE");
+        expect(testHistory.action).toBe("REPLACE");
       });
     });
 
-    describe('cancel', () => {
-      it('does not update InMemory history when cancel function is called', () => {
+    describe("cancel", () => {
+      it("does not update InMemory history when cancel function is called", () => {
         const testHistory = InMemory();
         let router = ignoreFirstCall(function(pending) {
-          expect(testHistory.location.pathname).toBe('/');
+          expect(testHistory.location.pathname).toBe("/");
           pending.cancel();
-          expect(testHistory.location.pathname).toBe('/');
+          expect(testHistory.location.pathname).toBe("/");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/two');
+        testHistory.update("/two", "REPLACE");
       });
 
-      it('does not update the action value', () => {
+      it("does not update the action value", () => {
         const testHistory = InMemory();
         let router = ignoreFirstCall(function(pending) {
-          expect(testHistory.action).toBe('PUSH');
+          expect(testHistory.action).toBe("PUSH");
           pending.cancel();
-          expect(testHistory.action).toBe('PUSH');
+          expect(testHistory.action).toBe("PUSH");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.replace('/two');
+        testHistory.update("/two", "REPLACE");
       });
     });
   });
 
-  describe('with a confirmation function', () => {
-    it('calls response pending after the user confirms the navigation', () => {
+  describe("with a confirmation function", () => {
+    it("calls response pending after the user confirms the navigation", () => {
       const testHistory = InMemory();
       const router = jest.fn();
       const confirm = (info, confirm, prevent) => {
@@ -171,11 +171,11 @@ describe('replace', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.replace('/next');
+      testHistory.update("/next", "REPLACE");
       expect(router.mock.calls.length).toBe(2);
     });
 
-    it('does not call response pending when the user prevents the navigation', () => {
+    it("does not call response pending when the user prevents the navigation", () => {
       const testHistory = InMemory();
       const router = jest.fn();
       const confirm = (info, confirm, prevent) => {
@@ -184,7 +184,7 @@ describe('replace', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.replace('/next');
+      testHistory.update("/next", "REPLACE");
       expect(router.mock.calls.length).toBe(1);
     });
   });
