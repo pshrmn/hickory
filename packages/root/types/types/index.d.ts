@@ -1,27 +1,5 @@
-export {
-  LocationDetails,
-  PartialLocation,
-  HickoryLocation,
-  AnyLocation
-} from "./location";
-export {
-  History,
-  ToArgument,
-  Action,
-  PendingNavigation,
-  NavFn,
-  ResponseHandler,
-  Options,
-  CommonHistory
-} from "./hickory";
+export { LocationDetails, PartialLocation, HickoryLocation, AnyLocation } from "./location";
+export { History, ToArgument, Action, NavType, PendingNavigation, ResponseHandler, Options, CommonHistory } from "./hickory";
 export { KeyMethods, KeyFns } from "./keygen";
-export {
-  QueryFunctions,
-  LocationFactoryOptions,
-  LocationMethods
-} from "./locationFactory";
-export {
-  NavigationInfo,
-  ConfirmationFunction,
-  ConfirmationMethods
-} from "./navigationConfirmation";
+export { QueryFunctions, LocationFactoryOptions, LocationMethods } from "./locationFactory";
+export { NavigationInfo, ConfirmationFunction, ConfirmationMethods } from "./navigationConfirmation";

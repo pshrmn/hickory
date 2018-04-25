@@ -126,8 +126,6 @@ export default function locationFactory(
       rawPathname: raw(partial.pathname)
     };
 
-    location.key = key;
-
     location.rawPathname = raw(location.pathname);
 
     // it can be more convenient to interact with the decoded pathname,
