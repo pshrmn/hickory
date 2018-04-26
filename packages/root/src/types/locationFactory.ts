@@ -1,4 +1,4 @@
-import { HickoryLocation, PartialLocation } from './location';
+import { HickoryLocation, PartialLocation } from "./location";
 
 export interface QueryFunctions {
   parse: (query?: string) => any;

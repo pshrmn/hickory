@@ -11,7 +11,8 @@ import {
   ToArgument,
   ResponseHandler,
   PendingNavigation,
-  Action
+  Action,
+  NavType
 } from "@hickory/root";
 
 export {
@@ -30,6 +31,11 @@ export interface Options extends RootOptions {
 export interface InMemoryHistory extends History {
   locations: Array<HickoryLocation>;
   index: number;
+}
+
+interface NavSetup {
+  action: Action;
+  finish(): void;
 }
 
 function noop() {}
@@ -73,7 +79,21 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     return createPath(location);
   }
 
-  let responseHandler: ResponseHandler;
+  function setupReplace(location: HickoryLocation): NavSetup {
+    location.key = keygen.minor(memoryHistory.location.key);
+    return {
+      action: "REPLACE",
+      finish: finalizeReplace(location)
+    };
+  }
+
+  function setupPush(location: HickoryLocation): NavSetup {
+    location.key = keygen.major(memoryHistory.location.key);
+    return {
+      action: "PUSH",
+      finish: finalizePush(location)
+    };
+  }
 
   function finalizePush(location: HickoryLocation) {
     return () => {
@@ -95,6 +115,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     };
   }
 
+  let responseHandler: ResponseHandler;
   const memoryHistory: InMemoryHistory = {
     // location
     location: initialLocations[initialIndex],
@@ -120,24 +141,31 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         fn();
       });
     },
-    navigate: function navigate(to: ToArgument): void {
-      const location: HickoryLocation = createLocation(to, null);
-      const path: string = createPath(location);
-      const currentPath: string = createPath(memoryHistory.location);
-      if (path === currentPath) {
-        memoryHistory.replace(to);
-      } else {
-        memoryHistory.push(to);
+    navigate: function navigate(
+      to: ToArgument,
+      navType: NavType = "ANCHOR"
+    ): void {
+      let setup: NavSetup;
+      const location = createLocation(to);
+      switch (navType) {
+        case "ANCHOR":
+          setup =
+            createPath(location) === createPath(memoryHistory.location)
+              ? setupReplace(location)
+              : setupPush(location);
+          break;
+        case "PUSH":
+          setup = setupPush(location);
+          break;
+        case "REPLACE":
+          setup = setupReplace(location);
+          break;
       }
-    },
-    push: function push(to: ToArgument): void {
-      const key: string = keygen.major(memoryHistory.location.key);
-      const location: HickoryLocation = createLocation(to, key);
       confirmNavigation(
         {
           to: location,
           from: memoryHistory.location,
-          action: "PUSH"
+          action: setup.action
         },
         () => {
           if (!responseHandler) {
@@ -145,30 +173,8 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           }
           responseHandler({
             location,
-            action: "PUSH",
-            finish: finalizePush(location),
-            cancel: noop
-          });
-        }
-      );
-    },
-    replace: function replace(to: ToArgument): void {
-      const key: string = keygen.minor(memoryHistory.location.key);
-      const location: HickoryLocation = createLocation(to, key);
-      confirmNavigation(
-        {
-          to: location,
-          from: memoryHistory.location,
-          action: "REPLACE"
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location,
-            action: "REPLACE",
-            finish: finalizeReplace(location),
+            action: setup.action,
+            finish: setup.finish,
             cancel: noop
           });
         }

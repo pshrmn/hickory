@@ -18,7 +18,8 @@ import {
   ToArgument,
   ResponseHandler,
   PendingNavigation,
-  Action
+  Action,
+  NavType
 } from "@hickory/root";
 
 export {
@@ -31,6 +32,11 @@ export {
 
 export interface Options extends RootOptions {
   raw?: (pathname: string) => string;
+}
+
+interface NavSetup {
+  action: Action;
+  finish(): void;
 }
 
 function noop() {}
@@ -73,7 +79,21 @@ export default function Browser(options: Options = {}): History {
     return createPath(location);
   }
 
-  let responseHandler: ResponseHandler;
+  function setupReplace(location: HickoryLocation): NavSetup {
+    location.key = keygen.minor(browserHistory.location.key);
+    return {
+      action: "REPLACE",
+      finish: finalizeReplace(location)
+    };
+  }
+
+  function setupPush(location: HickoryLocation): NavSetup {
+    location.key = keygen.major(browserHistory.location.key);
+    return {
+      action: "PUSH",
+      finish: finalizePush(location)
+    };
+  }
 
   function finalizePush(location: HickoryLocation) {
     return () => {
@@ -95,6 +115,7 @@ export default function Browser(options: Options = {}): History {
     };
   }
 
+  let responseHandler: ResponseHandler;
   const browserHistory = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: (getStateFromHistory().key !== undefined
@@ -104,7 +125,8 @@ export default function Browser(options: Options = {}): History {
     // set response handler
     respondWith: function(fn: ResponseHandler) {
       responseHandler = fn;
-      responseHandler({
+      // immediately invoke
+      fn({
         location: browserHistory.location,
         action: browserHistory.action,
         finish: noop,
@@ -120,27 +142,31 @@ export default function Browser(options: Options = {}): History {
         fn();
       });
     },
-    // navigation
-    navigate: function navigate(to: ToArgument): void {
-      const location = createLocation(to, null);
-      const path = createPath(location);
-      const currentPath = createPath(browserHistory.location);
-
-      if (path === currentPath) {
-        browserHistory.replace(to);
-      } else {
-        browserHistory.push(to);
+    navigate: function navigate(
+      to: ToArgument,
+      navType: NavType = "ANCHOR"
+    ): void {
+      let setup: NavSetup;
+      const location = createLocation(to);
+      switch (navType) {
+        case "ANCHOR":
+          setup =
+            createPath(location) === createPath(browserHistory.location)
+              ? setupReplace(location)
+              : setupPush(location);
+          break;
+        case "PUSH":
+          setup = setupPush(location);
+          break;
+        case "REPLACE":
+          setup = setupReplace(location);
+          break;
       }
-    },
-    push: function push(to: ToArgument): void {
-      // the major version should be the current key + 1
-      const key = keygen.major(browserHistory.location.key);
-      const location = createLocation(to, key);
       confirmNavigation(
         {
           to: location,
           from: browserHistory.location,
-          action: "PUSH"
+          action: setup.action
         },
         () => {
           if (!responseHandler) {
@@ -148,54 +174,15 @@ export default function Browser(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: "PUSH",
-            finish: finalizePush(location),
-            cancel: noop
-          });
-        }
-      );
-    },
-    replace: function replace(to: ToArgument): void {
-      // pass the current key to just increment the minor portion
-      const key = keygen.minor(browserHistory.location.key);
-      const location = createLocation(to, key);
-      confirmNavigation(
-        {
-          to: location,
-          from: browserHistory.location,
-          action: "REPLACE"
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location,
-            action: "REPLACE",
-            finish: finalizeReplace(location),
+            action: setup.action,
+            finish: setup.finish,
             cancel: noop
           });
         }
       );
     },
     go: function go(num: number): void {
-      // Calling window.history.go with no value reloads the page. Instead
-      // we will just call the responseHandler with the current location
-      if (!num) {
-        if (!responseHandler) {
-          return;
-        }
-        responseHandler({
-          location: browserHistory.location,
-          action: "POP",
-          finish: () => {
-            browserHistory.action = "POP";
-          },
-          cancel: noop
-        });
-      } else {
-        window.history.go(num);
-      }
+      window.history.go(num);
     }
   };
 

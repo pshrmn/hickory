@@ -16,7 +16,7 @@ export interface HickoryLocation {
   query: any;
   hash: string;
   state?: any;
-  key: string;
+  key: string | undefined;
   rawPathname: string;
 }
 

@@ -18,7 +18,8 @@ import {
   ToArgument,
   ResponseHandler,
   PendingNavigation,
-  Action
+  Action,
+  NavType
 } from "@hickory/root";
 
 export {
@@ -38,6 +39,11 @@ function ensureHash(encode: (path: string) => string): void {
 export interface Options extends RootOptions {
   raw?: (pathname: string) => string;
   hashType?: string;
+}
+
+interface NavSetup {
+  action: Action;
+  finish(): void;
 }
 
 function noop() {}
@@ -88,7 +94,21 @@ export default function HashHistory(options: Options = {}): History {
     return encodeHashPath(createPath(location));
   }
 
-  let responseHandler: ResponseHandler;
+  function setupReplace(location: HickoryLocation): NavSetup {
+    location.key = keygen.minor(hashHistory.location.key);
+    return {
+      action: "REPLACE",
+      finish: finalizeReplace(location)
+    };
+  }
+
+  function setupPush(location: HickoryLocation): NavSetup {
+    location.key = keygen.major(hashHistory.location.key);
+    return {
+      action: "PUSH",
+      finish: finalizePush(location)
+    };
+  }
 
   function finalizePush(location: HickoryLocation) {
     return () => {
@@ -110,6 +130,7 @@ export default function HashHistory(options: Options = {}): History {
     };
   }
 
+  let responseHandler: ResponseHandler;
   const hashHistory: History = {
     // location
     action: (getStateFromHistory().key !== undefined
@@ -135,25 +156,31 @@ export default function HashHistory(options: Options = {}): History {
         fn();
       });
     },
-    navigate: function navigate(to: ToArgument): void {
-      const location = createLocation(to, null);
-      const path = createPath(location);
-      const currentPath = createPath(hashHistory.location);
-
-      if (path === currentPath) {
-        hashHistory.replace(to);
-      } else {
-        hashHistory.push(to);
+    navigate: function navigate(
+      to: ToArgument,
+      navType: NavType = "ANCHOR"
+    ): void {
+      let setup: NavSetup;
+      const location = createLocation(to);
+      switch (navType) {
+        case "ANCHOR":
+          setup =
+            createPath(location) === createPath(hashHistory.location)
+              ? setupReplace(location)
+              : setupPush(location);
+          break;
+        case "PUSH":
+          setup = setupPush(location);
+          break;
+        case "REPLACE":
+          setup = setupReplace(location);
+          break;
       }
-    },
-    push: function push(to: ToArgument): void {
-      const key = keygen.major(hashHistory.location.key);
-      const location = createLocation(to, key);
       confirmNavigation(
         {
           to: location,
           from: hashHistory.location,
-          action: "PUSH"
+          action: setup.action
         },
         () => {
           if (!responseHandler) {
@@ -161,54 +188,15 @@ export default function HashHistory(options: Options = {}): History {
           }
           responseHandler({
             location,
-            action: "PUSH",
-            finish: finalizePush(location),
-            cancel: noop
-          });
-        }
-      );
-    },
-    replace: function replace(to: ToArgument): void {
-      // pass the current key to just increment the minor portion
-      const key = keygen.minor(hashHistory.location.key);
-      const location = createLocation(to, key);
-      confirmNavigation(
-        {
-          to: location,
-          from: hashHistory.location,
-          action: "REPLACE"
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location,
-            action: "REPLACE",
-            finish: finalizeReplace(location),
+            action: setup.action,
+            finish: setup.finish,
             cancel: noop
           });
         }
       );
     },
     go: function go(num: number): void {
-      // calling window.history.go with no value reloads the page, but
-      // we will just re-emit instead
-      if (!num) {
-        if (!responseHandler) {
-          return;
-        }
-        responseHandler({
-          location: hashHistory.location,
-          action: "POP",
-          finish: () => {
-            hashHistory.action = "POP";
-          },
-          cancel: noop
-        });
-      } else {
-        window.history.go(num);
-      }
+      window.history.go(num);
     }
   };
 

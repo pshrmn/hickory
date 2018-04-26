@@ -1,13 +1,14 @@
-import { HickoryLocation, AnyLocation, PartialLocation } from './location';
-import { LocationFactoryOptions, LocationMethods } from './locationFactory';
-import { KeyMethods } from './keygen';
+import { HickoryLocation, AnyLocation, PartialLocation } from "./location";
+import { LocationFactoryOptions, LocationMethods } from "./locationFactory";
+import { KeyMethods } from "./keygen";
 import {
   ConfirmationFunction,
   ConfirmationMethods
-} from './navigationConfirmation';
+} from "./navigationConfirmation";
 
 export type ToArgument = string | PartialLocation;
-export type Action = 'PUSH' | 'REPLACE' | 'POP';
+export type Action = "PUSH" | "REPLACE" | "POP";
+export type NavType = "ANCHOR" | "PUSH" | "REPLACE";
 
 export interface PendingNavigation {
   location: HickoryLocation;
@@ -16,7 +17,7 @@ export interface PendingNavigation {
   cancel(nextAction?: Action): void;
   cancelled?: boolean;
 }
-export type NavFn = (to: ToArgument) => void;
+
 export type ResponseHandler = (resp: PendingNavigation) => void;
 
 export interface History {
@@ -27,9 +28,7 @@ export interface History {
   confirmWith(fn?: ConfirmationFunction): void;
   removeConfirmation(): void;
   destroy(): void;
-  navigate: NavFn;
-  push: NavFn;
-  replace: NavFn;
+  navigate(to: ToArgument, navType?: NavType): void;
   go(num?: number): void;
 }
 

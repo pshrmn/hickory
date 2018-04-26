@@ -9,8 +9,8 @@ export {
   History,
   ToArgument,
   Action,
+  NavType,
   PendingNavigation,
-  NavFn,
   ResponseHandler,
   Options,
   CommonHistory
