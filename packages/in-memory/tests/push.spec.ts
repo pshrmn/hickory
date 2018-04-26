@@ -14,11 +14,11 @@ function ignoreFirstCall(fn) {
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
-describe('update(..., "PUSH")', () => {
+describe('navigate(..., "PUSH")', () => {
   describe("without a response handler", () => {
     it("does nothing", () => {
       const testHistory = InMemory();
-      testHistory.update("/two", "PUSH");
+      testHistory.navigate("/two", "PUSH");
       expect(testHistory.location.pathname).toBe("/");
     });
   });
@@ -28,7 +28,7 @@ describe('update(..., "PUSH")', () => {
       const testHistory = InMemory();
       const router = jest.fn();
       testHistory.respondWith(router); // calls router
-      testHistory.update("/two", "PUSH");
+      testHistory.navigate("/two", "PUSH");
       expect(router.mock.calls.length).toBe(2);
     });
 
@@ -42,7 +42,7 @@ describe('update(..., "PUSH")', () => {
           });
         });
         testHistory.respondWith(router);
-        testHistory.update("/two?test=ing", "PUSH");
+        testHistory.navigate("/two?test=ing", "PUSH");
       });
 
       it("is a location object created from pushed object", () => {
@@ -54,7 +54,7 @@ describe('update(..., "PUSH")', () => {
           });
         });
         testHistory.respondWith(router);
-        testHistory.update({ pathname: "/two", hash: "test" }, "PUSH");
+        testHistory.navigate({ pathname: "/two", hash: "test" }, "PUSH");
       });
 
       it("increments current major key value by 1, sets minor value to 0", () => {
@@ -67,7 +67,7 @@ describe('update(..., "PUSH")', () => {
         const [initMajor] = testHistory.location.key.split(".");
         const initMajorNum = parseInt(initMajor, 10);
 
-        testHistory.update("/next", "PUSH");
+        testHistory.navigate("/next", "PUSH");
 
         const current = testHistory.location;
         const [currentMajor, currentMinor] = current.key.split(".");
@@ -87,7 +87,7 @@ describe('update(..., "PUSH")', () => {
             pending.action === "POP" &&
             pending.location.pathname === "/three"
           ) {
-            testHistory.update("/new-four", "PUSH");
+            testHistory.navigate("/new-four", "PUSH");
             afterPop = true;
           }
           if (afterPop) {
@@ -97,10 +97,10 @@ describe('update(..., "PUSH")', () => {
         }
         testHistory.respondWith(router); // calls router
         // just getting the history in the expected state
-        testHistory.update("/two", "PUSH"); // 1.0
-        testHistory.update("/three", "PUSH"); // 2.0
-        testHistory.update("/four", "PUSH"); // 3.0
-        testHistory.update("/five", "PUSH"); // 4.0
+        testHistory.navigate("/two", "PUSH"); // 1.0
+        testHistory.navigate("/three", "PUSH"); // 2.0
+        testHistory.navigate("/four", "PUSH"); // 3.0
+        testHistory.navigate("/five", "PUSH"); // 4.0
         testHistory.go(-2); // 2.0
       });
     });
@@ -113,12 +113,12 @@ describe('update(..., "PUSH")', () => {
           pending.finish();
         });
         testHistory.respondWith(router); // calls router
-        testHistory.update("/next", "PUSH");
+        testHistory.navigate("/next", "PUSH");
       });
     });
 
     describe("finish", () => {
-      it("updates InMemory history when finish function is called", () => {
+      it("navigates InMemory history when finish function is called", () => {
         const testHistory = InMemory();
         let router = ignoreFirstCall(function(pending) {
           expect(testHistory.location.pathname).toBe("/");
@@ -126,15 +126,15 @@ describe('update(..., "PUSH")', () => {
           expect(testHistory.location.pathname).toBe("/two");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.update("/two", "PUSH");
+        testHistory.navigate("/two", "PUSH");
       });
 
-      it("does nothing if update is not called", () => {
+      it("does nothing if navigate is not called", () => {
         const testHistory = InMemory();
         let call = 0;
         function router(pending) {}
         testHistory.respondWith(router); // calls router
-        testHistory.update("/two", "PUSH");
+        testHistory.navigate("/two", "PUSH");
         expect(testHistory.location.pathname).toBe("/");
       });
 
@@ -144,7 +144,7 @@ describe('update(..., "PUSH")', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.update("/next", "PUSH");
+        testHistory.navigate("/next", "PUSH");
         expect(testHistory.location).toMatchObject({
           pathname: "/next"
         });
@@ -156,7 +156,7 @@ describe('update(..., "PUSH")', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.update("/next", "PUSH");
+        testHistory.navigate("/next", "PUSH");
         expect(testHistory.action).toBe("PUSH");
       });
     });
@@ -170,7 +170,7 @@ describe('update(..., "PUSH")', () => {
           expect(testHistory.location.pathname).toBe("/");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.update("/two", "PUSH");
+        testHistory.navigate("/two", "PUSH");
       });
 
       it("does not update the action value", () => {
@@ -181,7 +181,7 @@ describe('update(..., "PUSH")', () => {
           expect(testHistory.action).toBe("PUSH");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.update("/two", "PUSH");
+        testHistory.navigate("/two", "PUSH");
       });
     });
   });
@@ -196,7 +196,7 @@ describe('update(..., "PUSH")', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.update("/next", "PUSH");
+      testHistory.navigate("/next", "PUSH");
       expect(router.mock.calls.length).toBe(2);
     });
 
@@ -209,7 +209,7 @@ describe('update(..., "PUSH")', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.update("/next", "PUSH");
+      testHistory.navigate("/next", "PUSH");
       expect(router.mock.calls.length).toBe(1);
     });
   });

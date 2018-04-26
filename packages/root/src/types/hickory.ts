@@ -28,7 +28,7 @@ export interface History {
   confirmWith(fn?: ConfirmationFunction): void;
   removeConfirmation(): void;
   destroy(): void;
-  update(to: ToArgument, navType?: NavType): void;
+  navigate(to: ToArgument, navType?: NavType): void;
   go(num?: number): void;
 }
 

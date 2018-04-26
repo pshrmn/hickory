@@ -29,7 +29,7 @@ describe("browser integration tests", () => {
     testHistory.destroy();
   });
 
-  describe("update()", () => {
+  describe("navigate()", () => {
     describe("ANCHOR (default)", () => {
       beforeEach(() => {
         spyOn(window.history, "pushState").and.callThrough();
@@ -42,13 +42,13 @@ describe("browser integration tests", () => {
       });
 
       it("can navigate with navigate", () => {
-        testHistory.update("/the-new-location");
+        testHistory.navigate("/the-new-location");
         expect(window.location.pathname).toEqual("/the-new-location");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update({
+        testHistory.navigate({
           pathname: "/next",
           state: providedState
         });
@@ -58,7 +58,7 @@ describe("browser integration tests", () => {
       });
 
       it("calls history.pushState when navigating to a new location", () => {
-        testHistory.update("/new-location");
+        testHistory.navigate("/new-location");
         expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(1);
         expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
           0
@@ -66,7 +66,7 @@ describe("browser integration tests", () => {
       });
 
       it("calls history.replaceState when navigating to the same location", () => {
-        testHistory.update("/");
+        testHistory.navigate("/");
         expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(0);
         expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
           1
@@ -76,13 +76,13 @@ describe("browser integration tests", () => {
 
     describe("PUSH", () => {
       it("can navigate with push", () => {
-        testHistory.update("/the-new-location", "PUSH");
+        testHistory.navigate("/the-new-location", "PUSH");
         expect(window.location.pathname).toEqual("/the-new-location");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/next",
             state: providedState
@@ -95,7 +95,7 @@ describe("browser integration tests", () => {
       });
 
       it("pushes URL using rawPathname, not pathname", () => {
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/encoded-percent%25"
           },
@@ -108,13 +108,13 @@ describe("browser integration tests", () => {
 
     describe("REPLACE", () => {
       it("can navigate with replace", () => {
-        testHistory.update("/the-same-location", "REPLACE");
+        testHistory.navigate("/the-same-location", "REPLACE");
         expect(window.location.pathname).toEqual("/the-same-location");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/next",
             state: providedState
@@ -130,9 +130,9 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("can navigate with go", done => {
-      testHistory.update("/one", "PUSH");
-      testHistory.update("/two", "PUSH");
-      testHistory.update("/three", "PUSH");
+      testHistory.navigate("/one", "PUSH");
+      testHistory.navigate("/two", "PUSH");
+      testHistory.navigate("/three", "PUSH");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/one");
@@ -145,9 +145,9 @@ describe("browser integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.update("/uno", "PUSH");
-      testHistory.update("/dos", "PUSH");
-      testHistory.update("/tres", "PUSH");
+      testHistory.navigate("/uno", "PUSH");
+      testHistory.navigate("/dos", "PUSH");
+      testHistory.navigate("/tres", "PUSH");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/uno");

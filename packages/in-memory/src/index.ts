@@ -141,7 +141,10 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         fn();
       });
     },
-    update: function update(to: ToArgument, navType: NavType = "ANCHOR"): void {
+    navigate: function navigate(
+      to: ToArgument,
+      navType: NavType = "ANCHOR"
+    ): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {

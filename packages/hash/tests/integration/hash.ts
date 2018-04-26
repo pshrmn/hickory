@@ -29,7 +29,7 @@ describe("hash integration tests", () => {
     testHistory.destroy();
   });
 
-  describe("update()", () => {
+  describe("navigate()", () => {
     describe("ANCHOR (default)", () => {
       beforeEach(() => {
         spyOn(window.history, "pushState").and.callThrough();
@@ -42,13 +42,13 @@ describe("hash integration tests", () => {
       });
 
       it("can navigate with navigate", () => {
-        testHistory.update("/the-new-location");
+        testHistory.navigate("/the-new-location");
         expect(window.location.hash).toEqual("#/the-new-location");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update({
+        testHistory.navigate({
           pathname: "/next",
           state: providedState
         });
@@ -58,7 +58,7 @@ describe("hash integration tests", () => {
       });
 
       it("calls history.pushState when navigating to a new location", () => {
-        testHistory.update("/new-location");
+        testHistory.navigate("/new-location");
         expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(1);
         expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
           0
@@ -66,7 +66,7 @@ describe("hash integration tests", () => {
       });
 
       it("calls history.replaceState when navigating to the same location", () => {
-        testHistory.update("/");
+        testHistory.navigate("/");
         expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(0);
         expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
           1
@@ -75,13 +75,13 @@ describe("hash integration tests", () => {
     });
     describe("PUSH", () => {
       it("can navigate with push", () => {
-        testHistory.update("/a-new-position", "PUSH");
+        testHistory.navigate("/a-new-position", "PUSH");
         expect(window.location.hash).toEqual("#/a-new-position");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/next",
             state: providedState
@@ -94,7 +94,7 @@ describe("hash integration tests", () => {
       });
 
       it("pushes URL using rawPathname, not pathname", () => {
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/encoded-percent%25"
           },
@@ -107,13 +107,13 @@ describe("hash integration tests", () => {
 
     describe("REPLACE", () => {
       it("can navigate with replace", () => {
-        testHistory.update("/the-same-position", "REPLACE");
+        testHistory.navigate("/the-same-position", "REPLACE");
         expect(window.location.hash).toEqual("#/the-same-position");
       });
 
       it("sets the state", () => {
         const providedState = { isSet: true };
-        testHistory.update(
+        testHistory.navigate(
           {
             pathname: "/next",
             state: providedState
@@ -129,9 +129,9 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("can navigate with go", done => {
-      testHistory.update("/eins", "PUSH");
-      testHistory.update("/zwei", "PUSH");
-      testHistory.update("/drei", "PUSH");
+      testHistory.navigate("/eins", "PUSH");
+      testHistory.navigate("/zwei", "PUSH");
+      testHistory.navigate("/drei", "PUSH");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/eins");
@@ -145,9 +145,9 @@ describe("hash integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.update("/uno", "PUSH");
-      testHistory.update("/dos", "PUSH");
-      testHistory.update("/tres", "PUSH");
+      testHistory.navigate("/uno", "PUSH");
+      testHistory.navigate("/dos", "PUSH");
+      testHistory.navigate("/tres", "PUSH");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/uno");
