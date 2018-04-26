@@ -1,3 +1,7 @@
+## 1.0.0-beta.8
+
+* History objects have a single `navigate()` method instead of `push()`, `replace()`, and `navigate()`.
+
 ## 1.0.0-beta.7
 
 * Export `LocationDetails` interface to describe `query`, `hash`, and `state`.

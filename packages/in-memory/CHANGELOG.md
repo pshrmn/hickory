@@ -1,4 +1,4 @@
-## Next
+## 1.0.0-beta.5
 
 * Unify `navigate()`, `push()`, and `replace()` under `navigate()`. The optional second argument controls which type of navigation: `ANCHOR` (default), `PUSH`, or `REPLACE`.
 
