@@ -7,7 +7,7 @@ Hickory provides a three packages that allow you to easily power navigation with
 At the root of your project, you will create a history object. There are three choices: `Browser`, `Hash`, and `InMemory`. You can read more about how to pick the right one for your application in the [choosing your history type](./choosing.md) documentation. For simplicity, all example code here will use the `Browser` history type.
 
 ```js
-import Browser from '@hickory/Browser';
+import Browser from "@hickory/Browser";
 
 const history = Browser();
 ```
@@ -54,14 +54,14 @@ The key is made up of two numbers separated by a period. The first number is the
 
 ## Navigation
 
-Your history object will have a number of methods that allow you to navigate within your application.
+Your history object provides a `navigate()` method to perform navigation. There are three ways that you can use this.
 
-### `push`, `replace`, and `update`
+### `PUSH`, `REPLACE`, and `ANCHOR`
 
-`push`, `replace`, and `update` all have similar functionality. Each one takes a single argument: the location that you want to navigate to. This can either be a string or an object. If it is a string, it will be parsed and turned into a location object. If it is an object, it will be modified to fill in any missing properties (as well as the `key`).
+`PUSH`, `REPLACE`, and `ANCHOR` all have similar functionality. Each one takes a single argument: the location that you want to navigate to. This can either be a string or an object. If it is a string, it will be parsed and turned into a location object. If it is an object, it will be modified to fill in any missing properties (as well as the `key`).
 
 ```js
-history.push('/do#re');
+history.navigate("/do#re", "PUSH");
 // {
 //   pathname: '/do',
 //   query: {},
@@ -70,7 +70,7 @@ history.push('/do#re');
 //   key: '1.0'
 // }
 
-history.replace({ pathname: '/mi', query: { fa: 'so' }});
+history.navigate({ pathname: "/mi", query: { fa: "so" } }, "REPLACE");
 // {
 //   pathname: '/mi',
 //   query: { fa: 'so' },
@@ -79,7 +79,7 @@ history.replace({ pathname: '/mi', query: { fa: 'so' }});
 //   key: '1.1'
 // }
 
-history.update({ state: { rest: ['la', 'ti', 'do'] }})
+history.navigate({ state: { rest: ["la", "ti", "do"] } }, "ANCHOR");
 // {
 //   pathname: '/',
 //   query: {},
@@ -93,11 +93,11 @@ history.update({ state: { rest: ['la', 'ti', 'do'] }})
 
 #### Differences
 
-You can imagine the locations that have been visited in your application as an array of location objects. When you `push`, you add a new location after the current location. This means that if you are not at the end of the array, any "future" locations will be wiped out. When you `replace`, you are just replacing the current location object with a new one. This does not affect any "future" locations.
+You can imagine the locations that have been visited in your application as an array of location objects. When you `PUSH`, you add a new location after the current location. This means that if you are not at the end of the array, any "future" locations will be wiped out. When you `REPLACE`, you are just replacing the current location object with a new one. This does not affect any "future" locations.
 
-`update` combines `push` and `replace` to act more like a browser does. If you attempt to navigate to a location that generates the same URI as the current location, `replace` will be called. If the new location generates a different URI, then `push` will be called.
+`ANCHOR` combines `PUSH` and `REPLACE` to act more like a browser does. If you attempt to navigate to a location that generates the same URI as the current location, `REPLACE` will be called. If the new location generates a different URI, then `PUSH` will be called.
 
-**Unless you have a specific reason to use `push`/`replace`, you should always navigate to locations with `update`.**
+**Unless you have a specific reason to use `PUSH`/`REPLACE`, you should always navigate to locations with `ANCHOR`.**
 
 ### `go`
 
@@ -118,7 +118,7 @@ history.respondWith(function(pending) {
   // do any route matching/data loading, and once that
   // is done, call finish.
   pending.finish();
-})
+});
 ```
 
 ## One history

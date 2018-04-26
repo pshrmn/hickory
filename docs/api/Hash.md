@@ -1,7 +1,7 @@
 # Hash API
 
 ```js
-import Hash from '@hickory/hash';
+import Hash from "@hickory/hash";
 
 const history = Hash();
 ```
@@ -31,13 +31,13 @@ const history = Hash();
 **Note:** While you _can_ use the `baseSegment` with a `Hash` history, you probably should not. The `baseSegment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
 
 ```js
-const history = Hash({ baseSegment: '/test' });
+const history = Hash({ baseSegment: "/test" });
 ```
 
 The `/test` segment will be stripped from and included in the hash segment of the full URI.
 
 ```js
-const uri = history.toHref({ pathname: '/pathname' });
+const uri = history.toHref({ pathname: "/pathname" });
 // uri === '#/test/pathname'
 ```
 
@@ -55,53 +55,64 @@ The action used to get to the current location object.
 
 ## Methods
 
-### push
-
-```js
-history.push('/the-producers');
-history.push({
-  pathname: '/oklahoma',
-  state: { musical: true }
-});
-```
-
-The `push` function is used to navigate to a new location. It adds the new location after the current location. This means that if the current location is not the last location in the history array, any locations that come after the current one will be wiped out.
-
-#### arguments
-
-`to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
-
-### replace
-
-```js
-history.replace('/cats');
-history.replace({
-  pathname: '/rent',
-  state: { musical: true }
-});
-```
-
-The `replace` function is used to navigate to a new location. It replaces the current location with the new one. Any location objects that come after the current location in the history array will be preserved.
-
-#### arguments
-
-`to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
-
 ### navigate
 
 ```js
-history.navigate('/hairspray');
+history.navigate("/the-producers");
 history.navigate({
-  pathname: '/hamilton',
+  pathname: "/oklahoma",
   state: { musical: true }
 });
 ```
 
-The `navigate` function decides whether to `push` or `replace` for you. The path string that it creates is compared to the path string of the current location. If they are the same, then it will call `replace`. If they are different, then it will call `push`. This is done to mimic browser behavior and **unless you have a reason not to, you should prefer this over `push` and `replace`.**
+The `navigate` function is used to navigate to a new location.
+
+There are three ways that it can do this: `PUSH`, `REPLACE`, and `ANCHOR`.
+
+1. `PUSH` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
+
+```js
+history.navigate("/lion-king", "PUSH");
+history.navigate(
+  {
+    pathname: "/wicked",
+    state: { musical: true }
+  },
+  "PUSH"
+);
+```
+
+2. `REPLACE` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
+
+```js
+history.navigate("/cats", "REPLACE");
+history.navigate(
+  {
+    pathname: "/rent",
+    state: { musical: true }
+  },
+  "REPLACE"
+);
+```
+
+3. `ANCHOR` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `REPLACE`; when they are different, it will act like `PUSH`.
+
+```js
+history.navigate("/hairspray", "ANCHOR");
+history.navigate(
+  {
+    pathname: "/hamilton",
+    state: { musical: true }
+  },
+  "ANCHOR"
+);
+```
 
 #### arguments
 
 `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
+
+`navType` - `ANCHOR`, `PUSH`, or `REPLACE`. If none are provided, this will default to `ANCHOR`.
 
 ### go
 
@@ -120,7 +131,7 @@ The `go` function is used to jump forward and backward to already visited locati
 ### toHref
 
 ```js
-history.toHref({ pathname: '/spamalot' });
+history.toHref({ pathname: "/spamalot" });
 // #/spamalot
 ```
 
@@ -145,7 +156,7 @@ The response handler function will be passed a "pending navigation" object. This
 
 * `location` - This is the location object that is being navigated to.
 * `action` - This is the string (`POP`, `PUSH`, or `REPLACE`) for the navigation type.
-* `finish` -  Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
+* `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
 * `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `POP` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
 
 #### arguments
