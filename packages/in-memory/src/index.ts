@@ -6,11 +6,9 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  ConfirmationFunction,
   Options as RootOptions,
   ToArgument,
   ResponseHandler,
-  PendingNavigation,
   Action,
   NavType
 } from "@hickory/root";
