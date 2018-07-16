@@ -35,7 +35,8 @@ const customLaunchers = {
     browser_version: "10",
     os: "OS X",
     os_version: "Sierra"
-  },
+  }
+  /*
   // ios
   bs_ios_safari: {
     base: "BrowserStack",
@@ -54,6 +55,7 @@ const customLaunchers = {
     device: "Samsung Galaxy S8",
     real_mobile: true
   }
+  */
 };
 
 module.exports = customLaunchers;
