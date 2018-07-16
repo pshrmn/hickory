@@ -23,14 +23,22 @@ export {
   LocationDetails
 };
 
+export type InputLocations = Array<string | PartialLocation>;
+
 export interface Options extends RootOptions {
-  locations?: Array<string | PartialLocation>;
+  locations?: InputLocations;
+  index?: number;
+}
+
+export interface ResetOptions {
+  locations?: InputLocations;
   index?: number;
 }
 
 export interface InMemoryHistory extends History {
   locations: Array<HickoryLocation>;
   index: number;
+  reset(options?: ResetOptions): void;
 }
 
 interface NavSetup {
@@ -223,6 +231,21 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
           );
         }
       }
+    },
+    reset(options?: ResetOptions) {
+      memoryHistory.locations = ((options && options.locations) || ["/"]).map(
+        loc => createLocation(loc, keygen.major())
+      );
+      memoryHistory.index =
+        options && options.index != undefined ? options.index : 0;
+      // set index to 0 when it is out of bounds
+      if (
+        memoryHistory.index < 0 ||
+        memoryHistory.index >= memoryHistory.locations.length
+      ) {
+        memoryHistory.index = 0;
+      }
+      memoryHistory.location = memoryHistory.locations[memoryHistory.index];
     }
   };
 
