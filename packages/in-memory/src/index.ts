@@ -244,6 +244,16 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         memoryHistory.index = 0;
       }
       memoryHistory.location = memoryHistory.locations[memoryHistory.index];
+      memoryHistory.action = "PUSH";
+      if (!responseHandler) {
+        return;
+      }
+      responseHandler({
+        location: memoryHistory.location,
+        action: memoryHistory.action,
+        finish: noop,
+        cancel: noop
+      });
     }
   };
 

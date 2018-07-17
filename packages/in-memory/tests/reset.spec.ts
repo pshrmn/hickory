@@ -124,4 +124,39 @@ describe("reset()", () => {
       expect(testHistory.index).toBe(0);
     });
   });
+
+  describe("emitting new location", () => {
+    it("emits the new location to the register respondWith fn", () => {
+      const testHistory = InMemory({
+        locations: ["/one", "/two", "/three"]
+      });
+      const router = jest.fn();
+      testHistory.respondWith(router); // calls router
+
+      testHistory.reset({
+        locations: ["/uno", "/dos"]
+      });
+      expect(router.mock.calls.length).toBe(2);
+      expect(router.mock.calls[1][0]).toMatchObject({
+        location: {
+          pathname: "/uno"
+        }
+      });
+    });
+
+    it('emits the action as "PUSH"', () => {
+      const testHistory = InMemory({
+        locations: ["/one", "/two", "/three"]
+      });
+      const router = jest.fn();
+      testHistory.respondWith(router); // calls router
+
+      testHistory.reset({
+        locations: ["/uno", "/dos"]
+      });
+      expect(router.mock.calls[1][0]).toMatchObject({
+        action: "PUSH"
+      });
+    });
+  });
 });
