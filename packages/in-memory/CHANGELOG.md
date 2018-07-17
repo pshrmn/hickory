@@ -1,4 +1,4 @@
-## Next
+## 1.0.0-beta.6
 
 * Add a `reset()` function to in-memory history for resetting the locations. With no arguments, this sets the location to root (`/`) and index to `0`.
 
