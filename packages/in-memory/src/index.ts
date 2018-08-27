@@ -61,15 +61,9 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     memoryHistory.index = undefined;
   };
 
-  let initialLocations: Array<HickoryLocation>;
-  if (options.locations) {
-    initialLocations = options.locations.map(loc =>
-      createLocation(loc, keygen.major())
-    );
-  } else {
-    initialLocations = [createLocation({ pathname: "/" }, keygen.major())];
-  }
-
+  let initialLocations: Array<HickoryLocation> = (
+    options.locations || ["/"]
+  ).map(loc => createLocation(loc, keygen.major()));
   let initialIndex = 0;
   if (
     options.index &&
