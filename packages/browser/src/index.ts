@@ -1,4 +1,4 @@
-import createCommonHistory from "@hickory/root";
+import Common from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -55,7 +55,7 @@ export default function Browser(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     keygen
-  } = createCommonHistory(options);
+  } = Common(options);
 
   const removeEvents = createEventCoordinator({
     popstate: (event: PopStateEvent) => {

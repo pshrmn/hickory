@@ -1,4 +1,4 @@
-import createCommonHistory from "@hickory/root";
+import Common from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -62,7 +62,7 @@ export default function HashHistory(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     keygen
-  } = createCommonHistory(options);
+  } = Common(options);
 
   const {
     decode: decodeHashPath,

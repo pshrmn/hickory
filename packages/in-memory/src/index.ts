@@ -1,4 +1,4 @@
-import createCommonHistory from "@hickory/root";
+import Common from "@hickory/root";
 
 import {
   History,
@@ -54,7 +54,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     confirmWith,
     removeConfirmation,
     keygen
-  } = createCommonHistory(options);
+  } = Common(options);
 
   const destroyLocations = () => {
     memoryHistory.locations = [];

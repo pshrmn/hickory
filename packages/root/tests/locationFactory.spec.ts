@@ -1,5 +1,5 @@
 import "jest";
-import createCommonHistory from "../src";
+import Common from "../src";
 import * as qs from "qs";
 
 describe("locationFactory", () => {
@@ -8,7 +8,7 @@ describe("locationFactory", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
-          const creators = createCommonHistory({
+          const creators = Common({
             baseSegment: value
           });
         }).toThrow();
@@ -28,7 +28,7 @@ describe("locationFactory", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const common = createCommonHistory();
+          const common = Common();
           const parsed = common.createLocation("/test?one=two");
           expect(parsed.query).toBe("one=two");
           const stringified = common.createPath({
@@ -43,7 +43,7 @@ describe("locationFactory", () => {
         it("calls parse when creating a location", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = createCommonHistory({
+          const common = Common({
             query: { parse, stringify }
           });
           const location = common.createLocation("/test?two=dos");
@@ -53,7 +53,7 @@ describe("locationFactory", () => {
         it("calls stringify when creating a path", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = createCommonHistory({
+          const common = Common({
             query: { parse, stringify }
           });
           const path = common.createPath({ pathname: "/test" });
@@ -64,7 +64,7 @@ describe("locationFactory", () => {
   });
 
   describe("createLocation", () => {
-    const { createLocation } = createCommonHistory();
+    const { createLocation } = Common();
 
     describe("from a string", () => {
       it("returns an object with expected properties", () => {
@@ -161,7 +161,7 @@ describe("locationFactory", () => {
 
     describe("using raw option fn to set location.rawPathname", () => {
       it("calls user provided option", () => {
-        const { createLocation } = createCommonHistory({
+        const { createLocation } = Common({
           raw: path =>
             path
               .split("")
@@ -181,7 +181,7 @@ describe("locationFactory", () => {
 
     describe("query.parse option", () => {
       it("uses the provided query parsing function to make the query value", () => {
-        const { createLocation } = createCommonHistory({
+        const { createLocation } = Common({
           query: {
             parse: qs.parse,
             stringify: qs.stringify
@@ -202,7 +202,7 @@ describe("locationFactory", () => {
       });
 
       it("does not decode when decode=false", () => {
-        const { createLocation } = createCommonHistory({ decode: false });
+        const { createLocation } = Common({ decode: false });
         const input = {
           pathname: "/t%C3%B6rt%C3%A9nelem"
         };
@@ -225,7 +225,7 @@ describe("locationFactory", () => {
         });
 
         it("does not throw URIError when decode=false", () => {
-          const { createLocation } = createCommonHistory({ decode: false });
+          const { createLocation } = Common({ decode: false });
           const input = {
             pathname: "/bad%"
           };
@@ -237,7 +237,7 @@ describe("locationFactory", () => {
     });
 
     describe("baseSegment", () => {
-      const { createLocation } = createCommonHistory({
+      const { createLocation } = Common({
         baseSegment: "/prefix"
       });
       it("strips the baseSegment off of the path before creating a location", () => {
@@ -248,7 +248,7 @@ describe("locationFactory", () => {
   });
 
   describe("createPath", () => {
-    const { createPath } = createCommonHistory();
+    const { createPath } = Common();
 
     describe("pathname", () => {
       it("begins the returned URI with the pathname", () => {
@@ -350,7 +350,7 @@ describe("locationFactory", () => {
 
     describe("query.stringify option", () => {
       it("uses the provided stringify function to turn query into a string", () => {
-        const { createPath } = createCommonHistory({
+        const { createPath } = Common({
           query: {
             parse: qs.parse,
             stringify: qs.stringify
@@ -367,7 +367,7 @@ describe("locationFactory", () => {
 
     describe("baseSegment", () => {
       it("adds the baseSegment to the path generated from a location", () => {
-        const { createPath } = createCommonHistory({ baseSegment: "/prefix" });
+        const { createPath } = Common({ baseSegment: "/prefix" });
         const location = {
           pathname: "/one/two/three",
           search: "",
