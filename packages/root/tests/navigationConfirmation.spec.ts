@@ -1,11 +1,11 @@
-import 'jest';
-import createNavigationConfirmation from '../src/navigationConfirmation';
-import { HickoryLocation } from '../src/types/location';
+import "jest";
+import Common from "../src";
+import { HickoryLocation } from "../src/types/location";
 
-describe('createNavigationConfirmation', () => {
-  describe('confirmWith', () => {
-    it('registers the function passed to it', () => {
-      const { confirmWith, confirmNavigation } = createNavigationConfirmation();
+describe("createNavigationConfirmation", () => {
+  describe("confirmWith", () => {
+    it("registers the function passed to it", () => {
+      const { confirmWith, confirmNavigation } = Common();
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
@@ -18,13 +18,9 @@ describe('createNavigationConfirmation', () => {
     });
   });
 
-  describe('removeConfirmation', () => {
-    it('does not call confirmation function after it has been removed', () => {
-      const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = createNavigationConfirmation();
+  describe("removeConfirmation", () => {
+    it("does not call confirmation function after it has been removed", () => {
+      const { confirmWith, confirmNavigation, removeConfirmation } = Common();
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
@@ -41,22 +37,18 @@ describe('createNavigationConfirmation', () => {
     });
   });
 
-  describe('confirmNavigation', () => {
-    it('calls confirm function if there is no confirmation function', () => {
-      const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = createNavigationConfirmation();
+  describe("confirmNavigation", () => {
+    it("calls confirm function if there is no confirmation function", () => {
+      const { confirmNavigation } = Common();
 
       const confirm = jest.fn();
       const prevent = jest.fn();
 
       confirmNavigation(
         {
-          to: { pathname: '/this-is-only-a-test' } as HickoryLocation,
-          from: { pathname: '/this-was-not-a-test' } as HickoryLocation,
-          action: 'TEST'
+          to: { pathname: "/this-is-only-a-test" } as HickoryLocation,
+          from: { pathname: "/this-was-not-a-test" } as HickoryLocation,
+          action: "PUSH"
         },
         confirm,
         prevent
@@ -65,19 +57,15 @@ describe('createNavigationConfirmation', () => {
       expect(prevent.mock.calls.length).toBe(0);
     });
 
-    it('calls the confirm function with the info confirm/prevent fns', () => {
-      const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = createNavigationConfirmation();
+    it("calls the confirm function with the info confirm/prevent fns", () => {
+      const { confirmWith, confirmNavigation } = Common();
 
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
-      const toLoc = { pathname: '/this-is-only-a-test' };
-      const fromLoc = { pathname: '/this-was-not-a-test' };
-      const action = 'TEST';
+      const toLoc = { pathname: "/this-is-only-a-test" };
+      const fromLoc = { pathname: "/this-was-not-a-test" };
+      const action = "PUSH";
 
       confirmWith(allowNavigation);
       confirmNavigation(
@@ -99,21 +87,17 @@ describe('createNavigationConfirmation', () => {
       expect(args[2]).toBe(prevent);
     });
 
-    it('will call a no-op function when cancelling if prevent function not provided', () => {
-      const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = createNavigationConfirmation();
+    it("will call a no-op function when cancelling if prevent function not provided", () => {
+      const { confirmWith, confirmNavigation } = Common();
 
       function autoPrevent(info, confirm, prevent) {
         prevent();
       }
 
       const confirm = () => {};
-      const toLoc = { pathname: '/this-is-only-a-test' };
-      const fromLoc = { pathname: '/this-was-not-a-test' };
-      const action = 'TEST';
+      const toLoc = { pathname: "/this-is-only-a-test" };
+      const fromLoc = { pathname: "/this-was-not-a-test" };
+      const action = "PUSH";
 
       confirmWith(autoPrevent);
       expect(() => {
@@ -128,30 +112,21 @@ describe('createNavigationConfirmation', () => {
       }).not.toThrow();
     });
 
-    it('does not set confirm function if confirmWith is passed a non-function', () => {
-      const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = createNavigationConfirmation();
-
-      const confirm = jest.fn();
-      const toLoc = { pathname: '/this-is-only-a-test' };
-      const fromLoc = { pathname: '/this-was-not-a-test' };
-      const action = 'TEST';
+    it("does not set confirm function if confirmWith is passed a non-function", () => {
+      const { confirmWith } = Common();
 
       const nonFuncs = [
         null,
         undefined,
-        'test',
+        "test",
         1,
         [1, 2, 3],
-        { key: 'value' }
+        { key: "value" }
       ];
       nonFuncs.forEach(nf => {
         expect(() => {
           confirmWith();
-        }).toThrow('confirmWith can only be passed a function');
+        }).toThrow("confirmWith can only be passed a function");
       });
     });
   });

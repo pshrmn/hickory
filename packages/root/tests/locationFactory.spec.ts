@@ -1,5 +1,5 @@
 import "jest";
-import locationFactory from "../src/locationFactory";
+import Common from "../src";
 import * as qs from "qs";
 
 describe("locationFactory", () => {
@@ -8,7 +8,7 @@ describe("locationFactory", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
-          const creators = locationFactory({
+          const creators = Common({
             baseSegment: value
           });
         }).toThrow();
@@ -28,10 +28,10 @@ describe("locationFactory", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const creator = locationFactory();
-          const parsed = creator.createLocation("/test?one=two");
+          const common = Common();
+          const parsed = common.createLocation("/test?one=two");
           expect(parsed.query).toBe("one=two");
-          const stringified = creator.createPath({
+          const stringified = common.createPath({
             pathname: "/test",
             query: "?three=four"
           });
@@ -43,20 +43,20 @@ describe("locationFactory", () => {
         it("calls parse when creating a location", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const creators = locationFactory({
+          const common = Common({
             query: { parse, stringify }
           });
-          const location = creators.createLocation("/test?two=dos");
+          const location = common.createLocation("/test?two=dos");
           expect(parse.mock.calls.length).toBe(1);
         });
 
         it("calls stringify when creating a path", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const creators = locationFactory({
+          const common = Common({
             query: { parse, stringify }
           });
-          const path = creators.createPath({ pathname: "/test" });
+          const path = common.createPath({ pathname: "/test" });
           expect(stringify.mock.calls.length).toBe(1);
         });
       });
@@ -64,7 +64,7 @@ describe("locationFactory", () => {
   });
 
   describe("createLocation", () => {
-    const { createLocation } = locationFactory();
+    const { createLocation } = Common();
 
     describe("from a string", () => {
       it("returns an object with expected properties", () => {
@@ -161,7 +161,7 @@ describe("locationFactory", () => {
 
     describe("using raw option fn to set location.rawPathname", () => {
       it("calls user provided option", () => {
-        const { createLocation } = locationFactory({
+        const { createLocation } = Common({
           raw: path =>
             path
               .split("")
@@ -181,7 +181,7 @@ describe("locationFactory", () => {
 
     describe("query.parse option", () => {
       it("uses the provided query parsing function to make the query value", () => {
-        const { createLocation } = locationFactory({
+        const { createLocation } = Common({
           query: {
             parse: qs.parse,
             stringify: qs.stringify
@@ -202,7 +202,7 @@ describe("locationFactory", () => {
       });
 
       it("does not decode when decode=false", () => {
-        const { createLocation } = locationFactory({ decode: false });
+        const { createLocation } = Common({ decode: false });
         const input = {
           pathname: "/t%C3%B6rt%C3%A9nelem"
         };
@@ -225,7 +225,7 @@ describe("locationFactory", () => {
         });
 
         it("does not throw URIError when decode=false", () => {
-          const { createLocation } = locationFactory({ decode: false });
+          const { createLocation } = Common({ decode: false });
           const input = {
             pathname: "/bad%"
           };
@@ -237,7 +237,9 @@ describe("locationFactory", () => {
     });
 
     describe("baseSegment", () => {
-      const { createLocation } = locationFactory({ baseSegment: "/prefix" });
+      const { createLocation } = Common({
+        baseSegment: "/prefix"
+      });
       it("strips the baseSegment off of the path before creating a location", () => {
         const location = createLocation("/prefix/this/is/the/rest");
         expect(location.pathname).toBe("/this/is/the/rest");
@@ -246,7 +248,7 @@ describe("locationFactory", () => {
   });
 
   describe("createPath", () => {
-    const { createPath } = locationFactory();
+    const { createPath } = Common();
 
     describe("pathname", () => {
       it("begins the returned URI with the pathname", () => {
@@ -348,7 +350,7 @@ describe("locationFactory", () => {
 
     describe("query.stringify option", () => {
       it("uses the provided stringify function to turn query into a string", () => {
-        const { createPath } = locationFactory({
+        const { createPath } = Common({
           query: {
             parse: qs.parse,
             stringify: qs.stringify
@@ -365,7 +367,7 @@ describe("locationFactory", () => {
 
     describe("baseSegment", () => {
       it("adds the baseSegment to the path generated from a location", () => {
-        const { createPath } = locationFactory({ baseSegment: "/prefix" });
+        const { createPath } = Common({ baseSegment: "/prefix" });
         const location = {
           pathname: "/one/two/three",
           search: "",

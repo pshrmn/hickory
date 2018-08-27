@@ -1,4 +1,4 @@
-import createCommonHistory from "@hickory/root";
+import Common from "@hickory/root";
 
 import {
   History,
@@ -54,24 +54,16 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     confirmWith,
     removeConfirmation,
     keygen
-  } = createCommonHistory(options);
+  } = Common(options);
 
-  const beforeDestroy: Array<() => void> = [
-    () => {
-      memoryHistory.locations = [];
-      memoryHistory.index = undefined;
-    }
-  ];
+  const destroyLocations = () => {
+    memoryHistory.locations = [];
+    memoryHistory.index = undefined;
+  };
 
-  let initialLocations: Array<HickoryLocation>;
-  if (options.locations) {
-    initialLocations = options.locations.map(loc =>
-      createLocation(loc, keygen.major())
-    );
-  } else {
-    initialLocations = [createLocation({ pathname: "/" }, keygen.major())];
-  }
-
+  let initialLocations: Array<HickoryLocation> = (
+    options.locations || ["/"]
+  ).map(loc => createLocation(loc, keygen.major()));
   let initialIndex = 0;
   if (
     options.index &&
@@ -129,7 +121,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     index: initialIndex,
     action: "PUSH",
     // set response handler
-    respondWith: function(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: memoryHistory.location,
@@ -142,15 +134,10 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     toHref,
     confirmWith,
     removeConfirmation,
-    destroy: function destroy(): void {
-      beforeDestroy.forEach(fn => {
-        fn();
-      });
+    destroy(): void {
+      destroyLocations();
     },
-    navigate: function navigate(
-      to: ToArgument,
-      navType: NavType = "ANCHOR"
-    ): void {
+    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
@@ -186,7 +173,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         }
       );
     },
-    go: function go(num?: number): void {
+    go(num?: number): void {
       if (num == null || num === 0) {
         if (!responseHandler) {
           return;

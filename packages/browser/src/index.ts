@@ -1,4 +1,4 @@
-import createCommonHistory from "@hickory/root";
+import Common from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -13,11 +13,9 @@ import {
   PartialLocation,
   HickoryLocation,
   AnyLocation,
-  ConfirmationFunction,
   Options as RootOptions,
   ToArgument,
   ResponseHandler,
-  PendingNavigation,
   Action,
   NavType
 } from "@hickory/root";
@@ -57,9 +55,16 @@ export default function Browser(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     keygen
-  } = createCommonHistory(options);
+  } = Common(options);
 
-  const beforeDestroy: Array<() => void> = [];
+  const removeEvents = createEventCoordinator({
+    popstate: (event: PopStateEvent) => {
+      if (ignorablePopstateEvent(event)) {
+        return;
+      }
+      pop(event.state);
+    }
+  });
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
@@ -123,7 +128,7 @@ export default function Browser(options: Options = {}): History {
       : "PUSH") as Action,
     location: locationFromBrowser(),
     // set response handler
-    respondWith: function(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       // immediately invoke
       fn({
@@ -137,15 +142,10 @@ export default function Browser(options: Options = {}): History {
     toHref,
     confirmWith,
     removeConfirmation,
-    destroy: function destroy() {
-      beforeDestroy.forEach(fn => {
-        fn();
-      });
+    destroy() {
+      removeEvents();
     },
-    navigate: function navigate(
-      to: ToArgument,
-      navType: NavType = "ANCHOR"
-    ): void {
+    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
@@ -181,7 +181,7 @@ export default function Browser(options: Options = {}): History {
         }
       );
     },
-    go: function go(num: number): void {
+    go(num: number): void {
       window.history.go(num);
     }
   };
@@ -229,18 +229,6 @@ export default function Browser(options: Options = {}): History {
       }
     );
   }
-
-  // need to listen for browser navigation events
-  beforeDestroy.push(
-    createEventCoordinator({
-      popstate: (event: PopStateEvent) => {
-        if (ignorablePopstateEvent(event)) {
-          return;
-        }
-        pop(event.state);
-      }
-    })
-  );
 
   return browserHistory;
 }
