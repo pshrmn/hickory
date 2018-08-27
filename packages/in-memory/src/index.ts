@@ -129,7 +129,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     index: initialIndex,
     action: "PUSH",
     // set response handler
-    respondWith: function(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: memoryHistory.location,
@@ -142,15 +142,12 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     toHref,
     confirmWith,
     removeConfirmation,
-    destroy: function destroy(): void {
+    destroy(): void {
       beforeDestroy.forEach(fn => {
         fn();
       });
     },
-    navigate: function navigate(
-      to: ToArgument,
-      navType: NavType = "ANCHOR"
-    ): void {
+    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
@@ -186,7 +183,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         }
       );
     },
-    go: function go(num?: number): void {
+    go(num?: number): void {
       if (num == null || num === 0) {
         if (!responseHandler) {
           return;
