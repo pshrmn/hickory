@@ -56,12 +56,10 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     keygen
   } = createCommonHistory(options);
 
-  const beforeDestroy: Array<() => void> = [
-    () => {
-      memoryHistory.locations = [];
-      memoryHistory.index = undefined;
-    }
-  ];
+  const destroyLocations = () => {
+    memoryHistory.locations = [];
+    memoryHistory.index = undefined;
+  };
 
   let initialLocations: Array<HickoryLocation>;
   if (options.locations) {
@@ -143,9 +141,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     confirmWith,
     removeConfirmation,
     destroy(): void {
-      beforeDestroy.forEach(fn => {
-        fn();
-      });
+      destroyLocations();
     },
     navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
       let setup: NavSetup;
