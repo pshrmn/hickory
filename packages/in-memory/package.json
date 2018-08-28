@@ -14,7 +14,8 @@
   "scripts": {
     "prebuild": "rimraf dist && rimraf types",
     "build": "tsc && node ./scripts/build",
-    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test",
     "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
     "test": "jest"
   },
