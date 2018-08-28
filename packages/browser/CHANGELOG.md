@@ -1,3 +1,7 @@
+## Next
+
+* Wrap `pushState()` and `replaceState()` calls in a `try..catch` to protect against iOS Safari limits.
+
 ## 1.0.0-beta.7
 
 * `history.go()` and `history.go(0)` now reload the page.
