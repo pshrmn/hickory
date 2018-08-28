@@ -126,6 +126,8 @@ history.reset({
 });
 ```
 
+Reset the location state of the `history` instance.
+
 #### arguments
 
 An object with the following (optional) properties:
