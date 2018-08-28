@@ -1,4 +1,4 @@
-## Next
+## 1.0.0
 
 * Wrap `pushState()` and `replaceState()` calls in a `try..catch` to protect against iOS Safari limits.
 
