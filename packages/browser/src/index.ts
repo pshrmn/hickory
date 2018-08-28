@@ -104,7 +104,11 @@ export default function Browser(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.pushState({ key, state }, "", path);
+      try {
+        window.history.pushState({ key, state }, "", path);
+      } catch (e) {
+        window.location.assign(path);
+      }
       browserHistory.location = location;
       browserHistory.action = "PUSH";
     };
@@ -114,7 +118,11 @@ export default function Browser(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.replaceState({ key, state }, "", path);
+      try {
+        window.history.replaceState({ key, state }, "", path);
+      } catch (e) {
+        window.location.replace(path);
+      }
       browserHistory.location = location;
       browserHistory.action = "REPLACE";
     };

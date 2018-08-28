@@ -116,7 +116,11 @@ export default function HashHistory(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.pushState({ key, state }, "", path);
+      try {
+        window.history.pushState({ key, state }, "", path);
+      } catch (e) {
+        window.location.assign(path);
+      }
       hashHistory.location = location;
       hashHistory.action = "PUSH";
     };
@@ -126,7 +130,11 @@ export default function HashHistory(options: Options = {}): History {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
-      window.history.replaceState({ key, state }, "", path);
+      try {
+        window.history.replaceState({ key, state }, "", path);
+      } catch (e) {
+        window.location.replace(path);
+      }
       hashHistory.location = location;
       hashHistory.action = "REPLACE";
     };
