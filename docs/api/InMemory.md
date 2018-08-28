@@ -8,6 +8,10 @@ const history = InMemory();
 
 ## Options
 
+* `locations` - An array of location objects or strings.
+
+* `index` - The index of the "current" location in the locations array.
+
 * `query` - An object with two required properties: `parse` and `stringify`.
 
   * `parse` - A function that will convert a search string to a query value. This function should return a default value when it is called with no arguments.
@@ -40,7 +44,7 @@ The index of the current location in the locations array.
 
 ## Methods
 
-### navigate
+### navigate()
 
 ```js
 history.navigate("/the-producers");
@@ -54,7 +58,7 @@ The `navigate` function is used to navigate to a new location.
 
 There are three ways that it can do this: `PUSH`, `REPLACE`, and `ANCHOR`.
 
-1. `PUSH` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
+1.  `PUSH` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
 
 ```js
 history.navigate("/lion-king", "PUSH");
@@ -67,7 +71,7 @@ history.navigate(
 );
 ```
 
-2. `REPLACE` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
+2.  `REPLACE` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
 
 ```js
 history.navigate("/cats", "REPLACE");
@@ -80,7 +84,7 @@ history.navigate(
 );
 ```
 
-3. `ANCHOR` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `REPLACE`; when they are different, it will act like `PUSH`.
+3.  `ANCHOR` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `REPLACE`; when they are different, it will act like `PUSH`.
 
 ```js
 history.navigate("/hairspray", "ANCHOR");
@@ -99,7 +103,7 @@ history.navigate(
 
 `navType` - `ANCHOR`, `PUSH`, or `REPLACE`. If none are provided, this will default to `ANCHOR`.
 
-### go
+### go()
 
 ```js
 history.go(-1);
@@ -113,7 +117,23 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### toHref
+### reset()
+
+```js
+history.reset({
+  locations: ["/one", "/two"],
+  index: 1
+});
+```
+
+#### arguments
+
+An object with the following (optional) properties:
+
+* `locations` - An array of location objects or strings.
+* `index` - The index of the "current" location in the locations array.
+
+### toHref()
 
 ```js
 history.toHref({ pathname: "/spamalot" });
@@ -126,7 +146,7 @@ The `toHref` function generates the string representation of the location object
 
 `location` - The location to create a path for.
 
-### respondWith
+### respondWith()
 
 ```js
 history.respondWith(pendingNavigation => {
@@ -148,7 +168,7 @@ The response handler function will be passed a "pending navigation" object. This
 
 `fn` - The function to be called when the location changes.
 
-### confirmWith
+### confirmWith()
 
 ```js
 history.confirmWith((info, confirm, prevent) => {
@@ -169,7 +189,7 @@ Only one confirmation function can be registered at a time, so if you call `conf
 
 `fn` - The function to be called to confirm the navigation. This will receive three arguments. The first one is an object with three properties: `to` is the locatin that you are navigating to, `from` is the location that you are navigating from, and `action` is the type of navigation. The second is a `confirm` function, which you should call when you want the navigation to happen. The third is a `prevent` function, which you should call when you want to stop the navigation.
 
-### removeConfirmation
+### removeConfirmation()
 
 ```js
 history.removeConfirmation();
@@ -177,7 +197,7 @@ history.removeConfirmation();
 
 The `removeConfirmation` function will remove the current confirmation function (if one exists). After calling `removeConfirmation`, navigation will happen automatically (until another confirmation function is added).
 
-### destroy
+### destroy()
 
 ```js
 history.destroy();
