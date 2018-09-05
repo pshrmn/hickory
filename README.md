@@ -16,28 +16,25 @@ Hickory is heavily inspired by the [history](https://github.com/ReactTraining/hi
 
 This repository is a monorepo for the Hickory packages. Unless you are creating your own customized history type, you only need to know about three of them:
 
-| Package | Version | Repo | API |
-|---|---|---|---|
-| browser | [![npm][browser-version-badge]][npm-browser] | [packages/browser](./packages/browser) | [API](./docs/api/Browser.md) |
-| hash | [![npm][hash-version-badge]][npm-hash] | [packages/hash](./packages/hash) | [API](./docs/api/Hash.md) |
+| Package   | Version                                          | Repo                                       | API                           |
+| --------- | ------------------------------------------------ | ------------------------------------------ | ----------------------------- |
+| browser   | [![npm][browser-version-badge]][npm-browser]     | [packages/browser](./packages/browser)     | [API](./docs/api/Browser.md)  |
+| hash      | [![npm][hash-version-badge]][npm-hash]           | [packages/hash](./packages/hash)           | [API](./docs/api/Hash.md)     |
 | in-memory | [![npm][in-memory-version-badge]][npm-in-memory] | [packages/in-memory](./packages/in-memory) | [API](./docs/api/InMemory.md) |
 
 [browser-version-badge]: https://img.shields.io/npm/v/@hickory/browser.svg
 [npm-browser]: https://npmjs.com/package/@hickory/browser
-
 [hash-version-badge]: https://img.shields.io/npm/v/@hickory/hash.svg
 [npm-hash]: https://npmjs.com/package/@hickory/hash
-
 [in-memory-version-badge]: https://img.shields.io/npm/v/@hickory/in-memory.svg
 [npm-in-memory]: https://npmjs.com/package/@hickory/in-memory
-
 
 ### Usage
 
 Below is a quick introduction to the API of a history object.
 
 ```js
-import Browser from '@hickory/browser';
+import Browser from "@hickory/browser";
 
 const history = Browser();
 
@@ -46,7 +43,7 @@ const history = Browser();
 // for finishing the navigation. "finish" should not be called until
 // after any route matching/data loaded has finished running.
 history.respondWith(({ location, action, finish, cancel }) => {
-  console.log('Navigating to:', location);
+  console.log("Navigating to:", location);
   finish();
 });
 
@@ -54,39 +51,37 @@ history.respondWith(({ location, action, finish, cancel }) => {
 // application will be stored in an array. An index value is used to keep
 // track of which location in the array is the current one.
 
-// There are four navigation methods that you can use to change locations.
+// There are two navigation methods that you can use to change locations.
 
-// push adds a new location to the locations array. If you are not
-// currently at the end of the array, then all locations after the
-// current location will be lost
+// navigate() is used for navigating to a new location.
+// It has three modes: "ANCHOR", "PUSH", and "REPLACE".
+// "PUSH" pushes the new location onto the session history after the current location
+// "REPLACE" replaces the current location in the session history
+// "ANCHOR" (default) acts like "PUSH" for new locations and "REPLACE" when the provided location
+//   is the same as the current location (the same behavior as clicking an <a>).
+// The first argument to navigate() is either a string or a partial location object.
+// The optional second argument is the navigation mode ("ANCHOR" if not provided).
 
-history.push('/next-location');
+// mode = "ANCHOR"
+history.navigate("/next-location");
+// mode = "PUSH"
+history.navigate("/new-location", "PUSH");
+// mode = "REPLACE"
+history.navigate("/same-location", "REPLACE");
 
-// replace swaps the new location in place of the current location
-
-history.push('/same-location');
-
-// update will determine whether it should push or replace by comparing
-// the path it is navigating to to the current path. If they are the
-// same, then it will use replace and if they are different it will use push
-
-// current path = '/here'
-history.update('/here'); // replace
-history.update('/somewhere-else'); // push
-
-// go takes a number and adds that value to the current index to get the
-// new index
+// go() is used to jump to existing locations in the session history.
+// negative values go backwards and positive values go forwards
 
 // current index = 4
-
-history.go(-2); // new index = 2
+history.go(-2);
+// new index = 2
 
 // You might want to have you users confirm navigation before actually
 // switching pages. To do this, pass a confirmation function to the
 // confirmWith method.
 
 history.confirmWith(function(info, confirm, prevent) {
-  const confirmed = window.confirm('Are you sure you want to navigate?');
+  const confirmed = window.confirm("Are you sure you want to navigate?");
   if (confirmed) {
     confirm();
   } else {
@@ -126,9 +121,7 @@ The following browsers are currently tested:
 
 [version-badge]: https://img.shields.io/npm/v/hickory.svg
 [npm-hickory]: https://npmjs.com/package/hickory
-
 [build-badge]: https://img.shields.io/travis/pshrmn/hickory/master.svg
 [build]: https://travis-ci.org/pshrmn/hickory
-
 [browserstack-badge]: https://www.browserstack.com/automate/badge.svg?badge_key=bHVBTk00Sm9ucnJ5SDlaOE5MZW80R214K0F3ZlkwVlY5OHd1WjI0OWJaQT0tLVYra3dYSUVOOTlKTnJHZUdDSXZHbVE9PQ==--50fa09de197425afca33b06f04e61e7582f13259
 [browserstack-build]: https://www.browserstack.com/automate/public-build/bHVBTk00Sm9ucnJ5SDlaOE5MZW80R214K0F3ZlkwVlY5OHd1WjI0OWJaQT0tLVYra3dYSUVOOTlKTnJHZUdDSXZHbVE9PQ==--50fa09de197425afca33b06f04e61e7582f13259
