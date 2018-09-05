@@ -1,3 +1,7 @@
+## Next
+
+* Support dual-mode package (CJS/ESM) builds with `.js` and `.mjs` files
+
 ## 1.0.0
 
 * Wrap `pushState()` and `replaceState()` calls in a `try..catch` to protect against iOS Safari limits.

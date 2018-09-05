@@ -1,3 +1,7 @@
+## Next
+
+* Support dual-mode package (CJS/ESM) builds with `.js` and `.mjs` files
+
 ## 1.0.0-beta.8
 
 * History objects have a single `navigate()` method instead of `push()`, `replace()`, and `navigate()`.
