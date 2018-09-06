@@ -3,28 +3,55 @@ const rollupBuild = require("../../../scripts/build");
 // don't bundle dependencies for es/cjs builds
 const pkg = require("../package.json");
 const deps = Object.keys(pkg.dependencies).map(key => key);
-const depsString = deps.join(",");
 
-rollupBuild(
-  "ESM",
-  { f: "esm", o: "dist/hickory-in-memory.mjs", e: depsString },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+const base = {
+  name: "HickoryInMemory",
+  input: "src/index.ts"
+};
 
-rollupBuild(
-  "CommonJS",
-  { f: "cjs", o: "dist/hickory-in-memory.js", e: depsString },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+rollupBuild([
+  [
+    "ESM",
+    {
+      ...base,
+      format: "esm",
+      file: "dist/hickory-in-memory.mjs",
+      external: deps,
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
 
-rollupBuild(
-  "UMD file",
-  { f: "umd", o: "dist/hickory-in-memory.umd.js" },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+  [
+    "CommonJS",
+    {
+      ...base,
+      format: "cjs",
+      file: "dist/hickory-in-memory.js",
+      external: deps,
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
 
-rollupBuild(
-  "UMD min file",
-  { f: "umd", o: "dist/hickory-in-memory.min.js" },
-  { NODE_ENV: "production", BABEL_ENV: "build" }
-);
+  [
+    "UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-in-memory.umd.js"
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
+
+  [
+    "minimized UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-in-memory.min.js",
+      uglify: true
+    },
+    { NODE_ENV: "production", BABEL_ENV: "build" }
+  ]
+]);

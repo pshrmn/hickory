@@ -1,25 +1,55 @@
 const rollupBuild = require("../../../scripts/build");
 
-rollupBuild(
-  "ESM",
-  { f: "esm", o: "dist/hickory-dom-utils.mjs" },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+// don't bundle dependencies for es/cjs builds
+// const pkg = require("../package.json");
+// const deps = Object.keys(pkg.dependencies).map(key => key);
 
-rollupBuild(
-  "CommonJS",
-  { f: "cjs", o: "dist/hickory-dom-utils.js" },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+const base = {
+  name: "HickoryDOMUtils",
+  input: "src/index.ts"
+};
 
-rollupBuild(
-  "UMD file",
-  { f: "umd", o: "dist/hickory-dom-utils.umd.js" },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+rollupBuild([
+  [
+    "ESM",
+    {
+      ...base,
+      format: "esm",
+      file: "dist/hickory-dom-utils.mjs",
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
 
-rollupBuild(
-  "UMD min file",
-  { f: "umd", o: "dist/hickory-dom-utils.min.js" },
-  { NODE_ENV: "production", BABEL_ENV: "build" }
-);
+  [
+    "CommonJS",
+    {
+      ...base,
+      format: "cjs",
+      file: "dist/hickory-dom-utils.js",
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
+
+  [
+    "UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-dom-utils.umd.js"
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
+
+  [
+    "minimized UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-dom-utils.min.js",
+      uglify: true
+    },
+    { NODE_ENV: "production", BABEL_ENV: "build" }
+  ]
+]);

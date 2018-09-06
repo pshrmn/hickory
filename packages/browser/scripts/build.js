@@ -3,28 +3,55 @@ const rollupBuild = require("../../../scripts/build");
 // don't bundle dependencies for es/cjs builds
 const pkg = require("../package.json");
 const deps = Object.keys(pkg.dependencies).map(key => key);
-const depsString = deps.join(",");
 
-rollupBuild(
-  "ESM",
-  { f: "esm", o: "dist/hickory-browser.mjs", e: depsString },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+const base = {
+  name: "HickoryBrowser",
+  input: "src/index.ts"
+};
 
-rollupBuild(
-  "CommonJS",
-  { f: "cjs", o: "dist/hickory-browser.js", e: depsString },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+rollupBuild([
+  [
+    "ESM",
+    {
+      ...base,
+      format: "esm",
+      file: "dist/hickory-browser.mjs",
+      external: deps,
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
 
-rollupBuild(
-  "UMD",
-  { f: "umd", o: "dist/hickory-browser.umd.js" },
-  { NODE_ENV: "development", BABEL_ENV: "build" }
-);
+  [
+    "CommonJS",
+    {
+      ...base,
+      format: "cjs",
+      file: "dist/hickory-browser.js",
+      external: deps,
+      safeModules: false
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
 
-rollupBuild(
-  "UMD min file",
-  { f: "umd", o: "dist/hickory-browser.min.js" },
-  { NODE_ENV: "production", BABEL_ENV: "build" }
-);
+  [
+    "UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-browser.umd.js"
+    },
+    { NODE_ENV: "development", BABEL_ENV: "build" }
+  ],
+
+  [
+    "minimized UMD",
+    {
+      ...base,
+      format: "umd",
+      file: "dist/hickory-browser.min.js",
+      uglify: true
+    },
+    { NODE_ENV: "production", BABEL_ENV: "build" }
+  ]
+]);
