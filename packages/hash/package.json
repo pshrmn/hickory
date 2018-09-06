@@ -2,8 +2,8 @@
   "name": "@hickory/hash",
   "version": "1.0.1",
   "description": "Hickory's hash history",
-  "main": "dist/hickory-hash",
-  "module": "dist/hickory-hash.mjs",
+  "main": "dist/hickory-hash.js",
+  "module": "dist/hickory-hash.es.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

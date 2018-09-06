@@ -2,8 +2,8 @@
   "name": "@hickory/dom-utils",
   "version": "1.0.1",
   "description": "DOM utility functions for hickory browser/hash",
-  "main": "dist/hickory-dom-utils",
-  "module": "dist/hickory-dom-utils.mjs",
+  "main": "dist/hickory-dom-utils.js",
+  "module": "dist/hickory-dom-utils.es.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

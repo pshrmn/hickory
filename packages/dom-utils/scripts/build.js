@@ -15,7 +15,7 @@ rollupBuild([
     {
       ...base,
       format: "esm",
-      file: "dist/hickory-dom-utils.mjs",
+      file: "dist/hickory-dom-utils.es.js",
       safeModules: false
     },
     { NODE_ENV: "development", BABEL_ENV: "build" }

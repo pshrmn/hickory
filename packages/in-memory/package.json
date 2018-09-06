@@ -2,8 +2,8 @@
   "name": "@hickory/in-memory",
   "version": "1.0.1",
   "description": "Hickory's in-memory history",
-  "main": "dist/hickory-in-memory",
-  "module": "dist/hickory-in-memory.mjs",
+  "main": "dist/hickory-in-memory.js",
+  "module": "dist/hickory-in-memory.es.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

@@ -1,3 +1,7 @@
+## Next
+
+* Revert dual-mode (not ready yet!).
+
 ## 1.0.1
 
 * Build UMD, not IIFE

@@ -15,7 +15,7 @@ rollupBuild([
     {
       ...base,
       format: "esm",
-      file: "dist/hickory-browser.mjs",
+      file: "dist/hickory-browser.es.js",
       external: deps,
       safeModules: false
     },

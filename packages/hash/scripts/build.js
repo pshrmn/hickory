@@ -15,7 +15,7 @@ rollupBuild([
     {
       ...base,
       format: "esm",
-      file: "dist/hickory-hash.mjs",
+      file: "dist/hickory-hash.es.js",
       external: deps,
       safeModules: false
     },

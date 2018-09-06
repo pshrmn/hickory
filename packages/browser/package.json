@@ -2,8 +2,8 @@
   "name": "@hickory/browser",
   "version": "1.0.1",
   "description": "Hickory's browser history",
-  "main": "dist/hickory-browser",
-  "module": "dist/hickory-browser.mjs",
+  "main": "dist/hickory-browser.js",
+  "module": "dist/hickory-browser.es.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

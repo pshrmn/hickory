@@ -2,8 +2,8 @@
   "name": "@hickory/root",
   "version": "1.0.1",
   "description": "Shared hickory functionality",
-  "main": "dist/hickory-root",
-  "module": "dist/hickory-root.mjs",
+  "main": "dist/hickory-root.js",
+  "module": "dist/hickory-root.es.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

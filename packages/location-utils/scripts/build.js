@@ -15,7 +15,7 @@ rollupBuild([
     {
       ...base,
       format: "esm",
-      file: "dist/hickory-location-utils.mjs",
+      file: "dist/hickory-location-utils.es.js",
       //external: deps,
       safeModules: false
     },
