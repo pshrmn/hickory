@@ -1,5 +1,6 @@
 ## Next
 
+* Build UMD, not IIFE
 * Support dual-mode package (CJS/ESM) builds with `.js` and `.mjs` files
 
 ## 1.0.0-beta.2

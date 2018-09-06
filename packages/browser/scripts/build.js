@@ -18,13 +18,13 @@ rollupBuild(
 );
 
 rollupBuild(
-  "<script> file",
-  { f: "iife", o: "dist/hickory-browser.umd.js" },
+  "UMD",
+  { f: "umd", o: "dist/hickory-browser.umd.js" },
   { NODE_ENV: "development", BABEL_ENV: "build" }
 );
 
 rollupBuild(
-  "<script> min file",
-  { f: "iife", o: "dist/hickory-browser.min.js" },
+  "UMD min file",
+  { f: "umd", o: "dist/hickory-browser.min.js" },
   { NODE_ENV: "production", BABEL_ENV: "build" }
 );

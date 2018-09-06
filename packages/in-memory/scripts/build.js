@@ -18,13 +18,13 @@ rollupBuild(
 );
 
 rollupBuild(
-  "<script> file",
-  { f: "iife", o: "dist/hickory-in-memory.umd.js" },
+  "UMD file",
+  { f: "umd", o: "dist/hickory-in-memory.umd.js" },
   { NODE_ENV: "development", BABEL_ENV: "build" }
 );
 
 rollupBuild(
-  "<script> min file",
-  { f: "iife", o: "dist/hickory-in-memory.min.js" },
+  "UMD min file",
+  { f: "umd", o: "dist/hickory-in-memory.min.js" },
   { NODE_ENV: "production", BABEL_ENV: "build" }
 );
