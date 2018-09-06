@@ -1,4 +1,4 @@
-## Next
+## 1.0.2
 
 * Revert dual-mode (not ready yet!).
 
