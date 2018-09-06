@@ -1,6 +1,6 @@
 {
   "name": "@hickory/in-memory",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hickory's in-memory history",
   "main": "dist/hickory-in-memory",
   "module": "dist/hickory-in-memory.mjs",
@@ -31,7 +31,7 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "dependencies": {
-    "@hickory/root": "^1.0.0"
+    "@hickory/root": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^20.0.8",

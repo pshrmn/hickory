@@ -1,6 +1,6 @@
 {
   "name": "@hickory/hash",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hickory's hash history",
   "main": "dist/hickory-hash",
   "module": "dist/hickory-hash.mjs",
@@ -31,9 +31,9 @@
   "author": "Paul Sherman",
   "license": "MIT",
   "dependencies": {
-    "@hickory/dom-utils": "^1.0.0",
-    "@hickory/location-utils": "^1.0.0",
-    "@hickory/root": "^1.0.0"
+    "@hickory/dom-utils": "^1.0.1",
+    "@hickory/location-utils": "^1.0.1",
+    "@hickory/root": "^1.0.1"
   },
   "devDependencies": {
     "@types/jasmine": "^2.6.0",

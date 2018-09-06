@@ -1,4 +1,4 @@
-## Next
+## 1.0.1
 
 * Build UMD, not IIFE
 * Support dual-mode package (CJS/ESM) builds with `.js` and `.mjs` files.
