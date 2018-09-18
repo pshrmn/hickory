@@ -1,0 +1,31 @@
+{
+  "dist/hickory-root.es.js": {
+    "bundled": 6904,
+    "minified": 2613,
+    "gzipped": 1191,
+    "treeshaked": {
+      "rollup": {
+        "code": 32,
+        "import_statements": 32
+      },
+      "webpack": {
+        "code": 1828
+      }
+    }
+  },
+  "dist/hickory-root.js": {
+    "bundled": 6926,
+    "minified": 2633,
+    "gzipped": 1200
+  },
+  "dist/hickory-root.umd.js": {
+    "bundled": 8453,
+    "minified": 2474,
+    "gzipped": 1210
+  },
+  "dist/hickory-root.min.js": {
+    "bundled": 8453,
+    "minified": 2474,
+    "gzipped": 1210
+  }
+}

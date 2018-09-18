@@ -3,6 +3,7 @@ const replace = require("rollup-plugin-replace");
 const commonjs = require("rollup-plugin-commonjs");
 const resolve = require("rollup-plugin-node-resolve");
 const typescript = require("rollup-plugin-typescript2");
+const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
 
 module.exports = function(options, env) {
   const {
@@ -32,7 +33,8 @@ module.exports = function(options, env) {
     resolve(),
     commonjs({
       include: /node_modules/
-    })
+    }),
+    sizeSnapshot()
   ];
 
   if (safeModules) {

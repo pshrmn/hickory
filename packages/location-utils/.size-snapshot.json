@@ -1,0 +1,31 @@
+{
+  "dist/hickory-location-utils.es.js": {
+    "bundled": 847,
+    "minified": 568,
+    "gzipped": 250,
+    "treeshaked": {
+      "rollup": {
+        "code": 0,
+        "import_statements": 0
+      },
+      "webpack": {
+        "code": 951
+      }
+    }
+  },
+  "dist/hickory-location-utils.js": {
+    "bundled": 1065,
+    "minified": 766,
+    "gzipped": 317
+  },
+  "dist/hickory-location-utils.umd.js": {
+    "bundled": 1405,
+    "minified": 667,
+    "gzipped": 373
+  },
+  "dist/hickory-location-utils.min.js": {
+    "bundled": 1405,
+    "minified": 667,
+    "gzipped": 373
+  }
+}
