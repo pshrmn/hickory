@@ -1,4 +1,4 @@
-import { Common, PUSH, REPLACE, ANCHOR } from "@hickory/root";
+import { Common, PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -46,7 +46,7 @@ interface NavSetup {
 
 function noop() {}
 
-export default function HashHistory(options: Options = {}): History {
+function Hash(options: Options = {}): History {
   if (!domExists()) {
     return;
   }
@@ -99,7 +99,7 @@ export default function HashHistory(options: Options = {}): History {
   function setupReplace(location: HickoryLocation): NavSetup {
     location.key = keygen.minor(hashHistory.location.key);
     return {
-      action: "REPLACE",
+      action: REPLACE,
       finish: finalizeReplace(location)
     };
   }
@@ -107,7 +107,7 @@ export default function HashHistory(options: Options = {}): History {
   function setupPush(location: HickoryLocation): NavSetup {
     location.key = keygen.major(hashHistory.location.key);
     return {
-      action: "PUSH",
+      action: PUSH,
       finish: finalizePush(location)
     };
   }
@@ -122,7 +122,7 @@ export default function HashHistory(options: Options = {}): History {
         window.location.assign(path);
       }
       hashHistory.location = location;
-      hashHistory.action = "PUSH";
+      hashHistory.action = PUSH;
     };
   }
 
@@ -136,16 +136,14 @@ export default function HashHistory(options: Options = {}): History {
         window.location.replace(path);
       }
       hashHistory.location = location;
-      hashHistory.action = "REPLACE";
+      hashHistory.action = REPLACE;
     };
   }
 
   let responseHandler: ResponseHandler;
   const hashHistory: History = {
     // location
-    action: (getStateFromHistory().key !== undefined
-      ? "POP"
-      : "PUSH") as Action,
+    action: getStateFromHistory().key !== undefined ? POP : PUSH,
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
@@ -164,20 +162,20 @@ export default function HashHistory(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
+    navigate(to: ToArgument, navType: NavType = ANCHOR): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
-        case "ANCHOR":
+        case ANCHOR:
           setup =
             createPath(location) === createPath(hashHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
-        case "PUSH":
+        case PUSH:
           setup = setupPush(location);
           break;
-        case "REPLACE":
+        case REPLACE:
           setup = setupReplace(location);
           break;
       }
@@ -220,7 +218,7 @@ export default function HashHistory(options: Options = {}): History {
       {
         to: location,
         from: hashHistory.location,
-        action: "POP"
+        action: POP
       },
       () => {
         if (!responseHandler) {
@@ -228,13 +226,13 @@ export default function HashHistory(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: "POP",
+          action: POP,
           finish: () => {
             hashHistory.location = location;
-            hashHistory.action = "POP";
+            hashHistory.action = POP;
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === "POP") {
+            if (nextAction === POP) {
               return;
             }
             reverting = true;
@@ -251,3 +249,5 @@ export default function HashHistory(options: Options = {}): History {
 
   return hashHistory;
 }
+
+export { Hash, PUSH, REPLACE, ANCHOR, POP };
