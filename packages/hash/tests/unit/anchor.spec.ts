@@ -15,7 +15,7 @@ function ignoreFirstCall(fn) {
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
-describe("anchor navigation", () => {
+describe("navigate()", () => {
   let dom;
   let window;
 
