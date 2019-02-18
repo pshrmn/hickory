@@ -33,7 +33,7 @@ const customLaunchers = {
     base: "BrowserStack",
     browser: "safari",
     browser_version: "12",
-    os: "macOS",
+    os: "OS X",
     os_version: "Mojave"
   }
   /*
