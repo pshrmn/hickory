@@ -1,4 +1,4 @@
-import Common from "@hickory/root";
+import { Common, PUSH, REPLACE, ANCHOR } from "@hickory/root";
 
 import {
   History,

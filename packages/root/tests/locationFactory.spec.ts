@@ -1,6 +1,8 @@
 import "jest";
-import Common from "../src";
+import { Common } from "../src";
 import * as qs from "qs";
+
+import { HickoryLocation } from "../src/types";
 
 describe("locationFactory", () => {
   describe("constructor", () => {
@@ -66,65 +68,247 @@ describe("locationFactory", () => {
   describe("createLocation", () => {
     const { createLocation } = Common();
 
-    describe("from a string", () => {
-      it("returns an object with expected properties", () => {
-        const loc = createLocation("/pathname?query=this#hash", "10.9");
-        expect(loc.pathname).toBe("/pathname");
-        expect(loc.query).toBe("query=this");
-        expect(loc.hash).toBe("hash");
-        expect(loc.key).toBe("10.9");
-      });
-    });
+    describe("pathname", () => {
+      describe("string argument", () => {
+        it("is parsed from a string location", () => {
+          const loc = createLocation("/pathname?query=this#hash");
+          expect(loc.pathname).toBe("/pathname");
+        });
 
-    describe("from an object", () => {
-      it("returns a new object", () => {
-        const input = {
-          pathname: "/test",
-          query: "one=two",
-          hash: "hello"
-        };
-        const output = createLocation(input);
-        input.pathname = "/not-a-test";
-        expect(output.pathname).toBe("/test");
-      });
+        describe("baseSegment", () => {
+          const { createLocation } = Common({
+            baseSegment: "/prefix"
+          });
 
-      it("uses provided properties", () => {
-        const input = {
-          pathname: "/test",
-          query: "one=two",
-          hash: "hello"
-        };
-        const output = createLocation(input);
-        Object.keys(input).forEach(key => {
-          expect(output[key]).toEqual(input[key]);
+          it("strips the baseSegment off of the string", () => {
+            const location = createLocation("/prefix/this/is/the/rest");
+            expect(location.pathname).toBe("/this/is/the/rest");
+          });
         });
       });
 
-      it('sets pathname to "/" if none is provided', () => {
-        const input = {};
-        const output = createLocation(input);
-        expect(output.pathname).toBe("/");
+      describe("object argument", () => {
+        it("uses provided pathname", () => {
+          const input = {
+            pathname: "/test",
+            query: "one=two",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.pathname).toBe("/test");
+        });
+
+        it("is / if no pathname is provided", () => {
+          const input = {
+            query: "one=two",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.pathname).toBe("/");
+        });
       });
 
-      it("sets default query value if none is provided", () => {
-        const input = {
-          pathname: "/test",
-          hash: "hello"
-        };
-        const output = createLocation(input);
-        expect(output.query).toBe("");
+      describe("decode option", () => {
+        it("decodes the pathname by default", () => {
+          const input = {
+            pathname: "/t%C3%B6rt%C3%A9nelem"
+          };
+          const output = createLocation(input);
+          expect(output.pathname).toBe("/történelem");
+        });
+
+        it("does not decode when decode=false", () => {
+          const { createLocation } = Common({ decode: false });
+          const input = {
+            pathname: "/t%C3%B6rt%C3%A9nelem"
+          };
+          const output = createLocation(input);
+          expect(output.pathname).toBe("/t%C3%B6rt%C3%A9nelem");
+        });
+
+        describe("bad encoding", () => {
+          it("throws URIError with clearer message when decoding fails", () => {
+            const input = {
+              pathname: "/bad%"
+            };
+            expect(() => {
+              const output = createLocation(input);
+            }).toThrow(
+              'Pathname "/bad%" could not be decoded. ' +
+                "This is most likely due to a bad percent-encoding. For more information, " +
+                "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
+            );
+          });
+
+          it("does not throw URIError when decode=false", () => {
+            const { createLocation } = Common({ decode: false });
+            const input = {
+              pathname: "/bad%"
+            };
+            expect(() => {
+              const output = createLocation(input);
+            }).not.toThrow();
+          });
+        });
+      });
+    });
+
+    describe("rawPathname", () => {
+      it("is result of user provided `raw` option", () => {
+        const { createLocation } = Common({
+          raw: path =>
+            path
+              .split("")
+              .reverse()
+              .join("")
+        });
+        const output = createLocation("/test");
+        expect(output.rawPathname).toBe("tset/");
       });
 
-      it("sets hash to empty string if none is provided", () => {
-        const input = {
-          pathname: "/test",
-          search: "one=two"
-        };
-        const output = createLocation(input);
-        expect(output.hash).toBe("");
+      it("uses default fn if `raw` option is not provided", () => {
+        const output = createLocation("/test%20ing");
+        expect(output.pathname).toBe("/test ing");
+        expect(output.rawPathname).toBe("/test%20ing");
+      });
+    });
+
+    describe("url", () => {
+      describe("string argument", () => {
+        it("is the provided string", () => {
+          const loc = createLocation("/pathname?query=this#hash");
+          expect(loc.url).toBe("/pathname?query=this#hash");
+        });
       });
 
-      it("adds provided key to the location", () => {
+      describe("object argument", () => {
+        it("is the expected value", () => {
+          const input = {
+            pathname: "/test",
+            query: "one=two",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.url).toBe("/test?one=two#hello");
+        });
+      });
+    });
+
+    describe("query", () => {
+      describe("string argument", () => {
+        it("is parsed from a string location", () => {
+          const loc = createLocation("/pathname?query=this#hash");
+          expect(loc.query).toBe("query=this");
+        });
+      });
+
+      describe("object argument", () => {
+        it("uses provided query", () => {
+          const input = {
+            pathname: "/test",
+            query: "one=two",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.query).toBe("one=two");
+        });
+
+        it("sets default value if none is provided", () => {
+          const input = {
+            pathname: "/test",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.query).toBe("");
+        });
+      });
+
+      describe("query.parse option", () => {
+        it("uses the provided query parsing function to make the query value", () => {
+          const { createLocation } = Common({
+            query: {
+              parse: qs.parse,
+              stringify: qs.stringify
+            }
+          });
+          const loc = createLocation("/pathname?query=this#hash");
+          expect(loc.query).toEqual({ query: "this" });
+        });
+      });
+    });
+
+    describe("hash", () => {
+      describe("string argument", () => {
+        it("is parsed from a string location", () => {
+          const loc = createLocation("/pathname?query=this#hash");
+          expect(loc.hash).toBe("hash");
+        });
+      });
+
+      describe("object argument", () => {
+        it("uses provided hash", () => {
+          const input = {
+            pathname: "/test",
+            query: "one=two",
+            hash: "hello"
+          };
+          const output = createLocation(input);
+          expect(output.hash).toBe("hello");
+        });
+
+        it("sets hash to empty string if none is provided", () => {
+          const input = {
+            pathname: "/test",
+            search: "one=two"
+          };
+          const output = createLocation(input);
+          expect(output.hash).toBe("");
+        });
+      });
+    });
+
+    describe("state", () => {
+      describe("string argument", () => {
+        it("adds state if provided", () => {
+          const input = {
+            pathname: "/"
+          };
+          const state = {
+            omg: "bff"
+          };
+          const output = createLocation(input, "1.0", state);
+          expect(output.state).toBeDefined();
+          expect(output.state).toEqual(state);
+        });
+      });
+
+      describe("object argument", () => {
+        it("adds state if provided", () => {
+          const state = { fromLocation: false };
+          const output = createLocation({ pathname: "/" }, "1.2", state);
+          expect(output.state).toEqual(state);
+        });
+
+        it("prefers location.state over state argument", () => {
+          const locState = { fromLocation: true };
+          const justState = { fromLocation: false };
+          const output = createLocation(
+            { pathname: "/", state: locState },
+            "1.2",
+            justState
+          );
+          expect(output.state).toEqual(locState);
+        });
+      });
+
+      it("is undefined if not provided", () => {
+        const output = createLocation("/");
+        expect(output.state).toBeUndefined();
+      });
+    });
+
+    describe("key", () => {
+      it("is the provided value", () => {
         const input = {
           pathname: "/test",
           query: "one=two",
@@ -135,114 +319,9 @@ describe("locationFactory", () => {
         expect(output.key).toBe(key);
       });
 
-      it("adds state if provided", () => {
-        const input = {
-          pathname: "/"
-        };
-        const state = {
-          omg: "bff"
-        };
-        const output = createLocation(input, "1.0", state);
-        expect(output.state).toBeDefined();
-        expect(output.state).toEqual(state);
-      });
-
-      it("prefers location.state over state", () => {
-        const locState = { fromLocation: true };
-        const justState = { fromLocation: false };
-        const output = createLocation(
-          { pathname: "/", state: locState },
-          "1.2",
-          justState
-        );
-        expect(output.state).toEqual(locState);
-      });
-    });
-
-    describe("using raw option fn to set location.rawPathname", () => {
-      it("calls user provided option", () => {
-        const { createLocation } = Common({
-          raw: path =>
-            path
-              .split("")
-              .reverse()
-              .join("")
-        });
-        const output = createLocation({ pathname: "/test" });
-        expect(output.rawPathname).toBe("tset/");
-      });
-
-      it("uses default fn if raw option is not provided", () => {
-        const output = createLocation({ pathname: "/test%20ing" });
-        expect(output.pathname).toBe("/test ing");
-        expect(output.rawPathname).toBe("/test%20ing");
-      });
-    });
-
-    describe("query.parse option", () => {
-      it("uses the provided query parsing function to make the query value", () => {
-        const { createLocation } = Common({
-          query: {
-            parse: qs.parse,
-            stringify: qs.stringify
-          }
-        });
-        const loc = createLocation("/pathname?query=this#hash");
-        expect(loc.query).toEqual({ query: "this" });
-      });
-    });
-
-    describe("decode option", () => {
-      it("decodes the pathname by default", () => {
-        const input = {
-          pathname: "/t%C3%B6rt%C3%A9nelem"
-        };
-        const output = createLocation(input);
-        expect(output.pathname).toBe("/történelem");
-      });
-
-      it("does not decode when decode=false", () => {
-        const { createLocation } = Common({ decode: false });
-        const input = {
-          pathname: "/t%C3%B6rt%C3%A9nelem"
-        };
-        const output = createLocation(input);
-        expect(output.pathname).toBe("/t%C3%B6rt%C3%A9nelem");
-      });
-
-      describe("bad encoding", () => {
-        it("throws URIError with clearer message when decoding fails", () => {
-          const input = {
-            pathname: "/bad%"
-          };
-          expect(() => {
-            const output = createLocation(input);
-          }).toThrow(
-            'Pathname "/bad%" could not be decoded. ' +
-              "This is most likely due to a bad percent-encoding. For more information, " +
-              "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
-          );
-        });
-
-        it("does not throw URIError when decode=false", () => {
-          const { createLocation } = Common({ decode: false });
-          const input = {
-            pathname: "/bad%"
-          };
-          expect(() => {
-            const output = createLocation(input);
-          }).not.toThrow();
-        });
-      });
-    });
-
-    describe("baseSegment", () => {
-      const { createLocation } = Common({
-        baseSegment: "/prefix"
-      });
-      it("strips the baseSegment off of the path before creating a location", () => {
-        const location = createLocation("/prefix/this/is/the/rest");
-        expect(location.pathname).toBe("/this/is/the/rest");
+      it("is undefined if not provided", () => {
+        const output = createLocation("/test");
+        expect(output.key).toBeUndefined();
       });
     });
   });
@@ -259,12 +338,13 @@ describe("locationFactory", () => {
         expect(output).toBe("/test");
       });
 
-      it("uses rawPathname is pathname not provided", () => {
+      it("prefers rawPathname", () => {
         const input = {
-          rawPathname: "/test"
-        };
+          rawPathname: "/rawPathname",
+          pathname: "/pathname"
+        } as HickoryLocation;
         const output = createPath(input);
-        expect(output).toBe("/test");
+        expect(output).toBe("/rawPathname");
       });
 
       it("uses empty string for pathname if neither pathname or rawPathname provided", () => {
@@ -279,6 +359,19 @@ describe("locationFactory", () => {
         };
         const output = createPath(input);
         expect(output).toBe("/test");
+      });
+
+      describe("baseSegment", () => {
+        it("adds the baseSegment to the generated string", () => {
+          const { createPath } = Common({ baseSegment: "/prefix" });
+          const location = {
+            pathname: "/one/two/three",
+            search: "",
+            hash: "four"
+          };
+          const path = createPath(location);
+          expect(path).toBe("/prefix/one/two/three#four");
+        });
       });
     });
 
@@ -307,6 +400,23 @@ describe("locationFactory", () => {
         };
         const output = createPath(input);
         expect(output.indexOf("?")).toBe(-1);
+      });
+
+      describe("query.stringify option", () => {
+        it("uses the provided stringify function to turn query into a string", () => {
+          const { createPath } = Common({
+            query: {
+              parse: qs.parse,
+              stringify: qs.stringify
+            }
+          });
+          const input = {
+            pathname: "/",
+            query: { one: "two" }
+          };
+          const output = createPath(input);
+          expect(output).toBe("/?one=two");
+        });
       });
     });
 
@@ -345,36 +455,6 @@ describe("locationFactory", () => {
         };
         const output = createPath(input);
         expect(output.indexOf("?")).toBeLessThan(output.indexOf("#"));
-      });
-    });
-
-    describe("query.stringify option", () => {
-      it("uses the provided stringify function to turn query into a string", () => {
-        const { createPath } = Common({
-          query: {
-            parse: qs.parse,
-            stringify: qs.stringify
-          }
-        });
-        const input = {
-          pathname: "/",
-          query: { one: "two" }
-        };
-        const output = createPath(input);
-        expect(output).toBe("/?one=two");
-      });
-    });
-
-    describe("baseSegment", () => {
-      it("adds the baseSegment to the path generated from a location", () => {
-        const { createPath } = Common({ baseSegment: "/prefix" });
-        const location = {
-          pathname: "/one/two/three",
-          search: "",
-          hash: "four"
-        };
-        const path = createPath(location);
-        expect(path).toBe("/prefix/one/two/three#four");
       });
     });
   });

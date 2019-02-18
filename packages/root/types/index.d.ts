@@ -1,3 +1,4 @@
 export * from './types';
 import Common from './common';
-export default Common;
+import { PUSH, REPLACE, ANCHOR } from "./methods";
+export { Common, PUSH, REPLACE, ANCHOR };

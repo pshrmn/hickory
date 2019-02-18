@@ -8,7 +8,8 @@ import {
 import {
   HickoryLocation,
   PartialLocation,
-  AnyLocation
+  AnyLocation,
+  LocationDetails
 } from "./types/location";
 import { ToArgument } from "./types/hickory";
 import {
@@ -55,93 +56,112 @@ export default function locationFactory(
     );
   }
 
-  function parsePath(value: string): PartialLocation {
-    const location: PartialLocation = {} as PartialLocation;
-
+  function parsePath(value: string, state: any): LocationDetails {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
+    let hash;
     if (hashIndex !== -1) {
-      location.hash = value.substring(hashIndex + 1);
+      hash = value.substring(hashIndex + 1);
       value = value.substring(0, hashIndex);
     } else {
-      location.hash = "";
+      hash = "";
     }
 
     const queryIndex = value.indexOf("?");
+    let query;
     if (queryIndex !== -1) {
-      location.query = parseQuery(value.substring(queryIndex + 1));
+      query = parseQuery(value.substring(queryIndex + 1));
       value = value.substring(0, queryIndex);
     } else {
-      location.query = parseQuery();
+      query = parseQuery();
     }
 
-    location.pathname = stripBaseSegment(value, baseSegment);
+    const pathname = stripBaseSegment(value, baseSegment);
 
-    return location;
+    const details: LocationDetails = {
+      hash,
+      query,
+      pathname
+    };
+
+    if (state) {
+      details.state = state;
+    }
+
+    return details;
   }
 
-  return {
-    createLocation(
-      value: ToArgument,
-      key?: string,
-      state?: any
-    ): HickoryLocation {
-      let partial: PartialLocation;
-      if (state === undefined) {
-        state = null;
-      }
-      if (typeof value === "string") {
-        partial = parsePath(value);
-      } else {
-        partial = { ...(value as PartialLocation) };
-        if (partial.hash == null) {
-          partial.hash = "";
-        }
-        if (partial.query == null) {
-          partial.query = parseQuery();
-        }
-        if (partial.pathname == null) {
-          partial.pathname = "/";
-        }
-      }
-      // don't set state if it already exists
-      if (state && !partial.state) {
-        partial.state = state;
-      }
+  function getDetails(partial: PartialLocation, state: any): LocationDetails {
+    const details: LocationDetails = {
+      pathname: partial.pathname == null ? "/" : partial.pathname,
+      hash: partial.hash == null ? "" : partial.hash,
+      query: partial.query == null ? parseQuery() : partial.query
+    };
 
-      const location: HickoryLocation = {
-        ...(partial as HickoryLocation),
-        key: key,
-        rawPathname: raw(partial.pathname)
-      };
-
-      // it can be more convenient to interact with the decoded pathname,
-      // but leave the option for using the encoded value
-      if (decode) {
-        try {
-          location.pathname = decodeURI(location.pathname);
-        } catch (e) {
-          throw new URIError(
-            'Pathname "' +
-              location.pathname +
-              '" could not be decoded. ' +
-              "This is most likely due to a bad percent-encoding. For more information, " +
-              "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
-          );
-        }
-      }
-      return location;
-    },
-
-    createPath(location: AnyLocation): string {
-      // ensure that pathname begins with a forward slash, query begins
-      // with a question mark, and hash begins with a pound sign
-      return (
-        baseSegment +
-        completePathname(location.rawPathname || location.pathname || "") +
-        completeQuery(stringifyQuery(location.query)) +
-        completeHash(location.hash)
-      );
+    if (partial.state) {
+      details.state = partial.state;
+    } else if (state) {
+      details.state = state;
     }
-  };
+
+    return details;
+  }
+
+  function createLocation(
+    value: ToArgument,
+    key?: string,
+    state?: any
+  ): HickoryLocation {
+    if (state === undefined) {
+      state = null;
+    }
+    const details =
+      typeof value === "string"
+        ? parsePath(value, state)
+        : getDetails(value, state);
+    const rawPathname = raw(details.pathname);
+
+    // it can be more convenient to interact with the decoded pathname,
+    // but leave the option for using the encoded value
+    if (decode) {
+      try {
+        details.pathname = decodeURI(details.pathname);
+      } catch (e) {
+        throw new URIError(
+          'Pathname "' +
+            details.pathname +
+            '" could not be decoded. ' +
+            "This is most likely due to a bad percent-encoding. For more information, " +
+            "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
+        );
+      }
+    }
+
+    const locationParts = {
+      ...details,
+      key: key,
+      rawPathname
+    };
+
+    const url = createPath(locationParts);
+    return {
+      ...locationParts,
+      url
+    };
+  }
+
+  function createPath(location: AnyLocation): string {
+    // ensure that pathname begins with a forward slash, query begins
+    // with a question mark, and hash begins with a pound sign
+    return (
+      baseSegment +
+      completePathname(
+        (location as HickoryLocation).rawPathname || location.pathname || ""
+      ) +
+      completeQuery(stringifyQuery(location.query)) +
+      completeHash(location.hash)
+    );
+  }
+
+  return { createLocation, createPath };
 }

@@ -1,3 +1,7 @@
+## Next
+
+* Export `PUSH`, `REPLACE`, and `ANCHOR` constants, move `Common` to a named export.
+
 ## 1.0.2
 
 * Revert dual-mode (not ready yet!).

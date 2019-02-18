@@ -1,5 +1,5 @@
 import "jest";
-import Common from "../src";
+import { Common } from "../src";
 
 describe("key generator", () => {
   describe("major", () => {
