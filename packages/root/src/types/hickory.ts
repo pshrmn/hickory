@@ -7,8 +7,14 @@ import {
 } from "./navigationConfirmation";
 
 export type ToArgument = string | PartialLocation;
-export type Action = "PUSH" | "REPLACE" | "POP";
-export type NavType = "ANCHOR" | "PUSH" | "REPLACE";
+
+export type PushType = "push";
+export type ReplaceType = "replace";
+export type PopType = "pop";
+export type AnchorType = "anchor";
+
+export type Action = PushType | ReplaceType | PopType;
+export type NavType = AnchorType | PushType | ReplaceType;
 
 export interface PendingNavigation {
   location: HickoryLocation;
