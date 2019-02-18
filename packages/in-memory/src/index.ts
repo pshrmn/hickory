@@ -1,4 +1,4 @@
-import { Common, PUSH, REPLACE, ANCHOR } from "@hickory/root";
+import { Common, PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
 
 import {
   History,
@@ -46,7 +46,7 @@ interface NavSetup {
 
 function noop() {}
 
-export default function InMemory(options: Options = {}): InMemoryHistory {
+function InMemory(options: Options = {}): InMemoryHistory {
   const {
     createLocation,
     createPath,
@@ -80,7 +80,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
   function setupReplace(location: HickoryLocation): NavSetup {
     location.key = keygen.minor(memoryHistory.location.key);
     return {
-      action: "REPLACE",
+      action: REPLACE,
       finish: finalizeReplace(location)
     };
   }
@@ -88,7 +88,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
   function setupPush(location: HickoryLocation): NavSetup {
     location.key = keygen.major(memoryHistory.location.key);
     return {
-      action: "PUSH",
+      action: PUSH,
       finish: finalizePush(location)
     };
   }
@@ -101,7 +101,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         ...memoryHistory.locations.slice(0, memoryHistory.index),
         location
       ];
-      memoryHistory.action = "PUSH";
+      memoryHistory.action = PUSH;
     };
   }
 
@@ -109,7 +109,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     return () => {
       memoryHistory.location = location;
       memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
-      memoryHistory.action = "REPLACE";
+      memoryHistory.action = REPLACE;
     };
   }
 
@@ -119,7 +119,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
-    action: "PUSH",
+    action: PUSH,
     // set response handler
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
@@ -137,20 +137,20 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
     destroy(): void {
       destroyLocations();
     },
-    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
+    navigate(to: ToArgument, navType: NavType = ANCHOR): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
-        case "ANCHOR":
+        case ANCHOR:
           setup =
             createPath(location) === createPath(memoryHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
-        case "PUSH":
+        case PUSH:
           setup = setupPush(location);
           break;
-        case "REPLACE":
+        case REPLACE:
           setup = setupReplace(location);
           break;
       }
@@ -180,9 +180,9 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         }
         responseHandler({
           location: memoryHistory.location,
-          action: "POP",
+          action: POP,
           finish: () => {
-            memoryHistory.action = "POP";
+            memoryHistory.action = POP;
           },
           cancel: noop
         });
@@ -196,7 +196,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
             {
               to: location,
               from: memoryHistory.location,
-              action: "PUSH"
+              action: PUSH
             },
             () => {
               if (!responseHandler) {
@@ -204,11 +204,11 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
               }
               responseHandler({
                 location,
-                action: "POP",
+                action: POP,
                 finish: () => {
                   memoryHistory.index = newIndex;
                   memoryHistory.location = location;
-                  memoryHistory.action = "POP";
+                  memoryHistory.action = POP;
                 },
                 cancel: noop
               });
@@ -231,7 +231,7 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
         memoryHistory.index = 0;
       }
       memoryHistory.location = memoryHistory.locations[memoryHistory.index];
-      memoryHistory.action = "PUSH";
+      memoryHistory.action = PUSH;
       if (!responseHandler) {
         return;
       }
@@ -246,3 +246,5 @@ export default function InMemory(options: Options = {}): InMemoryHistory {
 
   return memoryHistory;
 }
+
+export { InMemory, PUSH, REPLACE, ANCHOR, POP };
