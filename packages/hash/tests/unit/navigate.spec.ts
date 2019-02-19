@@ -1,5 +1,5 @@
 import "jest";
-import { Browser, PUSH, REPLACE, ANCHOR } from "../../src";
+import { Hash, PUSH, REPLACE, ANCHOR } from "../../src";
 import { jsdom } from "jsdom";
 
 function ignoreFirstCall(fn) {
@@ -21,7 +21,7 @@ describe("navigate()", () => {
 
   beforeEach(() => {
     dom = jsdom("", {
-      url: "http://example.com/one"
+      url: "http://example.com/#/one"
     });
     window = global.window = dom.defaultView;
     global.document = dom;
@@ -34,13 +34,13 @@ describe("navigate()", () => {
 
   describe("response handler", () => {
     it("does nothing without a response handler", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       testHistory.navigate("/two");
-      expect(window.location.pathname).toBe("/one");
+      expect(window.location.hash).toBe("#/one");
     });
 
     it("triggers a response handler call if handler is registered", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       const router = jest.fn();
       testHistory.respondWith(router);
       testHistory.navigate("/two");
@@ -50,7 +50,7 @@ describe("navigate()", () => {
 
   describe("invalid method", () => {
     it("throws", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       const router = jest.fn();
       testHistory.respondWith(router);
 
@@ -64,7 +64,7 @@ describe("navigate()", () => {
   describe("location", () => {
     describe("from string", () => {
       it("is a location object created from pushed string", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(function(pending) {
           expect(pending.location).toMatchObject({
             pathname: "/two",
@@ -78,7 +78,7 @@ describe("navigate()", () => {
 
     describe("from object", () => {
       it("is a location object created from pushed object", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(function(pending) {
           expect(pending.location).toMatchObject({
             pathname: "/two",
@@ -91,7 +91,7 @@ describe("navigate()", () => {
     });
 
     it("pushing increments major key", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       function router(pending) {
         pending.finish();
       }
@@ -111,7 +111,7 @@ describe("navigate()", () => {
     });
 
     it("replacing increments minor key", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       function router(pending) {
         pending.finish();
       }
@@ -136,7 +136,7 @@ describe("navigate()", () => {
   describe("action", () => {
     describe("push", () => {
       it("navigate(newLocation)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(PUSH);
         });
@@ -146,7 +146,7 @@ describe("navigate()", () => {
       });
 
       it("navigate(newLocation, ANCHOR)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(PUSH);
         });
@@ -156,7 +156,7 @@ describe("navigate()", () => {
       });
 
       it("navigate(location, PUSH)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(PUSH);
         });
@@ -168,7 +168,7 @@ describe("navigate()", () => {
 
     describe("replace", () => {
       it("navigate(sameLocation)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(REPLACE);
         });
@@ -178,17 +178,17 @@ describe("navigate()", () => {
       });
 
       it("navigate(sameLocation, ANCHOR)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(REPLACE);
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate(testHistory.location.url, ANCHOR);
+        testHistory.navigate(testHistory.location.url), ANCHOR;
       });
 
       it("navigate(location, REPLACE)", () => {
-        const testHistory = Browser();
+        const testHistory = Hash();
         const router = ignoreFirstCall(({ action }) => {
           expect(action).toBe(REPLACE);
         });
@@ -201,27 +201,27 @@ describe("navigate()", () => {
 
   describe("finish", () => {
     it("updates browser history when finish function is called", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       let router = ignoreFirstCall(function(pending) {
-        expect(window.location.pathname).toBe("/one");
+        expect(window.location.hash).toBe("#/one");
         pending.finish();
-        expect(window.location.pathname).toBe("/two");
+        expect(window.location.hash).toBe("#/two");
       });
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/two");
     });
 
     it("does nothing if navigate() is not called", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       let call = 0;
       function router(pending) {}
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/two");
-      expect(window.location.pathname).toBe("/one");
+      expect(window.location.hash).toBe("#/one");
     });
 
     it("sets history.location to new location object", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       function router(pending) {
         pending.finish();
       }
@@ -233,7 +233,7 @@ describe("navigate()", () => {
     });
 
     it("(new) sets history.action to PUSH", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       function router(pending) {
         pending.finish();
       }
@@ -243,7 +243,7 @@ describe("navigate()", () => {
     });
 
     it("(same) sets history.action to REPLACE", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       function router(pending) {
         pending.finish();
       }
@@ -255,18 +255,18 @@ describe("navigate()", () => {
 
   describe("cancel", () => {
     it("does not update browser history when cancel function is called", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       let router = ignoreFirstCall(function(pending) {
-        expect(window.location.pathname).toBe("/one");
+        expect(window.location.hash).toBe("#/one");
         pending.cancel();
-        expect(window.location.pathname).toBe("/one");
+        expect(window.location.hash).toBe("#/one");
       });
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/two");
     });
 
     it("does not update the action value", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       let router = ignoreFirstCall(function(pending) {
         expect(testHistory.action).toBe(PUSH);
         pending.cancel();
@@ -279,7 +279,7 @@ describe("navigate()", () => {
 
   describe("with a confirmation function", () => {
     it("calls response pending after the user confirms the navigation", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       const router = jest.fn();
       const confirm = (info, confirm, prevent) => {
         confirm();
@@ -292,7 +292,7 @@ describe("navigate()", () => {
     });
 
     it("does not call response pending when the user prevents the navigation", () => {
-      const testHistory = Browser();
+      const testHistory = Hash();
       const router = jest.fn();
       const confirm = (info, confirm, prevent) => {
         prevent();
