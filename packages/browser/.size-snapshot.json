@@ -1,8 +1,8 @@
 {
   "dist/hickory-browser.es.js": {
     "bundled": 6757,
-    "minified": 2236,
-    "gzipped": 891,
+    "minified": 2242,
+    "gzipped": 901,
     "treeshaked": {
       "rollup": {
         "code": 49,
@@ -15,17 +15,17 @@
   },
   "dist/hickory-browser.js": {
     "bundled": 6899,
-    "minified": 2375,
-    "gzipped": 960
+    "minified": 2381,
+    "gzipped": 970
   },
   "dist/hickory-browser.umd.js": {
     "bundled": 17429,
-    "minified": 4920,
-    "gzipped": 2085
+    "minified": 4926,
+    "gzipped": 2098
   },
   "dist/hickory-browser.min.js": {
     "bundled": 17429,
-    "minified": 4920,
-    "gzipped": 2085
+    "minified": 4926,
+    "gzipped": 2098
   }
 }
