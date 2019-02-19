@@ -153,6 +153,8 @@ function InMemory(options: Options = {}): InMemoryHistory {
         case REPLACE:
           setup = setupReplace(location);
           break;
+        default:
+          throw new Error(`Invalid navigation type: ${navType}`);
       }
       confirmNavigation(
         {

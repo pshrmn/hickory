@@ -167,6 +167,8 @@ function Browser(options: Options = {}): History {
         case REPLACE:
           setup = setupReplace(location);
           break;
+        default:
+          throw new Error(`Invalid navigation type: ${navType}`);
       }
       confirmNavigation(
         {
