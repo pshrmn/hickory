@@ -24,14 +24,5 @@
     "url": "https://github.com/pshrmn/hickory/tree/master/packages/location-utils"
   },
   "author": "Paul Sherman",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/jest": "^22.1.1",
-    "@types/node": "^10.9.2",
-    "jest": "^21.1.0",
-    "prettier": "^1.9.2",
-    "rimraf": "^2.6.1",
-    "ts-jest": "^21.0.1",
-    "typescript": "^3.0.1"
-  }
+  "license": "MIT"
 }

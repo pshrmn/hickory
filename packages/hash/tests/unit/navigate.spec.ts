@@ -1,6 +1,6 @@
 import "jest";
 import { Hash, PUSH, REPLACE, ANCHOR } from "../../src";
-import { jsdom } from "jsdom";
+import { JSDOM } from "jsdom";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -16,19 +16,18 @@ function ignoreFirstCall(fn) {
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
 describe("navigate()", () => {
-  let dom;
+  let dom: JSDOM;
   let window;
 
   beforeEach(() => {
-    dom = jsdom("", {
+    dom = new JSDOM("", {
       url: "http://example.com/#/one"
     });
-    window = global.window = dom.defaultView;
-    global.document = dom;
+    window = global.window = dom.window;
+    global.document = dom.window.document;
   });
 
   afterEach(() => {
-    dom.close();
     global.document = undefined;
   });
 
