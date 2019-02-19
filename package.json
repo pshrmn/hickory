@@ -39,7 +39,7 @@
     "karma": "^4.0.0",
     "karma-browserstack-launcher": "^1.4.0",
     "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.0",
+    "karma-jasmine": "^2.0.1",
     "karma-rollup-preprocessor": "^6.0.1",
     "lerna": "^3.13.0",
     "prettier": "^1.9.2",
