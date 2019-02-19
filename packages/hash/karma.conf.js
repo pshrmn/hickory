@@ -1,5 +1,4 @@
 const typescript = require("rollup-plugin-typescript2");
-const replace = require("rollup-plugin-replace");
 const resolve = require("rollup-plugin-node-resolve");
 const customLaunchers = require("../../config/karmaLaunchers");
 
@@ -38,8 +37,10 @@ module.exports = function(config) {
         }),
         resolve()
       ],
-      format: "iife",
-      sourcemap: "inline"
+      output: {
+        format: "iife",
+        sourcemap: "inline"
+      }
     },
 
     plugins: plugins
