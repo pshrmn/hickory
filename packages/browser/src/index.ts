@@ -1,4 +1,4 @@
-import Common from "@hickory/root";
+import { Common, PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -39,7 +39,7 @@ interface NavSetup {
 
 function noop() {}
 
-export default function Browser(options: Options = {}): History {
+function Browser(options: Options = {}): History {
   if (!domExists()) {
     return;
   }
@@ -87,7 +87,7 @@ export default function Browser(options: Options = {}): History {
   function setupReplace(location: HickoryLocation): NavSetup {
     location.key = keygen.minor(browserHistory.location.key);
     return {
-      action: "REPLACE",
+      action: REPLACE,
       finish: finalizeReplace(location)
     };
   }
@@ -95,7 +95,7 @@ export default function Browser(options: Options = {}): History {
   function setupPush(location: HickoryLocation): NavSetup {
     location.key = keygen.major(browserHistory.location.key);
     return {
-      action: "PUSH",
+      action: PUSH,
       finish: finalizePush(location)
     };
   }
@@ -110,7 +110,7 @@ export default function Browser(options: Options = {}): History {
         window.location.assign(path);
       }
       browserHistory.location = location;
-      browserHistory.action = "PUSH";
+      browserHistory.action = PUSH;
     };
   }
 
@@ -124,16 +124,14 @@ export default function Browser(options: Options = {}): History {
         window.location.replace(path);
       }
       browserHistory.location = location;
-      browserHistory.action = "REPLACE";
+      browserHistory.action = REPLACE;
     };
   }
 
   let responseHandler: ResponseHandler;
-  const browserHistory = {
+  const browserHistory: History = {
     // set action before location because locationFromBrowser enforces that the location has a key
-    action: (getStateFromHistory().key !== undefined
-      ? "POP"
-      : "PUSH") as Action,
+    action: getStateFromHistory().key !== undefined ? POP : PUSH,
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
@@ -153,20 +151,20 @@ export default function Browser(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = "ANCHOR"): void {
+    navigate(to: ToArgument, navType: NavType = ANCHOR): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
-        case "ANCHOR":
+        case ANCHOR:
           setup =
             createPath(location) === createPath(browserHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
-        case "PUSH":
+        case PUSH:
           setup = setupPush(location);
           break;
-        case "REPLACE":
+        case REPLACE:
           setup = setupReplace(location);
           break;
       }
@@ -209,7 +207,7 @@ export default function Browser(options: Options = {}): History {
       {
         to: location,
         from: browserHistory.location,
-        action: "POP"
+        action: POP
       },
       () => {
         if (!responseHandler) {
@@ -217,13 +215,13 @@ export default function Browser(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: "POP",
+          action: POP,
           finish: () => {
             browserHistory.location = location;
-            browserHistory.action = "POP";
+            browserHistory.action = POP;
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === "POP") {
+            if (nextAction === POP) {
               return;
             }
             reverting = true;
@@ -240,3 +238,5 @@ export default function Browser(options: Options = {}): History {
 
   return browserHistory;
 }
+
+export { Browser, PUSH, REPLACE, ANCHOR, POP };

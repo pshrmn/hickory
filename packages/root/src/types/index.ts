@@ -13,7 +13,11 @@ export {
   PendingNavigation,
   ResponseHandler,
   Options,
-  CommonHistory
+  CommonHistory,
+  PushType,
+  ReplaceType,
+  PopType,
+  AnchorType
 } from "./hickory";
 
 export { KeyMethods, KeyFns } from "./keygen";

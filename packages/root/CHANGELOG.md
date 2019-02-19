@@ -1,3 +1,9 @@
+## Next
+
+* Add `url` string property to `HickoryLocation` objects.
+* Export `PUSH`, `REPLACE`, `ANCHOR`, and `POP` constants.
+* Move `Common` to a named export.
+
 ## 1.0.2
 
 * Revert dual-mode (not ready yet!).

@@ -1,5 +1,5 @@
 import "jest";
-import Hash from "../../src";
+import { Hash, POP, PUSH, REPLACE } from "../../src";
 import { jsdom } from "jsdom";
 
 function ignoreFirstCall(fn) {
@@ -56,15 +56,15 @@ describe("go", () => {
         pathname: "/four",
         key: "3.0"
       });
-      expect(pending.action).toBe("POP");
+      expect(pending.action).toBe(POP);
       done();
     }
     testHistory.respondWith(router);
-    testHistory.navigate("/two", "PUSH"); // 1.0
-    testHistory.navigate("/three", "PUSH"); // 2.0
-    testHistory.navigate("/four", "PUSH"); // 3.0
-    testHistory.navigate("/five", "PUSH"); // 4.0
-    testHistory.navigate("/six", "PUSH"); // 5.0
+    testHistory.navigate("/two", PUSH); // 1.0
+    testHistory.navigate("/three", PUSH); // 2.0
+    testHistory.navigate("/four", PUSH); // 3.0
+    testHistory.navigate("/five", PUSH); // 4.0
+    testHistory.navigate("/six", PUSH); // 5.0
     setup = true;
     testHistory.go(-2);
   });
@@ -84,10 +84,10 @@ describe("go", () => {
           cancelGo = pending.cancel;
           // trigger a push call and don't resolve the go
           testHistory.respondWith(pushRouter);
-          testHistory.navigate("/seven", "PUSH");
+          testHistory.navigate("/seven", PUSH);
         });
         const pushRouter = ignoreFirstCall(function(pending) {
-          cancelGo("PUSH");
+          cancelGo(PUSH);
           setTimeout(() => {
             expect(window.location.hash).toBe("#/six");
             done();
@@ -95,11 +95,11 @@ describe("go", () => {
         });
 
         testHistory.respondWith(initialRouter);
-        testHistory.navigate("/two", "PUSH"); // 1.0
-        testHistory.navigate("/three", "PUSH"); // 2.0
-        testHistory.navigate("/four", "PUSH"); // 3.0
-        testHistory.navigate("/five", "PUSH"); // 4.0
-        testHistory.navigate("/six", "PUSH"); // 5.0
+        testHistory.navigate("/two", PUSH); // 1.0
+        testHistory.navigate("/three", PUSH); // 2.0
+        testHistory.navigate("/four", PUSH); // 3.0
+        testHistory.navigate("/five", PUSH); // 4.0
+        testHistory.navigate("/six", PUSH); // 5.0
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
@@ -118,10 +118,10 @@ describe("go", () => {
           cancelGo = pending.cancel;
           // trigger a push call and don't resolve the go
           testHistory.respondWith(replaceRouter);
-          testHistory.navigate("/seven", "REPLACE");
+          testHistory.navigate("/seven", REPLACE);
         });
         const replaceRouter = ignoreFirstCall(function(pending) {
-          cancelGo("REPLACE");
+          cancelGo(REPLACE);
           setTimeout(() => {
             expect(window.location.hash).toBe("#/six");
             done();
@@ -129,11 +129,11 @@ describe("go", () => {
         });
 
         testHistory.respondWith(initialRouter);
-        testHistory.navigate("/two", "PUSH"); // 1.0
-        testHistory.navigate("/three", "PUSH"); // 2.0
-        testHistory.navigate("/four", "PUSH"); // 3.0
-        testHistory.navigate("/five", "PUSH"); // 4.0
-        testHistory.navigate("/six", "PUSH"); // 5.0
+        testHistory.navigate("/two", PUSH); // 1.0
+        testHistory.navigate("/three", PUSH); // 2.0
+        testHistory.navigate("/four", PUSH); // 3.0
+        testHistory.navigate("/five", PUSH); // 4.0
+        testHistory.navigate("/six", PUSH); // 5.0
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
@@ -155,7 +155,7 @@ describe("go", () => {
           testHistory.go(-1);
         });
         const popRouter = ignoreFirstCall(function(pending) {
-          cancelGo("POP");
+          cancelGo(POP);
           setTimeout(() => {
             expect(window.location.hash).toBe("#/three");
             done();
@@ -163,11 +163,11 @@ describe("go", () => {
         });
 
         testHistory.respondWith(initialRouter);
-        testHistory.navigate("/two", "PUSH"); // 1.0
-        testHistory.navigate("/three", "PUSH"); // 2.0
-        testHistory.navigate("/four", "PUSH"); // 3.0
-        testHistory.navigate("/five", "PUSH"); // 4.0
-        testHistory.navigate("/six", "PUSH"); // 5.0
+        testHistory.navigate("/two", PUSH); // 1.0
+        testHistory.navigate("/three", PUSH); // 2.0
+        testHistory.navigate("/four", PUSH); // 3.0
+        testHistory.navigate("/five", PUSH); // 4.0
+        testHistory.navigate("/six", PUSH); // 5.0
 
         testHistory.respondWith(goRouter);
         testHistory.go(-2);
@@ -196,8 +196,8 @@ describe("go", () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router);
 
-      testHistory.navigate("/two", "PUSH"); // 1.0
-      testHistory.navigate("/three", "PUSH"); // 2.0
+      testHistory.navigate("/two", PUSH); // 1.0
+      testHistory.navigate("/three", PUSH); // 2.0
       setup = true;
       testHistory.go(-2);
     });
@@ -212,8 +212,8 @@ describe("go", () => {
       }
       testHistory.respondWith(router);
 
-      testHistory.navigate("/two", "PUSH"); // 1.0
-      testHistory.navigate("/three", "PUSH"); // 2.0
+      testHistory.navigate("/two", PUSH); // 1.0
+      testHistory.navigate("/three", PUSH); // 2.0
       // don't add function until we have setup the history
       testHistory.confirmWith(confirm);
       testHistory.go(-2);

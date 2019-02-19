@@ -1,18 +1,13 @@
 export interface LocationDetails {
-    query?: any;
-    hash?: string;
-    state?: any;
-}
-export interface PartialLocation extends LocationDetails {
-    pathname?: string;
-    rawPathname?: string;
-}
-export interface HickoryLocation {
     pathname: string;
     query: any;
     hash: string;
     state?: any;
+}
+export declare type PartialLocation = Partial<LocationDetails>;
+export interface HickoryLocation extends LocationDetails {
     key: string | undefined;
     rawPathname: string;
+    url: string;
 }
 export declare type AnyLocation = HickoryLocation | PartialLocation;

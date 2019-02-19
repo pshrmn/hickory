@@ -1,5 +1,5 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts"/>
-import Browser from "../../src";
+import { Browser, PUSH, REPLACE } from "../../src";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -74,9 +74,9 @@ describe("browser integration tests", () => {
       });
     });
 
-    describe("PUSH", () => {
+    describe(PUSH, () => {
       it("can navigate with push", () => {
-        testHistory.navigate("/the-new-location", "PUSH");
+        testHistory.navigate("/the-new-location", PUSH);
         expect(window.location.pathname).toEqual("/the-new-location");
       });
 
@@ -87,7 +87,7 @@ describe("browser integration tests", () => {
             pathname: "/next",
             state: providedState
           },
-          "PUSH"
+          PUSH
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
@@ -99,16 +99,16 @@ describe("browser integration tests", () => {
           {
             pathname: "/encoded-percent%25"
           },
-          "PUSH"
+          PUSH
         );
         expect(window.location.pathname).toEqual("/encoded-percent%25");
         expect(testHistory.location.pathname).toEqual("/encoded-percent%");
       });
     });
 
-    describe("REPLACE", () => {
+    describe(REPLACE, () => {
       it("can navigate with replace", () => {
-        testHistory.navigate("/the-same-location", "REPLACE");
+        testHistory.navigate("/the-same-location", REPLACE);
         expect(window.location.pathname).toEqual("/the-same-location");
       });
 
@@ -119,7 +119,7 @@ describe("browser integration tests", () => {
             pathname: "/next",
             state: providedState
           },
-          "REPLACE"
+          REPLACE
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
@@ -130,9 +130,9 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("can navigate with go", done => {
-      testHistory.navigate("/one", "PUSH");
-      testHistory.navigate("/two", "PUSH");
-      testHistory.navigate("/three", "PUSH");
+      testHistory.navigate("/one", PUSH);
+      testHistory.navigate("/two", PUSH);
+      testHistory.navigate("/three", PUSH);
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/one");
@@ -145,9 +145,9 @@ describe("browser integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.navigate("/uno", "PUSH");
-      testHistory.navigate("/dos", "PUSH");
-      testHistory.navigate("/tres", "PUSH");
+      testHistory.navigate("/uno", PUSH);
+      testHistory.navigate("/dos", PUSH);
+      testHistory.navigate("/tres", PUSH);
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/uno");

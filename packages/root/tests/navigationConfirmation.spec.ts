@@ -1,5 +1,5 @@
 import "jest";
-import Common from "../src";
+import { Common } from "../src";
 import { HickoryLocation } from "../src/types/location";
 
 describe("createNavigationConfirmation", () => {

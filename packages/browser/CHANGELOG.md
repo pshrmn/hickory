@@ -1,3 +1,8 @@
+## Next
+
+* `Browser` is now a named export.
+* Export `PUSH`, `REPLACE`, `ANCHOR`, and `POP` constants
+
 ## 1.0.2
 
 * Revert dual-mode (not ready yet!).

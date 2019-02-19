@@ -3,8 +3,12 @@ import { LocationFactoryOptions, LocationMethods } from "./locationFactory";
 import { KeyMethods } from "./keygen";
 import { ConfirmationFunction, ConfirmationMethods } from "./navigationConfirmation";
 export declare type ToArgument = string | PartialLocation;
-export declare type Action = "PUSH" | "REPLACE" | "POP";
-export declare type NavType = "ANCHOR" | "PUSH" | "REPLACE";
+export declare type PushType = "push";
+export declare type ReplaceType = "replace";
+export declare type PopType = "pop";
+export declare type AnchorType = "anchor";
+export declare type Action = PushType | ReplaceType | PopType;
+export declare type NavType = AnchorType | PushType | ReplaceType;
 export interface PendingNavigation {
     location: HickoryLocation;
     action: Action;

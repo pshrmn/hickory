@@ -1,4 +1,5 @@
-export * from './types';
+export * from "./types";
 
-import Common from './common';
-export default Common;
+import Common from "./common";
+import { PUSH, REPLACE, ANCHOR, POP } from "./constants";
+export { Common, PUSH, REPLACE, ANCHOR, POP };

@@ -1,5 +1,5 @@
 import "jest";
-import InMemory from "../src";
+import { InMemory, REPLACE, PUSH } from "../src";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -14,11 +14,11 @@ function ignoreFirstCall(fn) {
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
-describe('navigate(..., "REPLACE")', () => {
+describe("navigate(..., REPLACE)", () => {
   describe("without a response handler", () => {
     it("does nothing", () => {
       const testHistory = InMemory();
-      testHistory.navigate("/two", "REPLACE");
+      testHistory.navigate("/two", REPLACE);
       expect(testHistory.location.pathname).toBe("/");
     });
   });
@@ -28,7 +28,7 @@ describe('navigate(..., "REPLACE")', () => {
       const testHistory = InMemory();
       const router = jest.fn();
       testHistory.respondWith(router); // calls router
-      testHistory.navigate("/two", "REPLACE");
+      testHistory.navigate("/two", REPLACE);
       expect(router.mock.calls.length).toBe(2);
     });
 
@@ -42,7 +42,7 @@ describe('navigate(..., "REPLACE")', () => {
           });
         });
         testHistory.respondWith(router);
-        testHistory.navigate("/two?test=ing", "REPLACE");
+        testHistory.navigate("/two?test=ing", REPLACE);
       });
 
       it("is a location object created from pushed object", () => {
@@ -54,7 +54,7 @@ describe('navigate(..., "REPLACE")', () => {
           });
         });
         testHistory.respondWith(router);
-        testHistory.navigate({ pathname: "/two", hash: "test" }, "REPLACE");
+        testHistory.navigate({ pathname: "/two", hash: "test" }, REPLACE);
       });
 
       it("key maintains current location's major value, increments the minor value", () => {
@@ -68,7 +68,7 @@ describe('navigate(..., "REPLACE")', () => {
         const initMajorNum = parseInt(initMajor, 10);
         const initMinorNum = parseInt(initMinor, 10);
 
-        testHistory.navigate("/next", "REPLACE");
+        testHistory.navigate("/next", REPLACE);
 
         const current = testHistory.location;
         const [currentMajor, currentMinor] = current.key.split(".");
@@ -81,14 +81,14 @@ describe('navigate(..., "REPLACE")', () => {
     });
 
     describe("action", () => {
-      it('is "REPLACE"', () => {
+      it("is REPLACE", () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(function router(pending) {
-          expect(pending.action).toBe("REPLACE");
+          expect(pending.action).toBe(REPLACE);
           pending.finish();
         });
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/next", "REPLACE");
+        testHistory.navigate("/next", REPLACE);
       });
     });
 
@@ -101,7 +101,7 @@ describe('navigate(..., "REPLACE")', () => {
           expect(testHistory.location.pathname).toBe("/two");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/two", "REPLACE");
+        testHistory.navigate("/two", REPLACE);
       });
 
       it("does nothing if navigate is not called", () => {
@@ -109,7 +109,7 @@ describe('navigate(..., "REPLACE")', () => {
         let call = 0;
         function router(pending) {}
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/two", "REPLACE");
+        testHistory.navigate("/two", REPLACE);
         expect(testHistory.location.pathname).toBe("/");
       });
 
@@ -119,20 +119,20 @@ describe('navigate(..., "REPLACE")', () => {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/next", "REPLACE");
+        testHistory.navigate("/next", REPLACE);
         expect(testHistory.location).toMatchObject({
           pathname: "/next"
         });
       });
 
-      it('sets history.action to "REPLACE"', () => {
+      it("sets history.action to REPLACE", () => {
         const testHistory = InMemory();
         function router(pending) {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/next", "REPLACE");
-        expect(testHistory.action).toBe("REPLACE");
+        testHistory.navigate("/next", REPLACE);
+        expect(testHistory.action).toBe(REPLACE);
       });
     });
 
@@ -145,18 +145,18 @@ describe('navigate(..., "REPLACE")', () => {
           expect(testHistory.location.pathname).toBe("/");
         });
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/two", "REPLACE");
+        testHistory.navigate("/two", REPLACE);
       });
 
       it("does not update the action value", () => {
         const testHistory = InMemory();
         let router = ignoreFirstCall(function(pending) {
-          expect(testHistory.action).toBe("PUSH");
+          expect(testHistory.action).toBe(PUSH);
           pending.cancel();
-          expect(testHistory.action).toBe("PUSH");
+          expect(testHistory.action).toBe(PUSH);
         });
         testHistory.respondWith(router); // calls router
-        testHistory.navigate("/two", "REPLACE");
+        testHistory.navigate("/two", REPLACE);
       });
     });
   });
@@ -171,7 +171,7 @@ describe('navigate(..., "REPLACE")', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.navigate("/next", "REPLACE");
+      testHistory.navigate("/next", REPLACE);
       expect(router.mock.calls.length).toBe(2);
     });
 
@@ -184,7 +184,7 @@ describe('navigate(..., "REPLACE")', () => {
       testHistory.confirmWith(confirm);
       testHistory.respondWith(router); // calls router
 
-      testHistory.navigate("/next", "REPLACE");
+      testHistory.navigate("/next", REPLACE);
       expect(router.mock.calls.length).toBe(1);
     });
   });

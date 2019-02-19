@@ -1,5 +1,5 @@
 import "jest";
-import Hash from "../../src";
+import { Hash, PUSH, REPLACE } from "../../src";
 import { jsdom } from "jsdom";
 
 function ignoreFirstCall(fn) {
@@ -15,7 +15,7 @@ function ignoreFirstCall(fn) {
 
 // We create our own jsdom instead of using the one that Jest will create
 // so that we can reset the DOM between tests
-describe('navigate(..., "ANCHOR")', () => {
+describe("navigate()", () => {
   let dom;
   let window;
 
@@ -118,20 +118,20 @@ describe('navigate(..., "ANCHOR")', () => {
     });
 
     describe("action", () => {
-      it('(new) is "PUSH"', () => {
+      it("(new) is PUSH", () => {
         const testHistory = Hash();
         const router = ignoreFirstCall(function router(pending) {
-          expect(pending.action).toBe("PUSH");
+          expect(pending.action).toBe(PUSH);
           pending.finish();
         });
         testHistory.respondWith(router); // calls router
         testHistory.navigate("/next");
       });
 
-      it('(same) is "REPLACE"', () => {
+      it("(same) is REPLACE", () => {
         const testHistory = Hash();
         const router = ignoreFirstCall(function router(pending) {
-          expect(pending.action).toBe("REPLACE");
+          expect(pending.action).toBe(REPLACE);
           pending.finish();
         });
         testHistory.respondWith(router); // calls router
@@ -172,24 +172,24 @@ describe('navigate(..., "ANCHOR")', () => {
         });
       });
 
-      it('(new) sets history.action to "PUSH"', () => {
+      it("(new) sets history.action to PUSH", () => {
         const testHistory = Hash();
         function router(pending) {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
         testHistory.navigate("/next");
-        expect(testHistory.action).toBe("PUSH");
+        expect(testHistory.action).toBe(PUSH);
       });
 
-      it('(same) sets history.action to "REPLACE"', () => {
+      it("(same) sets history.action to REPLACE", () => {
         const testHistory = Hash();
         function router(pending) {
           pending.finish();
         }
         testHistory.respondWith(router); // calls router
         testHistory.navigate("/one");
-        expect(testHistory.action).toBe("REPLACE");
+        expect(testHistory.action).toBe(REPLACE);
       });
     });
 
@@ -208,9 +208,9 @@ describe('navigate(..., "ANCHOR")', () => {
       it("does not update the action value", () => {
         const testHistory = Hash();
         let router = ignoreFirstCall(function(pending) {
-          expect(testHistory.action).toBe("PUSH");
+          expect(testHistory.action).toBe(PUSH);
           pending.cancel();
-          expect(testHistory.action).toBe("PUSH");
+          expect(testHistory.action).toBe(PUSH);
         });
         testHistory.respondWith(router); // calls router
         testHistory.navigate("/two");

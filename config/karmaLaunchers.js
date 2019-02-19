@@ -32,9 +32,9 @@ const customLaunchers = {
   bs_osx_safari: {
     base: "BrowserStack",
     browser: "safari",
-    browser_version: "10",
+    browser_version: "12",
     os: "OS X",
-    os_version: "Sierra"
+    os_version: "Mojave"
   }
   /*
   // ios
