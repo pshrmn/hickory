@@ -50,8 +50,8 @@ module.exports = function(config) {
       plugins: plugins.concat("karma-browserstack-launcher"),
       browserStack: {
         project: "hickory",
-        username: process.env.BROWSERSTACK_USERNAME,
-        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+        username: process.env.BROWSER_STACK_USERNAME,
+        accessKey: process.env.BROWSER_STACK_ACCESS_KEY,
         build: process.env.TRAVIS_BUILD_NUMBER,
         name: process.env.TRAVIS_JOB_NUMBER,
         video: false,
