@@ -79,7 +79,7 @@ module.exports = function(config) {
 
   if (!username || !accessKey) {
     throw new Error(
-      "BrowserStack environment variables not set; cannot run tests."
+      "Cannot run tests: BrowserStack environment variables not set."
     );
   }
 
