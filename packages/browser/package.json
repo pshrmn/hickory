@@ -1,6 +1,6 @@
 {
   "name": "@hickory/browser",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "description": "Hickory's browser history",
   "main": "dist/hickory-browser.js",
   "module": "dist/hickory-browser.es.js",
