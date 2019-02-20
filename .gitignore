@@ -1,4 +1,5 @@
-node_modules
 *.log
 
-dist
+node_modules/
+dist/
+.rpt2_cache/
