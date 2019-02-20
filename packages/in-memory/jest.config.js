@@ -1,14 +1,12 @@
 module.exports = {
+  preset: "ts-jest",
   testEnvironment: "node",
   moduleFileExtensions: ["ts", "js"],
-  transform: {
-    "\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-  },
   testMatch: ["<rootDir>/tests/*.spec.ts"],
   globals: {
     "ts-jest": {
-      module: "es6"
+      module: "es6",
+      diagnostics: false
     }
-  },
-  mapCoverage: true
+  }
 };

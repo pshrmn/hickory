@@ -1,4 +1,4 @@
-///<reference path="../../node_modules/@types/jasmine/index.d.ts"/>
+///<reference types="jasmine"/>
 import { Hash, PUSH, REPLACE } from "../../src";
 
 function ignoreFirstCall(fn) {
