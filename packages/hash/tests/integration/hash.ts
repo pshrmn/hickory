@@ -1,5 +1,5 @@
 ///<reference types="jasmine"/>
-import { Hash, PUSH, REPLACE } from "../../src";
+import { Hash } from "../../src";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -45,7 +45,7 @@ describe("hash integration tests", () => {
         {
           pathname: "/encoded-percent%25"
         },
-        PUSH
+        "push"
       );
       expect(window.location.hash).toEqual("#/encoded-percent%25");
       expect(testHistory.location.pathname).toEqual("/encoded-percent%");
@@ -53,7 +53,7 @@ describe("hash integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
-        testHistory.navigate("/a-new-position", PUSH);
+        testHistory.navigate("/a-new-position", "push");
         expect(window.location.hash).toEqual("#/a-new-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -68,7 +68,7 @@ describe("hash integration tests", () => {
             pathname: "/next",
             state: providedState
           },
-          PUSH
+          "push"
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
@@ -78,7 +78,7 @@ describe("hash integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
-        testHistory.navigate("/the-same-position", REPLACE);
+        testHistory.navigate("/the-same-position", "replace");
         expect(window.location.hash).toEqual("#/the-same-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -93,7 +93,7 @@ describe("hash integration tests", () => {
             pathname: "/next",
             state: providedState
           },
-          REPLACE
+          "replace"
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
@@ -104,9 +104,9 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      testHistory.navigate("/eins", PUSH);
-      testHistory.navigate("/zwei", PUSH);
-      testHistory.navigate("/drei", PUSH);
+      testHistory.navigate("/eins", "push");
+      testHistory.navigate("/zwei", "push");
+      testHistory.navigate("/drei", "push");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/eins");
@@ -120,9 +120,9 @@ describe("hash integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.navigate("/uno", PUSH);
-      testHistory.navigate("/dos", PUSH);
-      testHistory.navigate("/tres", PUSH);
+      testHistory.navigate("/uno", "push");
+      testHistory.navigate("/dos", "push");
+      testHistory.navigate("/tres", "push");
 
       const goRouter = ignoreFirstCall(function(pending) {
         expect(pending.location.pathname).toEqual("/uno");

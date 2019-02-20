@@ -1,5 +1,5 @@
 import "jest";
-import { InMemory, PUSH } from "../src";
+import { InMemory } from "../src";
 
 describe("reset()", () => {
   describe("locations", () => {
@@ -144,7 +144,7 @@ describe("reset()", () => {
       });
     });
 
-    it("emits the action as PUSH", () => {
+    it('emits the action as "push"', () => {
       const testHistory = InMemory({
         locations: ["/one", "/two", "/three"]
       });
@@ -155,7 +155,7 @@ describe("reset()", () => {
         locations: ["/uno", "/dos"]
       });
       expect(router.mock.calls[1][0]).toMatchObject({
-        action: PUSH
+        action: "push"
       });
     });
   });

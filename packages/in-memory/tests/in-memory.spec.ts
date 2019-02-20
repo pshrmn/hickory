@@ -1,5 +1,5 @@
 import "jest";
-import { InMemory, PUSH } from "../src";
+import { InMemory } from "../src";
 
 describe("Memory constructor", () => {
   it("returns object with expected API", () => {
@@ -74,12 +74,12 @@ describe("Memory constructor", () => {
     });
   });
 
-  it("sets initial action to PUSH", () => {
+  it('sets initial action to "push"', () => {
     const testHistory = InMemory({
       locations: ["/one", "/two", "/three"],
       index: 0
     });
-    expect(testHistory.action).toBe(PUSH);
+    expect(testHistory.action).toBe("push");
   });
 
   it("removes saved locations when destroying", () => {

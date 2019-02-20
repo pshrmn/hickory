@@ -1,5 +1,5 @@
 import "jest";
-import { Hash, PUSH, POP } from "../../src";
+import { Hash } from "../../src";
 import { JSDOM } from "jsdom";
 
 declare namespace NodeJS {
@@ -52,16 +52,16 @@ describe("Hash constructor", () => {
     });
   });
 
-  it("sets initial action to PUSH when page has not been previously visited", () => {
+  it('sets initial action to "push" when page has not been previously visited', () => {
     window.history.pushState(null, "", "/#has-no-key");
     const testHistory = Hash();
-    expect(testHistory.action).toBe(PUSH);
+    expect(testHistory.action).toBe("push");
   });
 
-  it("sets initial action to POP when page has not been previously visited", () => {
+  it('sets initial action to "pop" when page has not been previously visited', () => {
     window.history.pushState({ key: "17.0" }, "", "/#has-key");
     const testHistory = Hash();
-    expect(testHistory.action).toBe(POP);
+    expect(testHistory.action).toBe("pop");
   });
 
   describe("no initial hash path", () => {

@@ -1,5 +1,5 @@
 import "jest";
-import { InMemory, PUSH, REPLACE, ANCHOR } from "../src";
+import { InMemory } from "../src";
 
 function ignoreFirstCall(fn) {
   let notCalled = true;
@@ -121,31 +121,31 @@ describe("navigate()", () => {
       it("navigate(newLocation)", () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate("/two");
       });
 
-      it("navigate(newLocation, ANCHOR)", () => {
+      it('navigate(newLocation, "anchor")', () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate("/two");
       });
 
-      it("navigate(location, PUSH)", () => {
+      it('navigate(location, "push")', () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate("/two", PUSH);
+        testHistory.navigate("/two", "push");
       });
     });
 
@@ -153,31 +153,31 @@ describe("navigate()", () => {
       it("navigate(sameLocation)", () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate(testHistory.location.url);
       });
 
-      it("navigate(sameLocation, ANCHOR)", () => {
+      it('navigate(sameLocation, "anchor")', () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate(testHistory.location.url);
       });
 
-      it("navigate(location, REPLACE)", () => {
+      it('navigate(location, "replace")', () => {
         const testHistory = InMemory();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate("/two", REPLACE);
+        testHistory.navigate("/two", "replace");
       });
     });
   });
@@ -215,24 +215,24 @@ describe("navigate()", () => {
       });
     });
 
-    it("(new) sets history.action to PUSH", () => {
+    it('(new) sets history.action to "push"', () => {
       const testHistory = InMemory();
       function router(pending) {
         pending.finish();
       }
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/next");
-      expect(testHistory.action).toBe(PUSH);
+      expect(testHistory.action).toBe("push");
     });
 
-    it("(same) sets history.action to REPLACE", () => {
+    it('(same) sets history.action to "replace"', () => {
       const testHistory = InMemory();
       function router(pending) {
         pending.finish();
       }
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/");
-      expect(testHistory.action).toBe(REPLACE);
+      expect(testHistory.action).toBe("replace");
     });
   });
 
@@ -251,9 +251,9 @@ describe("navigate()", () => {
     it("does not update the action value", () => {
       const testHistory = InMemory();
       let router = ignoreFirstCall(function(pending) {
-        expect(testHistory.action).toBe(PUSH);
+        expect(testHistory.action).toBe("push");
         pending.cancel();
-        expect(testHistory.action).toBe(PUSH);
+        expect(testHistory.action).toBe("push");
       });
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/two");

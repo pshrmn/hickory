@@ -1,4 +1,4 @@
-import { Common, PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
+import { Common } from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -87,7 +87,7 @@ function Browser(options: Options = {}): History {
   function setupReplace(location: HickoryLocation): NavSetup {
     location.key = keygen.minor(browserHistory.location.key);
     return {
-      action: REPLACE,
+      action: "replace",
       finish: finalizeReplace(location)
     };
   }
@@ -95,7 +95,7 @@ function Browser(options: Options = {}): History {
   function setupPush(location: HickoryLocation): NavSetup {
     location.key = keygen.major(browserHistory.location.key);
     return {
-      action: PUSH,
+      action: "push",
       finish: finalizePush(location)
     };
   }
@@ -110,7 +110,7 @@ function Browser(options: Options = {}): History {
         window.location.assign(path);
       }
       browserHistory.location = location;
-      browserHistory.action = PUSH;
+      browserHistory.action = "push";
     };
   }
 
@@ -124,14 +124,14 @@ function Browser(options: Options = {}): History {
         window.location.replace(path);
       }
       browserHistory.location = location;
-      browserHistory.action = REPLACE;
+      browserHistory.action = "replace";
     };
   }
 
   let responseHandler: ResponseHandler;
   const browserHistory: History = {
     // set action before location because locationFromBrowser enforces that the location has a key
-    action: getStateFromHistory().key !== undefined ? POP : PUSH,
+    action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
@@ -151,20 +151,20 @@ function Browser(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = ANCHOR): void {
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
-        case ANCHOR:
+        case "anchor":
           setup =
             createPath(location) === createPath(browserHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
-        case PUSH:
+        case "push":
           setup = setupPush(location);
           break;
-        case REPLACE:
+        case "replace":
           setup = setupReplace(location);
           break;
         default:
@@ -209,7 +209,7 @@ function Browser(options: Options = {}): History {
       {
         to: location,
         from: browserHistory.location,
-        action: POP
+        action: "pop"
       },
       () => {
         if (!responseHandler) {
@@ -217,13 +217,13 @@ function Browser(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: POP,
+          action: "pop",
           finish: () => {
             browserHistory.location = location;
-            browserHistory.action = POP;
+            browserHistory.action = "pop";
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === POP) {
+            if (nextAction === "pop") {
               return;
             }
             reverting = true;
@@ -241,4 +241,4 @@ function Browser(options: Options = {}): History {
   return browserHistory;
 }
 
-export { Browser, PUSH, REPLACE, ANCHOR, POP };
+export { Browser };

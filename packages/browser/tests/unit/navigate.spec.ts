@@ -1,5 +1,5 @@
 import "jest";
-import { Browser, PUSH, REPLACE, ANCHOR } from "../../src";
+import { Browser } from "../../src";
 import { JSDOM } from "jsdom";
 
 function ignoreFirstCall(fn) {
@@ -137,31 +137,31 @@ describe("navigate()", () => {
       it("navigate(newLocation)", () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate("/two");
       });
 
-      it("navigate(newLocation, ANCHOR)", () => {
+      it('navigate(newLocation, "anchor")', () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate("/two", ANCHOR);
+        testHistory.navigate("/two", "anchor");
       });
 
-      it("navigate(location, PUSH)", () => {
+      it('navigate(location, "push")', () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(PUSH);
+          expect(action).toBe("push");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate("/two", PUSH);
+        testHistory.navigate("/two", "push");
       });
     });
 
@@ -169,31 +169,31 @@ describe("navigate()", () => {
       it("navigate(sameLocation)", () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
         testHistory.navigate(testHistory.location.url);
       });
 
-      it("navigate(sameLocation, ANCHOR)", () => {
+      it('navigate(sameLocation, "anchor")', () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate(testHistory.location.url, ANCHOR);
+        testHistory.navigate(testHistory.location.url, "anchor");
       });
 
-      it("navigate(location, REPLACE)", () => {
+      it('navigate(location, "replace")', () => {
         const testHistory = Browser();
         const router = ignoreFirstCall(({ action }) => {
-          expect(action).toBe(REPLACE);
+          expect(action).toBe("replace");
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate("/two", REPLACE);
+        testHistory.navigate("/two", "replace");
       });
     });
   });
@@ -231,24 +231,24 @@ describe("navigate()", () => {
       });
     });
 
-    it("(new) sets history.action to PUSH", () => {
+    it('(new) sets history.action to "push"', () => {
       const testHistory = Browser();
       function router(pending) {
         pending.finish();
       }
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/next");
-      expect(testHistory.action).toBe(PUSH);
+      expect(testHistory.action).toBe("push");
     });
 
-    it("(same) sets history.action to REPLACE", () => {
+    it('(same) sets history.action to "replace"', () => {
       const testHistory = Browser();
       function router(pending) {
         pending.finish();
       }
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/one");
-      expect(testHistory.action).toBe(REPLACE);
+      expect(testHistory.action).toBe("replace");
     });
   });
 
@@ -267,9 +267,9 @@ describe("navigate()", () => {
     it("does not update the action value", () => {
       const testHistory = Browser();
       let router = ignoreFirstCall(function(pending) {
-        expect(testHistory.action).toBe(PUSH);
+        expect(testHistory.action).toBe("push");
         pending.cancel();
-        expect(testHistory.action).toBe(PUSH);
+        expect(testHistory.action).toBe("push");
       });
       testHistory.respondWith(router); // calls router
       testHistory.navigate("/two");

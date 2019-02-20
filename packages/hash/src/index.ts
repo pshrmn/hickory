@@ -1,4 +1,4 @@
-import { Common, PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
+import { Common } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -99,7 +99,7 @@ function Hash(options: Options = {}): History {
   function setupReplace(location: HickoryLocation): NavSetup {
     location.key = keygen.minor(hashHistory.location.key);
     return {
-      action: REPLACE,
+      action: "replace",
       finish: finalizeReplace(location)
     };
   }
@@ -107,7 +107,7 @@ function Hash(options: Options = {}): History {
   function setupPush(location: HickoryLocation): NavSetup {
     location.key = keygen.major(hashHistory.location.key);
     return {
-      action: PUSH,
+      action: "push",
       finish: finalizePush(location)
     };
   }
@@ -122,7 +122,7 @@ function Hash(options: Options = {}): History {
         window.location.assign(path);
       }
       hashHistory.location = location;
-      hashHistory.action = PUSH;
+      hashHistory.action = "push";
     };
   }
 
@@ -136,14 +136,14 @@ function Hash(options: Options = {}): History {
         window.location.replace(path);
       }
       hashHistory.location = location;
-      hashHistory.action = REPLACE;
+      hashHistory.action = "replace";
     };
   }
 
   let responseHandler: ResponseHandler;
   const hashHistory: History = {
     // location
-    action: getStateFromHistory().key !== undefined ? POP : PUSH,
+    action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
@@ -162,20 +162,20 @@ function Hash(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = ANCHOR): void {
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
-        case ANCHOR:
+        case "anchor":
           setup =
             createPath(location) === createPath(hashHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
-        case PUSH:
+        case "push":
           setup = setupPush(location);
           break;
-        case REPLACE:
+        case "replace":
           setup = setupReplace(location);
           break;
         default:
@@ -220,7 +220,7 @@ function Hash(options: Options = {}): History {
       {
         to: location,
         from: hashHistory.location,
-        action: POP
+        action: "pop"
       },
       () => {
         if (!responseHandler) {
@@ -228,13 +228,13 @@ function Hash(options: Options = {}): History {
         }
         responseHandler({
           location,
-          action: POP,
+          action: "pop",
           finish: () => {
             hashHistory.location = location;
-            hashHistory.action = POP;
+            hashHistory.action = "pop";
           },
           cancel: (nextAction: Action) => {
-            if (nextAction === POP) {
+            if (nextAction === "pop") {
               return;
             }
             reverting = true;
@@ -252,4 +252,4 @@ function Hash(options: Options = {}): History {
   return hashHistory;
 }
 
-export { Hash, PUSH, REPLACE, ANCHOR, POP };
+export { Hash };

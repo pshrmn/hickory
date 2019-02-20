@@ -1,4 +1,3 @@
-import { PUSH, REPLACE, ANCHOR, POP } from "@hickory/root";
 import { History, LocationDetails, HickoryLocation, PartialLocation, AnyLocation, Options as RootOptions } from "@hickory/root";
 export { History, HickoryLocation, PartialLocation, AnyLocation, LocationDetails };
 export declare type InputLocations = Array<string | PartialLocation>;
@@ -16,4 +15,4 @@ export interface InMemoryHistory extends History {
     reset(options?: ResetOptions): void;
 }
 declare function InMemory(options?: Options): InMemoryHistory;
-export { InMemory, PUSH, REPLACE, ANCHOR, POP };
+export { InMemory };

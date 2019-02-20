@@ -67,44 +67,44 @@ history.navigate({
 
 The `navigate` function is used to navigate to a new location.
 
-There are three ways that it can do this: `PUSH`, `REPLACE`, and `ANCHOR`.
+There are three ways that it can do this: `push`, `replace`, and `anchor`.
 
-1.  `PUSH` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
+1.  `push` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
 
 ```js
-history.navigate("/lion-king", "PUSH");
+history.navigate("/lion-king", "push");
 history.navigate(
   {
     pathname: "/wicked",
     state: { musical: true }
   },
-  "PUSH"
+  "push"
 );
 ```
 
-2.  `REPLACE` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
+2.  `replace` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
 
 ```js
-history.navigate("/cats", "REPLACE");
+history.navigate("/cats", "replace");
 history.navigate(
   {
     pathname: "/rent",
     state: { musical: true }
   },
-  "REPLACE"
+  "replace"
 );
 ```
 
-3.  `ANCHOR` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `REPLACE`; when they are different, it will act like `PUSH`.
+3.  `anchor` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `replace`; when they are different, it will act like `push`.
 
 ```js
-history.navigate("/hairspray", "ANCHOR");
+history.navigate("/hairspray", "anchor");
 history.navigate(
   {
     pathname: "/hamilton",
     state: { musical: true }
   },
-  "ANCHOR"
+  "anchor"
 );
 ```
 
@@ -112,7 +112,7 @@ history.navigate(
 
 `to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
 
-`navType` - `ANCHOR`, `PUSH`, or `REPLACE`. If none are provided, this will default to `ANCHOR`.
+`navType` - `anchor`, `push`, or `replace`. If none are provided, this will default to `anchor`.
 
 ### go()
 
@@ -122,7 +122,7 @@ history.go();
 history.go(2);
 ```
 
-The `go` function is used to jump forward and backward to already visited locations. If you call it with a negative number, it goes backward. With a positive number, it goes forward. If you call it with no value (or `0`), it will re-emit the current location (with a `POP` action).]
+The `go` function is used to jump forward and backward to already visited locations. If you call it with a negative number, it goes backward. With a positive number, it goes forward. If you call it with no value (or `0`), it will re-emit the current location (with a `pop` action).]
 
 #### arguments
 
@@ -155,9 +155,9 @@ The `respondWith` function is used to pass a response handler to the history ins
 The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
 
 - `location` - This is the location object that is being navigated to.
-- `action` - This is the string (`POP`, `PUSH`, or `REPLACE`) for the navigation type.
+- `action` - This is the string (`pop`, `push`, or `replace`) for the navigation type.
 - `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
-- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `POP` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
+- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `pop` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
 
 #### arguments
 
