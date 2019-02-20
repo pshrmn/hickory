@@ -17,9 +17,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
     "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
-    "test": "npm run test:unit && npm run test:integration",
-    "test:integration": "karma start --single-run",
-    "test:unit": "jest"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
