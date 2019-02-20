@@ -30,53 +30,35 @@ describe("hash integration tests", () => {
   });
 
   describe("navigate()", () => {
-    describe("ANCHOR (default)", () => {
-      beforeEach(() => {
-        spyOn(window.history, "pushState").and.callThrough();
-        spyOn(window.history, "replaceState").and.callThrough();
-      });
-
-      afterEach(() => {
-        (window.history.pushState as jasmine.Spy).calls.reset();
-        (window.history.replaceState as jasmine.Spy).calls.reset();
-      });
-
-      it("can navigate with navigate", () => {
-        testHistory.navigate("/the-new-location");
-        expect(window.location.hash).toEqual("#/the-new-location");
-      });
-
-      it("sets the state", () => {
-        const providedState = { isSet: true };
-        testHistory.navigate({
-          pathname: "/next",
-          state: providedState
-        });
-        const { state, key } = testHistory.location;
-        expect(window.history.state.state).toEqual(state);
-        expect(window.history.state.key).toBe(key);
-      });
-
-      it("calls history.pushState when navigating to a new location", () => {
-        testHistory.navigate("/new-location");
-        expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(1);
-        expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
-          0
-        );
-      });
-
-      it("calls history.replaceState when navigating to the same location", () => {
-        testHistory.navigate("/");
-        expect((window.history.pushState as jasmine.Spy).calls.count()).toBe(0);
-        expect((window.history.replaceState as jasmine.Spy).calls.count()).toBe(
-          1
-        );
-      });
+    beforeEach(() => {
+      spyOn(window.history, "pushState").and.callThrough();
+      spyOn(window.history, "replaceState").and.callThrough();
     });
-    describe(PUSH, () => {
-      it("can navigate with push", () => {
+
+    afterEach(() => {
+      (<jasmine.Spy>window.history.pushState).calls.reset();
+      (<jasmine.Spy>window.history.replaceState).calls.reset();
+    });
+
+    it("new URL uses rawPathname, not pathname", () => {
+      testHistory.navigate(
+        {
+          pathname: "/encoded-percent%25"
+        },
+        PUSH
+      );
+      expect(window.location.hash).toEqual("#/encoded-percent%25");
+      expect(testHistory.location.pathname).toEqual("/encoded-percent%");
+    });
+
+    describe("push navigation", () => {
+      it("uses history.pushState", () => {
         testHistory.navigate("/a-new-position", PUSH);
         expect(window.location.hash).toEqual("#/a-new-position");
+        expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
+        expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
+          0
+        );
       });
 
       it("sets the state", () => {
@@ -92,23 +74,16 @@ describe("hash integration tests", () => {
         expect(window.history.state.state).toEqual(state);
         expect(window.history.state.key).toBe(key);
       });
-
-      it("pushes URL using rawPathname, not pathname", () => {
-        testHistory.navigate(
-          {
-            pathname: "/encoded-percent%25"
-          },
-          PUSH
-        );
-        expect(window.location.hash).toEqual("#/encoded-percent%25");
-        expect(testHistory.location.pathname).toEqual("/encoded-percent%");
-      });
     });
 
-    describe(REPLACE, () => {
-      it("can navigate with replace", () => {
+    describe("replace navigation", () => {
+      it("uses history.replaceState", () => {
         testHistory.navigate("/the-same-position", REPLACE);
         expect(window.location.hash).toEqual("#/the-same-position");
+        expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
+        expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
+          1
+        );
       });
 
       it("sets the state", () => {
@@ -128,7 +103,7 @@ describe("hash integration tests", () => {
   });
 
   describe("go", () => {
-    it("can navigate with go", done => {
+    it("is detectable through a popstate listener", done => {
       testHistory.navigate("/eins", PUSH);
       testHistory.navigate("/zwei", PUSH);
       testHistory.navigate("/drei", PUSH);
