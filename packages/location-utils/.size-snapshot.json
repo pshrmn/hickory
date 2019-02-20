@@ -19,13 +19,13 @@
     "gzipped": 317
   },
   "dist/hickory-location-utils.umd.js": {
-    "bundled": 1405,
-    "minified": 667,
-    "gzipped": 373
+    "bundled": 1426,
+    "minified": 677,
+    "gzipped": 379
   },
   "dist/hickory-location-utils.min.js": {
-    "bundled": 1405,
-    "minified": 667,
-    "gzipped": 373
+    "bundled": 1426,
+    "minified": 677,
+    "gzipped": 379
   }
 }
