@@ -8,8 +8,7 @@
     "publishUpdated": "lerna publish from-package",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "lerna run test",
-    "test:integration": "karma start",
-    "versions": "lerna version --no-git-tag-version --no-push"
+    "test:integration": "karma start"
   },
   "repository": {
     "type": "git",
