@@ -1,10 +1,5 @@
-const fs = require("fs");
-const prettyBytes = require("pretty-bytes");
-const gzipSize = require("gzip-size");
 const rollup = require("rollup");
 const buildConfig = require("./rollupConfig");
-
-const buildStats = {};
 
 async function rollupBuild(name, config, extraEnv) {
   Object.keys(extraEnv).forEach(key => {
