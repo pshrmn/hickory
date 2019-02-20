@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist && rimraf types",
-    "build": "node ./scripts/build",
+    "build": "rollup -c",
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
     "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
