@@ -1,5 +1,5 @@
 import "jest";
-import { Browser, PUSH, POP } from "../../src";
+import { Browser } from "../../src";
 import { JSDOM } from "jsdom";
 
 // We create our own jsdom instead of using the one that Jest will create
@@ -45,15 +45,15 @@ describe("Browser constructor", () => {
     });
   });
 
-  it("sets initial action to PUSH when page has not been previously visited", () => {
+  it('sets initial action to "push" when page has not been previously visited', () => {
     window.history.pushState(null, "", "/has-no-key");
     const testHistory = Browser();
-    expect(testHistory.action).toBe(PUSH);
+    expect(testHistory.action).toBe("push");
   });
 
-  it("sets initial action to POP when page has been previously visited", () => {
+  it('sets initial action to "pop" when page has been previously visited', () => {
     window.history.pushState({ key: "17.0" }, "", "/has-key");
     const testHistory = Browser();
-    expect(testHistory.action).toBe(POP);
+    expect(testHistory.action).toBe("pop");
   });
 });

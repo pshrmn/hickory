@@ -1,5 +1,5 @@
 import "jest";
-import { Common, PUSH } from "../src";
+import { Common } from "../src";
 import { HickoryLocation } from "../src/types/location";
 
 describe("createNavigationConfirmation", () => {
@@ -48,7 +48,7 @@ describe("createNavigationConfirmation", () => {
         {
           to: { pathname: "/this-is-only-a-test" } as HickoryLocation,
           from: { pathname: "/this-was-not-a-test" } as HickoryLocation,
-          action: PUSH
+          action: "push"
         },
         confirm,
         prevent
@@ -65,7 +65,7 @@ describe("createNavigationConfirmation", () => {
       const prevent = () => {};
       const toLoc = { pathname: "/this-is-only-a-test" };
       const fromLoc = { pathname: "/this-was-not-a-test" };
-      const action = PUSH;
+      const action = "push";
 
       confirmWith(allowNavigation);
       confirmNavigation(
@@ -97,7 +97,7 @@ describe("createNavigationConfirmation", () => {
       const confirm = () => {};
       const toLoc = { pathname: "/this-is-only-a-test" };
       const fromLoc = { pathname: "/this-was-not-a-test" };
-      const action = PUSH;
+      const action = "push";
 
       confirmWith(autoPrevent);
       expect(() => {

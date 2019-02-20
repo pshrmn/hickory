@@ -8,13 +8,8 @@ import {
 
 export type ToArgument = string | PartialLocation;
 
-export type PushType = "push";
-export type ReplaceType = "replace";
-export type PopType = "pop";
-export type AnchorType = "anchor";
-
-export type Action = PushType | ReplaceType | PopType;
-export type NavType = AnchorType | PushType | ReplaceType;
+export type Action = "push" | "replace" | "pop";
+export type NavType = "anchor" | "push" | "replace";
 
 export interface PendingNavigation {
   location: HickoryLocation;

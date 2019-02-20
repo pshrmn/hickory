@@ -1,3 +1,7 @@
+## Next
+
+- Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.
+
 ## 2.0.0-alpha.0
 
 - `Browser` is now a named export.
