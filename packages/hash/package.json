@@ -1,6 +1,6 @@
 {
   "name": "@hickory/hash",
-  "version": "1.0.2",
+  "version": "2.0.0-alpha.0",
   "description": "Hickory's hash history",
   "main": "dist/hickory-hash.js",
   "module": "dist/hickory-hash.es.js",
