@@ -8,7 +8,6 @@ module.exports = function(config) {
     reporters: ["progress", "BrowserStack"],
     plugins: [
       "karma-jasmine",
-      "karma-chrome-launcher",
       "karma-rollup-preprocessor",
       "karma-browserstack-launcher"
     ],
