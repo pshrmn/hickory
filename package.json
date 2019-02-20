@@ -5,7 +5,6 @@
   "scripts": {
     "build": "lerna run build",
     "postinstall": "lerna run prepare",
-    "precommit": "pretty-quick --staged",
     "publishUpdated": "lerna publish from-package",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "lerna run test",
