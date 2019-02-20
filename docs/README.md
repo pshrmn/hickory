@@ -9,4 +9,3 @@
   - [Browser](./api/Browser.md)
   - [Hash](./api/Hash.md)
   - [InMemory](./api/InMemory.md)
-  - [Constants](./api/constants.md)
