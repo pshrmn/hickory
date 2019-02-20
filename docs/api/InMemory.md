@@ -1,28 +1,28 @@
 # InMemory API
 
 ```js
-import InMemory from "@hickory/in-memory";
+import { InMemory } from "@hickory/in-memory";
 
 const history = InMemory();
 ```
 
 ## Options
 
-* `locations` - An array of location objects or strings.
+- `locations` - An array of location objects or strings.
 
-* `index` - The index of the "current" location in the locations array.
+- `index` - The index of the "current" location in the locations array.
 
-* `query` - An object with two required properties: `parse` and `stringify`.
+- `query` - An object with two required properties: `parse` and `stringify`.
 
-  * `parse` - A function that will convert a search string to a query value. This function should return a default value when it is called with no arguments.
+  - `parse` - A function that will convert a search string to a query value. This function should return a default value when it is called with no arguments.
 
-  * `stringify` - A function that will convert a query value into a search string. This function should return an empty string when it is called with no arguments.
+  - `stringify` - A function that will convert a query value into a search string. This function should return an empty string when it is called with no arguments.
 
-* `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
+- `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-* `raw` - A function that will be used to set the `rawPathname` property of location objects. When creating a location from a string, this function will be passed the `pathname` section parsed from the string. When creating a location from an object, this function will be passed the `pathname` section of that object. The default value of this option is an identity function.
+- `raw` - A function that will be used to set the `rawPathname` property of location objects. When creating a location from a string, this function will be passed the `pathname` section parsed from the string. When creating a location from an object, this function will be passed the `pathname` section of that object. The default value of this option is an identity function.
 
-* `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
 ## Properties
 
@@ -132,8 +132,8 @@ Reset the location state of the `history` instance.
 
 An object with the following (optional) properties:
 
-* `locations` - An array of location objects or strings.
-* `index` - The index of the "current" location in the locations array.
+- `locations` - An array of location objects or strings.
+- `index` - The index of the "current" location in the locations array.
 
 ### toHref()
 
@@ -161,10 +161,10 @@ The `respondWith` function is used to pass a response handler to the history ins
 
 The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
 
-* `location` - This is the location object that is being navigated to.
-* `action` - This is the string (`POP`, `PUSH`, or `REPLACE`) for the navigation type.
-* `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
-* `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. **Note:** This function is used by the browser and hash histories, but isn't actually necessary for the in-memory history.
+- `location` - This is the location object that is being navigated to.
+- `action` - This is the string (`POP`, `PUSH`, or `REPLACE`) for the navigation type.
+- `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
+- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. **Note:** This function is used by the browser and hash histories, but isn't actually necessary for the in-memory history.
 
 #### arguments
 
