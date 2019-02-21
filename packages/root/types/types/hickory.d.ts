@@ -2,27 +2,27 @@ import { HickoryLocation, AnyLocation, PartialLocation } from "./location";
 import { LocationFactoryOptions, LocationMethods } from "./locationFactory";
 import { KeyMethods } from "./keygen";
 import { ConfirmationFunction, ConfirmationMethods } from "./navigationConfirmation";
-export declare type ToArgument = string | PartialLocation;
+export declare type ToArgument<Q> = string | PartialLocation<Q>;
 export declare type Action = "push" | "replace" | "pop";
 export declare type NavType = "anchor" | "push" | "replace";
-export interface PendingNavigation {
-    location: HickoryLocation;
+export interface PendingNavigation<Q> {
+    location: HickoryLocation<Q>;
     action: Action;
     finish(): void;
     cancel(nextAction?: Action): void;
     cancelled?: boolean;
 }
-export declare type ResponseHandler = (resp: PendingNavigation) => void;
-export interface History {
-    location: HickoryLocation;
+export declare type ResponseHandler<Q> = (resp: PendingNavigation<Q>) => void;
+export interface History<Q> {
+    location: HickoryLocation<Q>;
     action: Action;
-    toHref(to: AnyLocation): string;
-    respondWith(fn: ResponseHandler): void;
+    toHref(to: AnyLocation<Q>): string;
+    respondWith(fn: ResponseHandler<Q>): void;
     confirmWith(fn?: ConfirmationFunction): void;
     removeConfirmation(): void;
     destroy(): void;
-    navigate(to: ToArgument, navType?: NavType): void;
+    navigate(to: ToArgument<Q>, navType?: NavType): void;
     go(num?: number): void;
 }
-export declare type Options = LocationFactoryOptions;
-export declare type CommonHistory = LocationMethods & ConfirmationMethods & KeyMethods;
+export declare type Options<Q> = LocationFactoryOptions<Q>;
+export declare type CommonHistory<Q> = LocationMethods<Q> & ConfirmationMethods & KeyMethods;

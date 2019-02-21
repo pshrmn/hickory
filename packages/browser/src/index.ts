@@ -28,7 +28,7 @@ export {
   LocationDetails
 };
 
-export interface Options extends RootOptions {
+export interface Options<Q> extends RootOptions<Q> {
   raw?: (pathname: string) => string;
 }
 
@@ -39,7 +39,7 @@ interface NavSetup {
 
 function noop() {}
 
-function Browser(options: Options = {}): History {
+function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
   if (!domExists()) {
     return;
   }
@@ -55,7 +55,7 @@ function Browser(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     keygen
-  } = Common(options);
+  } = Common<Q>(options);
 
   const removeEvents = createEventCoordinator({
     popstate: (event: PopStateEvent) => {
@@ -69,7 +69,7 @@ function Browser(options: Options = {}): History {
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
 
-  function locationFromBrowser(providedState?: object): HickoryLocation {
+  function locationFromBrowser(providedState?: object): HickoryLocation<Q> {
     const { pathname, search, hash } = window.location;
     const path = pathname + search + hash;
     let { key, state } = providedState || getStateFromHistory();
@@ -80,11 +80,11 @@ function Browser(options: Options = {}): History {
     return createLocation(path, key, state);
   }
 
-  function toHref(location: AnyLocation): string {
+  function toHref(location: AnyLocation<Q>): string {
     return createPath(location);
   }
 
-  function setupReplace(location: HickoryLocation): NavSetup {
+  function setupReplace(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.minor(browserHistory.location.key);
     return {
       action: "replace",
@@ -92,7 +92,7 @@ function Browser(options: Options = {}): History {
     };
   }
 
-  function setupPush(location: HickoryLocation): NavSetup {
+  function setupPush(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.major(browserHistory.location.key);
     return {
       action: "push",
@@ -100,7 +100,7 @@ function Browser(options: Options = {}): History {
     };
   }
 
-  function finalizePush(location: HickoryLocation) {
+  function finalizePush(location: HickoryLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -114,7 +114,7 @@ function Browser(options: Options = {}): History {
     };
   }
 
-  function finalizeReplace(location: HickoryLocation) {
+  function finalizeReplace(location: HickoryLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -128,13 +128,13 @@ function Browser(options: Options = {}): History {
     };
   }
 
-  let responseHandler: ResponseHandler;
-  const browserHistory: History = {
+  let responseHandler: ResponseHandler<Q>;
+  const browserHistory: History<Q> = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
-    respondWith(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler<Q>) {
       responseHandler = fn;
       // immediately invoke
       fn({
@@ -151,7 +151,7 @@ function Browser(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {

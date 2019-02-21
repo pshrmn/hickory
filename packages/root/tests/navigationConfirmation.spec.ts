@@ -46,8 +46,8 @@ describe("createNavigationConfirmation", () => {
 
       confirmNavigation(
         {
-          to: { pathname: "/this-is-only-a-test" } as HickoryLocation,
-          from: { pathname: "/this-was-not-a-test" } as HickoryLocation,
+          to: { pathname: "/this-is-only-a-test" } as HickoryLocation<any>,
+          from: { pathname: "/this-was-not-a-test" } as HickoryLocation<any>,
           action: "push"
         },
         confirm,
@@ -70,8 +70,8 @@ describe("createNavigationConfirmation", () => {
       confirmWith(allowNavigation);
       confirmNavigation(
         {
-          to: toLoc as HickoryLocation,
-          from: fromLoc as HickoryLocation,
+          to: toLoc as HickoryLocation<any>,
+          from: fromLoc as HickoryLocation<any>,
           action
         },
         confirm,
@@ -103,8 +103,8 @@ describe("createNavigationConfirmation", () => {
       expect(() => {
         confirmNavigation(
           {
-            to: toLoc as HickoryLocation,
-            from: fromLoc as HickoryLocation,
+            to: toLoc as HickoryLocation<any>,
+            from: fromLoc as HickoryLocation<any>,
             action
           },
           confirm

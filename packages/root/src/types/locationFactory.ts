@@ -1,23 +1,23 @@
 import { HickoryLocation, PartialLocation } from "./location";
 
-export interface QueryFunctions {
-  parse: (query?: string) => any;
-  stringify: (query?: any) => string;
+export interface QueryFunctions<Q> {
+  parse: (query?: string) => Q;
+  stringify: (query?: Q) => string;
 }
 
-export interface LocationFactoryOptions {
-  query?: QueryFunctions;
+export interface LocationFactoryOptions<Q> {
+  query?: QueryFunctions<Q>;
   decode?: boolean;
   baseSegment?: string;
   raw?: (pathname: string) => string;
 }
 
-export interface LocationMethods {
+export interface LocationMethods<Q> {
   createLocation(
     value: string | object,
     key?: string,
     state?: any
-  ): HickoryLocation;
-  createPath(location: HickoryLocation): string;
-  createPath(location: PartialLocation): string;
+  ): HickoryLocation<Q>;
+  createPath(location: HickoryLocation<Q>): string;
+  createPath(location: PartialLocation<Q>): string;
 }
