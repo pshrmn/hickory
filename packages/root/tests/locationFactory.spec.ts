@@ -342,7 +342,7 @@ describe("locationFactory", () => {
         const input = {
           rawPathname: "/rawPathname",
           pathname: "/pathname"
-        } as HickoryLocation;
+        } as HickoryLocation<any>;
         const output = createPath(input);
         expect(output).toBe("/rawPathname");
       });
