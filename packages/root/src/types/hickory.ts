@@ -6,33 +6,35 @@ import {
   ConfirmationMethods
 } from "./navigationConfirmation";
 
-export type ToArgument = string | PartialLocation;
+export type ToArgument<Q> = string | PartialLocation<Q>;
 
 export type Action = "push" | "replace" | "pop";
 export type NavType = "anchor" | "push" | "replace";
 
-export interface PendingNavigation {
-  location: HickoryLocation;
+export interface PendingNavigation<Q> {
+  location: HickoryLocation<Q>;
   action: Action;
   finish(): void;
   cancel(nextAction?: Action): void;
   cancelled?: boolean;
 }
 
-export type ResponseHandler = (resp: PendingNavigation) => void;
+export type ResponseHandler<Q> = (resp: PendingNavigation<Q>) => void;
 
-export interface History {
-  location: HickoryLocation;
+export interface History<Q> {
+  location: HickoryLocation<Q>;
   action: Action;
-  toHref(to: AnyLocation): string;
-  respondWith(fn: ResponseHandler): void;
+  toHref(to: AnyLocation<Q>): string;
+  respondWith(fn: ResponseHandler<Q>): void;
   confirmWith(fn?: ConfirmationFunction): void;
   removeConfirmation(): void;
   destroy(): void;
-  navigate(to: ToArgument, navType?: NavType): void;
+  navigate(to: ToArgument<Q>, navType?: NavType): void;
   go(num?: number): void;
 }
 
-export type Options = LocationFactoryOptions;
+export type Options<Q> = LocationFactoryOptions<Q>;
 
-export type CommonHistory = LocationMethods & ConfirmationMethods & KeyMethods;
+export type CommonHistory<Q> = LocationMethods<Q> &
+  ConfirmationMethods &
+  KeyMethods;

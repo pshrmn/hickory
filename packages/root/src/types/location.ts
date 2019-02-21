@@ -1,18 +1,18 @@
-export interface LocationDetails {
+export interface LocationDetails<Q> {
   pathname: string;
-  query: any;
+  query: Q;
   hash: string;
   state?: any;
 }
 
-export type PartialLocation = Partial<LocationDetails>;
+export type PartialLocation<Q> = Partial<LocationDetails<Q>>;
 
 // use HickoryLocation instead of Location to prevent
 // errors from colliding with window.Location interface
-export interface HickoryLocation extends LocationDetails {
+export interface HickoryLocation<Q> extends LocationDetails<Q> {
   key: string | undefined;
   rawPathname: string;
   url: string;
 }
 
-export type AnyLocation = HickoryLocation | PartialLocation;
+export type AnyLocation<Q> = HickoryLocation<Q> | PartialLocation<Q>;

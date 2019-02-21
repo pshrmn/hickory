@@ -1,18 +1,18 @@
 import { History, LocationDetails, HickoryLocation, PartialLocation, AnyLocation, Options as RootOptions } from "@hickory/root";
 export { History, HickoryLocation, PartialLocation, AnyLocation, LocationDetails };
-export declare type InputLocations = Array<string | PartialLocation>;
-export interface Options extends RootOptions {
-    locations?: InputLocations;
+export declare type InputLocations<Q> = Array<string | PartialLocation<Q>>;
+export interface Options<Q> extends RootOptions<Q> {
+    locations?: InputLocations<Q>;
     index?: number;
 }
-export interface ResetOptions {
-    locations?: InputLocations;
+export interface ResetOptions<Q> {
+    locations?: InputLocations<Q>;
     index?: number;
 }
-export interface InMemoryHistory extends History {
-    locations: Array<HickoryLocation>;
+export interface InMemoryHistory<Q> extends History<Q> {
+    locations: Array<HickoryLocation<Q>>;
     index: number;
-    reset(options?: ResetOptions): void;
+    reset(options?: ResetOptions<Q>): void;
 }
-declare function InMemory(options?: Options): InMemoryHistory;
+declare function InMemory<Q = string>(options?: Options<Q>): InMemoryHistory<Q>;
 export { InMemory };

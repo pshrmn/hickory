@@ -33,9 +33,9 @@ function isValidBase(baseSegment: string): boolean {
   );
 }
 
-export default function locationFactory(
-  options: LocationFactoryOptions = {}
-): LocationMethods {
+export default function locationFactory<Q>(
+  options: LocationFactoryOptions<Q> = {}
+): LocationMethods<Q> {
   const {
     query: {
       parse: parseQuery = defaultParseQuery,
@@ -56,7 +56,7 @@ export default function locationFactory(
     );
   }
 
-  function parsePath(value: string, state: any): LocationDetails {
+  function parsePath(value: string, state: any): LocationDetails<Q> {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
     let hash;
@@ -78,7 +78,7 @@ export default function locationFactory(
 
     const pathname = stripBaseSegment(value, baseSegment);
 
-    const details: LocationDetails = {
+    const details: LocationDetails<Q> = {
       hash,
       query,
       pathname
@@ -91,8 +91,11 @@ export default function locationFactory(
     return details;
   }
 
-  function getDetails(partial: PartialLocation, state: any): LocationDetails {
-    const details: LocationDetails = {
+  function getDetails(
+    partial: PartialLocation<Q>,
+    state: any
+  ): LocationDetails<Q> {
+    const details: LocationDetails<Q> = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parseQuery() : partial.query
@@ -108,10 +111,10 @@ export default function locationFactory(
   }
 
   function createLocation(
-    value: ToArgument,
+    value: ToArgument<Q>,
     key?: string,
     state?: any
-  ): HickoryLocation {
+  ): HickoryLocation<Q> {
     if (state === undefined) {
       state = null;
     }
@@ -150,13 +153,13 @@ export default function locationFactory(
     };
   }
 
-  function createPath(location: AnyLocation): string {
+  function createPath(location: AnyLocation<Q>): string {
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
       baseSegment +
       completePathname(
-        (location as HickoryLocation).rawPathname || location.pathname || ""
+        (location as HickoryLocation<Q>).rawPathname || location.pathname || ""
       ) +
       completeQuery(stringifyQuery(location.query)) +
       completeHash(location.hash)

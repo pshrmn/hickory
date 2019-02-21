@@ -34,7 +34,7 @@ function ensureHash(encode: (path: string) => string): void {
   }
 }
 
-export interface Options extends RootOptions {
+export interface Options<Q> extends RootOptions<Q> {
   raw?: (pathname: string) => string;
   hashType?: string;
 }
@@ -46,7 +46,7 @@ interface NavSetup {
 
 function noop() {}
 
-function Hash(options: Options = {}): History {
+function Hash<Q>(options: Options<Q> = {}): History<Q> {
   if (!domExists()) {
     return;
   }
@@ -62,7 +62,7 @@ function Hash(options: Options = {}): History {
     confirmWith,
     removeConfirmation,
     keygen
-  } = Common(options);
+  } = Common<Q>(options);
 
   const {
     decode: decodeHashPath,
@@ -80,7 +80,7 @@ function Hash(options: Options = {}): History {
 
   ensureHash(encodeHashPath);
 
-  function locationFromBrowser(providedState?: object): HickoryLocation {
+  function locationFromBrowser(providedState?: object): HickoryLocation<Q> {
     let { hash } = window.location;
     const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
@@ -92,11 +92,11 @@ function Hash(options: Options = {}): History {
     return createLocation(path, key);
   }
 
-  function toHref(location: AnyLocation): string {
+  function toHref(location: AnyLocation<Q>): string {
     return encodeHashPath(createPath(location));
   }
 
-  function setupReplace(location: HickoryLocation): NavSetup {
+  function setupReplace(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.minor(hashHistory.location.key);
     return {
       action: "replace",
@@ -104,7 +104,7 @@ function Hash(options: Options = {}): History {
     };
   }
 
-  function setupPush(location: HickoryLocation): NavSetup {
+  function setupPush(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.major(hashHistory.location.key);
     return {
       action: "push",
@@ -112,7 +112,7 @@ function Hash(options: Options = {}): History {
     };
   }
 
-  function finalizePush(location: HickoryLocation) {
+  function finalizePush(location: HickoryLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -126,7 +126,7 @@ function Hash(options: Options = {}): History {
     };
   }
 
-  function finalizeReplace(location: HickoryLocation) {
+  function finalizeReplace(location: HickoryLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -140,13 +140,13 @@ function Hash(options: Options = {}): History {
     };
   }
 
-  let responseHandler: ResponseHandler;
-  const hashHistory: History = {
+  let responseHandler: ResponseHandler<Q>;
+  const hashHistory: History<Q> = {
     // location
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
-    respondWith(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler<Q>) {
       responseHandler = fn;
       responseHandler({
         location: hashHistory.location,
@@ -162,7 +162,7 @@ function Hash(options: Options = {}): History {
     destroy() {
       removeEvents();
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
@@ -213,7 +213,7 @@ function Hash(options: Options = {}): History {
       reverting = false;
       return;
     }
-    const location: HickoryLocation = locationFromBrowser(state);
+    const location: HickoryLocation<Q> = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
     confirmNavigation(

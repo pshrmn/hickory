@@ -21,22 +21,22 @@ export {
   LocationDetails
 };
 
-export type InputLocations = Array<string | PartialLocation>;
+export type InputLocations<Q> = Array<string | PartialLocation<Q>>;
 
-export interface Options extends RootOptions {
-  locations?: InputLocations;
+export interface Options<Q> extends RootOptions<Q> {
+  locations?: InputLocations<Q>;
   index?: number;
 }
 
-export interface ResetOptions {
-  locations?: InputLocations;
+export interface ResetOptions<Q> {
+  locations?: InputLocations<Q>;
   index?: number;
 }
 
-export interface InMemoryHistory extends History {
-  locations: Array<HickoryLocation>;
+export interface InMemoryHistory<Q> extends History<Q> {
+  locations: Array<HickoryLocation<Q>>;
   index: number;
-  reset(options?: ResetOptions): void;
+  reset(options?: ResetOptions<Q>): void;
 }
 
 interface NavSetup {
@@ -46,7 +46,7 @@ interface NavSetup {
 
 function noop() {}
 
-function InMemory(options: Options = {}): InMemoryHistory {
+function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
   const {
     createLocation,
     createPath,
@@ -54,14 +54,14 @@ function InMemory(options: Options = {}): InMemoryHistory {
     confirmWith,
     removeConfirmation,
     keygen
-  } = Common(options);
+  } = Common<Q>(options);
 
   const destroyLocations = () => {
     memoryHistory.locations = [];
     memoryHistory.index = undefined;
   };
 
-  let initialLocations: Array<HickoryLocation> = (
+  let initialLocations: Array<HickoryLocation<Q>> = (
     options.locations || ["/"]
   ).map(loc => createLocation(loc, keygen.major()));
   let initialIndex = 0;
@@ -73,11 +73,11 @@ function InMemory(options: Options = {}): InMemoryHistory {
     initialIndex = options.index;
   }
 
-  function toHref(location: AnyLocation): string {
+  function toHref(location: AnyLocation<Q>): string {
     return createPath(location);
   }
 
-  function setupReplace(location: HickoryLocation): NavSetup {
+  function setupReplace(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.minor(memoryHistory.location.key);
     return {
       action: "replace",
@@ -85,7 +85,7 @@ function InMemory(options: Options = {}): InMemoryHistory {
     };
   }
 
-  function setupPush(location: HickoryLocation): NavSetup {
+  function setupPush(location: HickoryLocation<Q>): NavSetup {
     location.key = keygen.major(memoryHistory.location.key);
     return {
       action: "push",
@@ -93,7 +93,7 @@ function InMemory(options: Options = {}): InMemoryHistory {
     };
   }
 
-  function finalizePush(location: HickoryLocation) {
+  function finalizePush(location: HickoryLocation<Q>) {
     return () => {
       memoryHistory.location = location;
       memoryHistory.index++;
@@ -105,7 +105,7 @@ function InMemory(options: Options = {}): InMemoryHistory {
     };
   }
 
-  function finalizeReplace(location: HickoryLocation) {
+  function finalizeReplace(location: HickoryLocation<Q>) {
     return () => {
       memoryHistory.location = location;
       memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
@@ -113,15 +113,15 @@ function InMemory(options: Options = {}): InMemoryHistory {
     };
   }
 
-  let responseHandler: ResponseHandler;
-  const memoryHistory: InMemoryHistory = {
+  let responseHandler: ResponseHandler<Q>;
+  const memoryHistory: InMemoryHistory<Q> = {
     // location
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
     action: "push",
     // set response handler
-    respondWith(fn: ResponseHandler) {
+    respondWith(fn: ResponseHandler<Q>) {
       responseHandler = fn;
       responseHandler({
         location: memoryHistory.location,
@@ -137,7 +137,7 @@ function InMemory(options: Options = {}): InMemoryHistory {
     destroy(): void {
       destroyLocations();
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       let setup: NavSetup;
       const location = createLocation(to);
       switch (navType) {
@@ -193,7 +193,8 @@ function InMemory(options: Options = {}): InMemoryHistory {
         if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
           return;
         } else {
-          const location: HickoryLocation = memoryHistory.locations[newIndex];
+          const location: HickoryLocation<Q> =
+            memoryHistory.locations[newIndex];
           confirmNavigation(
             {
               to: location,
@@ -219,7 +220,7 @@ function InMemory(options: Options = {}): InMemoryHistory {
         }
       }
     },
-    reset(options?: ResetOptions) {
+    reset(options?: ResetOptions<Q>) {
       memoryHistory.locations = ((options && options.locations) || ["/"]).map(
         loc => createLocation(loc, keygen.major())
       );
