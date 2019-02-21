@@ -7,7 +7,7 @@ import {
 function noop(): void {}
 
 export default function createNavigationConfirmation(): ConfirmationMethods {
-  let confirmFunction: ConfirmationFunction;
+  let confirmFunction: ConfirmationFunction | null;
 
   return {
     confirmNavigation(
