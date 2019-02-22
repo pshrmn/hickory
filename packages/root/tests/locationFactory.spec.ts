@@ -276,7 +276,7 @@ describe("locationFactory", () => {
           const state = {
             omg: "bff"
           };
-          const output = genericLocation(input, "1.0", state);
+          const output = genericLocation(input, state);
           expect(output.state).toBeDefined();
           expect(output.state).toEqual(state);
         });
@@ -285,7 +285,7 @@ describe("locationFactory", () => {
       describe("object argument", () => {
         it("adds state if provided", () => {
           const state = { fromLocation: false };
-          const output = genericLocation({ pathname: "/" }, "1.2", state);
+          const output = genericLocation({ pathname: "/" }, state);
           expect(output.state).toEqual(state);
         });
 
@@ -294,7 +294,6 @@ describe("locationFactory", () => {
           const justState = { fromLocation: false };
           const output = genericLocation(
             { pathname: "/", state: locState },
-            "1.2",
             justState
           );
           expect(output.state).toEqual(locState);
@@ -306,23 +305,16 @@ describe("locationFactory", () => {
         expect(output.state).toBeUndefined();
       });
     });
+  });
 
-    describe("key", () => {
-      it("is the provided value", () => {
-        const input = {
-          pathname: "/test",
-          query: "one=two",
-          hash: "hello"
-        };
-        const key = "3.22";
-        const output = genericLocation(input, key);
-        expect(output.key).toBe(key);
-      });
+  describe("keyed", () => {
+    const { keyed, genericLocation } = Common();
 
-      it("is undefined if not provided", () => {
-        const output = genericLocation("/test");
-        expect(output.key).toBeUndefined();
-      });
+    it("attaches a key to a keyless location", () => {
+      const key = "3.1.4";
+      const keylessLocation = genericLocation("/test");
+      const location = keyed(keylessLocation, key);
+      expect(location.key).toBe(key);
     });
   });
 
