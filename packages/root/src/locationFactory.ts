@@ -9,7 +9,8 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
-  LocationDetails
+  LocationDetails,
+  KeylessLocation
 } from "./types/location";
 import { ToArgument } from "./types/hickory";
 import {
@@ -110,11 +111,10 @@ export default function locationFactory<Q>(
     return details;
   }
 
-  function createLocation(
+  function genericLocation(
     value: ToArgument<Q>,
-    key?: string,
     state?: any
-  ): HickoryLocation<Q> {
+  ): KeylessLocation<Q> {
     if (state === undefined) {
       state = null;
     }
@@ -139,21 +139,29 @@ export default function locationFactory<Q>(
         );
       }
     }
-
     const locationParts = {
       ...details,
-      key: key,
       rawPathname
     };
+    const url = stringifyLocation(locationParts);
 
-    const url = createPath(locationParts);
     return {
       ...locationParts,
       url
     };
   }
 
-  function createPath(location: AnyLocation<Q>): string {
+  function keyed(
+    location: KeylessLocation<Q>,
+    key: string
+  ): HickoryLocation<Q> {
+    return {
+      ...location,
+      key
+    };
+  }
+
+  function stringifyLocation(location: AnyLocation<Q>): string {
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
@@ -166,5 +174,5 @@ export default function locationFactory<Q>(
     );
   }
 
-  return { createLocation, createPath };
+  return { genericLocation, keyed, stringifyLocation };
 }

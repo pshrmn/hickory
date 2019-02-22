@@ -18,11 +18,11 @@ export interface History<Q> {
     action: Action;
     toHref(to: AnyLocation<Q>): string;
     respondWith(fn: ResponseHandler<Q>): void;
-    confirmWith(fn?: ConfirmationFunction): void;
+    confirmWith(fn?: ConfirmationFunction<Q>): void;
     removeConfirmation(): void;
     destroy(): void;
     navigate(to: ToArgument<Q>, navType?: NavType): void;
     go(num?: number): void;
 }
 export declare type Options<Q> = LocationFactoryOptions<Q>;
-export declare type CommonHistory<Q> = LocationMethods<Q> & ConfirmationMethods & KeyMethods;
+export declare type CommonHistory<Q> = LocationMethods<Q> & ConfirmationMethods<Q> & KeyMethods;

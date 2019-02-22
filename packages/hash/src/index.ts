@@ -12,6 +12,7 @@ import {
   LocationDetails,
   HickoryLocation,
   PartialLocation,
+  KeylessLocation,
   AnyLocation,
   Options as RootOptions,
   ToArgument,
@@ -39,9 +40,10 @@ export interface Options<Q> extends RootOptions<Q> {
   hashType?: string;
 }
 
-interface NavSetup {
+interface NavSetup<Q> {
   action: Action;
   finish(): void;
+  location: HickoryLocation<Q>;
 }
 
 function noop() {}
@@ -56,8 +58,9 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
   }
 
   const {
-    createLocation,
-    createPath,
+    keyed,
+    genericLocation,
+    stringifyLocation,
     confirmNavigation,
     confirmWith,
     removeConfirmation,
@@ -89,26 +92,34 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    return createLocation(path, key);
+    return keyed(genericLocation(path), key);
   }
 
   function toHref(location: AnyLocation<Q>): string {
-    return encodeHashPath(createPath(location));
+    return encodeHashPath(stringifyLocation(location));
   }
 
-  function setupReplace(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.minor(hashHistory.location.key);
+  function setupReplace(location: KeylessLocation<Q>): NavSetup<Q> {
+    const finalLocation = keyed(
+      location,
+      keygen.minor(hashHistory.location.key)
+    );
     return {
       action: "replace",
-      finish: finalizeReplace(location)
+      finish: finalizeReplace(finalLocation),
+      location: finalLocation
     };
   }
 
-  function setupPush(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.major(hashHistory.location.key);
+  function setupPush(location: KeylessLocation<Q>): NavSetup<Q> {
+    const finalLocation = keyed(
+      location,
+      keygen.major(hashHistory.location.key)
+    );
     return {
       action: "push",
-      finish: finalizePush(location)
+      finish: finalizePush(finalLocation),
+      location: finalLocation
     };
   }
 
@@ -163,12 +174,13 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       removeEvents();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup;
-      const location = createLocation(to);
+      let setup: NavSetup<Q>;
+      const location = genericLocation(to);
       switch (navType) {
         case "anchor":
           setup =
-            createPath(location) === createPath(hashHistory.location)
+            stringifyLocation(location) ===
+            stringifyLocation(hashHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
@@ -183,7 +195,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       }
       confirmNavigation(
         {
-          to: location,
+          to: setup.location,
           from: hashHistory.location,
           action: setup.action
         },
@@ -192,7 +204,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
             return;
           }
           responseHandler({
-            location,
+            location: setup.location,
             action: setup.action,
             finish: setup.finish,
             cancel: noop

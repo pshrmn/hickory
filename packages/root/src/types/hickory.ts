@@ -26,7 +26,7 @@ export interface History<Q> {
   action: Action;
   toHref(to: AnyLocation<Q>): string;
   respondWith(fn: ResponseHandler<Q>): void;
-  confirmWith(fn?: ConfirmationFunction): void;
+  confirmWith(fn?: ConfirmationFunction<Q>): void;
   removeConfirmation(): void;
   destroy(): void;
   navigate(to: ToArgument<Q>, navType?: NavType): void;
@@ -36,5 +36,5 @@ export interface History<Q> {
 export type Options<Q> = LocationFactoryOptions<Q>;
 
 export type CommonHistory<Q> = LocationMethods<Q> &
-  ConfirmationMethods &
+  ConfirmationMethods<Q> &
   KeyMethods;

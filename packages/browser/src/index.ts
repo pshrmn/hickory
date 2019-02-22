@@ -13,6 +13,7 @@ import {
   PartialLocation,
   HickoryLocation,
   AnyLocation,
+  KeylessLocation,
   Options as RootOptions,
   ToArgument,
   ResponseHandler,
@@ -32,16 +33,17 @@ export interface Options<Q> extends RootOptions<Q> {
   raw?: (pathname: string) => string;
 }
 
-interface NavSetup {
+interface NavSetup<Q> {
   action: Action;
   finish(): void;
+  location: HickoryLocation<Q>;
 }
 
 function noop() {}
 
 function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
   if (!domExists()) {
-    return;
+    throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
   if (!options.raw) {
@@ -49,20 +51,22 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
   }
 
   const {
-    createLocation,
-    createPath,
+    keyed,
+    genericLocation,
+    stringifyLocation,
     confirmNavigation,
     confirmWith,
     removeConfirmation,
     keygen
   } = Common<Q>(options);
 
+  // TODO: make more generic (no casting)
   const removeEvents = createEventCoordinator({
-    popstate: (event: PopStateEvent) => {
-      if (ignorablePopstateEvent(event)) {
+    popstate(event: Event) {
+      if (ignorablePopstateEvent(event as PopStateEvent)) {
         return;
       }
-      pop(event.state);
+      pop((event as PopStateEvent).state);
     }
   });
 
@@ -77,26 +81,35 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
       key = keygen.major();
       window.history.replaceState({ key, state }, "", path);
     }
-    return createLocation(path, key, state);
+    const location = genericLocation(path, state);
+    return keyed(location, key);
   }
 
   function toHref(location: AnyLocation<Q>): string {
-    return createPath(location);
+    return stringifyLocation(location);
   }
 
-  function setupReplace(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.minor(browserHistory.location.key);
+  function setupReplace(location: KeylessLocation<Q>): NavSetup<Q> {
+    const keyedLocation = keyed(
+      location,
+      keygen.minor(browserHistory.location.key)
+    );
     return {
       action: "replace",
-      finish: finalizeReplace(location)
+      finish: finalizeReplace(keyedLocation),
+      location: keyedLocation
     };
   }
 
-  function setupPush(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.major(browserHistory.location.key);
+  function setupPush(location: KeylessLocation<Q>): NavSetup<Q> {
+    const keyedLocation = keyed(
+      location,
+      keygen.major(browserHistory.location.key)
+    );
     return {
       action: "push",
-      finish: finalizePush(location)
+      finish: finalizePush(keyedLocation),
+      location: keyedLocation
     };
   }
 
@@ -137,7 +150,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     respondWith(fn: ResponseHandler<Q>) {
       responseHandler = fn;
       // immediately invoke
-      fn({
+      responseHandler({
         location: browserHistory.location,
         action: browserHistory.action,
         finish: noop,
@@ -152,12 +165,13 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
       removeEvents();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup;
-      const location = createLocation(to);
+      let setup: NavSetup<Q>;
+      const location = genericLocation(to);
       switch (navType) {
         case "anchor":
           setup =
-            createPath(location) === createPath(browserHistory.location)
+            stringifyLocation(location) ===
+            stringifyLocation(browserHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
@@ -172,7 +186,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
       }
       confirmNavigation(
         {
-          to: location,
+          to: setup.location,
           from: browserHistory.location,
           action: setup.action
         },
@@ -181,7 +195,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
             return;
           }
           responseHandler({
-            location,
+            location: setup.location,
             action: setup.action,
             finish: setup.finish,
             cancel: noop
