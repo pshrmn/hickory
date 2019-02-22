@@ -100,8 +100,8 @@ module.exports = function(config) {
       project: "hickory",
       username: username,
       accessKey: accessKey,
-      build: process.env.TRAVIS_BUILD_NUMBER || "local",
-      name: process.env.TRAVIS_JOB_NUMBER || "local",
+      build: process.env.CIRCLE_BUILD_NUM || "local",
+      name: process.env.CIRCLE_JOB || "local",
       video: false,
       timeout: 120
     },
