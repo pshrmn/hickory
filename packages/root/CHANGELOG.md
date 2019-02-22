@@ -1,3 +1,7 @@
+## Next
+
+- Change location factory API: `createPath` -> `stringify`, `createLocation` -> `genericLocation` (with `keyed` to add a key).
+
 ## 2.0.0-alpha.1
 
 - Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.

@@ -57,7 +57,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
 
   const {
     createLocation,
-    createPath,
+    stringifyLocation,
     confirmNavigation,
     confirmWith,
     removeConfirmation,
@@ -93,7 +93,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
   }
 
   function toHref(location: AnyLocation<Q>): string {
-    return encodeHashPath(createPath(location));
+    return encodeHashPath(stringifyLocation(location));
   }
 
   function setupReplace(location: HickoryLocation<Q>): NavSetup {
@@ -168,7 +168,8 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       switch (navType) {
         case "anchor":
           setup =
-            createPath(location) === createPath(hashHistory.location)
+            stringifyLocation(location) ===
+            stringifyLocation(hashHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;

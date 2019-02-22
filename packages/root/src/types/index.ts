@@ -2,7 +2,8 @@ export {
   LocationDetails,
   PartialLocation,
   HickoryLocation,
-  AnyLocation
+  AnyLocation,
+  KeylessLocation
 } from "./location";
 
 export {

@@ -6,6 +6,7 @@ import {
   HickoryLocation,
   PartialLocation,
   AnyLocation,
+  KeylessLocation,
   Options as RootOptions,
   ToArgument,
   ResponseHandler,
@@ -39,8 +40,9 @@ export interface InMemoryHistory<Q> extends History<Q> {
   reset(options?: ResetOptions<Q>): void;
 }
 
-interface NavSetup {
+interface NavSetup<Q> {
   action: Action;
+  location: HickoryLocation<Q>;
   finish(): void;
 }
 
@@ -48,8 +50,9 @@ function noop() {}
 
 function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
   const {
-    createLocation,
-    createPath,
+    genericLocation,
+    keyed,
+    stringifyLocation,
     confirmNavigation,
     confirmWith,
     removeConfirmation,
@@ -63,7 +66,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
 
   let initialLocations: Array<HickoryLocation<Q>> = (
     options.locations || ["/"]
-  ).map(loc => createLocation(loc, keygen.major()));
+  ).map(loc => keyed(genericLocation(loc), keygen.major()));
   let initialIndex = 0;
   if (
     options.index &&
@@ -74,22 +77,30 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
   }
 
   function toHref(location: AnyLocation<Q>): string {
-    return createPath(location);
+    return stringifyLocation(location);
   }
 
-  function setupReplace(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.minor(memoryHistory.location.key);
+  function setupReplace(location: KeylessLocation<Q>): NavSetup<Q> {
+    const finalLocation = keyed(
+      location,
+      keygen.minor(memoryHistory.location.key)
+    );
     return {
       action: "replace",
-      finish: finalizeReplace(location)
+      location: finalLocation,
+      finish: finalizeReplace(finalLocation)
     };
   }
 
-  function setupPush(location: HickoryLocation<Q>): NavSetup {
-    location.key = keygen.major(memoryHistory.location.key);
+  function setupPush(location: KeylessLocation<Q>): NavSetup<Q> {
+    const finalLocation = keyed(
+      location,
+      keygen.major(memoryHistory.location.key)
+    );
     return {
       action: "push",
-      finish: finalizePush(location)
+      location: finalLocation,
+      finish: finalizePush(finalLocation)
     };
   }
 
@@ -138,12 +149,13 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
       destroyLocations();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup;
-      const location = createLocation(to);
+      let setup: NavSetup<Q>;
+      const location = genericLocation(to);
       switch (navType) {
         case "anchor":
           setup =
-            createPath(location) === createPath(memoryHistory.location)
+            stringifyLocation(location) ===
+            stringifyLocation(memoryHistory.location)
               ? setupReplace(location)
               : setupPush(location);
           break;
@@ -158,7 +170,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
       }
       confirmNavigation(
         {
-          to: location,
+          to: setup.location,
           from: memoryHistory.location,
           action: setup.action
         },
@@ -167,7 +179,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
             return;
           }
           responseHandler({
-            location,
+            location: setup.location,
             action: setup.action,
             finish: setup.finish,
             cancel: noop
@@ -222,7 +234,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
     },
     reset(options?: ResetOptions<Q>) {
       memoryHistory.locations = ((options && options.locations) || ["/"]).map(
-        loc => createLocation(loc, keygen.major())
+        loc => keyed(genericLocation(loc), keygen.major())
       );
       memoryHistory.index =
         options && options.index != undefined ? options.index : 0;
