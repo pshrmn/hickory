@@ -46,7 +46,6 @@ describe("browser integration tests", () => {
       });
       expect(window.location.pathname).toEqual("/encoded-percent%25");
       expect(testHistory.location.pathname).toEqual("/encoded-percent%");
-      expect(false).toBe(true);
     });
 
     describe("push navigation", () => {
