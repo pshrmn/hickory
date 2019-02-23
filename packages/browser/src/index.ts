@@ -9,11 +9,11 @@ import {
 
 import {
   History,
-  LocationDetails,
+  LocationComponents,
   PartialLocation,
-  HickoryLocation,
+  SessionLocation,
   AnyLocation,
-  KeylessLocation,
+  Location,
   Options as RootOptions,
   ToArgument,
   ResponseHandler,
@@ -23,10 +23,11 @@ import {
 
 export {
   History,
-  HickoryLocation,
+  SessionLocation,
   PartialLocation,
   AnyLocation,
-  LocationDetails
+  Location,
+  LocationComponents
 };
 
 export interface Options<Q> extends RootOptions<Q> {
@@ -36,7 +37,7 @@ export interface Options<Q> extends RootOptions<Q> {
 interface NavSetup<Q> {
   action: Action;
   finish(): void;
-  location: HickoryLocation<Q>;
+  location: SessionLocation<Q>;
 }
 
 function noop() {}
@@ -73,7 +74,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
 
-  function locationFromBrowser(providedState?: object): HickoryLocation<Q> {
+  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
     const { pathname, search, hash } = window.location;
     const path = pathname + search + hash;
     let { key, state } = providedState || getStateFromHistory();
@@ -89,7 +90,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     return stringifyLocation(location);
   }
 
-  function setupReplace(location: KeylessLocation<Q>): NavSetup<Q> {
+  function setupReplace(location: Location<Q>): NavSetup<Q> {
     const keyedLocation = keyed(
       location,
       keygen.minor(browserHistory.location.key)
@@ -101,7 +102,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function setupPush(location: KeylessLocation<Q>): NavSetup<Q> {
+  function setupPush(location: Location<Q>): NavSetup<Q> {
     const keyedLocation = keyed(
       location,
       keygen.major(browserHistory.location.key)
@@ -113,7 +114,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function finalizePush(location: HickoryLocation<Q>) {
+  function finalizePush(location: SessionLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -127,7 +128,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function finalizeReplace(location: HickoryLocation<Q>) {
+  function finalizeReplace(location: SessionLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;

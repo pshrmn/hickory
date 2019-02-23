@@ -1,3 +1,7 @@
+## Next
+
+- Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.
+
 ## 2.0.0-alpha.1
 
 - Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.

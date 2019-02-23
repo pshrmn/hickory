@@ -1,6 +1,6 @@
 import "jest";
 import { Common } from "../src";
-import { HickoryLocation } from "../src/types/location";
+import { SessionLocation } from "../src/types/location";
 
 describe("createNavigationConfirmation", () => {
   describe("confirmWith", () => {
@@ -46,8 +46,8 @@ describe("createNavigationConfirmation", () => {
 
       confirmNavigation(
         {
-          to: { pathname: "/this-is-only-a-test" } as HickoryLocation<any>,
-          from: { pathname: "/this-was-not-a-test" } as HickoryLocation<any>,
+          to: { pathname: "/this-is-only-a-test" } as SessionLocation<any>,
+          from: { pathname: "/this-was-not-a-test" } as SessionLocation<any>,
           action: "push"
         },
         confirm,
@@ -70,8 +70,8 @@ describe("createNavigationConfirmation", () => {
       confirmWith(allowNavigation);
       confirmNavigation(
         {
-          to: toLoc as HickoryLocation<any>,
-          from: fromLoc as HickoryLocation<any>,
+          to: toLoc as SessionLocation<any>,
+          from: fromLoc as SessionLocation<any>,
           action
         },
         confirm,
@@ -103,8 +103,8 @@ describe("createNavigationConfirmation", () => {
       expect(() => {
         confirmNavigation(
           {
-            to: toLoc as HickoryLocation<any>,
-            from: fromLoc as HickoryLocation<any>,
+            to: toLoc as SessionLocation<any>,
+            from: fromLoc as SessionLocation<any>,
             action
           },
           confirm

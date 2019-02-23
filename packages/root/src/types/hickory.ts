@@ -1,4 +1,4 @@
-import { HickoryLocation, AnyLocation, PartialLocation } from "./location";
+import { SessionLocation, AnyLocation, PartialLocation } from "./location";
 import { LocationFactoryOptions, LocationMethods } from "./locationFactory";
 import { KeyMethods } from "./keygen";
 import {
@@ -12,7 +12,7 @@ export type Action = "push" | "replace" | "pop";
 export type NavType = "anchor" | "push" | "replace";
 
 export interface PendingNavigation<Q> {
-  location: HickoryLocation<Q>;
+  location: SessionLocation<Q>;
   action: Action;
   finish(): void;
   cancel(nextAction?: Action): void;
@@ -22,7 +22,7 @@ export interface PendingNavigation<Q> {
 export type ResponseHandler<Q> = (resp: PendingNavigation<Q>) => void;
 
 export interface History<Q> {
-  location: HickoryLocation<Q>;
+  location: SessionLocation<Q>;
   action: Action;
   toHref(to: AnyLocation<Q>): string;
   respondWith(fn: ResponseHandler<Q>): void;

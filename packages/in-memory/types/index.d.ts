@@ -1,5 +1,5 @@
-import { History, LocationDetails, HickoryLocation, PartialLocation, AnyLocation, Options as RootOptions } from "@hickory/root";
-export { History, HickoryLocation, PartialLocation, AnyLocation, LocationDetails };
+import { History, LocationComponents, SessionLocation, PartialLocation, AnyLocation, Location, Options as RootOptions } from "@hickory/root";
+export { History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
 export declare type InputLocations<Q> = Array<string | PartialLocation<Q>>;
 export interface Options<Q> extends RootOptions<Q> {
     locations?: InputLocations<Q>;
@@ -10,7 +10,7 @@ export interface ResetOptions<Q> {
     index?: number;
 }
 export interface InMemoryHistory<Q> extends History<Q> {
-    locations: Array<HickoryLocation<Q>>;
+    locations: Array<SessionLocation<Q>>;
     index: number;
     reset(options?: ResetOptions<Q>): void;
 }

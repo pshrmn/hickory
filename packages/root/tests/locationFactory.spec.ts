@@ -2,7 +2,7 @@ import "jest";
 import { Common } from "../src";
 import * as qs from "qs";
 
-import { HickoryLocation } from "../src/types";
+import { SessionLocation } from "../src/types";
 
 describe("locationFactory", () => {
   describe("constructor", () => {
@@ -334,7 +334,7 @@ describe("locationFactory", () => {
         const input = {
           rawPathname: "/rawPathname",
           pathname: "/pathname"
-        } as HickoryLocation<any>;
+        } as SessionLocation<any>;
         const output = stringifyLocation(input);
         expect(output).toBe("/rawPathname");
       });

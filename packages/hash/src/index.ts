@@ -9,10 +9,10 @@ import hashEncoderAndDecoder from "./hashTypes";
 
 import {
   History,
-  LocationDetails,
-  HickoryLocation,
+  LocationComponents,
+  SessionLocation,
   PartialLocation,
-  KeylessLocation,
+  Location,
   AnyLocation,
   Options as RootOptions,
   ToArgument,
@@ -23,10 +23,11 @@ import {
 
 export {
   History,
-  HickoryLocation,
+  SessionLocation,
   PartialLocation,
   AnyLocation,
-  LocationDetails
+  Location,
+  LocationComponents
 };
 
 function ensureHash(encode: (path: string) => string): void {
@@ -43,7 +44,7 @@ export interface Options<Q> extends RootOptions<Q> {
 interface NavSetup<Q> {
   action: Action;
   finish(): void;
-  location: HickoryLocation<Q>;
+  location: SessionLocation<Q>;
 }
 
 function noop() {}
@@ -83,7 +84,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
 
   ensureHash(encodeHashPath);
 
-  function locationFromBrowser(providedState?: object): HickoryLocation<Q> {
+  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
     let { hash } = window.location;
     const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
@@ -99,7 +100,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     return encodeHashPath(stringifyLocation(location));
   }
 
-  function setupReplace(location: KeylessLocation<Q>): NavSetup<Q> {
+  function setupReplace(location: Location<Q>): NavSetup<Q> {
     const finalLocation = keyed(
       location,
       keygen.minor(hashHistory.location.key)
@@ -111,7 +112,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function setupPush(location: KeylessLocation<Q>): NavSetup<Q> {
+  function setupPush(location: Location<Q>): NavSetup<Q> {
     const finalLocation = keyed(
       location,
       keygen.major(hashHistory.location.key)
@@ -123,7 +124,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function finalizePush(location: HickoryLocation<Q>) {
+  function finalizePush(location: SessionLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -137,7 +138,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     };
   }
 
-  function finalizeReplace(location: HickoryLocation<Q>) {
+  function finalizeReplace(location: SessionLocation<Q>) {
     return () => {
       const path = toHref(location);
       const { key, state } = location;
@@ -225,7 +226,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       reverting = false;
       return;
     }
-    const location: HickoryLocation<Q> = locationFromBrowser(state);
+    const location: SessionLocation<Q> = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
     confirmNavigation(

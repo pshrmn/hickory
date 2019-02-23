@@ -21,11 +21,11 @@
   "dist/hickory-location-utils.umd.js": {
     "bundled": 1426,
     "minified": 677,
-    "gzipped": 379
+    "gzipped": 378
   },
   "dist/hickory-location-utils.min.js": {
     "bundled": 1426,
     "minified": 677,
-    "gzipped": 379
+    "gzipped": 378
   }
 }
