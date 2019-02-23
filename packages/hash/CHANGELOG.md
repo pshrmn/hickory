@@ -1,5 +1,7 @@
 ## Next
 
+- Remove event coordinator (handle events manually)
+- Listen for `popstate` instead of `hashchange`
 - `strict` types
 - Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.
 

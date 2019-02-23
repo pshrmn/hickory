@@ -1,5 +1,6 @@
 ## Next
 
+- Remove `createEventCoordinator`
 - `strict` types
 
 ## 1.0.2

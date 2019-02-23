@@ -3,7 +3,6 @@ import {
   ignorablePopstateEvent,
   getStateFromHistory,
   domExists,
-  createEventCoordinator,
   ensureEncodedPathname
 } from "@hickory/dom-utils";
 
@@ -61,15 +60,14 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     keygen
   } = Common<Q>(options);
 
-  // TODO: make more generic (no casting)
-  const removeEvents = createEventCoordinator({
-    popstate(event: Event) {
-      if (ignorablePopstateEvent(event as PopStateEvent)) {
-        return;
-      }
-      pop((event as PopStateEvent).state);
+  function popstate(event: PopStateEvent) {
+    if (ignorablePopstateEvent(event)) {
+      return;
     }
-  });
+    pop(event.state);
+  }
+
+  window.addEventListener("popstate", popstate, false);
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
@@ -163,7 +161,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     confirmWith,
     removeConfirmation,
     destroy() {
-      removeEvents();
+      window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       let setup: NavSetup<Q>;
