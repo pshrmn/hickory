@@ -34,7 +34,7 @@ This repository is a monorepo for the Hickory packages. Unless you are creating 
 Below is a quick introduction to the API of a history object.
 
 ```js
-import Browser from "@hickory/browser";
+import { Browser } from "@hickory/browser";
 
 const history = Browser();
 
@@ -54,20 +54,20 @@ history.respondWith(({ location, action, finish, cancel }) => {
 // There are two navigation methods that you can use to change locations.
 
 // navigate() is used for navigating to a new location.
-// It has three modes: "ANCHOR", "PUSH", and "REPLACE".
-// "PUSH" pushes the new location onto the session history after the current location
-// "REPLACE" replaces the current location in the session history
-// "ANCHOR" (default) acts like "PUSH" for new locations and "REPLACE" when the provided location
+// It has three modes: "anchor", "push", and "replace".
+// "push" pushes the new location onto the session history after the current location
+// "replace" replaces the current location in the session history
+// "anchor" (default) acts like "push" for new locations and "replace" when the provided location
 //   is the same as the current location (the same behavior as clicking an <a>).
 // The first argument to navigate() is either a string or a partial location object.
-// The optional second argument is the navigation mode ("ANCHOR" if not provided).
+// The optional second argument is the navigation mode ("anchor" if not provided).
 
-// mode = "ANCHOR"
+// mode = "anchor"
 history.navigate("/next-location");
-// mode = "PUSH"
-history.navigate("/new-location", "PUSH");
-// mode = "REPLACE"
-history.navigate("/same-location", "REPLACE");
+// mode = "push"
+history.navigate("/new-location", "push");
+// mode = "replace"
+history.navigate("/same-location", "replace");
 
 // go() is used to jump to existing locations in the session history.
 // negative values go backwards and positive values go forwards
@@ -111,13 +111,13 @@ Browser testing is provided thanks to BrowserStack
 
 The following browsers are currently tested:
 
-* Chrome 57 on Windows 10
-* Firefox 53 on Windows 10
-* Internet Explorer 11 on Windows 10
-* Edge 13 on Windows 10
-* Safari 10 on macOS Sierra
-* Safari on iOS 10.3
-* Chrome on Android 4.4
+- Chrome 63 on Windows 10
+- Firefox 57 on Windows 10
+- Internet Explorer 11 on Windows 10
+- Edge 16 on Windows 10
+- Safari 12 on macOS Mojave
+  <!--* Safari on iOS 10.3
+- Chrome on Android 4.4-->
 
 [version-badge]: https://img.shields.io/npm/v/hickory.svg
 [npm-hickory]: https://npmjs.com/package/hickory
