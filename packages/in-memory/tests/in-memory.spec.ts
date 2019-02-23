@@ -90,6 +90,6 @@ describe("Memory constructor", () => {
     expect(testHistory.index).toBe(0);
     testHistory.destroy();
     expect(testHistory.locations.length).toBe(0);
-    expect(testHistory.index).toBeUndefined();
+    expect(testHistory.index).toBe(-1);
   });
 });

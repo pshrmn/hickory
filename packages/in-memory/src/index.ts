@@ -62,7 +62,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
 
   const destroyLocations = () => {
     memoryHistory.locations = [];
-    memoryHistory.index = 0;
+    memoryHistory.index = -1;
   };
 
   let initialLocations: Array<SessionLocation<Q>> = (
