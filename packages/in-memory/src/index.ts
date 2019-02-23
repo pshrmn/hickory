@@ -1,4 +1,4 @@
-import { Common } from "@hickory/root";
+import { Common, prepNavigate } from "@hickory/root";
 
 import {
   History,
@@ -81,51 +81,30 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
     return stringifyLocation(location);
   }
 
-  function setupReplace(location: Location<Q>): NavSetup<Q> {
-    const finalLocation = keyed(
-      location,
-      keygen.minor(memoryHistory.location.key)
-    );
-    return {
-      action: "replace",
-      location: finalLocation,
-      finish: finalizeReplace(finalLocation)
-    };
-  }
+  const prep = prepNavigate({
+    utils: { stringifyLocation, keyed, keygen, genericLocation },
+    current: () => memoryHistory.location,
+    push(location: SessionLocation<Q>) {
+      return () => {
+        memoryHistory.location = location;
+        memoryHistory.index++;
+        memoryHistory.locations = [
+          ...memoryHistory.locations.slice(0, memoryHistory.index),
+          location
+        ];
+        memoryHistory.action = "push";
+      };
+    },
+    replace(location: SessionLocation<Q>) {
+      return () => {
+        memoryHistory.location = location;
+        memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
+        memoryHistory.action = "replace";
+      };
+    }
+  });
 
-  function setupPush(location: Location<Q>): NavSetup<Q> {
-    const finalLocation = keyed(
-      location,
-      keygen.major(memoryHistory.location.key)
-    );
-    return {
-      action: "push",
-      location: finalLocation,
-      finish: finalizePush(finalLocation)
-    };
-  }
-
-  function finalizePush(location: SessionLocation<Q>) {
-    return () => {
-      memoryHistory.location = location;
-      memoryHistory.index++;
-      memoryHistory.locations = [
-        ...memoryHistory.locations.slice(0, memoryHistory.index),
-        location
-      ];
-      memoryHistory.action = "push";
-    };
-  }
-
-  function finalizeReplace(location: SessionLocation<Q>) {
-    return () => {
-      memoryHistory.location = location;
-      memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
-      memoryHistory.action = "replace";
-    };
-  }
-
-  let responseHandler: ResponseHandler<Q>;
+  let responseHandler: ResponseHandler<Q> | undefined;
   const memoryHistory: InMemoryHistory<Q> = {
     // location
     location: initialLocations[initialIndex],
@@ -150,39 +129,21 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
       destroyLocations();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup<Q>;
-      const location = genericLocation(to);
-      switch (navType) {
-        case "anchor":
-          setup =
-            stringifyLocation(location) ===
-            stringifyLocation(memoryHistory.location)
-              ? setupReplace(location)
-              : setupPush(location);
-          break;
-        case "push":
-          setup = setupPush(location);
-          break;
-        case "replace":
-          setup = setupReplace(location);
-          break;
-        default:
-          throw new Error(`Invalid navigation type: ${navType}`);
-      }
+      const next = prep(to, navType);
       confirmNavigation(
         {
-          to: setup.location,
+          to: next.location,
           from: memoryHistory.location,
-          action: setup.action
+          action: next.action
         },
         () => {
           if (!responseHandler) {
             return;
           }
           responseHandler({
-            location: setup.location,
-            action: setup.action,
-            finish: setup.finish,
+            location: next.location,
+            action: next.action,
+            finish: next.finish,
             cancel: noop
           });
         }

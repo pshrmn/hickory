@@ -1,4 +1,4 @@
-import { Common } from "@hickory/root";
+import { Common, prepNavigate } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -99,59 +99,38 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     return encodeHashPath(stringifyLocation(location));
   }
 
-  function setupReplace(location: Location<Q>): NavSetup<Q> {
-    const finalLocation = keyed(
-      location,
-      keygen.minor(hashHistory.location.key)
-    );
-    return {
-      action: "replace",
-      finish: finalizeReplace(finalLocation),
-      location: finalLocation
-    };
-  }
+  const prep = prepNavigate({
+    utils: { stringifyLocation, keyed, keygen, genericLocation },
+    current: () => hashHistory.location,
+    push(location: SessionLocation<Q>) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        try {
+          window.history.pushState({ key, state }, "", path);
+        } catch (e) {
+          window.location.assign(path);
+        }
+        hashHistory.location = location;
+        hashHistory.action = "push";
+      };
+    },
+    replace(location: SessionLocation<Q>) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        try {
+          window.history.replaceState({ key, state }, "", path);
+        } catch (e) {
+          window.location.replace(path);
+        }
+        hashHistory.location = location;
+        hashHistory.action = "replace";
+      };
+    }
+  });
 
-  function setupPush(location: Location<Q>): NavSetup<Q> {
-    const finalLocation = keyed(
-      location,
-      keygen.major(hashHistory.location.key)
-    );
-    return {
-      action: "push",
-      finish: finalizePush(finalLocation),
-      location: finalLocation
-    };
-  }
-
-  function finalizePush(location: SessionLocation<Q>) {
-    return () => {
-      const path = toHref(location);
-      const { key, state } = location;
-      try {
-        window.history.pushState({ key, state }, "", path);
-      } catch (e) {
-        window.location.assign(path);
-      }
-      hashHistory.location = location;
-      hashHistory.action = "push";
-    };
-  }
-
-  function finalizeReplace(location: SessionLocation<Q>) {
-    return () => {
-      const path = toHref(location);
-      const { key, state } = location;
-      try {
-        window.history.replaceState({ key, state }, "", path);
-      } catch (e) {
-        window.location.replace(path);
-      }
-      hashHistory.location = location;
-      hashHistory.action = "replace";
-    };
-  }
-
-  let responseHandler: ResponseHandler<Q>;
+  let responseHandler: ResponseHandler<Q> | undefined;
   const hashHistory: History<Q> = {
     // location
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
@@ -174,39 +153,21 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup<Q>;
-      const location = genericLocation(to);
-      switch (navType) {
-        case "anchor":
-          setup =
-            stringifyLocation(location) ===
-            stringifyLocation(hashHistory.location)
-              ? setupReplace(location)
-              : setupPush(location);
-          break;
-        case "push":
-          setup = setupPush(location);
-          break;
-        case "replace":
-          setup = setupReplace(location);
-          break;
-        default:
-          throw new Error(`Invalid navigation type: ${navType}`);
-      }
+      const next = prep(to, navType);
       confirmNavigation(
         {
-          to: setup.location,
+          to: next.location,
           from: hashHistory.location,
-          action: setup.action
+          action: next.action
         },
         () => {
           if (!responseHandler) {
             return;
           }
           responseHandler({
-            location: setup.location,
-            action: setup.action,
-            finish: setup.finish,
+            location: next.location,
+            action: next.action,
+            finish: next.finish,
             cancel: noop
           });
         }
