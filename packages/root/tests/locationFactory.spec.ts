@@ -173,27 +173,6 @@ describe("locationFactory", () => {
       });
     });
 
-    describe("url", () => {
-      describe("string argument", () => {
-        it("is the provided string", () => {
-          const loc = genericLocation("/pathname?query=this#hash");
-          expect(loc.url).toBe("/pathname?query=this#hash");
-        });
-      });
-
-      describe("object argument", () => {
-        it("is the expected value", () => {
-          const input = {
-            pathname: "/test",
-            query: "one=two",
-            hash: "hello"
-          };
-          const output = genericLocation(input);
-          expect(output.url).toBe("/test?one=two#hello");
-        });
-      });
-    });
-
     describe("query", () => {
       describe("string argument", () => {
         it("is parsed from a string location", () => {

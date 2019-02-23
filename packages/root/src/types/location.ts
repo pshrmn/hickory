@@ -9,7 +9,6 @@ export type PartialLocation<Q> = Partial<LocationComponents<Q>>;
 
 export interface Location<Q> extends LocationComponents<Q> {
   rawPathname: string;
-  url: string;
 }
 
 // use SessionLocation instead of Location to prevent

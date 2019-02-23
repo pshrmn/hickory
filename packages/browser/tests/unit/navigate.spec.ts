@@ -173,7 +173,7 @@ describe("navigate()", () => {
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate(testHistory.location.url);
+        testHistory.navigate("/one");
       });
 
       it('navigate(sameLocation, "anchor")', () => {
@@ -183,7 +183,7 @@ describe("navigate()", () => {
         });
         testHistory.respondWith(router);
 
-        testHistory.navigate(testHistory.location.url, "anchor");
+        testHistory.navigate("/one", "anchor");
       });
 
       it('navigate(location, "replace")', () => {

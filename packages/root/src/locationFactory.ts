@@ -136,15 +136,9 @@ export default function locationFactory<Q>(
         );
       }
     }
-    const locationParts = {
+    return {
       ...details,
       rawPathname
-    };
-    const url = stringifyLocation(locationParts);
-
-    return {
-      ...locationParts,
-      url
     };
   }
 

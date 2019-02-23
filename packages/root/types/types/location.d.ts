@@ -7,7 +7,6 @@ export interface LocationComponents<Q> {
 export declare type PartialLocation<Q> = Partial<LocationComponents<Q>>;
 export interface Location<Q> extends LocationComponents<Q> {
     rawPathname: string;
-    url: string;
 }
 export interface SessionLocation<Q> extends Location<Q> {
     key: string;
