@@ -1,5 +1,6 @@
 ## Next
 
+- Remove `location.url`
 - Remove event coordinator (handle events manually)
 - `strict` types
 - Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.

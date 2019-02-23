@@ -1,5 +1,6 @@
 ## Next
 
+- Remove `location.url`
 - `strict` types
 - Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.
 
