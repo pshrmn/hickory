@@ -1,5 +1,6 @@
 ## Next
 
+- `strict` types
 - Rename `LocationDetails` to `LocationComponents`
 - Rename `HickoryLocation` to `SessionLocation`
 - Rename `KeylessLocation` to `Location`

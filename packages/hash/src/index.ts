@@ -51,7 +51,7 @@ function noop() {}
 
 function Hash<Q>(options: Options<Q> = {}): History<Q> {
   if (!domExists()) {
-    return;
+    throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
   if (!options.raw) {
@@ -74,8 +74,8 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
   } = hashEncoderAndDecoder(options.hashType);
 
   const removeEvents = createEventCoordinator({
-    hashchange: (event: PopStateEvent) => {
-      pop(event.state);
+    hashchange: (event: Event) => {
+      pop((event as PopStateEvent).state);
     }
   });
 
