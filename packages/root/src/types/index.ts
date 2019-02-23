@@ -1,9 +1,9 @@
 export {
-  LocationDetails,
+  LocationComponents,
   PartialLocation,
-  HickoryLocation,
+  SessionLocation,
   AnyLocation,
-  KeylessLocation
+  Location
 } from "./location";
 
 export {

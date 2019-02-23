@@ -1,5 +1,8 @@
 ## Next
 
+- Rename `LocationDetails` to `LocationComponents`
+- Rename `HickoryLocation` to `SessionLocation`
+- Rename `KeylessLocation` to `Location`
 - Change location factory API: `createPath` -> `stringify`, `createLocation` -> `genericLocation` (with `keyed` to add a key).
 
 ## 2.0.0-alpha.1

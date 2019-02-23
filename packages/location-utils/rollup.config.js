@@ -6,7 +6,7 @@ const deps = getDeps(pkg);
 
 const input = "src/index.ts";
 const sourcemap = false;
-const name = "HickoryLocationUtils";
+const name = "SessionLocationUtils";
 
 module.exports = [
   {

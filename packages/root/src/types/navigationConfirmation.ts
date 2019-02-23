@@ -1,9 +1,9 @@
-import { HickoryLocation } from "./location";
+import { SessionLocation } from "./location";
 import { Action } from "./hickory";
 
 export interface NavigationInfo<Q> {
-  to: HickoryLocation<Q>;
-  from: HickoryLocation<Q>;
+  to: SessionLocation<Q>;
+  from: SessionLocation<Q>;
   action: Action;
 }
 

@@ -1,4 +1,4 @@
-import { KeylessLocation, HickoryLocation, PartialLocation } from "./location";
+import { Location, SessionLocation, PartialLocation } from "./location";
 
 export interface QueryFunctions<Q> {
   parse: (query?: string) => Q;
@@ -13,8 +13,8 @@ export interface LocationFactoryOptions<Q> {
 }
 
 export interface LocationMethods<Q> {
-  keyed(location: KeylessLocation<Q>, key: string): HickoryLocation<Q>;
-  genericLocation(value: string | object, state?: any): KeylessLocation<Q>;
-  stringifyLocation(location: HickoryLocation<Q>): string;
+  keyed(location: Location<Q>, key: string): SessionLocation<Q>;
+  genericLocation(value: string | object, state?: any): Location<Q>;
+  stringifyLocation(location: SessionLocation<Q>): string;
   stringifyLocation(location: PartialLocation<Q>): string;
 }

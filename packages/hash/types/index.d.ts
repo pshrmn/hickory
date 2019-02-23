@@ -1,5 +1,5 @@
-import { History, LocationDetails, HickoryLocation, PartialLocation, AnyLocation, Options as RootOptions } from "@hickory/root";
-export { History, HickoryLocation, PartialLocation, AnyLocation, LocationDetails };
+import { History, LocationComponents, SessionLocation, PartialLocation, Location, AnyLocation, Options as RootOptions } from "@hickory/root";
+export { History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
 export interface Options<Q> extends RootOptions<Q> {
     raw?: (pathname: string) => string;
     hashType?: string;

@@ -6,11 +6,11 @@ import {
 } from "@hickory/location-utils";
 
 import {
-  HickoryLocation,
+  SessionLocation,
   PartialLocation,
   AnyLocation,
-  LocationDetails,
-  KeylessLocation
+  LocationComponents,
+  Location
 } from "./types/location";
 import { ToArgument } from "./types/hickory";
 import {
@@ -57,7 +57,7 @@ export default function locationFactory<Q>(
     );
   }
 
-  function parsePath(value: string, state: any): LocationDetails<Q> {
+  function parsePath(value: string, state: any): LocationComponents<Q> {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
     let hash;
@@ -79,7 +79,7 @@ export default function locationFactory<Q>(
 
     const pathname = stripBaseSegment(value, baseSegment);
 
-    const details: LocationDetails<Q> = {
+    const details: LocationComponents<Q> = {
       hash,
       query,
       pathname
@@ -95,8 +95,8 @@ export default function locationFactory<Q>(
   function getDetails(
     partial: PartialLocation<Q>,
     state: any
-  ): LocationDetails<Q> {
-    const details: LocationDetails<Q> = {
+  ): LocationComponents<Q> {
+    const details: LocationComponents<Q> = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parseQuery() : partial.query
@@ -111,10 +111,7 @@ export default function locationFactory<Q>(
     return details;
   }
 
-  function genericLocation(
-    value: ToArgument<Q>,
-    state?: any
-  ): KeylessLocation<Q> {
+  function genericLocation(value: ToArgument<Q>, state?: any): Location<Q> {
     if (state === undefined) {
       state = null;
     }
@@ -151,10 +148,7 @@ export default function locationFactory<Q>(
     };
   }
 
-  function keyed(
-    location: KeylessLocation<Q>,
-    key: string
-  ): HickoryLocation<Q> {
+  function keyed(location: Location<Q>, key: string): SessionLocation<Q> {
     return {
       ...location,
       key
@@ -167,7 +161,7 @@ export default function locationFactory<Q>(
     return (
       baseSegment +
       completePathname(
-        (location as HickoryLocation<Q>).rawPathname || location.pathname || ""
+        (location as SessionLocation<Q>).rawPathname || location.pathname || ""
       ) +
       completeQuery(stringifyQuery(location.query)) +
       completeHash(location.hash)
