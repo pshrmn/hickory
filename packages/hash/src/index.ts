@@ -2,7 +2,6 @@ import { Common } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
-  createEventCoordinator,
   ensureEncodedPathname
 } from "@hickory/dom-utils";
 import hashEncoderAndDecoder from "./hashTypes";
@@ -73,11 +72,11 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
 
-  const removeEvents = createEventCoordinator({
-    hashchange: (event: Event) => {
-      pop((event as PopStateEvent).state);
-    }
-  });
+  function popstate(event: PopStateEvent) {
+    pop(event.state);
+  }
+
+  window.addEventListener("popstate", popstate, false);
 
   // when true, pop will run without attempting to get user confirmation
   let reverting = false;
@@ -172,7 +171,7 @@ function Hash<Q>(options: Options<Q> = {}): History<Q> {
     confirmWith,
     removeConfirmation,
     destroy() {
-      removeEvents();
+      window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       let setup: NavSetup<Q>;
