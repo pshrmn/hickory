@@ -1,4 +1,4 @@
-import { KeyFns } from "./types/keygen";
+import { KeyFns } from "./types/keyGenerator";
 
 function parse(key: string): Array<number> {
   return key.split(".").map((value: string): number => parseInt(value, 10));

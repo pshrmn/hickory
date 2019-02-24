@@ -1,13 +1,19 @@
-import { Common, prepNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationConfirmation
+} from "@hickory/root";
 
 import {
   History,
+  BlockingHistory,
   LocationComponents,
   SessionLocation,
   PartialLocation,
   AnyLocation,
   Location,
-  Options as RootOptions,
+  LocationUtilOptions,
   ToArgument,
   ResponseHandler,
   Action,
@@ -23,66 +29,35 @@ export {
   LocationComponents
 };
 
-export type InputLocations<Q> = Array<string | PartialLocation<Q>>;
+export type InputLocation<Q> = string | PartialLocation<Q>;
+export type InputLocations<Q> = Array<InputLocation<Q>>;
 
-export interface Options<Q> extends RootOptions<Q> {
+export interface SessionOptions<Q> {
   locations?: InputLocations<Q>;
   index?: number;
 }
 
-export interface ResetOptions<Q> {
-  locations?: InputLocations<Q>;
-  index?: number;
-}
+export type Options<Q> = LocationUtilOptions<Q> & SessionOptions<Q>;
 
-export interface InMemoryHistory<Q> extends History<Q> {
+export interface SessionHistory<Q> {
   locations: Array<SessionLocation<Q>>;
   index: number;
-  reset(options?: ResetOptions<Q>): void;
+  reset(options?: SessionOptions<Q>): void;
 }
 
-interface NavSetup<Q> {
-  action: Action;
-  location: SessionLocation<Q>;
-  finish(): void;
-}
+export type InMemoryHistory<Q> = History<Q> &
+  BlockingHistory<Q> &
+  SessionHistory<Q>;
 
 function noop() {}
 
 function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
-  const {
-    genericLocation,
-    keyed,
-    stringifyLocation,
-    confirmNavigation,
-    confirmWith,
-    removeConfirmation,
-    keygen
-  } = Common<Q>(options);
-
-  const destroyLocations = () => {
-    memoryHistory.locations = [];
-    memoryHistory.index = -1;
-  };
-
-  let initialLocations: Array<SessionLocation<Q>> = (
-    options.locations || ["/"]
-  ).map(loc => keyed(genericLocation(loc), keygen.major()));
-  let initialIndex = 0;
-  if (
-    options.index &&
-    options.index > 0 &&
-    options.index < initialLocations.length
-  ) {
-    initialIndex = options.index;
-  }
-
-  function toHref(location: AnyLocation<Q>): string {
-    return stringifyLocation(location);
-  }
-
-  const prep = prepNavigate({
-    utils: { stringifyLocation, keyed, keygen, genericLocation },
+  const locationUtilities = locationUtils(options);
+  const keygen = keyGenerator();
+  const blocking = navigationConfirmation<Q>();
+  const prep = prepareNavigate({
+    locationUtils: locationUtilities,
+    keygen,
     current: () => memoryHistory.location,
     push(location: SessionLocation<Q>) {
       return () => {
@@ -104,6 +79,32 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
     }
   });
 
+  const destroyLocations = () => {
+    memoryHistory.locations = [];
+    memoryHistory.index = -1;
+  };
+
+  let initialLocations: Array<SessionLocation<Q>> = (
+    options.locations || ["/"]
+  ).map((loc: InputLocation<Q>) =>
+    locationUtilities.keyed(
+      locationUtilities.genericLocation(loc),
+      keygen.major()
+    )
+  );
+  let initialIndex = 0;
+  if (
+    options.index &&
+    options.index > 0 &&
+    options.index < initialLocations.length
+  ) {
+    initialIndex = options.index;
+  }
+
+  function toHref(location: AnyLocation<Q>): string {
+    return locationUtilities.stringifyLocation(location);
+  }
+
   let responseHandler: ResponseHandler<Q> | undefined;
   const memoryHistory: InMemoryHistory<Q> = {
     // location
@@ -123,14 +124,14 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
     },
     // convenience
     toHref,
-    confirmWith,
-    removeConfirmation,
+    confirmWith: blocking.confirmWith,
+    removeConfirmation: blocking.removeConfirmation,
     destroy(): void {
       destroyLocations();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      confirmNavigation(
+      blocking.confirmNavigation(
         {
           to: next.location,
           from: memoryHistory.location,
@@ -169,7 +170,7 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
         } else {
           const location: SessionLocation<Q> =
             memoryHistory.locations[newIndex];
-          confirmNavigation(
+          blocking.confirmNavigation(
             {
               to: location,
               from: memoryHistory.location,
@@ -194,9 +195,13 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
         }
       }
     },
-    reset(options?: ResetOptions<Q>) {
+    reset(options?: SessionOptions<Q>) {
       memoryHistory.locations = ((options && options.locations) || ["/"]).map(
-        loc => keyed(genericLocation(loc), keygen.major())
+        loc =>
+          locationUtilities.keyed(
+            locationUtilities.genericLocation(loc),
+            keygen.major()
+          )
       );
       memoryHistory.index =
         options && options.index != undefined ? options.index : 0;

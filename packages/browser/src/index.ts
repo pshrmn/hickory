@@ -1,4 +1,9 @@
-import { Common, prepNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationConfirmation
+} from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -8,12 +13,13 @@ import {
 
 import {
   History,
+  BlockingHistory,
   LocationComponents,
   PartialLocation,
   SessionLocation,
   AnyLocation,
   Location,
-  Options as RootOptions,
+  LocationUtilOptions,
   ToArgument,
   ResponseHandler,
   Action,
@@ -29,9 +35,8 @@ export {
   LocationComponents
 };
 
-export interface Options<Q> extends RootOptions<Q> {
-  raw?: (pathname: string) => string;
-}
+export type Options<Q> = LocationUtilOptions<Q>;
+export type BrowserHistory<Q> = History<Q> & BlockingHistory<Q>;
 
 function noop() {}
 
@@ -44,46 +49,12 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     options.raw = ensureEncodedPathname;
   }
 
-  const {
-    keyed,
-    genericLocation,
-    stringifyLocation,
-    confirmNavigation,
-    confirmWith,
-    removeConfirmation,
-    keygen
-  } = Common<Q>(options);
-
-  function popstate(event: PopStateEvent) {
-    if (ignorablePopstateEvent(event)) {
-      return;
-    }
-    pop(event.state);
-  }
-
-  window.addEventListener("popstate", popstate, false);
-
-  // when true, pop will run without attempting to get user confirmation
-  let reverting = false;
-
-  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
-    const { pathname, search, hash } = window.location;
-    const path = pathname + search + hash;
-    let { key, state } = providedState || getStateFromHistory();
-    if (!key) {
-      key = keygen.major();
-      window.history.replaceState({ key, state }, "", path);
-    }
-    const location = genericLocation(path, state);
-    return keyed(location, key);
-  }
-
-  function toHref(location: AnyLocation<Q>): string {
-    return stringifyLocation(location);
-  }
-
-  const prep = prepNavigate({
-    utils: { stringifyLocation, keyed, keygen, genericLocation },
+  const locationUtilities = locationUtils(options);
+  const keygen = keyGenerator();
+  const blocking = navigationConfirmation<Q>();
+  const prepare = prepareNavigate({
+    locationUtils: locationUtilities,
+    keygen,
     current: () => browserHistory.location,
     push(location: SessionLocation<Q>) {
       return () => {
@@ -113,8 +84,33 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     }
   });
 
+  function popstate(event: PopStateEvent) {
+    if (ignorablePopstateEvent(event)) {
+      return;
+    }
+    pop(event.state);
+  }
+
+  window.addEventListener("popstate", popstate, false);
+
+  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
+    const { pathname, search, hash } = window.location;
+    const path = pathname + search + hash;
+    let { key, state } = providedState || getStateFromHistory();
+    if (!key) {
+      key = keygen.major();
+      window.history.replaceState({ key, state }, "", path);
+    }
+    const location = locationUtilities.genericLocation(path, state);
+    return locationUtilities.keyed(location, key);
+  }
+
+  function toHref(location: AnyLocation<Q>): string {
+    return locationUtilities.stringifyLocation(location);
+  }
+
   let responseHandler: ResponseHandler<Q> | undefined;
-  const browserHistory: History<Q> = {
+  const browserHistory: BrowserHistory<Q> = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
@@ -131,14 +127,14 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     },
     // convenience
     toHref,
-    confirmWith,
-    removeConfirmation,
+    confirmWith: blocking.confirmWith,
+    removeConfirmation: blocking.removeConfirmation,
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      const next = prep(to, navType);
-      confirmNavigation(
+      const next = prepare(to, navType);
+      blocking.confirmNavigation(
         {
           to: next.location,
           from: browserHistory.location,
@@ -162,6 +158,9 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     }
   };
 
+  // when true, pop will run without attempting to get user confirmation
+  let reverting = false;
+
   function pop(state: object): void {
     // when we are reverting a pop (the user did not confirm navigation), we
     // just need to reset the boolean and return. The browser has already taken
@@ -173,7 +172,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     const location = locationFromBrowser(state);
     const currentKey = browserHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
-    confirmNavigation(
+    blocking.confirmNavigation(
       {
         to: location,
         from: browserHistory.location,

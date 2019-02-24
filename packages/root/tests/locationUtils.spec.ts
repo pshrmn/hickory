@@ -1,5 +1,5 @@
 import "jest";
-import { Common } from "../src";
+import { locationUtils } from "../src";
 import * as qs from "qs";
 
 import { SessionLocation } from "../src/types";
@@ -10,7 +10,7 @@ describe("locationFactory", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
-          const creators = Common({
+          const creators = locationUtils({
             baseSegment: value
           });
         }).toThrow();
@@ -30,7 +30,7 @@ describe("locationFactory", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const common = Common();
+          const common = locationUtils();
           const parsed = common.genericLocation("/test?one=two");
           expect(parsed.query).toBe("one=two");
           const stringified = common.stringifyLocation({
@@ -45,7 +45,7 @@ describe("locationFactory", () => {
         it("calls parse when creating a location", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = Common({
+          const common = locationUtils({
             query: { parse, stringify }
           });
           const location = common.genericLocation("/test?two=dos");
@@ -55,7 +55,7 @@ describe("locationFactory", () => {
         it("calls stringify when creating a path", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = Common({
+          const common = locationUtils({
             query: { parse, stringify }
           });
           const path = common.stringifyLocation({ pathname: "/test" });
@@ -66,7 +66,7 @@ describe("locationFactory", () => {
   });
 
   describe("genericLocation", () => {
-    const { genericLocation } = Common();
+    const { genericLocation } = locationUtils();
 
     describe("pathname", () => {
       describe("string argument", () => {
@@ -76,7 +76,7 @@ describe("locationFactory", () => {
         });
 
         describe("baseSegment", () => {
-          const { genericLocation } = Common({
+          const { genericLocation } = locationUtils({
             baseSegment: "/prefix"
           });
 
@@ -118,7 +118,7 @@ describe("locationFactory", () => {
         });
 
         it("does not decode when decode=false", () => {
-          const { genericLocation } = Common({ decode: false });
+          const { genericLocation } = locationUtils({ decode: false });
           const input = {
             pathname: "/t%C3%B6rt%C3%A9nelem"
           };
@@ -141,7 +141,7 @@ describe("locationFactory", () => {
           });
 
           it("does not throw URIError when decode=false", () => {
-            const { genericLocation } = Common({ decode: false });
+            const { genericLocation } = locationUtils({ decode: false });
             const input = {
               pathname: "/bad%"
             };
@@ -155,7 +155,7 @@ describe("locationFactory", () => {
 
     describe("rawPathname", () => {
       it("is result of user provided `raw` option", () => {
-        const { genericLocation } = Common({
+        const { genericLocation } = locationUtils({
           raw: path =>
             path
               .split("")
@@ -204,7 +204,7 @@ describe("locationFactory", () => {
 
       describe("query.parse option", () => {
         it("uses the provided query parsing function to make the query value", () => {
-          const { genericLocation } = Common({
+          const { genericLocation } = locationUtils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
@@ -287,7 +287,7 @@ describe("locationFactory", () => {
   });
 
   describe("keyed", () => {
-    const { keyed, genericLocation } = Common();
+    const { keyed, genericLocation } = locationUtils();
 
     it("attaches a key to a keyless location", () => {
       const key = "3.1.4";
@@ -298,7 +298,7 @@ describe("locationFactory", () => {
   });
 
   describe("stringifyLocation", () => {
-    const { stringifyLocation } = Common();
+    const { stringifyLocation } = locationUtils();
 
     describe("pathname", () => {
       it("begins the returned URI with the pathname", () => {
@@ -334,7 +334,9 @@ describe("locationFactory", () => {
 
       describe("baseSegment", () => {
         it("adds the baseSegment to the generated string", () => {
-          const { stringifyLocation } = Common({ baseSegment: "/prefix" });
+          const { stringifyLocation } = locationUtils({
+            baseSegment: "/prefix"
+          });
           const location = {
             pathname: "/one/two/three",
             search: "",
@@ -375,7 +377,7 @@ describe("locationFactory", () => {
 
       describe("query.stringify option", () => {
         it("uses the provided stringify function to turn query into a string", () => {
-          const { stringifyLocation } = Common({
+          const { stringifyLocation } = locationUtils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify

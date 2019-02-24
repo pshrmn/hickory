@@ -1,5 +1,6 @@
 ## Next
 
+- Use modular `@hickory/root` exports
 - Remove `location.url`
 - Remove event coordinator (handle events manually)
 - `strict` types
