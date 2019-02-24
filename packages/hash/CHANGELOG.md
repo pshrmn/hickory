@@ -1,5 +1,6 @@
 ## Next
 
+- Remove navigation blocking from `Hash`
 - Remove `location.url`
 - Remove event coordinator (handle events manually)
 - Listen for `popstate` instead of `hashchange`
