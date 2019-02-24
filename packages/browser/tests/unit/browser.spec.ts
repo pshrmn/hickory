@@ -27,8 +27,6 @@ describe("Browser constructor", () => {
       "action",
       "toHref",
       "respondWith",
-      "confirmWith",
-      "removeConfirmation",
       "destroy"
     ];
     expectedProperties.forEach(property => {

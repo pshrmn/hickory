@@ -1,9 +1,4 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationConfirmation
-} from "@hickory/root";
+import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -12,35 +7,22 @@ import {
 } from "@hickory/dom-utils";
 
 import {
-  History,
-  BlockingHistory,
-  LocationComponents,
-  PartialLocation,
   SessionLocation,
   AnyLocation,
-  Location,
-  LocationUtilOptions,
-  ToArgument,
   ResponseHandler,
-  Action,
-  NavType
+  ToArgument,
+  NavType,
+  Action
 } from "@hickory/root";
+import { BrowserHistory, Options } from "./types";
 
-export {
-  History,
-  SessionLocation,
-  PartialLocation,
-  AnyLocation,
-  Location,
-  LocationComponents
-};
-
-export type Options<Q> = LocationUtilOptions<Q>;
-export type BrowserHistory<Q> = History<Q> & BlockingHistory<Q>;
+export * from "./types";
 
 function noop() {}
 
-function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
+export function Browser<Q = string>(
+  options: Options<Q> = {}
+): BrowserHistory<Q> {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
@@ -51,7 +33,7 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const blocking = navigationConfirmation<Q>();
+
   const prepare = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -127,31 +109,21 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     },
     // convenience
     toHref,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       const next = prepare(to, navType);
-      blocking.confirmNavigation(
-        {
-          to: next.location,
-          from: browserHistory.location,
-          action: next.action
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location: next.location,
-            action: next.action,
-            finish: next.finish,
-            cancel: noop
-          });
-        }
-      );
+
+      if (!responseHandler) {
+        return;
+      }
+      responseHandler({
+        location: next.location,
+        action: next.action,
+        finish: next.finish,
+        cancel: noop
+      });
     },
     go(num: number): void {
       window.history.go(num);
@@ -172,40 +144,26 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     const location = locationFromBrowser(state);
     const currentKey = browserHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
-    blocking.confirmNavigation(
-      {
-        to: location,
-        from: browserHistory.location,
-        action: "pop"
+
+    if (!responseHandler) {
+      return;
+    }
+    responseHandler({
+      location,
+      action: "pop",
+      finish: () => {
+        browserHistory.location = location;
+        browserHistory.action = "pop";
       },
-      () => {
-        if (!responseHandler) {
+      cancel: (nextAction: Action) => {
+        if (nextAction === "pop") {
           return;
         }
-        responseHandler({
-          location,
-          action: "pop",
-          finish: () => {
-            browserHistory.location = location;
-            browserHistory.action = "pop";
-          },
-          cancel: (nextAction: Action) => {
-            if (nextAction === "pop") {
-              return;
-            }
-            reverting = true;
-            window.history.go(-1 * diff);
-          }
-        });
-      },
-      () => {
         reverting = true;
         window.history.go(-1 * diff);
       }
-    );
+    });
   }
 
   return browserHistory;
 }
-
-export { Browser };

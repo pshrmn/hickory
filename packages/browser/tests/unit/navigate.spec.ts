@@ -275,32 +275,4 @@ describe("navigate()", () => {
       testHistory.navigate("/two");
     });
   });
-
-  describe("with a confirmation function", () => {
-    it("calls response pending after the user confirms the navigation", () => {
-      const testHistory = Browser();
-      const router = jest.fn();
-      const confirm = (info, confirm, prevent) => {
-        confirm();
-      };
-      testHistory.confirmWith(confirm);
-      testHistory.respondWith(router); // calls router
-
-      testHistory.navigate("/next");
-      expect(router.mock.calls.length).toBe(2);
-    });
-
-    it("does not call response pending when the user prevents the navigation", () => {
-      const testHistory = Browser();
-      const router = jest.fn();
-      const confirm = (info, confirm, prevent) => {
-        prevent();
-      };
-      testHistory.confirmWith(confirm);
-      testHistory.respondWith(router); // calls router
-
-      testHistory.navigate("/next");
-      expect(router.mock.calls.length).toBe(1);
-    });
-  });
 });

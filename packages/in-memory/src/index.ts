@@ -1,60 +1,29 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationConfirmation
-} from "@hickory/root";
+import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
 
 import {
-  History,
-  BlockingHistory,
-  LocationComponents,
   SessionLocation,
-  PartialLocation,
   AnyLocation,
-  Location,
-  LocationUtilOptions,
   ToArgument,
   ResponseHandler,
-  Action,
   NavType
 } from "@hickory/root";
 
-export {
-  History,
-  SessionLocation,
-  PartialLocation,
-  AnyLocation,
-  Location,
-  LocationComponents
-};
-
-export type InputLocation<Q> = string | PartialLocation<Q>;
-export type InputLocations<Q> = Array<InputLocation<Q>>;
-
-export interface SessionOptions<Q> {
-  locations?: InputLocations<Q>;
-  index?: number;
-}
-
-export type Options<Q> = LocationUtilOptions<Q> & SessionOptions<Q>;
-
-export interface SessionHistory<Q> {
-  locations: Array<SessionLocation<Q>>;
-  index: number;
-  reset(options?: SessionOptions<Q>): void;
-}
-
-export type InMemoryHistory<Q> = History<Q> &
-  BlockingHistory<Q> &
-  SessionHistory<Q>;
+import {
+  Options,
+  InMemoryHistory,
+  InputLocation,
+  SessionOptions
+} from "./types";
 
 function noop() {}
 
-function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
+export * from "./types";
+
+export function InMemory<Q = string>(
+  options: Options<Q> = {}
+): InMemoryHistory<Q> {
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const blocking = navigationConfirmation<Q>();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -124,31 +93,20 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
     },
     // convenience
     toHref,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
     destroy(): void {
       destroyLocations();
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      blocking.confirmNavigation(
-        {
-          to: next.location,
-          from: memoryHistory.location,
-          action: next.action
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location: next.location,
-            action: next.action,
-            finish: next.finish,
-            cancel: noop
-          });
-        }
-      );
+      if (!responseHandler) {
+        return;
+      }
+      responseHandler({
+        location: next.location,
+        action: next.action,
+        finish: next.finish,
+        cancel: noop
+      });
     },
     go(num?: number): void {
       if (num == null || num === 0) {
@@ -170,28 +128,19 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
         } else {
           const location: SessionLocation<Q> =
             memoryHistory.locations[newIndex];
-          blocking.confirmNavigation(
-            {
-              to: location,
-              from: memoryHistory.location,
-              action: "push"
+          if (!responseHandler) {
+            return;
+          }
+          responseHandler({
+            location,
+            action: "pop",
+            finish: () => {
+              memoryHistory.index = newIndex;
+              memoryHistory.location = location;
+              memoryHistory.action = "pop";
             },
-            () => {
-              if (!responseHandler) {
-                return;
-              }
-              responseHandler({
-                location,
-                action: "pop",
-                finish: () => {
-                  memoryHistory.index = newIndex;
-                  memoryHistory.location = location;
-                  memoryHistory.action = "pop";
-                },
-                cancel: noop
-              });
-            }
-          );
+            cancel: noop
+          });
         }
       }
     },
@@ -228,5 +177,3 @@ function InMemory<Q = string>(options: Options<Q> = {}): InMemoryHistory<Q> {
 
   return memoryHistory;
 }
-
-export { InMemory };

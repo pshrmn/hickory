@@ -1,9 +1,4 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationConfirmation
-} from "@hickory/root";
+import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -12,34 +7,16 @@ import {
 import hashEncoderAndDecoder from "./hashTypes";
 
 import {
-  History,
-  BlockingHistory,
-  LocationComponents,
   SessionLocation,
-  PartialLocation,
-  Location,
   AnyLocation,
-  LocationUtilOptions,
   ToArgument,
   ResponseHandler,
   Action,
   NavType
 } from "@hickory/root";
+import { Options, HashHistory } from "./types";
 
-export {
-  History,
-  SessionLocation,
-  PartialLocation,
-  AnyLocation,
-  Location,
-  LocationComponents
-};
-
-export interface HashOptions {
-  hashType?: string;
-}
-export type Options<Q> = LocationUtilOptions<Q> & HashOptions;
-export type HashHistory<Q> = History<Q> & BlockingHistory<Q>;
+export * from "./types";
 
 function ensureHash(encode: (path: string) => string): void {
   if (window.location.hash === "") {
@@ -49,7 +26,7 @@ function ensureHash(encode: (path: string) => string): void {
 
 function noop() {}
 
-function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
+export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
@@ -60,7 +37,6 @@ function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const blocking = navigationConfirmation<Q>();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -145,31 +121,20 @@ function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
     },
     // convenience
     toHref,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      blocking.confirmNavigation(
-        {
-          to: next.location,
-          from: hashHistory.location,
-          action: next.action
-        },
-        () => {
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location: next.location,
-            action: next.action,
-            finish: next.finish,
-            cancel: noop
-          });
-        }
-      );
+      if (!responseHandler) {
+        return;
+      }
+      responseHandler({
+        location: next.location,
+        action: next.action,
+        finish: next.finish,
+        cancel: noop
+      });
     },
     go(num: number): void {
       window.history.go(num);
@@ -187,40 +152,25 @@ function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
     const location: SessionLocation<Q> = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
-    blocking.confirmNavigation(
-      {
-        to: location,
-        from: hashHistory.location,
-        action: "pop"
+    if (!responseHandler) {
+      return;
+    }
+    responseHandler({
+      location,
+      action: "pop",
+      finish: () => {
+        hashHistory.location = location;
+        hashHistory.action = "pop";
       },
-      () => {
-        if (!responseHandler) {
+      cancel: (nextAction: Action) => {
+        if (nextAction === "pop") {
           return;
         }
-        responseHandler({
-          location,
-          action: "pop",
-          finish: () => {
-            hashHistory.location = location;
-            hashHistory.action = "pop";
-          },
-          cancel: (nextAction: Action) => {
-            if (nextAction === "pop") {
-              return;
-            }
-            reverting = true;
-            window.history.go(-1 * diff);
-          }
-        });
-      },
-      () => {
         reverting = true;
         window.history.go(-1 * diff);
       }
-    );
+    });
   }
 
   return hashHistory;
 }
-
-export { Hash };

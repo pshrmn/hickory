@@ -11,8 +11,6 @@ describe("Memory constructor", () => {
       "action",
       "toHref",
       "respondWith",
-      "confirmWith",
-      "removeConfirmation",
       "destroy"
     ];
     expectedProperties.forEach(property => {

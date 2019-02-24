@@ -1,5 +1,6 @@
 ## Next
 
+- Remove navigation blocking from `Browser`
 - Use modular `@hickory/root` exports
 - Remove `location.url`
 - Remove event coordinator (handle events manually)

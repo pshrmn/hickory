@@ -1,9 +1,3 @@
-import { History, BlockingHistory, LocationComponents, SessionLocation, PartialLocation, Location, AnyLocation, LocationUtilOptions } from "@hickory/root";
-export { History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
-export interface HashOptions {
-    hashType?: string;
-}
-export declare type Options<Q> = LocationUtilOptions<Q> & HashOptions;
-export declare type HashHistory<Q> = History<Q> & BlockingHistory<Q>;
-declare function Hash<Q>(options?: Options<Q>): HashHistory<Q>;
-export { Hash };
+import { Options, HashHistory } from "./types";
+export * from "./types";
+export declare function Hash<Q>(options?: Options<Q>): HashHistory<Q>;
