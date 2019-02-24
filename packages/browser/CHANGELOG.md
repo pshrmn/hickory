@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.2
 
 - Remove navigation blocking from `Browser`
 - Use modular `@hickory/root` exports

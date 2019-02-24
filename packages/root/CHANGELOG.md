@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.2
 
 - Export `locationUtils` function for creating a history's location utility functions
 - Export `keyGenerator` function for creating a key generator.

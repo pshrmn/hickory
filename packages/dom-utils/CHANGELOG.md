@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.2
 
 - Remove `createEventCoordinator`
 - `strict` types
