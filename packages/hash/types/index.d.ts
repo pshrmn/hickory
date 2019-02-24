@@ -1,8 +1,9 @@
-import { History, LocationComponents, SessionLocation, PartialLocation, Location, AnyLocation, Options as RootOptions } from "@hickory/root";
+import { History, BlockingHistory, LocationComponents, SessionLocation, PartialLocation, Location, AnyLocation, LocationUtilOptions } from "@hickory/root";
 export { History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
-export interface Options<Q> extends RootOptions<Q> {
-    raw?: (pathname: string) => string;
+export interface HashOptions {
     hashType?: string;
 }
-declare function Hash<Q>(options?: Options<Q>): History<Q>;
+export declare type Options<Q> = LocationUtilOptions<Q> & HashOptions;
+export declare type HashHistory<Q> = History<Q> & BlockingHistory<Q>;
+declare function Hash<Q>(options?: Options<Q>): HashHistory<Q>;
 export { Hash };

@@ -1,7 +1,3 @@
-export interface KeyMethods {
-  keygen: KeyFns;
-}
-
 export interface KeyFns {
   major(previous?: string): string;
   minor(current: string): string;

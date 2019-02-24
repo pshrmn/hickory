@@ -2,17 +2,17 @@ import {
   PrepNavigateArgs,
   Preparer,
   PreppedNavigation
-} from "./types/prepNavigate";
-import { ToArgument, NavType } from "./types/hickory";
+} from "./types/prepareNavigate";
+import { ToArgument, NavType } from "./types/navigation";
 import { Location } from "./types/location";
 
-export default function prepNavigate<Q>(
+export default function prepareNavigate<Q>(
   args: PrepNavigateArgs<Q>
 ): Preparer<Q> {
   function prepReplace(location: Location<Q>): PreppedNavigation<Q> {
-    const keyedLocation = args.utils.keyed(
+    const keyedLocation = args.locationUtils.keyed(
       location,
-      args.utils.keygen.minor(args.current().key)
+      args.keygen.minor(args.current().key)
     );
     return {
       action: "replace",
@@ -22,9 +22,9 @@ export default function prepNavigate<Q>(
   }
 
   function prepPush(location: Location<Q>): PreppedNavigation<Q> {
-    const keyedLocation = args.utils.keyed(
+    const keyedLocation = args.locationUtils.keyed(
       location,
-      args.utils.keygen.major(args.current().key)
+      args.keygen.major(args.current().key)
     );
     return {
       action: "push",
@@ -34,11 +34,11 @@ export default function prepNavigate<Q>(
   }
 
   return function prep(to: ToArgument<Q>, navType: NavType) {
-    const location = args.utils.genericLocation(to);
+    const location = args.locationUtils.genericLocation(to);
     switch (navType) {
       case "anchor":
-        return args.utils.stringifyLocation(location) ===
-          args.utils.stringifyLocation(args.current())
+        return args.locationUtils.stringifyLocation(location) ===
+          args.locationUtils.stringifyLocation(args.current())
           ? prepReplace(location)
           : prepPush(location);
       case "push":

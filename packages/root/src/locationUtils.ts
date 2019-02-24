@@ -12,11 +12,8 @@ import {
   LocationComponents,
   Location
 } from "./types/location";
-import { ToArgument } from "./types/hickory";
-import {
-  LocationFactoryOptions,
-  LocationMethods
-} from "./types/locationFactory";
+import { ToArgument } from "./types/navigation";
+import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
 
 function defaultParseQuery(query?: string): any {
   return query ? query : "";
@@ -34,9 +31,13 @@ function isValidBase(baseSegment: string): boolean {
   );
 }
 
+function defaultRaw(p: string): string {
+  return p;
+}
+
 export default function locationFactory<Q>(
-  options: LocationFactoryOptions<Q> = {}
-): LocationMethods<Q> {
+  options: LocationUtilOptions<Q> = {}
+): LocationUtils<Q> {
   const {
     query: {
       parse: parseQuery = defaultParseQuery,
@@ -44,7 +45,7 @@ export default function locationFactory<Q>(
     } = {},
     decode = true,
     baseSegment = "",
-    raw = (p: string): string => p
+    raw = defaultRaw
   } = options;
 
   if (baseSegment !== "" && !isValidBase(baseSegment)) {

@@ -1,11 +1,11 @@
 import "jest";
-import { Common } from "../src";
+import { navigationConfirmation } from "../src";
 import { SessionLocation } from "../src/types/location";
 
-describe("createNavigationConfirmation", () => {
+describe("navigationConfirmation", () => {
   describe("confirmWith", () => {
     it("registers the function passed to it", () => {
-      const { confirmWith, confirmNavigation } = Common();
+      const { confirmWith, confirmNavigation } = navigationConfirmation();
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
@@ -20,7 +20,11 @@ describe("createNavigationConfirmation", () => {
 
   describe("removeConfirmation", () => {
     it("does not call confirmation function after it has been removed", () => {
-      const { confirmWith, confirmNavigation, removeConfirmation } = Common();
+      const {
+        confirmWith,
+        confirmNavigation,
+        removeConfirmation
+      } = navigationConfirmation();
       const allowNavigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
@@ -39,7 +43,7 @@ describe("createNavigationConfirmation", () => {
 
   describe("confirmNavigation", () => {
     it("calls confirm function if there is no confirmation function", () => {
-      const { confirmNavigation } = Common();
+      const { confirmNavigation } = navigationConfirmation();
 
       const confirm = jest.fn();
       const prevent = jest.fn();
@@ -58,7 +62,7 @@ describe("createNavigationConfirmation", () => {
     });
 
     it("calls the confirm function with the info confirm/prevent fns", () => {
-      const { confirmWith, confirmNavigation } = Common();
+      const { confirmWith, confirmNavigation } = navigationConfirmation();
 
       const allowNavigation = jest.fn();
       const confirm = () => {};
@@ -88,7 +92,7 @@ describe("createNavigationConfirmation", () => {
     });
 
     it("will call a no-op function when cancelling if prevent function not provided", () => {
-      const { confirmWith, confirmNavigation } = Common();
+      const { confirmWith, confirmNavigation } = navigationConfirmation();
 
       function autoPrevent(info: any, confirm: any, prevent: () => void) {
         prevent();
@@ -113,7 +117,7 @@ describe("createNavigationConfirmation", () => {
     });
 
     it("does not set confirm function if confirmWith is passed a non-function", () => {
-      const { confirmWith } = Common();
+      const { confirmWith } = navigationConfirmation();
 
       const nonFuncs = [
         null,

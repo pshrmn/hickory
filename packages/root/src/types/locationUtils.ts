@@ -5,14 +5,16 @@ export interface QueryFunctions<Q> {
   stringify: (query?: Q) => string;
 }
 
-export interface LocationFactoryOptions<Q> {
+export type RawPathname = (pathname: string) => string;
+
+export interface LocationUtilOptions<Q> {
   query?: QueryFunctions<Q>;
   decode?: boolean;
   baseSegment?: string;
-  raw?: (pathname: string) => string;
+  raw?: RawPathname;
 }
 
-export interface LocationMethods<Q> {
+export interface LocationUtils<Q> {
   keyed(location: Location<Q>, key: string): SessionLocation<Q>;
   genericLocation(value: string | object, state?: any): Location<Q>;
   stringifyLocation(location: SessionLocation<Q>): string;

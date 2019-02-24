@@ -1,6 +1,7 @@
+export { History } from "./hickory";
 export { LocationComponents, PartialLocation, SessionLocation, AnyLocation, Location } from "./location";
-export { History, ToArgument, Action, NavType, PendingNavigation, ResponseHandler, Options, CommonHistory } from "./hickory";
-export { KeyMethods, KeyFns } from "./keygen";
-export { QueryFunctions, LocationFactoryOptions, LocationMethods } from "./locationFactory";
-export { NavigationInfo, ConfirmationFunction, ConfirmationMethods } from "./navigationConfirmation";
-export { PreppedNavigation, Preparer, PrepNavigateArgs } from "./prepNavigate";
+export { ToArgument, Action, NavType, PendingNavigation, ResponseHandler } from "./navigation";
+export { KeyFns } from "./keyGenerator";
+export { LocationUtilOptions, QueryFunctions, RawPathname, LocationUtils } from "./locationUtils";
+export { NavigationInfo, ConfirmationFunction, ConfirmationMethods, BlockingHistory } from "./navigationConfirmation";
+export { PreppedNavigation, Preparer, PrepNavigateArgs } from "./prepareNavigate";

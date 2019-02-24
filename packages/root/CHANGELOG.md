@@ -1,5 +1,9 @@
 ## Next
 
+- Export `locationUtils` function for creating a history's location utility functions
+- Export `keyGenerator` function for creating a key generator.
+- Export `navigationConfirmation` function for creating a navigation blocker.
+- Remove `Common` export
 - Export `prepNavigate` method for history `navigate` methods.
 - Remove `location.url`
 - `strict` types
