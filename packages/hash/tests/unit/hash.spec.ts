@@ -34,8 +34,6 @@ describe("Hash constructor", () => {
       "action",
       "toHref",
       "respondWith",
-      "confirmWith",
-      "removeConfirmation",
       "destroy"
     ];
     expectedProperties.forEach(property => {
