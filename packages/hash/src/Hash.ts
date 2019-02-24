@@ -1,9 +1,4 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationConfirmation
-} from "@hickory/root";
+import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -29,7 +24,7 @@ function ensureHash(encode: (path: string) => string): void {
 
 function noop() {}
 
-function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
+export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
@@ -177,5 +172,3 @@ function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
 
   return hashHistory;
 }
-
-export { Hash };

@@ -18,7 +18,9 @@ import { BrowserHistory, Options } from "./types";
 
 function noop() {}
 
-function Browser<Q = string>(options: Options<Q> = {}): BrowserHistory<Q> {
+export function Browser<Q = string>(
+  options: Options<Q> = {}
+): BrowserHistory<Q> {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
@@ -163,5 +165,3 @@ function Browser<Q = string>(options: Options<Q> = {}): BrowserHistory<Q> {
 
   return browserHistory;
 }
-
-export { Browser };

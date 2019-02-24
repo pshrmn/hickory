@@ -1,6 +1,5 @@
 import {
   History,
-  BlockingHistory,
   LocationComponents,
   PartialLocation,
   SessionLocation,
