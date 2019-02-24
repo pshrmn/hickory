@@ -1,3 +1,3 @@
-import { InMemory } from "./InMemory";
+import { Options, InMemoryHistory } from "./types";
 export * from "./types";
-export { InMemory };
+export declare function InMemory<Q = string>(options?: Options<Q>): InMemoryHistory<Q>;

@@ -1,3 +1,3 @@
-import { Browser } from "./Browser";
+import { BrowserHistory, Options } from "./types";
 export * from "./types";
-export { Browser };
+export declare function Browser<Q = string>(options?: Options<Q>): BrowserHistory<Q>;
