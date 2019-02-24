@@ -1,3 +1,4 @@
 export * from "./types";
 import Common from "./common";
-export { Common };
+import prepNavigate from "./prepNavigate";
+export { Common, prepNavigate };

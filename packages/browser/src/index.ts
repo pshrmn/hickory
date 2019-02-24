@@ -1,4 +1,4 @@
-import { Common } from "@hickory/root";
+import { Common, prepNavigate } from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -31,12 +31,6 @@ export {
 
 export interface Options<Q> extends RootOptions<Q> {
   raw?: (pathname: string) => string;
-}
-
-interface NavSetup<Q> {
-  action: Action;
-  finish(): void;
-  location: SessionLocation<Q>;
 }
 
 function noop() {}
@@ -88,59 +82,38 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
     return stringifyLocation(location);
   }
 
-  function setupReplace(location: Location<Q>): NavSetup<Q> {
-    const keyedLocation = keyed(
-      location,
-      keygen.minor(browserHistory.location.key)
-    );
-    return {
-      action: "replace",
-      finish: finalizeReplace(keyedLocation),
-      location: keyedLocation
-    };
-  }
+  const prep = prepNavigate({
+    utils: { stringifyLocation, keyed, keygen, genericLocation },
+    current: () => browserHistory.location,
+    push(location: SessionLocation<Q>) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        try {
+          window.history.pushState({ key, state }, "", path);
+        } catch (e) {
+          window.location.assign(path);
+        }
+        browserHistory.location = location;
+        browserHistory.action = "push";
+      };
+    },
+    replace(location: SessionLocation<Q>) {
+      return () => {
+        const path = toHref(location);
+        const { key, state } = location;
+        try {
+          window.history.replaceState({ key, state }, "", path);
+        } catch (e) {
+          window.location.replace(path);
+        }
+        browserHistory.location = location;
+        browserHistory.action = "replace";
+      };
+    }
+  });
 
-  function setupPush(location: Location<Q>): NavSetup<Q> {
-    const keyedLocation = keyed(
-      location,
-      keygen.major(browserHistory.location.key)
-    );
-    return {
-      action: "push",
-      finish: finalizePush(keyedLocation),
-      location: keyedLocation
-    };
-  }
-
-  function finalizePush(location: SessionLocation<Q>) {
-    return () => {
-      const path = toHref(location);
-      const { key, state } = location;
-      try {
-        window.history.pushState({ key, state }, "", path);
-      } catch (e) {
-        window.location.assign(path);
-      }
-      browserHistory.location = location;
-      browserHistory.action = "push";
-    };
-  }
-
-  function finalizeReplace(location: SessionLocation<Q>) {
-    return () => {
-      const path = toHref(location);
-      const { key, state } = location;
-      try {
-        window.history.replaceState({ key, state }, "", path);
-      } catch (e) {
-        window.location.replace(path);
-      }
-      browserHistory.location = location;
-      browserHistory.action = "replace";
-    };
-  }
-
-  let responseHandler: ResponseHandler<Q>;
+  let responseHandler: ResponseHandler<Q> | undefined;
   const browserHistory: History<Q> = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
@@ -164,39 +137,21 @@ function Browser<Q = string>(options: Options<Q> = {}): History<Q> {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
-      let setup: NavSetup<Q>;
-      const location = genericLocation(to);
-      switch (navType) {
-        case "anchor":
-          setup =
-            stringifyLocation(location) ===
-            stringifyLocation(browserHistory.location)
-              ? setupReplace(location)
-              : setupPush(location);
-          break;
-        case "push":
-          setup = setupPush(location);
-          break;
-        case "replace":
-          setup = setupReplace(location);
-          break;
-        default:
-          throw new Error(`Invalid navigation type: ${navType}`);
-      }
+      const next = prep(to, navType);
       confirmNavigation(
         {
-          to: setup.location,
+          to: next.location,
           from: browserHistory.location,
-          action: setup.action
+          action: next.action
         },
         () => {
           if (!responseHandler) {
             return;
           }
           responseHandler({
-            location: setup.location,
-            action: setup.action,
-            finish: setup.finish,
+            location: next.location,
+            action: next.action,
+            finish: next.finish,
             cancel: noop
           });
         }

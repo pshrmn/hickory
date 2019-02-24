@@ -1,4 +1,4 @@
-import { KeyMethods } from "./types/keygen";
+import { KeyFns } from "./types/keygen";
 
 function parse(key: string): Array<number> {
   return key.split(".").map((value: string): number => parseInt(value, 10));
@@ -13,19 +13,17 @@ function minor(current: string): string {
   return `${major}.${minor + 1}`;
 }
 
-export default function createKeyGenerator(): KeyMethods {
+export default function createKeyGenerator(): KeyFns {
   let currentMajor: number = 0;
 
   return {
-    keygen: {
-      major: function(previous?: string): string {
-        if (previous) {
-          currentMajor = parse(previous)[0] + 1;
-        }
-        return `${currentMajor++}.0`;
-      },
-      minor,
-      diff
-    }
+    major: function(previous?: string): string {
+      if (previous) {
+        currentMajor = parse(previous)[0] + 1;
+      }
+      return `${currentMajor++}.0`;
+    },
+    minor,
+    diff
   };
 }

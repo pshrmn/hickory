@@ -1,5 +1,6 @@
 ## Next
 
+- Export `prepNavigate` method for history `navigate` methods.
 - Remove `location.url`
 - `strict` types
 - Rename `LocationDetails` to `LocationComponents`
