@@ -1,14 +1,14 @@
-export interface LocationComponents<Q> {
+export interface LocationComponents {
     pathname: string;
-    query: Q;
+    query: any;
     hash: string;
     state?: any;
 }
-export declare type PartialLocation<Q> = Partial<LocationComponents<Q>>;
-export interface Location<Q> extends LocationComponents<Q> {
+export declare type PartialLocation = Partial<LocationComponents>;
+export interface Location extends LocationComponents {
     rawPathname: string;
 }
-export interface SessionLocation<Q> extends Location<Q> {
+export interface SessionLocation extends Location {
     key: string;
 }
-export declare type AnyLocation<Q> = SessionLocation<Q> | PartialLocation<Q>;
+export declare type AnyLocation = SessionLocation | PartialLocation;

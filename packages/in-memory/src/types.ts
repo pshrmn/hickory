@@ -17,20 +17,20 @@ export {
   LocationComponents
 };
 
-export type InputLocation<Q> = string | PartialLocation<Q>;
-export type InputLocations<Q> = Array<InputLocation<Q>>;
+export type InputLocation = string | PartialLocation;
+export type InputLocations = Array<InputLocation>;
 
-export interface SessionOptions<Q> {
-  locations?: InputLocations<Q>;
+export interface SessionOptions {
+  locations?: InputLocations;
   index?: number;
 }
 
-export type Options<Q> = LocationUtilOptions<Q> & SessionOptions<Q>;
+export type Options = LocationUtilOptions & SessionOptions;
 
-export interface SessionHistory<Q> {
-  locations: Array<SessionLocation<Q>>;
+export interface SessionHistory {
+  locations: Array<SessionLocation>;
   index: number;
-  reset(options?: SessionOptions<Q>): void;
+  reset(options?: SessionOptions): void;
 }
 
-export type InMemoryHistory<Q> = History<Q> & SessionHistory<Q>;
+export type InMemoryHistory = History & SessionHistory;

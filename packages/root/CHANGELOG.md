@@ -1,3 +1,7 @@
+## Next
+
+- Remove generic `query` type.
+
 ## 2.0.0-alpha.2
 
 - Export `locationUtils` function for creating a history's location utility functions

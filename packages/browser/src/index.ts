@@ -20,9 +20,7 @@ export * from "./types";
 
 function noop() {}
 
-export function Browser<Q = string>(
-  options: Options<Q> = {}
-): BrowserHistory<Q> {
+export function Browser(options: Options = {}): BrowserHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
@@ -38,7 +36,7 @@ export function Browser<Q = string>(
     locationUtils: locationUtilities,
     keygen,
     current: () => browserHistory.location,
-    push(location: SessionLocation<Q>) {
+    push(location: SessionLocation) {
       return () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -51,7 +49,7 @@ export function Browser<Q = string>(
         browserHistory.action = "push";
       };
     },
-    replace(location: SessionLocation<Q>) {
+    replace(location: SessionLocation) {
       return () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -75,7 +73,7 @@ export function Browser<Q = string>(
 
   window.addEventListener("popstate", popstate, false);
 
-  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
+  function locationFromBrowser(providedState?: object): SessionLocation {
     const { pathname, search, hash } = window.location;
     const path = pathname + search + hash;
     let { key, state } = providedState || getStateFromHistory();
@@ -87,17 +85,17 @@ export function Browser<Q = string>(
     return locationUtilities.keyed(location, key);
   }
 
-  function toHref(location: AnyLocation<Q>): string {
+  function toHref(location: AnyLocation): string {
     return locationUtilities.stringifyLocation(location);
   }
 
-  let responseHandler: ResponseHandler<Q> | undefined;
-  const browserHistory: BrowserHistory<Q> = {
+  let responseHandler: ResponseHandler | undefined;
+  const browserHistory: BrowserHistory = {
     // set action before location because locationFromBrowser enforces that the location has a key
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
-    respondWith(fn: ResponseHandler<Q>) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       // immediately invoke
       responseHandler({
@@ -112,7 +110,7 @@ export function Browser<Q = string>(
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
-    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prepare(to, navType);
 
       if (!responseHandler) {

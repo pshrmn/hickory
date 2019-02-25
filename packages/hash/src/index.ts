@@ -26,7 +26,7 @@ function ensureHash(encode: (path: string) => string): void {
 
 function noop() {}
 
-export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
+export function Hash(options: Options = {}): HashHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
@@ -41,7 +41,7 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
     locationUtils: locationUtilities,
     keygen,
     current: () => hashHistory.location,
-    push(location: SessionLocation<Q>) {
+    push(location: SessionLocation) {
       return () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -54,7 +54,7 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
         hashHistory.action = "push";
       };
     },
-    replace(location: SessionLocation<Q>) {
+    replace(location: SessionLocation) {
       return () => {
         const path = toHref(location);
         const { key, state } = location;
@@ -85,7 +85,7 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
 
   ensureHash(encodeHashPath);
 
-  function locationFromBrowser(providedState?: object): SessionLocation<Q> {
+  function locationFromBrowser(providedState?: object): SessionLocation {
     let { hash } = window.location;
     const path = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
@@ -100,17 +100,17 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
     );
   }
 
-  function toHref(location: AnyLocation<Q>): string {
+  function toHref(location: AnyLocation): string {
     return encodeHashPath(locationUtilities.stringifyLocation(location));
   }
 
-  let responseHandler: ResponseHandler<Q> | undefined;
-  const hashHistory: HashHistory<Q> = {
+  let responseHandler: ResponseHandler | undefined;
+  const hashHistory: HashHistory = {
     // location
     action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
-    respondWith(fn: ResponseHandler<Q>) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: hashHistory.location,
@@ -124,7 +124,7 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
-    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
       if (!responseHandler) {
         return;
@@ -149,7 +149,7 @@ export function Hash<Q>(options: Options<Q> = {}): HashHistory<Q> {
       reverting = false;
       return;
     }
-    const location: SessionLocation<Q> = locationFromBrowser(state);
+    const location: SessionLocation = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
     if (!responseHandler) {

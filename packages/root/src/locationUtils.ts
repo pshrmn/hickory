@@ -35,9 +35,9 @@ function defaultRaw(p: string): string {
   return p;
 }
 
-export default function locationFactory<Q>(
-  options: LocationUtilOptions<Q> = {}
-): LocationUtils<Q> {
+export default function locationFactory(
+  options: LocationUtilOptions = {}
+): LocationUtils {
   const {
     query: {
       parse: parseQuery = defaultParseQuery,
@@ -58,7 +58,7 @@ export default function locationFactory<Q>(
     );
   }
 
-  function parsePath(value: string, state: any): LocationComponents<Q> {
+  function parsePath(value: string, state: any): LocationComponents {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
     let hash;
@@ -80,7 +80,7 @@ export default function locationFactory<Q>(
 
     const pathname = stripBaseSegment(value, baseSegment);
 
-    const details: LocationComponents<Q> = {
+    const details: LocationComponents = {
       hash,
       query,
       pathname
@@ -94,10 +94,10 @@ export default function locationFactory<Q>(
   }
 
   function getDetails(
-    partial: PartialLocation<Q>,
+    partial: PartialLocation,
     state: any
-  ): LocationComponents<Q> {
-    const details: LocationComponents<Q> = {
+  ): LocationComponents {
+    const details: LocationComponents = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parseQuery() : partial.query
@@ -112,7 +112,7 @@ export default function locationFactory<Q>(
     return details;
   }
 
-  function genericLocation(value: ToArgument<Q>, state?: any): Location<Q> {
+  function genericLocation(value: ToArgument, state?: any): Location {
     if (state === undefined) {
       state = null;
     }
@@ -143,20 +143,20 @@ export default function locationFactory<Q>(
     };
   }
 
-  function keyed(location: Location<Q>, key: string): SessionLocation<Q> {
+  function keyed(location: Location, key: string): SessionLocation {
     return {
       ...location,
       key
     };
   }
 
-  function stringifyLocation(location: AnyLocation<Q>): string {
+  function stringifyLocation(location: AnyLocation): string {
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
       baseSegment +
       completePathname(
-        (location as SessionLocation<Q>).rawPathname || location.pathname || ""
+        (location as SessionLocation).rawPathname || location.pathname || ""
       ) +
       completeQuery(stringifyQuery(location.query)) +
       completeHash(location.hash)

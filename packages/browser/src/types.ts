@@ -17,5 +17,5 @@ export {
   LocationComponents
 };
 
-export type Options<Q> = LocationUtilOptions<Q>;
-export type BrowserHistory<Q> = History<Q>;
+export type Options = LocationUtilOptions;
+export type BrowserHistory = History;

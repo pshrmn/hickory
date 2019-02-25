@@ -3,5 +3,5 @@ export { History, SessionLocation, PartialLocation, AnyLocation, Location, Locat
 export interface HashOptions {
     hashType?: string;
 }
-export declare type Options<Q> = LocationUtilOptions<Q> & HashOptions;
-export declare type HashHistory<Q> = History<Q>;
+export declare type Options = LocationUtilOptions & HashOptions;
+export declare type HashHistory = History;

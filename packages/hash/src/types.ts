@@ -20,5 +20,5 @@ export {
 export interface HashOptions {
   hashType?: string;
 }
-export type Options<Q> = LocationUtilOptions<Q> & HashOptions;
-export type HashHistory<Q> = History<Q>;
+export type Options = LocationUtilOptions & HashOptions;
+export type HashHistory = History;

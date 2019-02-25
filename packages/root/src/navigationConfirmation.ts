@@ -6,14 +6,12 @@ import {
 
 function noop(): void {}
 
-export default function createNavigationConfirmation<Q>(): ConfirmationMethods<
-  Q
-> {
-  let confirmFunction: ConfirmationFunction<Q> | null;
+export default function createNavigationConfirmation(): ConfirmationMethods {
+  let confirmFunction: ConfirmationFunction | null;
 
   return {
     confirmNavigation(
-      info: NavigationInfo<Q>,
+      info: NavigationInfo,
       confirm: () => void,
       prevent?: () => void
     ): void {
@@ -24,7 +22,7 @@ export default function createNavigationConfirmation<Q>(): ConfirmationMethods<
       }
     },
 
-    confirmWith(fn: ConfirmationFunction<Q>): void {
+    confirmWith(fn: ConfirmationFunction): void {
       if (typeof fn !== "function") {
         throw new Error("confirmWith can only be passed a function");
       }

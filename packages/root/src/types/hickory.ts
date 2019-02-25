@@ -1,12 +1,12 @@
 import { SessionLocation, AnyLocation } from "./location";
 import { Action, ResponseHandler, ToArgument, NavType } from "./navigation";
 
-export interface History<Q> {
-  location: SessionLocation<Q>;
+export interface History {
+  location: SessionLocation;
   action: Action;
-  toHref(to: AnyLocation<Q>): string;
-  respondWith(fn: ResponseHandler<Q>): void;
+  toHref(to: AnyLocation): string;
+  respondWith(fn: ResponseHandler): void;
   destroy(): void;
-  navigate(to: ToArgument<Q>, navType?: NavType): void;
+  navigate(to: ToArgument, navType?: NavType): void;
   go(num?: number): void;
 }

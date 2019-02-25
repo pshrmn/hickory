@@ -19,16 +19,14 @@ function noop() {}
 
 export * from "./types";
 
-export function InMemory<Q = string>(
-  options: Options<Q> = {}
-): InMemoryHistory<Q> {
+export function InMemory(options: Options = {}): InMemoryHistory {
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
     current: () => memoryHistory.location,
-    push(location: SessionLocation<Q>) {
+    push(location: SessionLocation) {
       return () => {
         memoryHistory.location = location;
         memoryHistory.index++;
@@ -39,7 +37,7 @@ export function InMemory<Q = string>(
         memoryHistory.action = "push";
       };
     },
-    replace(location: SessionLocation<Q>) {
+    replace(location: SessionLocation) {
       return () => {
         memoryHistory.location = location;
         memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
@@ -53,9 +51,9 @@ export function InMemory<Q = string>(
     memoryHistory.index = -1;
   };
 
-  let initialLocations: Array<SessionLocation<Q>> = (
+  let initialLocations: Array<SessionLocation> = (
     options.locations || ["/"]
-  ).map((loc: InputLocation<Q>) =>
+  ).map((loc: InputLocation) =>
     locationUtilities.keyed(
       locationUtilities.genericLocation(loc),
       keygen.major()
@@ -70,19 +68,19 @@ export function InMemory<Q = string>(
     initialIndex = options.index;
   }
 
-  function toHref(location: AnyLocation<Q>): string {
+  function toHref(location: AnyLocation): string {
     return locationUtilities.stringifyLocation(location);
   }
 
-  let responseHandler: ResponseHandler<Q> | undefined;
-  const memoryHistory: InMemoryHistory<Q> = {
+  let responseHandler: ResponseHandler | undefined;
+  const memoryHistory: InMemoryHistory = {
     // location
     location: initialLocations[initialIndex],
     locations: initialLocations,
     index: initialIndex,
     action: "push",
     // set response handler
-    respondWith(fn: ResponseHandler<Q>) {
+    respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: memoryHistory.location,
@@ -96,7 +94,7 @@ export function InMemory<Q = string>(
     destroy(): void {
       destroyLocations();
     },
-    navigate(to: ToArgument<Q>, navType: NavType = "anchor"): void {
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
       if (!responseHandler) {
         return;
@@ -126,8 +124,7 @@ export function InMemory<Q = string>(
         if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
           return;
         } else {
-          const location: SessionLocation<Q> =
-            memoryHistory.locations[newIndex];
+          const location: SessionLocation = memoryHistory.locations[newIndex];
           if (!responseHandler) {
             return;
           }
@@ -144,7 +141,7 @@ export function InMemory<Q = string>(
         }
       }
     },
-    reset(options?: SessionOptions<Q>) {
+    reset(options?: SessionOptions) {
       memoryHistory.locations = ((options && options.locations) || ["/"]).map(
         loc =>
           locationUtilities.keyed(
