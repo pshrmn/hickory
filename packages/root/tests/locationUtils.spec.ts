@@ -313,7 +313,7 @@ describe("locationFactory", () => {
         const input = {
           rawPathname: "/rawPathname",
           pathname: "/pathname"
-        } as SessionLocation<any>;
+        } as SessionLocation;
         const output = stringifyLocation(input);
         expect(output).toBe("/rawPathname");
       });

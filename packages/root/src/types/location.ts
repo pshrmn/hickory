@@ -1,20 +1,20 @@
-export interface LocationComponents<Q> {
+export interface LocationComponents {
   pathname: string;
-  query: Q;
+  query: any;
   hash: string;
   state?: any;
 }
 
-export type PartialLocation<Q> = Partial<LocationComponents<Q>>;
+export type PartialLocation = Partial<LocationComponents>;
 
-export interface Location<Q> extends LocationComponents<Q> {
+export interface Location extends LocationComponents {
   rawPathname: string;
 }
 
 // use SessionLocation instead of Location to prevent
 // errors from colliding with window.Location interface
-export interface SessionLocation<Q> extends Location<Q> {
+export interface SessionLocation extends Location {
   key: string;
 }
 
-export type AnyLocation<Q> = SessionLocation<Q> | PartialLocation<Q>;
+export type AnyLocation = SessionLocation | PartialLocation;

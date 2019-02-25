@@ -6,10 +6,8 @@ import {
 import { ToArgument, NavType } from "./types/navigation";
 import { Location } from "./types/location";
 
-export default function prepareNavigate<Q>(
-  args: PrepNavigateArgs<Q>
-): Preparer<Q> {
-  function prepReplace(location: Location<Q>): PreppedNavigation<Q> {
+export default function prepareNavigate(args: PrepNavigateArgs): Preparer {
+  function prepReplace(location: Location): PreppedNavigation {
     const keyedLocation = args.locationUtils.keyed(
       location,
       args.keygen.minor(args.current().key)
@@ -21,7 +19,7 @@ export default function prepareNavigate<Q>(
     };
   }
 
-  function prepPush(location: Location<Q>): PreppedNavigation<Q> {
+  function prepPush(location: Location): PreppedNavigation {
     const keyedLocation = args.locationUtils.keyed(
       location,
       args.keygen.major(args.current().key)
@@ -33,7 +31,7 @@ export default function prepareNavigate<Q>(
     };
   }
 
-  return function prep(to: ToArgument<Q>, navType: NavType) {
+  return function prep(to: ToArgument, navType: NavType) {
     const location = args.locationUtils.genericLocation(to);
     switch (navType) {
       case "anchor":

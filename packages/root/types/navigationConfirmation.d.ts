@@ -1,2 +1,2 @@
 import { ConfirmationMethods } from "./types/navigationConfirmation";
-export default function createNavigationConfirmation<Q>(): ConfirmationMethods<Q>;
+export default function createNavigationConfirmation(): ConfirmationMethods;

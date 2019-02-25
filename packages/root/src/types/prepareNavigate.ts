@@ -3,21 +3,18 @@ import { SessionLocation } from "./location";
 import { LocationUtils } from "./locationUtils";
 import { KeyFns } from "./keyGenerator";
 
-export interface PreppedNavigation<Q> {
+export interface PreppedNavigation {
   action: Action;
   finish(): void;
-  location: SessionLocation<Q>;
+  location: SessionLocation;
 }
 
-export type Preparer<Q> = (
-  to: ToArgument<Q>,
-  navType: NavType
-) => PreppedNavigation<Q>;
+export type Preparer = (to: ToArgument, navType: NavType) => PreppedNavigation;
 
-export interface PrepNavigateArgs<Q> {
-  locationUtils: LocationUtils<Q>;
+export interface PrepNavigateArgs {
+  locationUtils: LocationUtils;
   keygen: KeyFns;
-  current(): SessionLocation<Q>;
-  push(l: SessionLocation<Q>): () => void;
-  replace(l: SessionLocation<Q>): () => void;
+  current(): SessionLocation;
+  push(l: SessionLocation): () => void;
+  replace(l: SessionLocation): () => void;
 }

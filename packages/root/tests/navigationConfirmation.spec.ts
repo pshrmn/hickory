@@ -50,8 +50,8 @@ describe("navigationConfirmation", () => {
 
       confirmNavigation(
         {
-          to: { pathname: "/this-is-only-a-test" } as SessionLocation<any>,
-          from: { pathname: "/this-was-not-a-test" } as SessionLocation<any>,
+          to: { pathname: "/this-is-only-a-test" } as SessionLocation,
+          from: { pathname: "/this-was-not-a-test" } as SessionLocation,
           action: "push"
         },
         confirm,
@@ -74,8 +74,8 @@ describe("navigationConfirmation", () => {
       confirmWith(allowNavigation);
       confirmNavigation(
         {
-          to: toLoc as SessionLocation<any>,
-          from: fromLoc as SessionLocation<any>,
+          to: toLoc as SessionLocation,
+          from: fromLoc as SessionLocation,
           action
         },
         confirm,
@@ -107,8 +107,8 @@ describe("navigationConfirmation", () => {
       expect(() => {
         confirmNavigation(
           {
-            to: toLoc as SessionLocation<any>,
-            from: fromLoc as SessionLocation<any>,
+            to: toLoc as SessionLocation,
+            from: fromLoc as SessionLocation,
             action
           },
           confirm

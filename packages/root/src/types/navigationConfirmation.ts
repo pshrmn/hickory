@@ -1,29 +1,29 @@
 import { SessionLocation } from "./location";
 import { Action } from "./navigation";
 
-export interface NavigationInfo<Q> {
-  to: SessionLocation<Q>;
-  from: SessionLocation<Q>;
+export interface NavigationInfo {
+  to: SessionLocation;
+  from: SessionLocation;
   action: Action;
 }
 
-export type ConfirmationFunction<Q> = (
-  info: NavigationInfo<Q>,
+export type ConfirmationFunction = (
+  info: NavigationInfo,
   confirm: () => void,
   prevent?: () => void
 ) => void;
 
-export interface ConfirmationMethods<Q> {
+export interface ConfirmationMethods {
   confirmNavigation(
-    info: NavigationInfo<Q>,
+    info: NavigationInfo,
     confirm: () => void,
     prevent?: () => void
   ): void;
-  confirmWith(fn?: ConfirmationFunction<Q>): void;
+  confirmWith(fn?: ConfirmationFunction): void;
   removeConfirmation(): void;
 }
 
-export interface BlockingHistory<Q> {
-  confirmWith(fn?: ConfirmationFunction<Q>): void;
+export interface BlockingHistory {
+  confirmWith(fn?: ConfirmationFunction): void;
   removeConfirmation(): void;
 }

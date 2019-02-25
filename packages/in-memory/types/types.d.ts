@@ -1,15 +1,15 @@
 import { History, LocationComponents, PartialLocation, SessionLocation, AnyLocation, Location, LocationUtilOptions } from "@hickory/root";
 export { History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
-export declare type InputLocation<Q> = string | PartialLocation<Q>;
-export declare type InputLocations<Q> = Array<InputLocation<Q>>;
-export interface SessionOptions<Q> {
-    locations?: InputLocations<Q>;
+export declare type InputLocation = string | PartialLocation;
+export declare type InputLocations = Array<InputLocation>;
+export interface SessionOptions {
+    locations?: InputLocations;
     index?: number;
 }
-export declare type Options<Q> = LocationUtilOptions<Q> & SessionOptions<Q>;
-export interface SessionHistory<Q> {
-    locations: Array<SessionLocation<Q>>;
+export declare type Options = LocationUtilOptions & SessionOptions;
+export interface SessionHistory {
+    locations: Array<SessionLocation>;
     index: number;
-    reset(options?: SessionOptions<Q>): void;
+    reset(options?: SessionOptions): void;
 }
-export declare type InMemoryHistory<Q> = History<Q> & SessionHistory<Q>;
+export declare type InMemoryHistory = History & SessionHistory;
