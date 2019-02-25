@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.3
 
 - Remove generic `query` type.
 
