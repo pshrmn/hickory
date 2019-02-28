@@ -2,26 +2,9 @@ import "jest";
 import { Browser } from "../../src";
 
 import { withDOM } from "../../../../tests/utils/dom";
+import { navigateSuite } from "../../../../tests/cases/navigate";
 
-// We create our own jsdom instead of using the one that Jest will create
-// so that we can reset the DOM between tests
 describe("Browser constructor", () => {
-  it("returns object with expected API", () => {
-    withDOM({ url: "http://example.com/one" }, () => {
-      const testHistory = Browser();
-      const expectedProperties = [
-        "location",
-        "action",
-        "toHref",
-        "respondWith",
-        "destroy"
-      ];
-      expectedProperties.forEach(property => {
-        expect(testHistory.hasOwnProperty(property)).toBe(true);
-      });
-    });
-  });
-
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       const testHistory = Browser();
@@ -54,6 +37,32 @@ describe("Browser constructor", () => {
       window.history.pushState({ key: "17.0" }, "", "/has-key");
       const testHistory = Browser();
       expect(testHistory.action).toBe("pop");
+    });
+  });
+});
+
+describe("navigate()", () => {
+  navigateSuite.forEach(test => {
+    it(test.msg, () => {
+      withDOM({ url: "http://example.com/one" }, ({ window }) => {
+        const testHistory = Browser();
+        test.fn({
+          history: testHistory
+        });
+      });
+    });
+  });
+});
+
+describe("toHref", () => {
+  it("returns the location formatted as a string", () => {
+    withDOM({ url: "http://example.com/one" }, () => {
+      const testHistory = Browser();
+      const path = testHistory.toHref({
+        pathname: "/one",
+        query: "test=query"
+      });
+      expect(path).toBe("/one?test=query");
     });
   });
 });

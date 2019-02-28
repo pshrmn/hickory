@@ -1,5 +1,8 @@
 import { JSDOM, DOMWindow } from "jsdom";
 
+// This module is used to create our own JSDOM instances
+// so that there aren't any issues across tests
+
 export interface MetaArgs {
   url: string;
   setGlobal?: boolean;
