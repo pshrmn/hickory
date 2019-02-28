@@ -1,11 +1,47 @@
 import "jest";
 import { Hash } from "../../src";
 
-import { withDOM } from "../../../../tests/utils/dom";
-import { navigateSuite } from "../../../../tests/cases/navigate";
+import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
+import { navigateSuite, goSuite } from "../../../../tests/cases";
 
-// We create our own jsdom instead of using the one that Jest will create
-// so that we can reset the DOM between tests
+import { TestCase, Suite } from "../../../../tests/types";
+
+function runAsyncTest(test: TestCase) {
+  it(test.msg, async () => {
+    await asyncWithDOM(
+      { url: "http://example.com/#/one" },
+      ({ window, resolve }) => {
+        test.fn({
+          history: Hash(),
+          pathname: () => window.location.hash.slice(1),
+          resolve
+        });
+      }
+    );
+  });
+}
+
+function runTest(test: TestCase) {
+  it(test.msg, () => {
+    withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
+      test.fn({
+        history: Hash(),
+        pathname: () => window.location.hash.slice(1)
+      });
+    });
+  });
+}
+
+function runSuite(suite: Suite) {
+  suite.forEach(test => {
+    if (test.async) {
+      runAsyncTest(test);
+    } else {
+      runTest(test);
+    }
+  });
+}
+
 describe("Hash constructor", () => {
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/#/one" }, () => {
@@ -122,13 +158,21 @@ describe("Hash constructor", () => {
 });
 
 describe("navigate()", () => {
-  navigateSuite.forEach(test => {
-    it(test.msg, () => {
-      withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-        const testHistory = Hash();
-        test.fn({
-          history: testHistory
-        });
+  runSuite(navigateSuite);
+});
+
+describe("go", () => {
+  runSuite(goSuite);
+
+  // integration?
+  it("calls window.history.go with provided value", () => {
+    withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
+      const mockGo = (window.history.go = jest.fn());
+      const testHistory = Hash();
+
+      [undefined, 0, 1, -1].forEach((value, index) => {
+        testHistory.go(value);
+        expect(mockGo.mock.calls[index][0]).toBe(value);
       });
     });
   });

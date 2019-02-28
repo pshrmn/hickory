@@ -5,7 +5,8 @@ import {
   AnyLocation,
   ToArgument,
   ResponseHandler,
-  NavType
+  NavType,
+  Action
 } from "@hickory/root";
 
 import {
@@ -107,10 +108,10 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       });
     },
     go(num?: number): void {
+      if (!responseHandler) {
+        return;
+      }
       if (num == null || num === 0) {
-        if (!responseHandler) {
-          return;
-        }
         responseHandler({
           location: memoryHistory.location,
           action: "pop",
@@ -120,25 +121,30 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           cancel: noop
         });
       } else {
-        const newIndex: number = memoryHistory.index + num;
+        const originalIndex = memoryHistory.index;
+        const newIndex = originalIndex + num;
         if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
           return;
-        } else {
-          const location: SessionLocation = memoryHistory.locations[newIndex];
-          if (!responseHandler) {
-            return;
-          }
-          responseHandler({
-            location,
-            action: "pop",
-            finish: () => {
-              memoryHistory.index = newIndex;
-              memoryHistory.location = location;
-              memoryHistory.action = "pop";
-            },
-            cancel: noop
-          });
         }
+
+        // Immediately update the index; this simulates browser behavior.
+        memoryHistory.index = newIndex;
+
+        const location: SessionLocation = memoryHistory.locations[newIndex];
+        responseHandler({
+          location,
+          action: "pop",
+          finish: () => {
+            memoryHistory.location = location;
+            memoryHistory.action = "pop";
+          },
+          cancel: (nextAction: Action) => {
+            if (nextAction === "pop") {
+              return;
+            }
+            memoryHistory.index = originalIndex;
+          }
+        });
       }
     },
     reset(options?: SessionOptions) {

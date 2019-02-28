@@ -1,8 +1,46 @@
 import "jest";
 import { Browser } from "../../src";
 
-import { withDOM } from "../../../../tests/utils/dom";
-import { navigateSuite } from "../../../../tests/cases/navigate";
+import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
+import { navigateSuite, goSuite } from "../../../../tests/cases";
+
+import { TestCase, Suite } from "../../../../tests/types";
+
+function runAsyncTest(test: TestCase) {
+  it(test.msg, async () => {
+    await asyncWithDOM(
+      { url: "http://example.com/one" },
+      ({ window, resolve }) => {
+        test.fn({
+          history: Browser(),
+          pathname: () => window.location.pathname,
+          resolve
+        });
+      }
+    );
+  });
+}
+
+function runTest(test: TestCase) {
+  it(test.msg, () => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      test.fn({
+        history: Browser(),
+        pathname: () => window.location.pathname
+      });
+    });
+  });
+}
+
+function runSuite(suite: Suite) {
+  suite.forEach(test => {
+    if (test.async) {
+      runAsyncTest(test);
+    } else {
+      runTest(test);
+    }
+  });
+}
 
 describe("Browser constructor", () => {
   it("initializes using window.location", () => {
@@ -42,13 +80,22 @@ describe("Browser constructor", () => {
 });
 
 describe("navigate()", () => {
-  navigateSuite.forEach(test => {
-    it(test.msg, () => {
-      withDOM({ url: "http://example.com/one" }, ({ window }) => {
-        const testHistory = Browser();
-        test.fn({
-          history: testHistory
-        });
+  runSuite(navigateSuite);
+});
+
+describe("go", () => {
+  runSuite(goSuite);
+
+  // integration?
+  it("calls window.history.go with provided value", () => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      const realGo = window.history.go;
+      const mockGo = (window.history.go = jest.fn());
+      const testHistory = Browser();
+
+      [undefined, 0, 1, -1].forEach((value, index) => {
+        testHistory.go(value);
+        expect(mockGo.mock.calls[index][0]).toBe(value);
       });
     });
   });

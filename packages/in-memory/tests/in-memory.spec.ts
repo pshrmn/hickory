@@ -1,7 +1,47 @@
 import "jest";
 import { InMemory } from "../src";
 
-import { navigateSuite } from "../../../tests/cases/navigate";
+import { navigateSuite, goSuite } from "../../../tests/cases";
+import { ignoreFirstCall } from "../../../tests/utils/ignoreFirst";
+
+import { TestCase, Suite } from "../../../tests/types";
+
+function runAsyncTest(test: TestCase) {
+  it(test.msg, async () => {
+    await new Promise(resolve => {
+      const testHistory = InMemory({
+        locations: ["/one"]
+      });
+      test.fn({
+        history: testHistory,
+        pathname: () => testHistory.locations[testHistory.index].pathname,
+        resolve
+      });
+    });
+  });
+}
+
+function runTest(test: TestCase) {
+  it(test.msg, () => {
+    const testHistory = InMemory({
+      locations: ["/one"]
+    });
+    test.fn({
+      history: testHistory,
+      pathname: () => testHistory.locations[testHistory.index].pathname
+    });
+  });
+}
+
+function runSuite(suite: Suite) {
+  suite.forEach(test => {
+    if (test.async) {
+      runAsyncTest(test);
+    } else {
+      runTest(test);
+    }
+  });
+}
 
 describe("Memory constructor", () => {
   it("initializes with root location (/) if none provided", () => {
@@ -79,12 +119,55 @@ describe("Memory constructor", () => {
 });
 
 describe("navigate()", () => {
-  navigateSuite.forEach(test => {
-    it(test.msg, () => {
-      const testHistory = InMemory({ locations: ["/one"] });
-      test.fn({
-        history: testHistory
+  runSuite(navigateSuite);
+});
+
+describe("go", () => {
+  runSuite(goSuite);
+
+  it("does nothing if there is no responseHandler", () => {
+    const testHistory = InMemory();
+    expect(() => {
+      testHistory.go();
+    }).not.toThrow();
+  });
+
+  describe("with no value", () => {
+    it('calls response handler with current location and "pop" action', done => {
+      const testHistory = InMemory();
+      const router = ignoreFirstCall(function(pending) {
+        expect(pending.location).toMatchObject({
+          pathname: "/"
+        });
+        expect(pending.action).toBe("pop");
+        done();
       });
+      testHistory.respondWith(router); // calls router
+      testHistory.go();
+    });
+
+    it('sets history.action to "pop" when calling "finish"', done => {
+      const testHistory = InMemory();
+      expect(testHistory.action).toBe("push");
+      const router = ignoreFirstCall(function(pending) {
+        pending.finish();
+        expect(testHistory.action).toBe("pop");
+        done();
+      });
+      testHistory.respondWith(router);
+      testHistory.go();
+    });
+  });
+
+  describe("with a value", () => {
+    it("does nothing if the value is outside of the range", () => {
+      const testHistory = InMemory();
+      const router = jest.fn();
+      testHistory.respondWith(router);
+      testHistory.go(10);
+      // just verifying that a popstate event hasn't emitted to
+      // trigger the history's event handler
+      expect(router.mock.calls.length).toBe(1);
     });
   });
 });
