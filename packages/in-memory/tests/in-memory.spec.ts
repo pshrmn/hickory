@@ -14,7 +14,6 @@ function runAsyncTest(test: TestCase) {
       });
       test.fn({
         history: testHistory,
-        pathname: () => testHistory.locations[testHistory.index].pathname,
         resolve
       });
     });
@@ -27,8 +26,7 @@ function runTest(test: TestCase) {
       locations: ["/one"]
     });
     test.fn({
-      history: testHistory,
-      pathname: () => testHistory.locations[testHistory.index].pathname
+      history: testHistory
     });
   });
 }
@@ -46,8 +44,6 @@ function runSuite(suite: Suite) {
 describe("Memory constructor", () => {
   it("initializes with root location (/) if none provided", () => {
     const testHistory = InMemory();
-    expect(testHistory.locations.length).toBe(1);
-    expect(testHistory.index).toBe(0);
     expect(testHistory.location).toMatchObject({
       pathname: "/",
       hash: "",
@@ -55,46 +51,45 @@ describe("Memory constructor", () => {
     });
   });
 
-  it("converts passed location values to location objects", () => {
+  it("works with string locations", () => {
     const testHistory = InMemory({
-      locations: [
-        "/one",
-        { pathname: "/two" },
-        { pathname: "/three", state: { tres: 3 } }
-      ]
+      locations: ["/one#step"]
     });
-
-    expect(testHistory.locations.length).toBe(3);
-    expect(testHistory.index).toBe(0);
-
-    const [one, two, three] = testHistory.locations;
-    expect(one).toMatchObject({
-      pathname: "/one"
-    });
-    expect(two).toMatchObject({
-      pathname: "/two"
-    });
-    expect(three).toMatchObject({
-      pathname: "/three",
-      state: { tres: 3 }
+    expect(testHistory.location).toMatchObject({
+      pathname: "/one",
+      hash: "step"
     });
   });
 
-  it("sets the index if provided", () => {
+  it("works with object locations", () => {
+    const testHistory = InMemory({
+      locations: [{ pathname: "/two", hash: "daloo" }]
+    });
+    expect(testHistory.location).toMatchObject({
+      pathname: "/two",
+      hash: "daloo"
+    });
+  });
+
+  it("uses the provided index to select initial location", () => {
     const testHistory = InMemory({
       locations: ["/one", "/two", "/three"],
       index: 2
     });
-    expect(testHistory.index).toBe(2);
+    expect(testHistory.location).toMatchObject({
+      pathname: "/three"
+    });
   });
 
-  it("defaults to index 0 if provided value is out of bounds", () => {
+  it("defaults to index 0 if provided index is out of bounds", () => {
     [-1, 3].forEach(value => {
       const testHistory = InMemory({
         locations: ["/one", "/two", "/three"],
         index: value
       });
-      expect(testHistory.index).toBe(0);
+      expect(testHistory.location).toMatchObject({
+        pathname: "/one"
+      });
     });
   });
 
@@ -104,17 +99,6 @@ describe("Memory constructor", () => {
       index: 0
     });
     expect(testHistory.action).toBe("push");
-  });
-
-  it("removes saved locations when destroying", () => {
-    const testHistory = InMemory({
-      locations: ["/one", "/two", "/three"]
-    });
-    expect(testHistory.locations.length).toBe(3);
-    expect(testHistory.index).toBe(0);
-    testHistory.destroy();
-    expect(testHistory.locations.length).toBe(0);
-    expect(testHistory.index).toBe(-1);
   });
 });
 
@@ -185,126 +169,132 @@ describe("toHref", () => {
 
 describe("reset()", () => {
   describe("locations", () => {
-    describe("of strings", () => {
-      it("resets history with provided locations", () => {
-        const testHistory = InMemory({
-          locations: ["/one", "/two", "/three"]
-        });
-        expect(testHistory.location).toMatchObject({
-          pathname: "/one"
-        });
+    it("works with string locations", () => {
+      const testHistory = InMemory({
+        locations: ["/one", "/two", "/three"]
+      });
+      expect(testHistory.location).toMatchObject({
+        pathname: "/one"
+      });
 
-        testHistory.reset({
-          locations: ["/uno", "/dos"]
-        });
-        expect(testHistory.location).toMatchObject({
-          pathname: "/uno"
-        });
-        expect(testHistory.locations.length).toBe(2);
+      testHistory.reset({
+        locations: ["/uno", "/dos"]
+      });
+      expect(testHistory.location).toMatchObject({
+        pathname: "/uno"
       });
     });
 
-    describe("of partial locations", () => {
-      it("resets history with provided locations", () => {
-        const testHistory = InMemory({
-          locations: ["/one", "/two", "/three"]
-        });
-        expect(testHistory.location).toMatchObject({
-          pathname: "/one"
-        });
+    it("works with object locations", () => {
+      const testHistory = InMemory({
+        locations: ["/one", "/two", "/three"]
+      });
+      expect(testHistory.location).toMatchObject({
+        pathname: "/one"
+      });
 
-        testHistory.reset({
-          locations: [{ pathname: "/uno" }, { pathname: "/dos" }]
-        });
-        expect(testHistory.location).toMatchObject({
-          pathname: "/uno"
-        });
-        expect(testHistory.locations.length).toBe(2);
+      testHistory.reset({
+        locations: [{ pathname: "/uno" }, { pathname: "/dos" }]
+      });
+      expect(testHistory.location).toMatchObject({
+        pathname: "/uno"
       });
     });
 
-    describe("no value provided", () => {
-      it('defaults to "/"', () => {
-        const testHistory = InMemory({
-          locations: ["/one", "/two", "/three"]
-        });
-        expect(testHistory.location).toMatchObject({
-          pathname: "/one"
-        });
+    it("uses default '/' location if no locations are provided", () => {
+      const testHistory = InMemory({
+        locations: ["/one", "/two", "/three"]
+      });
+      expect(testHistory.location).toMatchObject({
+        pathname: "/one"
+      });
 
-        testHistory.reset();
-        expect(testHistory.location).toMatchObject({
-          pathname: "/"
-        });
+      testHistory.reset();
+      expect(testHistory.location).toMatchObject({
+        pathname: "/"
       });
     });
 
     it("reset removes existing locations", () => {
       const testHistory = InMemory({
-        locations: ["/one", "/two", "/three"]
+        locations: ["/one", "/two", "/three"],
+        index: 0
       });
-      expect(testHistory.locations.length).toBe(3);
+      const router = jest.fn();
+      testHistory.respondWith(router);
+
+      // reset the call from attaching the router
+      router.mockReset();
+
+      testHistory.go(2);
+
+      // response handler is called because we can pop
+      expect(router.mock.calls.length).toBe(1);
 
       testHistory.reset({ locations: ["/uno"] });
-      expect(testHistory.locations.length).toBe(1);
+      router.mockReset();
+
+      testHistory.go(2);
+
+      // response handler is not called because there is no location
+      // to pop to
+      expect(router.mock.calls.length).toBe(0);
     });
   });
 
-  describe("index", () => {
-    it("sets the index to the provided value", () => {
-      const testHistory = InMemory({
-        locations: ["/one", "/two", "/three"],
-        index: 1
-      });
-      expect(testHistory.index).toBe(1);
-
-      testHistory.reset({
-        locations: ["/uno", "/dos", "/tres"],
-        index: 2
-      });
-      expect(testHistory.index).toBe(2);
+  it("sets location using provided index value", () => {
+    const testHistory = InMemory({
+      locations: ["/one", "/two", "/three"],
+      index: 1
     });
+    expect(testHistory.location.pathname).toBe("/two");
 
-    it("defaults to 0", () => {
-      const testHistory = InMemory({
-        locations: ["/one", "/two", "/three"],
-        index: 1
-      });
-      expect(testHistory.index).toBe(1);
-
-      testHistory.reset({
-        locations: ["/uno", "/dos", "/tres"]
-      });
-      expect(testHistory.index).toBe(0);
+    testHistory.reset({
+      locations: ["/uno", "/dos", "/tres"],
+      index: 2
     });
+    expect(testHistory.location.pathname).toBe("/tres");
+  });
 
-    it("uses 0 when provided value is negative", () => {
-      const testHistory = InMemory({
-        locations: ["/one", "/two", "/three"],
-        index: 1
-      });
-      expect(testHistory.index).toBe(1);
-
-      testHistory.reset({
-        locations: ["/uno", "/dos", "/tres"],
-        index: -1
-      });
-      expect(testHistory.index).toBe(0);
+  it("uses location at index 0 if index is not provided", () => {
+    const testHistory = InMemory({
+      locations: ["/one", "/two", "/three"],
+      index: 1
     });
+    expect(testHistory.location.pathname).toBe("/two");
 
-    it("uses 0 when provided value is too high", () => {
-      const testHistory = InMemory({
-        locations: ["/one", "/two", "/three"],
-        index: 1
-      });
-      expect(testHistory.index).toBe(1);
-
-      testHistory.reset({
-        locations: ["/uno", "/dos", "/tres"],
-        index: 7
-      });
-      expect(testHistory.index).toBe(0);
+    testHistory.reset({
+      locations: ["/uno", "/dos", "/tres"]
     });
+    expect(testHistory.location.pathname).toBe("/uno");
+  });
+
+  it("uses location at index 0 if provided index < 0", () => {
+    const testHistory = InMemory({
+      locations: ["/one", "/two", "/three"],
+      index: 1
+    });
+    expect(testHistory.location.pathname).toBe("/two");
+
+    testHistory.reset({
+      locations: ["/uno", "/dos", "/tres"],
+      index: -1
+    });
+    expect(testHistory.location.pathname).toBe("/uno");
+  });
+
+  it("uses location at index 0 if index is larger than length of locations array", () => {
+    const testHistory = InMemory({
+      locations: ["/one", "/two", "/three"],
+      index: 1
+    });
+    expect(testHistory.location.pathname).toBe("/two");
+
+    testHistory.reset({
+      locations: ["/uno", "/dos", "/tres"],
+      index: 7
+    });
+    expect(testHistory.location.pathname).toBe("/uno");
   });
 
   describe("emitting new location", () => {

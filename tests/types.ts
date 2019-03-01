@@ -2,7 +2,6 @@ import { History } from "@hickory/root";
 
 export interface TestCaseArgs {
   history: History;
-  pathname: () => string;
 }
 
 export interface AsyncTestCaseArgs extends TestCaseArgs {

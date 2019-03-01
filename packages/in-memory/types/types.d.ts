@@ -8,8 +8,6 @@ export interface SessionOptions {
 }
 export declare type Options = LocationUtilOptions & SessionOptions;
 export interface SessionHistory {
-    locations: Array<SessionLocation>;
-    index: number;
     reset(options?: SessionOptions): void;
 }
 export declare type InMemoryHistory = History & SessionHistory;

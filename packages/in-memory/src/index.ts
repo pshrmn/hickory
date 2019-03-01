@@ -13,6 +13,7 @@ import {
   Options,
   InMemoryHistory,
   InputLocation,
+  InputLocations,
   SessionOptions
 } from "./types";
 
@@ -23,6 +24,24 @@ export * from "./types";
 export function InMemory(options: Options = {}): InMemoryHistory {
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
+
+  let locations = initializeLocations(options.locations);
+  let index = validIndex(options.index) ? options.index : 0;
+
+  function validIndex(value: number | undefined): value is number {
+    return value !== undefined && value >= 0 && value < locations.length;
+  }
+  function initializeLocations(
+    locs: InputLocations = ["/"]
+  ): Array<SessionLocation> {
+    return locs.map((loc: InputLocation) =>
+      locationUtilities.keyed(
+        locationUtilities.genericLocation(loc),
+        keygen.major()
+      )
+    );
+  }
+
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -30,44 +49,24 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     push(location: SessionLocation) {
       return () => {
         memoryHistory.location = location;
-        memoryHistory.index++;
-        memoryHistory.locations = [
-          ...memoryHistory.locations.slice(0, memoryHistory.index),
-          location
-        ];
+        index++;
+        locations = [...locations.slice(0, index), location];
         memoryHistory.action = "push";
       };
     },
     replace(location: SessionLocation) {
       return () => {
         memoryHistory.location = location;
-        memoryHistory.locations[memoryHistory.index] = memoryHistory.location;
+        locations[index] = memoryHistory.location;
         memoryHistory.action = "replace";
       };
     }
   });
 
   const destroyLocations = () => {
-    memoryHistory.locations = [];
-    memoryHistory.index = -1;
+    locations = [];
+    index = -1;
   };
-
-  let initialLocations: Array<SessionLocation> = (
-    options.locations || ["/"]
-  ).map((loc: InputLocation) =>
-    locationUtilities.keyed(
-      locationUtilities.genericLocation(loc),
-      keygen.major()
-    )
-  );
-  let initialIndex = 0;
-  if (
-    options.index &&
-    options.index > 0 &&
-    options.index < initialLocations.length
-  ) {
-    initialIndex = options.index;
-  }
 
   function toHref(location: AnyLocation): string {
     return locationUtilities.stringifyLocation(location);
@@ -75,12 +74,8 @@ export function InMemory(options: Options = {}): InMemoryHistory {
 
   let responseHandler: ResponseHandler | undefined;
   const memoryHistory: InMemoryHistory = {
-    // location
-    location: initialLocations[initialIndex],
-    locations: initialLocations,
-    index: initialIndex,
+    location: locations[index],
     action: "push",
-    // set response handler
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
@@ -90,10 +85,10 @@ export function InMemory(options: Options = {}): InMemoryHistory {
         cancel: noop
       });
     },
-    // convenience
     toHref,
     destroy(): void {
       destroyLocations();
+      responseHandler = undefined;
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
@@ -121,16 +116,16 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           cancel: noop
         });
       } else {
-        const originalIndex = memoryHistory.index;
+        const originalIndex = index;
         const newIndex = originalIndex + num;
-        if (newIndex < 0 || newIndex >= memoryHistory.locations.length) {
+        if (newIndex < 0 || newIndex >= locations.length) {
           return;
         }
 
         // Immediately update the index; this simulates browser behavior.
-        memoryHistory.index = newIndex;
+        index = newIndex;
 
-        const location: SessionLocation = memoryHistory.locations[newIndex];
+        const location: SessionLocation = locations[newIndex];
         responseHandler({
           location,
           action: "pop",
@@ -142,29 +137,15 @@ export function InMemory(options: Options = {}): InMemoryHistory {
             if (nextAction === "pop") {
               return;
             }
-            memoryHistory.index = originalIndex;
+            index = originalIndex;
           }
         });
       }
     },
-    reset(options?: SessionOptions) {
-      memoryHistory.locations = ((options && options.locations) || ["/"]).map(
-        loc =>
-          locationUtilities.keyed(
-            locationUtilities.genericLocation(loc),
-            keygen.major()
-          )
-      );
-      memoryHistory.index =
-        options && options.index != undefined ? options.index : 0;
-      // set index to 0 when it is out of bounds
-      if (
-        memoryHistory.index < 0 ||
-        memoryHistory.index >= memoryHistory.locations.length
-      ) {
-        memoryHistory.index = 0;
-      }
-      memoryHistory.location = memoryHistory.locations[memoryHistory.index];
+    reset(options: SessionOptions = {}) {
+      locations = initializeLocations(options.locations);
+      index = validIndex(options.index) ? options.index : 0;
+      memoryHistory.location = locations[index];
       memoryHistory.action = "push";
       if (!responseHandler) {
         return;
