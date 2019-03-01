@@ -51,14 +51,14 @@ export function InMemory(options: Options = {}): InMemoryHistory {
         memoryHistory.location = location;
         index++;
         locations = [...locations.slice(0, index), location];
-        memoryHistory.action = "push";
+        lastAction = "push";
       };
     },
     replace(location: SessionLocation) {
       return () => {
         memoryHistory.location = location;
         locations[index] = memoryHistory.location;
-        memoryHistory.action = "replace";
+        lastAction = "replace";
       };
     }
   });
@@ -72,15 +72,15 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
+  let lastAction: Action = "push";
   let responseHandler: ResponseHandler | undefined;
   const memoryHistory: InMemoryHistory = {
     location: locations[index],
-    action: "push",
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: memoryHistory.location,
-        action: memoryHistory.action,
+        action: lastAction,
         finish: noop,
         cancel: noop
       });
@@ -111,7 +111,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           location: memoryHistory.location,
           action: "pop",
           finish: () => {
-            memoryHistory.action = "pop";
+            lastAction = "pop";
           },
           cancel: noop
         });
@@ -131,7 +131,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           action: "pop",
           finish: () => {
             memoryHistory.location = location;
-            memoryHistory.action = "pop";
+            lastAction = "pop";
           },
           cancel: (nextAction: Action) => {
             if (nextAction === "pop") {
@@ -146,13 +146,13 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       locations = initializeLocations(options.locations);
       index = validIndex(options.index) ? options.index : 0;
       memoryHistory.location = locations[index];
-      memoryHistory.action = "push";
+      lastAction = "push";
       if (!responseHandler) {
         return;
       }
       responseHandler({
         location: memoryHistory.location,
-        action: memoryHistory.action,
+        action: lastAction,
         finish: noop,
         cancel: noop
       });

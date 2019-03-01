@@ -13,8 +13,7 @@ import NavigatePush from "./navigate-push";
 import NavigateReplace from "./navigate-replace";
 import FinishCallSetsLocation from "./finish-call-sets-location";
 import FinishNotCalled from "./finish-not-called";
-import FinishPush from "./finish-push-sets-action";
-import FinishReplace from "./finish-replace-sets-action";
+import FinishLocation from "./finish-sets-location";
 import CancelCall from "./cancel-call-location";
 
 import { Suite } from "../../types";
@@ -35,7 +34,6 @@ export const navigateSuite: Suite = [
   NavigateReplace,
   FinishCallSetsLocation,
   FinishNotCalled,
-  FinishPush,
-  FinishReplace,
+  FinishLocation,
   CancelCall
 ];

@@ -7,6 +7,7 @@ export default {
   msg:
     "pop is cancelled if there is a replace before pending response finishes",
   async: true,
+  assertions: 1,
   fn: function({ history, resolve }: AsyncTestCaseArgs) {
     function initialRouter(pending) {
       pending.finish();

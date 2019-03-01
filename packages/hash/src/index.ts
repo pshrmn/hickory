@@ -51,7 +51,7 @@ export function Hash(options: Options = {}): HashHistory {
           window.location.assign(path);
         }
         hashHistory.location = location;
-        hashHistory.action = "push";
+        lastAction = "push";
       };
     },
     replace(location: SessionLocation) {
@@ -64,7 +64,7 @@ export function Hash(options: Options = {}): HashHistory {
           window.location.replace(path);
         }
         hashHistory.location = location;
-        hashHistory.action = "replace";
+        lastAction = "replace";
       };
     }
   });
@@ -104,17 +104,18 @@ export function Hash(options: Options = {}): HashHistory {
     return encodeHashPath(locationUtilities.stringifyLocation(location));
   }
 
+  let lastAction: Action =
+    getStateFromHistory().key !== undefined ? "pop" : "push";
   let responseHandler: ResponseHandler | undefined;
   const hashHistory: HashHistory = {
     // location
-    action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
       responseHandler({
         location: hashHistory.location,
-        action: hashHistory.action,
+        action: lastAction,
         finish: noop,
         cancel: noop
       });
@@ -160,7 +161,7 @@ export function Hash(options: Options = {}): HashHistory {
       action: "pop",
       finish: () => {
         hashHistory.location = location;
-        hashHistory.action = "pop";
+        lastAction = "pop";
       },
       cancel: (nextAction: Action) => {
         if (nextAction === "pop") {

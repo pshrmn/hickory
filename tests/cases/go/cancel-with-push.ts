@@ -6,6 +6,7 @@ import { AsyncTestCaseArgs } from "../../types";
 export default {
   msg: "pop is cancelled if there is a push before pending response finishes",
   async: true,
+  assertions: 1,
   fn: function({ history, resolve }: AsyncTestCaseArgs) {
     function initialRouter(pending) {
       pending.finish();

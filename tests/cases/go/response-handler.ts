@@ -5,6 +5,7 @@ import { AsyncTestCaseArgs } from "../../types";
 export default {
   msg: `calls response handler with expected location and action`,
   async: true,
+  assertions: 2,
   fn: function({ history, resolve }: AsyncTestCaseArgs) {
     let setup = false;
     function router(pending) {

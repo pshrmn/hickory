@@ -46,7 +46,7 @@ export function Browser(options: Options = {}): BrowserHistory {
           window.location.assign(path);
         }
         browserHistory.location = location;
-        browserHistory.action = "push";
+        lastAction = "push";
       };
     },
     replace(location: SessionLocation) {
@@ -59,7 +59,7 @@ export function Browser(options: Options = {}): BrowserHistory {
           window.location.replace(path);
         }
         browserHistory.location = location;
-        browserHistory.action = "replace";
+        lastAction = "replace";
       };
     }
   });
@@ -89,10 +89,11 @@ export function Browser(options: Options = {}): BrowserHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
+  // set action before location because locationFromBrowser enforces that the location has a key
+  let lastAction: Action =
+    getStateFromHistory().key !== undefined ? "pop" : "push";
   let responseHandler: ResponseHandler | undefined;
   const browserHistory: BrowserHistory = {
-    // set action before location because locationFromBrowser enforces that the location has a key
-    action: getStateFromHistory().key !== undefined ? "pop" : "push",
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
@@ -100,7 +101,7 @@ export function Browser(options: Options = {}): BrowserHistory {
       // immediately invoke
       responseHandler({
         location: browserHistory.location,
-        action: browserHistory.action,
+        action: lastAction,
         finish: noop,
         cancel: noop
       });
@@ -152,7 +153,7 @@ export function Browser(options: Options = {}): BrowserHistory {
       action: "pop",
       finish: () => {
         browserHistory.location = location;
-        browserHistory.action = "pop";
+        lastAction = "pop";
       },
       cancel: (nextAction: Action) => {
         if (nextAction === "pop") {
