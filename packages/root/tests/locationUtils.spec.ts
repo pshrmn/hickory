@@ -85,6 +85,12 @@ describe("locationFactory", () => {
             expect(location.pathname).toBe("/this/is/the/rest");
           });
         });
+
+        it("attaches provided state", () => {
+          const state = "hi!";
+          const loc = genericLocation("/pathname", state);
+          expect(loc.state).toBe(state);
+        });
       });
 
       describe("object argument", () => {

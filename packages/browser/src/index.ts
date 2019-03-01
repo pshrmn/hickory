@@ -132,9 +132,10 @@ export function Browser(options: Options = {}): BrowserHistory {
   let reverting = false;
 
   function pop(state: object): void {
-    // when we are reverting a pop (the user did not confirm navigation), we
-    // just need to reset the boolean and return. The browser has already taken
-    // care of updating the address bar and we never touched our internal values.
+    // When we are reverting a pop (the navigation was cancelled), we
+    // just need to reset the boolean and return. The browser has already
+    // taken care of updating the address bar and we never touched our
+    // internal values.
     if (reverting) {
       reverting = false;
       return;

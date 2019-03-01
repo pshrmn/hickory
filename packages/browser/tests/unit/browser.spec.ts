@@ -1,57 +1,115 @@
 import "jest";
 import { Browser } from "../../src";
-import { JSDOM } from "jsdom";
 
-// We create our own jsdom instead of using the one that Jest will create
-// so that we can reset the DOM between tests
+import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
+import { navigateSuite, goSuite } from "../../../../tests/cases";
+
+import { TestCase, Suite } from "../../../../tests/types";
+
+function runAsyncTest(test: TestCase) {
+  it(test.msg, async () => {
+    await asyncWithDOM(
+      { url: "http://example.com/one" },
+      ({ window, resolve }) => {
+        test.fn({
+          history: Browser(),
+          pathname: () => window.location.pathname,
+          resolve
+        });
+      }
+    );
+  });
+}
+
+function runTest(test: TestCase) {
+  it(test.msg, () => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      test.fn({
+        history: Browser(),
+        pathname: () => window.location.pathname
+      });
+    });
+  });
+}
+
+function runSuite(suite: Suite) {
+  suite.forEach(test => {
+    if (test.async) {
+      runAsyncTest(test);
+    } else {
+      runTest(test);
+    }
+  });
+}
+
 describe("Browser constructor", () => {
-  let dom: JSDOM;
-  let window;
-
-  beforeEach(() => {
-    dom = new JSDOM("", {
-      url: "http://example.com/one"
-    });
-    window = global.window = dom.window;
-    global.document = dom.window.document;
-  });
-
-  afterEach(() => {
-    global.document = undefined;
-  });
-
-  it("returns object with expected API", () => {
-    const testHistory = Browser();
-    const expectedProperties = [
-      "location",
-      "action",
-      "toHref",
-      "respondWith",
-      "destroy"
-    ];
-    expectedProperties.forEach(property => {
-      expect(testHistory.hasOwnProperty(property)).toBe(true);
-    });
-  });
-
   it("initializes using window.location", () => {
-    const testHistory = Browser();
-    expect(testHistory.location).toMatchObject({
-      pathname: "/one",
-      hash: "",
-      query: ""
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      const testHistory = Browser();
+      expect(testHistory.location).toMatchObject({
+        pathname: "/one",
+        hash: "",
+        query: ""
+      });
+    });
+  });
+
+  it("throws if there is no DOM", () => {
+    withDOM({ url: "http://example.com/one", setGlobal: false }, () => {
+      expect(() => {
+        const testHistory = Browser();
+      }).toThrow();
     });
   });
 
   it('sets initial action to "push" when page has not been previously visited', () => {
-    window.history.pushState(null, "", "/has-no-key");
-    const testHistory = Browser();
-    expect(testHistory.action).toBe("push");
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      window.history.pushState(null, "", "/has-no-key");
+      const testHistory = Browser();
+      expect(testHistory.action).toBe("push");
+    });
   });
 
   it('sets initial action to "pop" when page has been previously visited', () => {
-    window.history.pushState({ key: "17.0" }, "", "/has-key");
-    const testHistory = Browser();
-    expect(testHistory.action).toBe("pop");
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      window.history.pushState({ key: "17.0" }, "", "/has-key");
+      const testHistory = Browser();
+      expect(testHistory.action).toBe("pop");
+    });
+  });
+});
+
+describe("navigate()", () => {
+  runSuite(navigateSuite);
+});
+
+describe("go", () => {
+  runSuite(goSuite);
+
+  // integration?
+  it("calls window.history.go with provided value", () => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      const realGo = window.history.go;
+      const mockGo = (window.history.go = jest.fn());
+      const testHistory = Browser();
+
+      [undefined, 0, 1, -1].forEach((value, index) => {
+        testHistory.go(value);
+        expect(mockGo.mock.calls[index][0]).toBe(value);
+      });
+    });
+  });
+});
+
+describe("toHref", () => {
+  it("returns the location formatted as a string", () => {
+    withDOM({ url: "http://example.com/one" }, () => {
+      const testHistory = Browser();
+      const path = testHistory.toHref({
+        pathname: "/one",
+        query: "test=query"
+      });
+      expect(path).toBe("/one?test=query");
+    });
   });
 });
