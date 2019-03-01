@@ -7,10 +7,8 @@ export default {
   fn: function({ history }: TestCaseArgs) {
     let router = ignoreFirstCall(function(pending) {
       expect(history.location.pathname).toBe("/one");
-      expect(history.action).toBe("push");
       pending.cancel();
       expect(history.location.pathname).toBe("/one");
-      expect(history.action).toBe("push");
     });
     history.respondWith(router);
     history.navigate("/two", "replace");

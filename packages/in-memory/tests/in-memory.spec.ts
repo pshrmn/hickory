@@ -8,6 +8,7 @@ import { TestCase, Suite } from "../../../tests/types";
 
 function runAsyncTest(test: TestCase) {
   it(test.msg, async () => {
+    expect.assertions(test.assertions);
     await new Promise(resolve => {
       const testHistory = InMemory({
         locations: ["/one"]
@@ -98,7 +99,9 @@ describe("Memory constructor", () => {
       locations: ["/one", "/two", "/three"],
       index: 0
     });
-    expect(testHistory.action).toBe("push");
+    testHistory.respondWith(pending => {
+      expect(pending.action).toBe("push");
+    });
   });
 });
 
@@ -127,18 +130,6 @@ describe("go", () => {
         done();
       });
       testHistory.respondWith(router); // calls router
-      testHistory.go();
-    });
-
-    it('sets history.action to "pop" when calling "finish"', done => {
-      const testHistory = InMemory();
-      expect(testHistory.action).toBe("push");
-      const router = ignoreFirstCall(function(pending) {
-        pending.finish();
-        expect(testHistory.action).toBe("pop");
-        done();
-      });
-      testHistory.respondWith(router);
       testHistory.go();
     });
   });

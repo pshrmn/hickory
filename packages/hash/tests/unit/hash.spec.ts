@@ -8,6 +8,7 @@ import { TestCase, Suite } from "../../../../tests/types";
 
 function runAsyncTest(test: TestCase) {
   it(test.msg, async () => {
+    expect.assertions(test.assertions);
     await asyncWithDOM(
       { url: "http://example.com/#/one" },
       ({ window, resolve }) => {
@@ -64,7 +65,9 @@ describe("Hash constructor", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState(null, "", "/#has-no-key");
       const testHistory = Hash();
-      expect(testHistory.action).toBe("push");
+      testHistory.respondWith(pending => {
+        expect(pending.action).toBe("push");
+      });
     });
   });
 
@@ -72,7 +75,9 @@ describe("Hash constructor", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/#has-key");
       const testHistory = Hash();
-      expect(testHistory.action).toBe("pop");
+      testHistory.respondWith(pending => {
+        expect(pending.action).toBe("pop");
+      });
     });
   });
 
