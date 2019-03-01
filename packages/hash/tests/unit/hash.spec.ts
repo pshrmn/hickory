@@ -13,7 +13,6 @@ function runAsyncTest(test: TestCase) {
       ({ window, resolve }) => {
         test.fn({
           history: Hash(),
-          pathname: () => window.location.hash.slice(1),
           resolve
         });
       }
@@ -25,8 +24,7 @@ function runTest(test: TestCase) {
   it(test.msg, () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       test.fn({
-        history: Hash(),
-        pathname: () => window.location.hash.slice(1)
+        history: Hash()
       });
     });
   });

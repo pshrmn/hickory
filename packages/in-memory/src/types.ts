@@ -28,8 +28,6 @@ export interface SessionOptions {
 export type Options = LocationUtilOptions & SessionOptions;
 
 export interface SessionHistory {
-  locations: Array<SessionLocation>;
-  index: number;
   reset(options?: SessionOptions): void;
 }
 

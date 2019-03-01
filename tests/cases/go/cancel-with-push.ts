@@ -6,13 +6,12 @@ import { AsyncTestCaseArgs } from "../../types";
 export default {
   msg: "pop is cancelled if there is a push before pending response finishes",
   async: true,
-  fn: function({ history, pathname, resolve }: AsyncTestCaseArgs) {
+  fn: function({ history, resolve }: AsyncTestCaseArgs) {
     function initialRouter(pending) {
       pending.finish();
     }
     let cancelGo;
     const goRouter = ignoreFirstCall(function(pending) {
-      expect(pathname()).toBe("/four");
       cancelGo = pending.cancel;
       // trigger a push call and don't resolve the go
       history.respondWith(pushRouter);

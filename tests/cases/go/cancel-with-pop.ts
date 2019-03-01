@@ -6,14 +6,12 @@ import { AsyncTestCaseArgs } from "../../types";
 export default {
   msg: "pop is cancelled if there is a pop before pending response finishes",
   async: true,
-  fn: function({ history, pathname, resolve }: AsyncTestCaseArgs) {
+  fn: function({ history, resolve }: AsyncTestCaseArgs) {
     function initialRouter(pending) {
       pending.finish();
     }
     let cancelGo;
     const goRouter = ignoreFirstCall(function(pending) {
-      // at this point, the Hash has popped
-      expect(pathname()).toBe("/four");
       cancelGo = pending.cancel;
       // trigger a push call and don't resolve the go
       history.respondWith(popRouter);
@@ -22,8 +20,6 @@ export default {
     const popRouter = ignoreFirstCall(function(pending) {
       cancelGo("pop");
       setTimeout(() => {
-        // pathname is updated, but history.location is not
-        expect(pathname()).toBe("/three");
         expect(history.location.pathname).toBe("/six");
         // but it is once we finish the pop
         pending.finish();
