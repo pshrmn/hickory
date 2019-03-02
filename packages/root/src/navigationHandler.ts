@@ -12,10 +12,13 @@ export default function responder() {
     responseHandler(nav);
   }
 
-  function clearPending() {
+  function clearPending(): boolean {
     if (pending) {
+      let retVal = !!pending.cancelled;
       pending = undefined;
+      return retVal;
     }
+    return true;
   }
 
   function cancelPending(action?: Action) {

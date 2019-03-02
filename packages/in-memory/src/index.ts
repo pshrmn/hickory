@@ -56,7 +56,10 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     current: () => memoryHistory.location,
     push(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         memoryHistory.location = location;
         index++;
         locations = [...locations.slice(0, index), location];
@@ -65,7 +68,10 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         memoryHistory.location = location;
         locations[index] = memoryHistory.location;
         lastAction = "replace";
@@ -119,7 +125,10 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           location: memoryHistory.location,
           action: "pop",
           finish: () => {
-            clearPending();
+            const alreadyCleared = clearPending();
+            if (alreadyCleared) {
+              return;
+            }
             lastAction = "pop";
           },
           cancel: clearPending
@@ -139,13 +148,16 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           location,
           action: "pop",
           finish: () => {
-            clearPending();
+            const alreadyCleared = clearPending();
+            if (alreadyCleared) {
+              return;
+            }
             memoryHistory.location = location;
             lastAction = "pop";
           },
           cancel: (nextAction?: Action) => {
-            clearPending();
-            if (nextAction === "pop") {
+            const alreadyCleared = clearPending();
+            if (alreadyCleared || nextAction === "pop") {
               return;
             }
             index = originalIndex;

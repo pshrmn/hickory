@@ -47,7 +47,10 @@ export function Browser(options: Options = {}): BrowserHistory {
     current: () => browserHistory.location,
     push(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -61,7 +64,10 @@ export function Browser(options: Options = {}): BrowserHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -156,16 +162,16 @@ export function Browser(options: Options = {}): BrowserHistory {
       location,
       action: "pop",
       finish: () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         browserHistory.location = location;
         lastAction = "pop";
       },
       cancel: (nextAction?: Action) => {
-        clearPending();
-
-        // popping while already popping is cumulative,
-        // so don't undo the original pop
-        if (nextAction === "pop") {
+        const alreadyCleared = clearPending();
+        if (alreadyCleared || nextAction === "pop") {
           return;
         }
         reverting = true;

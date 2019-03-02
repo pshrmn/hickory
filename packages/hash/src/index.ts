@@ -52,7 +52,10 @@ export function Hash(options: Options = {}): HashHistory {
     current: () => hashHistory.location,
     push(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -66,7 +69,10 @@ export function Hash(options: Options = {}): HashHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -168,16 +174,16 @@ export function Hash(options: Options = {}): HashHistory {
       location,
       action: "pop",
       finish: () => {
-        clearPending();
+        const alreadyCleared = clearPending();
+        if (alreadyCleared) {
+          return;
+        }
         hashHistory.location = location;
         lastAction = "pop";
       },
       cancel: (nextAction?: Action) => {
-        clearPending();
-
-        // popping while already popping is cumulative,
-        // so don't undo the original pop
-        if (nextAction === "pop") {
+        const alreadyCleared = clearPending();
+        if (alreadyCleared || nextAction === "pop") {
           return;
         }
         reverting = true;

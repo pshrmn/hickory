@@ -1,7 +1,7 @@
 import "jest";
 import { InMemory } from "../src";
 
-import { navigateSuite, goSuite } from "../../../tests/cases";
+import { navigateSuite, goSuite, cancelSuite } from "../../../tests/cases";
 import { ignoreFirstCall } from "../../../tests/utils/ignoreFirst";
 
 import { TestCase, Suite } from "../../../tests/types";
@@ -103,6 +103,10 @@ describe("Memory constructor", () => {
       expect(pending.action).toBe("push");
     });
   });
+});
+
+describe("cancel", () => {
+  runSuite(cancelSuite);
 });
 
 describe("navigate()", () => {
