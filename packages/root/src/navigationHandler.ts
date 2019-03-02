@@ -1,6 +1,6 @@
 import { ResponseHandler, PendingNavigation, Action } from "./types/navigation";
 
-export default function responder() {
+export default function navigationHandler() {
   let responseHandler: ResponseHandler | undefined;
   let pending: PendingNavigation | undefined;
 
@@ -8,22 +8,41 @@ export default function responder() {
     if (!responseHandler) {
       return;
     }
-    pending = nav;
-    responseHandler(nav);
-  }
-
-  function clearPending(): boolean {
-    if (pending) {
-      let retVal = !!pending.cancelled;
-      pending = undefined;
-      return retVal;
-    }
-    return true;
+    const { location, action, finish, cancel } = nav;
+    const wrappedNav = {
+      location,
+      action,
+      finish() {
+        if (
+          wrappedNav.cancelled ||
+          pending === undefined ||
+          pending !== wrappedNav
+        ) {
+          return;
+        }
+        finish();
+        pending = undefined;
+      },
+      cancel(nextAction?: Action) {
+        if (
+          wrappedNav.cancelled ||
+          pending === undefined ||
+          pending !== wrappedNav
+        ) {
+          return;
+        }
+        cancel(nextAction);
+        pending.cancelled = true;
+        pending = undefined;
+      },
+      cancelled: false
+    };
+    pending = wrappedNav;
+    responseHandler(wrappedNav);
   }
 
   function cancelPending(action?: Action) {
     if (pending) {
-      pending.cancelled = true;
       pending.cancel(action);
       pending = undefined;
     }
@@ -35,7 +54,6 @@ export default function responder() {
 
   return {
     emitNavigation,
-    clearPending,
     cancelPending,
     setHandler
   };

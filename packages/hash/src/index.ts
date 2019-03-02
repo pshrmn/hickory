@@ -29,6 +29,8 @@ function ensureHash(encode: (path: string) => string): void {
   }
 }
 
+function noop() {}
+
 export function Hash(options: Options = {}): HashHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/hash without a DOM");
@@ -40,22 +42,13 @@ export function Hash(options: Options = {}): HashHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const {
-    emitNavigation,
-    clearPending,
-    cancelPending,
-    setHandler
-  } = navigationHandler();
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
     current: () => hashHistory.location,
     push(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -69,10 +62,6 @@ export function Hash(options: Options = {}): HashHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -136,8 +125,8 @@ export function Hash(options: Options = {}): HashHistory {
       emitNavigation({
         location: hashHistory.location,
         action: lastAction,
-        finish: clearPending,
-        cancel: clearPending
+        finish: noop,
+        cancel: noop
       });
     },
     // convenience
@@ -155,7 +144,7 @@ export function Hash(options: Options = {}): HashHistory {
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: clearPending
+        cancel: noop
       });
     },
     go(num: number): void {
@@ -174,16 +163,11 @@ export function Hash(options: Options = {}): HashHistory {
       location,
       action: "pop",
       finish: () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         hashHistory.location = location;
         lastAction = "pop";
       },
       cancel: (nextAction?: Action) => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared || nextAction === "pop") {
+        if (nextAction === "pop") {
           return;
         }
         reverting = true;

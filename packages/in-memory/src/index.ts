@@ -24,6 +24,8 @@ import {
 
 export * from "./types";
 
+function noop() {}
+
 export function InMemory(options: Options = {}): InMemoryHistory {
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
@@ -44,22 +46,13 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       )
     );
   }
-  const {
-    emitNavigation,
-    clearPending,
-    cancelPending,
-    setHandler
-  } = navigationHandler();
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
     current: () => memoryHistory.location,
     push(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         memoryHistory.location = location;
         index++;
         locations = [...locations.slice(0, index), location];
@@ -68,10 +61,6 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         memoryHistory.location = location;
         locations[index] = memoryHistory.location;
         lastAction = "replace";
@@ -98,8 +87,8 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
-        finish: clearPending,
-        cancel: clearPending
+        finish: noop,
+        cancel: noop
       });
     },
     toHref,
@@ -116,7 +105,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: clearPending
+        cancel: noop
       });
     },
     go(num?: number): void {
@@ -125,13 +114,9 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           location: memoryHistory.location,
           action: "pop",
           finish: () => {
-            const alreadyCleared = clearPending();
-            if (alreadyCleared) {
-              return;
-            }
             lastAction = "pop";
           },
-          cancel: clearPending
+          cancel: noop
         });
       } else {
         const originalIndex = index;
@@ -148,16 +133,11 @@ export function InMemory(options: Options = {}): InMemoryHistory {
           location,
           action: "pop",
           finish: () => {
-            const alreadyCleared = clearPending();
-            if (alreadyCleared) {
-              return;
-            }
             memoryHistory.location = location;
             lastAction = "pop";
           },
           cancel: (nextAction?: Action) => {
-            const alreadyCleared = clearPending();
-            if (alreadyCleared || nextAction === "pop") {
+            if (nextAction === "pop") {
               return;
             }
             index = originalIndex;
@@ -175,8 +155,8 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
-        finish: clearPending,
-        cancel: clearPending
+        finish: noop,
+        cancel: noop
       });
     }
   };

@@ -23,6 +23,8 @@ import { BrowserHistory, Options } from "./types";
 
 export * from "./types";
 
+function noop() {}
+
 export function Browser(options: Options = {}): BrowserHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
@@ -34,12 +36,7 @@ export function Browser(options: Options = {}): BrowserHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const {
-    emitNavigation,
-    clearPending,
-    cancelPending,
-    setHandler
-  } = navigationHandler();
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
 
   const prepare = prepareNavigate({
     locationUtils: locationUtilities,
@@ -47,10 +44,6 @@ export function Browser(options: Options = {}): BrowserHistory {
     current: () => browserHistory.location,
     push(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -64,10 +57,6 @@ export function Browser(options: Options = {}): BrowserHistory {
     },
     replace(location: SessionLocation) {
       return () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -125,8 +114,8 @@ export function Browser(options: Options = {}): BrowserHistory {
       emitNavigation({
         location: browserHistory.location,
         action: lastAction,
-        finish: clearPending,
-        cancel: clearPending
+        finish: noop,
+        cancel: noop
       });
     },
     toHref,
@@ -143,7 +132,7 @@ export function Browser(options: Options = {}): BrowserHistory {
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: clearPending
+        cancel: noop
       });
     },
     go(num: number): void {
@@ -162,16 +151,11 @@ export function Browser(options: Options = {}): BrowserHistory {
       location,
       action: "pop",
       finish: () => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared) {
-          return;
-        }
         browserHistory.location = location;
         lastAction = "pop";
       },
       cancel: (nextAction?: Action) => {
-        const alreadyCleared = clearPending();
-        if (alreadyCleared || nextAction === "pop") {
+        if (nextAction === "pop") {
           return;
         }
         reverting = true;
