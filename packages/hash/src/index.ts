@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -12,8 +17,7 @@ import {
   ToArgument,
   ResponseHandler,
   Action,
-  NavType,
-  PendingNavigation
+  NavType
 } from "@hickory/root";
 import { Options, HashHistory } from "./types";
 
@@ -36,6 +40,12 @@ export function Hash(options: Options = {}): HashHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
+  const {
+    emitNavigation,
+    clearPending,
+    cancelPending,
+    setHandler
+  } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -109,37 +119,13 @@ export function Hash(options: Options = {}): HashHistory {
 
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
-  let responseHandler: ResponseHandler | undefined;
-  let pending: PendingNavigation | undefined;
-
-  function emitNavigation(nav: PendingNavigation) {
-    if (!responseHandler) {
-      return;
-    }
-    pending = nav;
-    responseHandler(nav);
-  }
-
-  function clearPending() {
-    if (pending) {
-      pending = undefined;
-    }
-  }
-
-  function cancelPending(action?: Action) {
-    if (pending) {
-      pending.cancelled = true;
-      pending.cancel(action);
-      pending = undefined;
-    }
-  }
 
   const hashHistory: HashHistory = {
     // location
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
+      setHandler(fn);
       cancelPending();
       emitNavigation({
         location: hashHistory.location,

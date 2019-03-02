@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -12,8 +17,7 @@ import {
   ResponseHandler,
   ToArgument,
   NavType,
-  Action,
-  PendingNavigation
+  Action
 } from "@hickory/root";
 import { BrowserHistory, Options } from "./types";
 
@@ -30,6 +34,12 @@ export function Browser(options: Options = {}): BrowserHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
+  const {
+    emitNavigation,
+    clearPending,
+    cancelPending,
+    setHandler
+  } = navigationHandler();
 
   const prepare = prepareNavigate({
     locationUtils: locationUtilities,
@@ -100,35 +110,11 @@ export function Browser(options: Options = {}): BrowserHistory {
   // that the location has a key
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
-  let responseHandler: ResponseHandler | undefined;
-  let pending: PendingNavigation | undefined;
-
-  function emitNavigation(nav: PendingNavigation) {
-    if (!responseHandler) {
-      return;
-    }
-    pending = nav;
-    responseHandler(nav);
-  }
-
-  function clearPending() {
-    if (pending) {
-      pending = undefined;
-    }
-  }
-
-  function cancelPending(action?: Action) {
-    if (pending) {
-      pending.cancelled = true;
-      pending.cancel(action);
-      pending = undefined;
-    }
-  }
 
   const browserHistory: BrowserHistory = {
     location: locationFromBrowser(),
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
+      setHandler(fn);
       cancelPending();
       emitNavigation({
         location: browserHistory.location,

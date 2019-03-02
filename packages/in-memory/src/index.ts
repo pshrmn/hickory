@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 
 import {
   SessionLocation,
@@ -6,8 +11,7 @@ import {
   ToArgument,
   ResponseHandler,
   NavType,
-  Action,
-  PendingNavigation
+  Action
 } from "@hickory/root";
 
 import {
@@ -40,7 +44,12 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       )
     );
   }
-
+  const {
+    emitNavigation,
+    clearPending,
+    cancelPending,
+    setHandler
+  } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -74,35 +83,11 @@ export function InMemory(options: Options = {}): InMemoryHistory {
   }
 
   let lastAction: Action = "push";
-  let responseHandler: ResponseHandler | undefined;
-  let pending: PendingNavigation | undefined;
-
-  function emitNavigation(nav: PendingNavigation) {
-    if (!responseHandler) {
-      return;
-    }
-    pending = nav;
-    responseHandler(nav);
-  }
-
-  function clearPending() {
-    if (pending) {
-      pending = undefined;
-    }
-  }
-
-  function cancelPending(action?: Action) {
-    if (pending) {
-      pending.cancelled = true;
-      pending.cancel(action);
-      pending = undefined;
-    }
-  }
 
   const memoryHistory: InMemoryHistory = {
     location: locations[index],
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
+      setHandler(fn);
       cancelPending();
       emitNavigation({
         location: memoryHistory.location,
@@ -117,7 +102,6 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     },
     destroy(): void {
       destroyLocations();
-      responseHandler = undefined;
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
