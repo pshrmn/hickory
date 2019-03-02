@@ -174,7 +174,7 @@ export function Browser(options: Options = {}): BrowserHistory {
         browserHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action | undefined) => {
+      cancel: (nextAction?: Action) => {
         clearPending();
 
         // popping while already popping is cumulative,

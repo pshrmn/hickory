@@ -2,7 +2,7 @@ import { PartialLocation, SessionLocation } from "./location";
 export declare type ToArgument = string | PartialLocation;
 export declare type Action = "push" | "replace" | "pop";
 export declare type NavType = "anchor" | "push" | "replace";
-export declare type CancelNavigation = (nextAction: Action | undefined) => void;
+export declare type CancelNavigation = (nextAction?: Action) => void;
 export interface PendingNavigation {
     location: SessionLocation;
     action: Action;

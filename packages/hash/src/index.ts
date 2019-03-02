@@ -186,7 +186,7 @@ export function Hash(options: Options = {}): HashHistory {
         hashHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action | undefined) => {
+      cancel: (nextAction?: Action) => {
         clearPending();
 
         // popping while already popping is cumulative,

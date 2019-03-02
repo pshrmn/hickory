@@ -159,7 +159,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
             memoryHistory.location = location;
             lastAction = "pop";
           },
-          cancel: (nextAction: Action | undefined) => {
+          cancel: (nextAction?: Action) => {
             clearPending();
             if (nextAction === "pop") {
               return;
