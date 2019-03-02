@@ -49,10 +49,6 @@ Any pathname segments that exist prior to the hash section (or the full URI) wil
 
 The current location object.
 
-### action
-
-The action used to get to the current location object.
-
 ## Methods
 
 ### navigate()
@@ -162,35 +158,6 @@ The response handler function will be passed a "pending navigation" object. This
 #### arguments
 
 `fn` - The function to be called when the location changes.
-
-### confirmWith()
-
-```js
-history.confirmWith((info, confirm, prevent) => {
-  const result = window.confirm("Are you sure you want to navigate?");
-  if (result) {
-    confirm();
-  } else {
-    prevent();
-  }
-});
-```
-
-The `confirmWith` function allows you to register a function that will be called when navigation happens. This allows you to prevent navigation, which can be useful if you have a form whose data will be lost after navigation. If there is no registered confirmation function, then navigation will happen automatically.
-
-Only one confirmation function can be registered at a time, so if you call `confirmWith` when there is already a confirmation function, the existing one will be removed.
-
-#### arguments
-
-`fn` - The function to be called to confirm the navigation. This will receive three arguments. The first one is an object with three properties: `to` is the locatin that you are navigating to, `from` is the location that you are navigating from, and `action` is the type of navigation. The second is a `confirm` function, which you should call when you want the navigation to happen. The third is a `prevent` function, which you should call when you want to stop the navigation.
-
-### removeConfirmation()
-
-```js
-history.removeConfirmation();
-```
-
-The `removeConfirmation` function will remove the current confirmation function (if one exists). After calling `removeConfirmation`, navigation will happen automatically (until another confirmation function is added).
 
 ### destroy()
 
