@@ -1,7 +1,9 @@
 ## Next
 
+- Add `history.cancel` function for cancelling the active navigation.
+- The history object will automatically cancel the pending navigation when another navigation happens.
 - Remove `history.locations` and `history.index` values.
-- `go` emulates browser behavior by setting `history.index` immediately instead of when the navigation is finished. This means that a subsequent `go` call will be based on the pending `index`, not the index of the current `history.location`.
+- `go` emulates browser behavior by setting `index` immediately instead of when the navigation is finished. This means that a subsequent `go` call will be based on the pending `index`, not the index of the current `history.location`.
 
 ## 2.0.0-alpha.3
 

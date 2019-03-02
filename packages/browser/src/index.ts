@@ -12,13 +12,12 @@ import {
   ResponseHandler,
   ToArgument,
   NavType,
-  Action
+  Action,
+  PendingNavigation
 } from "@hickory/root";
 import { BrowserHistory, Options } from "./types";
 
 export * from "./types";
-
-function noop() {}
 
 export function Browser(options: Options = {}): BrowserHistory {
   if (!domExists()) {
@@ -38,6 +37,7 @@ export function Browser(options: Options = {}): BrowserHistory {
     current: () => browserHistory.location,
     push(location: SessionLocation) {
       return () => {
+        clearPending();
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -51,6 +51,7 @@ export function Browser(options: Options = {}): BrowserHistory {
     },
     replace(location: SessionLocation) {
       return () => {
+        clearPending();
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -64,7 +65,13 @@ export function Browser(options: Options = {}): BrowserHistory {
     }
   });
 
+  // when true, pop will ignore the navigation
+  let reverting = false;
   function popstate(event: PopStateEvent) {
+    if (reverting) {
+      reverting = false;
+      return;
+    }
     if (ignorablePopstateEvent(event)) {
       return;
     }
@@ -89,39 +96,62 @@ export function Browser(options: Options = {}): BrowserHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
-  // set action before location because locationFromBrowser enforces that the location has a key
+  // set action before location because locationFromBrowser enforces
+  // that the location has a key
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
   let responseHandler: ResponseHandler | undefined;
+  let pending: PendingNavigation | undefined;
+
+  function emitNavigation(nav: PendingNavigation) {
+    if (!responseHandler) {
+      return;
+    }
+    pending = nav;
+    responseHandler(nav);
+  }
+
+  function clearPending() {
+    if (pending) {
+      pending = undefined;
+    }
+  }
+
+  function cancelPending(action?: Action) {
+    if (pending) {
+      pending.cancelled = true;
+      pending.cancel(action);
+      pending = undefined;
+    }
+  }
+
   const browserHistory: BrowserHistory = {
     location: locationFromBrowser(),
-    // set response handler
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
-      // immediately invoke
-      responseHandler({
+      cancelPending();
+      emitNavigation({
         location: browserHistory.location,
         action: lastAction,
-        finish: noop,
-        cancel: noop
+        finish: clearPending,
+        cancel: clearPending
       });
     },
-    // convenience
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prepare(to, navType);
-
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: noop
+        cancel: clearPending
       });
     },
     go(num: number): void {
@@ -129,33 +159,26 @@ export function Browser(options: Options = {}): BrowserHistory {
     }
   };
 
-  // when true, pop will run without attempting to get user confirmation
-  let reverting = false;
-
   function pop(state: object): void {
-    // When we are reverting a pop (the navigation was cancelled), we
-    // just need to reset the boolean and return. The browser has already
-    // taken care of updating the address bar and we never touched our
-    // internal values.
-    if (reverting) {
-      reverting = false;
-      return;
-    }
+    cancelPending("push");
+
     const location = locationFromBrowser(state);
     const currentKey = browserHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
 
-    if (!responseHandler) {
-      return;
-    }
-    responseHandler({
+    emitNavigation({
       location,
       action: "pop",
       finish: () => {
+        clearPending();
         browserHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action) => {
+      cancel: (nextAction: Action | undefined) => {
+        clearPending();
+
+        // popping while already popping is cumulative,
+        // so don't undo the original pop
         if (nextAction === "pop") {
           return;
         }

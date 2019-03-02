@@ -13,7 +13,8 @@ export {
   Action,
   NavType,
   PendingNavigation,
-  ResponseHandler
+  ResponseHandler,
+  CancelNavigation
 } from "./navigation";
 
 export { KeyFns } from "./keyGenerator";

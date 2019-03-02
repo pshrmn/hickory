@@ -6,37 +6,46 @@ import { AsyncTestCaseArgs } from "../../types";
 export default {
   msg: "pop is cancelled if there is a pop before pending response finishes",
   async: true,
-  assertions: 2,
+  assertions: 1,
   fn: function({ history, resolve }: AsyncTestCaseArgs) {
-    function initialRouter(pending) {
-      pending.finish();
-    }
-    let cancelGo;
-    const goRouter = ignoreFirstCall(function(pending) {
-      cancelGo = pending.cancel;
-      // trigger a push call and don't resolve the go
-      history.respondWith(popRouter);
-      history.go(-1);
+    let calls = 0;
+    history.respondWith(pending => {
+      switch (calls++) {
+        case 0:
+          pending.finish();
+          history.navigate("/two", "push");
+          break;
+        case 1:
+          pending.finish();
+          history.navigate("/three", "push");
+          break;
+        case 2:
+          pending.finish();
+          history.navigate("/four", "push");
+          break;
+        case 3:
+          pending.finish();
+          history.navigate("/five", "push");
+          break;
+        case 4:
+          pending.finish();
+          history.navigate("/six", "push");
+          break;
+        case 5:
+          pending.finish();
+          history.go(-2);
+          break;
+        case 6:
+          history.go(-1);
+          break;
+        case 7:
+          pending.finish();
+          expect(history.location).toMatchObject({
+            pathname: "/three",
+            key: "2.0"
+          });
+          resolve();
+      }
     });
-    const popRouter = ignoreFirstCall(function(pending) {
-      cancelGo("pop");
-      setTimeout(() => {
-        expect(history.location.pathname).toBe("/six");
-        // but it is once we finish the pop
-        pending.finish();
-        expect(history.location.pathname).toBe("/three");
-        resolve();
-      }, 50);
-    });
-
-    history.respondWith(initialRouter);
-    history.navigate("/two", "push"); // 1.0
-    history.navigate("/three", "push"); // 2.0
-    history.navigate("/four", "push"); // 3.0
-    history.navigate("/five", "push"); // 4.0
-    history.navigate("/six", "push"); // 5.0
-
-    history.respondWith(goRouter);
-    history.go(-2);
   }
 };

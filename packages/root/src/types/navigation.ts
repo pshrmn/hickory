@@ -4,12 +4,12 @@ export type ToArgument = string | PartialLocation;
 
 export type Action = "push" | "replace" | "pop";
 export type NavType = "anchor" | "push" | "replace";
-
+export type CancelNavigation = (nextAction: Action | undefined) => void;
 export interface PendingNavigation {
   location: SessionLocation;
   action: Action;
   finish(): void;
-  cancel(nextAction?: Action): void;
+  cancel: CancelNavigation;
   cancelled?: boolean;
 }
 

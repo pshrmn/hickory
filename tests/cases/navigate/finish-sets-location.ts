@@ -6,7 +6,7 @@ export default {
     function router(pending) {
       pending.finish();
     }
-    history.respondWith(router); // calls router
+    history.respondWith(router);
     history.navigate("/next");
     expect(history.location).toMatchObject({
       pathname: "/next"

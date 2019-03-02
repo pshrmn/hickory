@@ -6,7 +6,8 @@ import {
   ToArgument,
   ResponseHandler,
   NavType,
-  Action
+  Action,
+  PendingNavigation
 } from "@hickory/root";
 
 import {
@@ -16,8 +17,6 @@ import {
   InputLocations,
   SessionOptions
 } from "./types";
-
-function noop() {}
 
 export * from "./types";
 
@@ -48,6 +47,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     current: () => memoryHistory.location,
     push(location: SessionLocation) {
       return () => {
+        clearPending();
         memoryHistory.location = location;
         index++;
         locations = [...locations.slice(0, index), location];
@@ -56,6 +56,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     },
     replace(location: SessionLocation) {
       return () => {
+        clearPending();
         memoryHistory.location = location;
         locations[index] = memoryHistory.location;
         lastAction = "replace";
@@ -74,46 +75,70 @@ export function InMemory(options: Options = {}): InMemoryHistory {
 
   let lastAction: Action = "push";
   let responseHandler: ResponseHandler | undefined;
+  let pending: PendingNavigation | undefined;
+
+  function emitNavigation(nav: PendingNavigation) {
+    if (!responseHandler) {
+      return;
+    }
+    pending = nav;
+    responseHandler(nav);
+  }
+
+  function clearPending() {
+    if (pending) {
+      pending = undefined;
+    }
+  }
+
+  function cancelPending(action?: Action) {
+    if (pending) {
+      pending.cancelled = true;
+      pending.cancel(action);
+      pending = undefined;
+    }
+  }
+
   const memoryHistory: InMemoryHistory = {
     location: locations[index],
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
-      responseHandler({
+      cancelPending();
+      emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
-        finish: noop,
-        cancel: noop
+        finish: clearPending,
+        cancel: clearPending
       });
     },
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy(): void {
       destroyLocations();
       responseHandler = undefined;
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: noop
+        cancel: clearPending
       });
     },
     go(num?: number): void {
-      if (!responseHandler) {
-        return;
-      }
       if (num == null || num === 0) {
-        responseHandler({
+        emitNavigation({
           location: memoryHistory.location,
           action: "pop",
           finish: () => {
+            clearPending();
             lastAction = "pop";
           },
-          cancel: noop
+          cancel: clearPending
         });
       } else {
         const originalIndex = index;
@@ -126,14 +151,16 @@ export function InMemory(options: Options = {}): InMemoryHistory {
         index = newIndex;
 
         const location: SessionLocation = locations[newIndex];
-        responseHandler({
+        emitNavigation({
           location,
           action: "pop",
           finish: () => {
+            clearPending();
             memoryHistory.location = location;
             lastAction = "pop";
           },
-          cancel: (nextAction: Action) => {
+          cancel: (nextAction: Action | undefined) => {
+            clearPending();
             if (nextAction === "pop") {
               return;
             }
@@ -147,14 +174,13 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       index = validIndex(options.index) ? options.index : 0;
       memoryHistory.location = locations[index];
       lastAction = "push";
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+
+      cancelPending();
+      emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
-        finish: noop,
-        cancel: noop
+        finish: clearPending,
+        cancel: clearPending
       });
     }
   };

@@ -3,7 +3,7 @@ import { ignoreFirstCall } from "../../utils/ignoreFirst";
 import { TestCaseArgs } from "../../types";
 
 export default {
-  msg: "calling cancel does not update history's location or action",
+  msg: "calling cancel maintains current location",
   fn: function({ history }: TestCaseArgs) {
     let router = ignoreFirstCall(function(pending) {
       expect(history.location.pathname).toBe("/one");

@@ -12,7 +12,8 @@ import {
   ToArgument,
   ResponseHandler,
   Action,
-  NavType
+  NavType,
+  PendingNavigation
 } from "@hickory/root";
 import { Options, HashHistory } from "./types";
 
@@ -23,8 +24,6 @@ function ensureHash(encode: (path: string) => string): void {
     window.history.replaceState(null, "", encode("/"));
   }
 }
-
-function noop() {}
 
 export function Hash(options: Options = {}): HashHistory {
   if (!domExists()) {
@@ -43,6 +42,7 @@ export function Hash(options: Options = {}): HashHistory {
     current: () => hashHistory.location,
     push(location: SessionLocation) {
       return () => {
+        clearPending();
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -56,6 +56,7 @@ export function Hash(options: Options = {}): HashHistory {
     },
     replace(location: SessionLocation) {
       return () => {
+        clearPending();
         const path = toHref(location);
         const { key, state } = location;
         try {
@@ -74,14 +75,16 @@ export function Hash(options: Options = {}): HashHistory {
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
 
+  let reverting = false;
   function popstate(event: PopStateEvent) {
+    if (reverting) {
+      reverting = false;
+      return;
+    }
     pop(event.state);
   }
 
   window.addEventListener("popstate", popstate, false);
-
-  // when true, pop will run without attempting to get user confirmation
-  let reverting = false;
 
   ensureHash(encodeHashPath);
 
@@ -107,34 +110,60 @@ export function Hash(options: Options = {}): HashHistory {
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
   let responseHandler: ResponseHandler | undefined;
+  let pending: PendingNavigation | undefined;
+
+  function emitNavigation(nav: PendingNavigation) {
+    if (!responseHandler) {
+      return;
+    }
+    pending = nav;
+    responseHandler(nav);
+  }
+
+  function clearPending() {
+    if (pending) {
+      pending = undefined;
+    }
+  }
+
+  function cancelPending(action?: Action) {
+    if (pending) {
+      pending.cancelled = true;
+      pending.cancel(action);
+      pending = undefined;
+    }
+  }
+
   const hashHistory: HashHistory = {
     // location
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
       responseHandler = fn;
-      responseHandler({
+      cancelPending();
+      emitNavigation({
         location: hashHistory.location,
         action: lastAction,
-        finish: noop,
-        cancel: noop
+        finish: clearPending,
+        cancel: clearPending
       });
     },
     // convenience
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
-        cancel: noop
+        cancel: clearPending
       });
     },
     go(num: number): void {
@@ -143,27 +172,25 @@ export function Hash(options: Options = {}): HashHistory {
   };
 
   function pop(state: object): void {
-    // when we are reverting a pop (the user did not confirm navigation), we
-    // just need to reset the boolean and return. The browser has already taken
-    // care of updating the address bar and we never touched our internal values.
-    if (reverting) {
-      reverting = false;
-      return;
-    }
+    cancelPending("pop");
+
     const location: SessionLocation = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
-    if (!responseHandler) {
-      return;
-    }
-    responseHandler({
+
+    emitNavigation({
       location,
       action: "pop",
       finish: () => {
+        clearPending();
         hashHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action) => {
+      cancel: (nextAction: Action | undefined) => {
+        clearPending();
+
+        // popping while already popping is cumulative,
+        // so don't undo the original pop
         if (nextAction === "pop") {
           return;
         }
