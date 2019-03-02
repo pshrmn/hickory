@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -31,6 +36,7 @@ export function Browser(options: Options = {}): BrowserHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
 
   const prepare = prepareNavigate({
     locationUtils: locationUtilities,
@@ -64,7 +70,13 @@ export function Browser(options: Options = {}): BrowserHistory {
     }
   });
 
+  // when true, pop will ignore the navigation
+  let reverting = false;
   function popstate(event: PopStateEvent) {
+    if (reverting) {
+      reverting = false;
+      return;
+    }
     if (ignorablePopstateEvent(event)) {
       return;
     }
@@ -89,35 +101,34 @@ export function Browser(options: Options = {}): BrowserHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
-  // set action before location because locationFromBrowser enforces that the location has a key
+  // set action before location because locationFromBrowser enforces
+  // that the location has a key
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
-  let responseHandler: ResponseHandler | undefined;
+
   const browserHistory: BrowserHistory = {
     location: locationFromBrowser(),
-    // set response handler
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
-      // immediately invoke
-      responseHandler({
+      setHandler(fn);
+      cancelPending();
+      emitNavigation({
         location: browserHistory.location,
         action: lastAction,
         finish: noop,
         cancel: noop
       });
     },
-    // convenience
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prepare(to, navType);
-
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
@@ -129,33 +140,21 @@ export function Browser(options: Options = {}): BrowserHistory {
     }
   };
 
-  // when true, pop will run without attempting to get user confirmation
-  let reverting = false;
-
   function pop(state: object): void {
-    // When we are reverting a pop (the navigation was cancelled), we
-    // just need to reset the boolean and return. The browser has already
-    // taken care of updating the address bar and we never touched our
-    // internal values.
-    if (reverting) {
-      reverting = false;
-      return;
-    }
+    cancelPending("push");
+
     const location = locationFromBrowser(state);
     const currentKey = browserHistory.location.key;
     const diff = keygen.diff(currentKey, location.key);
 
-    if (!responseHandler) {
-      return;
-    }
-    responseHandler({
+    emitNavigation({
       location,
       action: "pop",
       finish: () => {
         browserHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action) => {
+      cancel: (nextAction?: Action) => {
         if (nextAction === "pop") {
           return;
         }

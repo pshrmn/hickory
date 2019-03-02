@@ -1,3 +1,7 @@
+## Next
+
+- Add `cancel` method to `History` interface
+
 ## 2.0.0-alpha.3
 
 - Remove generic `query` type.

@@ -2,7 +2,7 @@ import "jest";
 import { Browser } from "../../src";
 
 import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
-import { navigateSuite, goSuite } from "../../../../tests/cases";
+import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
@@ -80,6 +80,10 @@ describe("Browser constructor", () => {
       });
     });
   });
+});
+
+describe("cancel", () => {
+  runSuite(cancelSuite);
 });
 
 describe("navigate()", () => {

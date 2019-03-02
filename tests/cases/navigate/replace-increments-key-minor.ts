@@ -6,7 +6,7 @@ export default {
     function router(pending) {
       pending.finish();
     }
-    history.respondWith(router); // calls router
+    history.respondWith(router);
 
     const [initMajor, initMinor] = history.location.key.split(".");
     const initMajorNum = parseInt(initMajor, 10);

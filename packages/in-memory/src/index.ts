@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 
 import {
   SessionLocation,
@@ -17,9 +22,9 @@ import {
   SessionOptions
 } from "./types";
 
-function noop() {}
-
 export * from "./types";
+
+function noop() {}
 
 export function InMemory(options: Options = {}): InMemoryHistory {
   const locationUtilities = locationUtils(options);
@@ -41,7 +46,7 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       )
     );
   }
-
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -73,12 +78,13 @@ export function InMemory(options: Options = {}): InMemoryHistory {
   }
 
   let lastAction: Action = "push";
-  let responseHandler: ResponseHandler | undefined;
+
   const memoryHistory: InMemoryHistory = {
     location: locations[index],
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
-      responseHandler({
+      setHandler(fn);
+      cancelPending();
+      emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
         finish: noop,
@@ -86,16 +92,16 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       });
     },
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy(): void {
       destroyLocations();
-      responseHandler = undefined;
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
@@ -103,11 +109,8 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       });
     },
     go(num?: number): void {
-      if (!responseHandler) {
-        return;
-      }
       if (num == null || num === 0) {
-        responseHandler({
+        emitNavigation({
           location: memoryHistory.location,
           action: "pop",
           finish: () => {
@@ -126,14 +129,14 @@ export function InMemory(options: Options = {}): InMemoryHistory {
         index = newIndex;
 
         const location: SessionLocation = locations[newIndex];
-        responseHandler({
+        emitNavigation({
           location,
           action: "pop",
           finish: () => {
             memoryHistory.location = location;
             lastAction = "pop";
           },
-          cancel: (nextAction: Action) => {
+          cancel: (nextAction?: Action) => {
             if (nextAction === "pop") {
               return;
             }
@@ -147,10 +150,9 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       index = validIndex(options.index) ? options.index : 0;
       memoryHistory.location = locations[index];
       lastAction = "push";
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+
+      cancelPending();
+      emitNavigation({
         location: memoryHistory.location,
         action: lastAction,
         finish: noop,

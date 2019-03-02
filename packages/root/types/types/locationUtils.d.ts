@@ -1,7 +1,7 @@
 import { Location, SessionLocation, PartialLocation } from "./location";
 export interface QueryFunctions {
-    parse: (query?: string) => Q;
-    stringify: (query?: Q) => string;
+    parse: (query?: string) => any;
+    stringify: (query?: any) => string;
 }
 export declare type RawPathname = (pathname: string) => string;
 export interface LocationUtilOptions {

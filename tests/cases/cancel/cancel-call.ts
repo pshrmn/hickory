@@ -3,7 +3,7 @@ import "jest";
 import { AsyncTestCaseArgs } from "../../types";
 
 export default {
-  msg: "pop is cancelled if there is a pop before pending response finishes",
+  msg: "cancels the pending navigation",
   async: true,
   assertions: 1,
   fn: function({ history, resolve }: AsyncTestCaseArgs) {
@@ -35,15 +35,15 @@ export default {
           history.go(-2);
           break;
         case 6:
-          history.go(-1);
-          break;
-        case 7:
+          history.cancel();
           pending.finish();
-          expect(history.location).toMatchObject({
-            pathname: "/three",
-            key: "2.0"
-          });
-          resolve();
+          setTimeout(() => {
+            expect(history.location).toMatchObject({
+              pathname: "/six",
+              key: "5.0"
+            });
+            resolve();
+          }, 25);
       }
     });
   }

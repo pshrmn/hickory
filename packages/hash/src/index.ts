@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, prepareNavigate } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  prepareNavigate,
+  navigationHandler
+} from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -37,6 +42,7 @@ export function Hash(options: Options = {}): HashHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
+  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
   const prep = prepareNavigate({
     locationUtils: locationUtilities,
     keygen,
@@ -74,14 +80,16 @@ export function Hash(options: Options = {}): HashHistory {
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
 
+  let reverting = false;
   function popstate(event: PopStateEvent) {
+    if (reverting) {
+      reverting = false;
+      return;
+    }
     pop(event.state);
   }
 
   window.addEventListener("popstate", popstate, false);
-
-  // when true, pop will run without attempting to get user confirmation
-  let reverting = false;
 
   ensureHash(encodeHashPath);
 
@@ -106,14 +114,15 @@ export function Hash(options: Options = {}): HashHistory {
 
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
-  let responseHandler: ResponseHandler | undefined;
+
   const hashHistory: HashHistory = {
     // location
     location: locationFromBrowser(),
     // set response handler
     respondWith(fn: ResponseHandler) {
-      responseHandler = fn;
-      responseHandler({
+      setHandler(fn);
+      cancelPending();
+      emitNavigation({
         location: hashHistory.location,
         action: lastAction,
         finish: noop,
@@ -122,15 +131,16 @@ export function Hash(options: Options = {}): HashHistory {
     },
     // convenience
     toHref,
+    cancel() {
+      cancelPending();
+    },
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
     navigate(to: ToArgument, navType: NavType = "anchor"): void {
       const next = prep(to, navType);
-      if (!responseHandler) {
-        return;
-      }
-      responseHandler({
+      cancelPending(next.action);
+      emitNavigation({
         location: next.location,
         action: next.action,
         finish: next.finish,
@@ -143,27 +153,20 @@ export function Hash(options: Options = {}): HashHistory {
   };
 
   function pop(state: object): void {
-    // when we are reverting a pop (the user did not confirm navigation), we
-    // just need to reset the boolean and return. The browser has already taken
-    // care of updating the address bar and we never touched our internal values.
-    if (reverting) {
-      reverting = false;
-      return;
-    }
+    cancelPending("pop");
+
     const location: SessionLocation = locationFromBrowser(state);
     const currentKey: string = hashHistory.location.key;
     const diff: number = keygen.diff(currentKey, location.key);
-    if (!responseHandler) {
-      return;
-    }
-    responseHandler({
+
+    emitNavigation({
       location,
       action: "pop",
       finish: () => {
         hashHistory.location = location;
         lastAction = "pop";
       },
-      cancel: (nextAction: Action) => {
+      cancel: (nextAction?: Action) => {
         if (nextAction === "pop") {
           return;
         }
