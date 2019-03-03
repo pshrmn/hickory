@@ -1,4 +1,4 @@
-export { History } from "./hickory";
+export { PendingHistory, History } from "./hickory";
 
 export {
   LocationComponents,
@@ -7,15 +7,6 @@ export {
   AnyLocation,
   Location
 } from "./location";
-
-export {
-  ToArgument,
-  Action,
-  NavType,
-  PendingNavigation,
-  ResponseHandler,
-  CancelNavigation
-} from "./navigation";
 
 export { KeyFns } from "./keyGenerator";
 
@@ -34,7 +25,15 @@ export {
 } from "./navigationConfirmation";
 
 export {
-  PreppedNavigation,
+  ToArgument,
+  Action,
+  NavType,
+  FinishNavigation,
+  CancelNavigation,
+  PendingNavigation,
+  ResponseHandler,
   Preparer,
-  PrepNavigateArgs
-} from "./prepareNavigate";
+  FinishCancel,
+  NavigateArgs,
+  NavigateHelpers
+} from "./navigate";

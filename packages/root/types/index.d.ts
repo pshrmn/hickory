@@ -1,7 +1,6 @@
 export * from "./types";
 import locationUtils from "./locationUtils";
 import keyGenerator from "./keyGenerator";
-import prepareNavigate from "./prepareNavigate";
+import navigateWith from "./navigate";
 import navigationConfirmation from "./navigationConfirmation";
-import navigationHandler from "./navigationHandler";
-export { locationUtils, keyGenerator, navigationConfirmation, prepareNavigate, navigationHandler };
+export { locationUtils, keyGenerator, navigationConfirmation, navigateWith };
