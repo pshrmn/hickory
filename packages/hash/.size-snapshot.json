@@ -19,12 +19,12 @@
     "gzipped": 1103
   },
   "dist/hickory-hash.umd.js": {
-    "bundled": 19195,
+    "bundled": 19295,
     "minified": 5682,
     "gzipped": 2256
   },
   "dist/hickory-hash.min.js": {
-    "bundled": 19195,
+    "bundled": 19295,
     "minified": 5682,
     "gzipped": 2256
   }
