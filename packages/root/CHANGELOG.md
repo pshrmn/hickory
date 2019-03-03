@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.4
 
 - Add `cancel` method to `History` interface
 

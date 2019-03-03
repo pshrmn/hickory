@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.4
 
 - Add `history.cancel` function for cancelling the active navigation.
 - The history object will automatically cancel the pending navigation when another navigation happens.
