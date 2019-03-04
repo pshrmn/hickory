@@ -4,12 +4,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "navigate with no method pushes for new locations",
-  fn: function({ history }: TestCaseArgs) {
-    const router = ignoreFirstCall(({ action }) => {
-      expect(action).toBe("push");
+  fn: function({ shell }: TestCaseArgs) {
+    const history = shell(pending => {
+      expect(pending.action).toBe("push");
     });
-    history.respondWith(router);
-
     history.navigate("/two");
   }
 };

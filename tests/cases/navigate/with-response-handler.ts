@@ -2,10 +2,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "triggers a response handler call if handler is registered",
-  fn: function({ history }: TestCaseArgs) {
+  fn: function({ shell }: TestCaseArgs) {
     const router = jest.fn();
-    history.respondWith(router);
+    const history = shell(router);
     history.navigate("/two");
-    expect(router.mock.calls.length).toBe(2);
+    expect(router.mock.calls.length).toBe(1);
   }
 };

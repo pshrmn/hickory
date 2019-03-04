@@ -1,4 +1,5 @@
 import {
+  PendingHistory,
   History,
   LocationComponents,
   PartialLocation,
@@ -19,3 +20,4 @@ export {
 
 export type Options = LocationUtilOptions;
 export type BrowserHistory = History;
+export type PendingBrowserHistory = PendingHistory<BrowserHistory>;

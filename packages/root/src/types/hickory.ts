@@ -1,17 +1,14 @@
 import { SessionLocation, AnyLocation } from "./location";
-import {
-  ResponseHandler,
-  ToArgument,
-  NavType,
-  PendingNavigation
-} from "./navigate";
+import { ResponseHandler, ToArgument, NavType } from "./navigate";
 
-export type PendingHistory<H extends History> = (fn: ResponseHandler) => H;
+export type PendingHistory<H extends History = History> = (
+  fn: ResponseHandler
+) => H;
 
 export interface History {
   location: SessionLocation;
   toHref(to: AnyLocation): string;
-  current(): PendingNavigation;
+  current(): void;
   cancel(): void;
   destroy(): void;
   navigate(to: ToArgument, navType?: NavType): void;

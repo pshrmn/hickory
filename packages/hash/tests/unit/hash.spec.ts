@@ -168,9 +168,11 @@ describe("navigate()", () => {
   runSuite(navigateSuite);
 });
 
-describe("go", () => {
+describe("go suite", () => {
   runSuite(goSuite);
+});
 
+describe("go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {

@@ -5,14 +5,13 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "works with string locations",
-  fn: function({ history }: TestCaseArgs) {
-    const router = ignoreFirstCall(function(pending) {
+  fn: function({ shell }: TestCaseArgs) {
+    const history = shell(pending => {
       expect(pending.location).toMatchObject({
         pathname: "/two",
         query: "test=ing"
       });
     });
-    history.respondWith(router);
     history.navigate("/two?test=ing");
   }
 };

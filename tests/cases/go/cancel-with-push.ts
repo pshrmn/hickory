@@ -7,9 +7,9 @@ export default {
   msg: "pop is cancelled if there is a push before pending response finishes",
   async: true,
   assertions: 1,
-  fn: function({ history, resolve }: AsyncTestCaseArgs) {
+  fn: function({ shell, resolve }: AsyncTestCaseArgs) {
     let calls = 0;
-    history.respondWith(pending => {
+    const history = shell(pending => {
       switch (calls++) {
         case 0:
           pending.finish();
@@ -47,5 +47,6 @@ export default {
           resolve();
       }
     });
+    history.current();
   }
 };
