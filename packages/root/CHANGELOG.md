@@ -1,3 +1,7 @@
+## Next
+
+- Unify `prepare` with pending navigation handlers. Users now create a "pending" history; the "real" history is created by passing a response handler to the "pending" history function.
+
 ## 2.0.0-alpha.4
 
 - Add `cancel` method to `History` interface

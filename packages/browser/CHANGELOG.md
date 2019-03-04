@@ -1,3 +1,7 @@
+## Next
+
+- `Browser` returns a pending history function. The "real" history object is created by passing a response handler to the pending history.
+
 ## 2.0.0-alpha.4
 
 - Add `history.cancel` function for cancelling the active navigation.
