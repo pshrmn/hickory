@@ -57,7 +57,7 @@ describe("browser integration tests", () => {
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
-        expect(window.history.state.key).toBe(key);
+        expect(window.history.state.key).toEqual(key);
       });
     });
 
@@ -82,7 +82,7 @@ describe("browser integration tests", () => {
         );
         const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
-        expect(window.history.state.key).toBe(key);
+        expect(window.history.state.key).toEqual(key);
       });
     });
   });

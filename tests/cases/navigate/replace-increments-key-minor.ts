@@ -9,18 +9,16 @@ export default {
       pending.finish();
       switch (calls++) {
         case 0:
-          const [initMajor, initMinor] = history.location.key.split(".");
-          initMajorNum = parseInt(initMajor, 10);
-          initMinorNum = parseInt(initMinor, 10);
+          const [initMajor, initMinor] = history.location.key;
+          initMajorNum = initMajor;
+          initMinorNum = initMinor;
           break;
         case 1:
           const current = history.location;
-          const [currentMajor, currentMinor] = current.key.split(".");
-          const currentMajorNum = parseInt(currentMajor, 10);
-          const currentMinorNum = parseInt(currentMinor, 10);
+          const [currentMajor, currentMinor] = current.key;
 
-          expect(currentMajorNum).toEqual(initMajorNum);
-          expect(currentMinorNum).toBe(initMinorNum + 1);
+          expect(currentMajor).toEqual(initMajorNum);
+          expect(currentMinor).toBe(initMinorNum + 1);
       }
     });
 
