@@ -18,11 +18,10 @@ describe("hash integration tests", () => {
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, "", "/#/");
-    testHistory = Hash();
-    function router(pending) {
+    const pendingHistory = Hash();
+    testHistory = pendingHistory(pending => {
       pending.finish();
-    }
-    testHistory.respondWith(router);
+    });
   });
 
   afterEach(() => {
