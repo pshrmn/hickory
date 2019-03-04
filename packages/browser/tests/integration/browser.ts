@@ -89,9 +89,11 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
+      testHistory.destroy();
+
       const pendingHistory = Browser();
       let setup = true;
-      const testHistory = pendingHistory(pending => {
+      const history = pendingHistory(pending => {
         pending.finish();
         if (setup) {
           return;
@@ -99,20 +101,22 @@ describe("browser integration tests", () => {
         expect(pending.location.pathname).toEqual("/one");
         done();
       });
-      testHistory.navigate("/one", "push");
-      testHistory.navigate("/two", "push");
-      testHistory.navigate("/three", "push");
+      history.navigate("/one", "push");
+      history.navigate("/two", "push");
+      history.navigate("/three", "push");
       setup = false;
 
-      testHistory.go(-2);
+      history.go(-2);
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
+      testHistory.destroy();
+
       const pendingHistory = Browser();
       let setup = true;
-      const testHistory = pendingHistory(pending => {
+      const history = pendingHistory(pending => {
         pending.finish();
         if (setup) {
           return;
@@ -120,9 +124,9 @@ describe("browser integration tests", () => {
         expect(pending.location.pathname).toEqual("/uno");
         done();
       });
-      testHistory.navigate("/uno", "push");
-      testHistory.navigate("/dos", "push");
-      testHistory.navigate("/tres", "push");
+      history.navigate("/uno", "push");
+      history.navigate("/dos", "push");
+      history.navigate("/tres", "push");
 
       window.history.go(-2);
     });
