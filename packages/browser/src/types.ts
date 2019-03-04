@@ -2,14 +2,15 @@ import {
   PendingHistory,
   History,
   LocationComponents,
-  PartialLocation,
   SessionLocation,
-  AnyLocation,
+  PartialLocation,
   Location,
+  AnyLocation,
   LocationUtilOptions
 } from "@hickory/root";
 
 export {
+  PendingHistory,
   History,
   SessionLocation,
   PartialLocation,

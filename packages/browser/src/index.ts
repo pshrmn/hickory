@@ -48,12 +48,12 @@ export function Browser(options: Options = {}): PendingBrowserHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
-  // set action before location because locationFromBrowser enforces
-  // that the location has a key
-  let lastAction: Action =
-    getStateFromHistory().key !== undefined ? "pop" : "push";
-
   return function pendingBrowserHistory(fn: ResponseHandler) {
+    // set action before location because locationFromBrowser enforces
+    // that the location has a key
+    let lastAction: Action =
+      getStateFromHistory().key !== undefined ? "pop" : "push";
+
     const {
       emitNavigation,
       cancelPending,

@@ -12,13 +12,30 @@ export default {
       let localHistory = history;
       switch (calls++) {
         case 0:
+          pending.finish();
+          localHistory.navigate("/two", "push");
+          break;
         case 1:
+          pending.finish();
+          localHistory.navigate("/three", "push");
+          break;
         case 2:
+          pending.finish();
+          localHistory.navigate("/four", "push");
+          break;
         case 3:
+          pending.finish();
+          localHistory.navigate("/five", "push");
+          break;
         case 4:
           pending.finish();
+          localHistory.navigate("/six", "push");
           break;
         case 5:
+          pending.finish();
+          localHistory.go(-1);
+          break;
+        case 6:
           localHistory.cancel();
           pending.finish();
           setTimeout(() => {
@@ -30,11 +47,6 @@ export default {
           }, 25);
       }
     });
-    history.navigate("/two", "push");
-    history.navigate("/three", "push");
-    history.navigate("/four", "push");
-    history.navigate("/five", "push");
-    history.navigate("/six", "push");
-    history.go(-1);
+    history.current();
   }
 };

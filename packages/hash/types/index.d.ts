@@ -1,3 +1,3 @@
-import { Options, HashHistory } from "./types";
+import { Options, PendingHashHistory } from "./types";
 export * from "./types";
-export declare function Hash(options?: Options): HashHistory;
+export declare function Hash(options?: Options): PendingHashHistory;
