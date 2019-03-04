@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-alpha.5
 
 - Rename `Location` type to `RawLocation`.
 - Convert key to a two number tuple (`[1, 0]` instead of `1.0`). (**Note:** `pathname` is almost always better than `key` for a "unique" identifier)
