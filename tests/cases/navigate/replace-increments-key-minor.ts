@@ -2,10 +2,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "replace increments minor key",
-  fn: function({ shell }: TestCaseArgs) {
+  fn: function({ pendingHistory }: TestCaseArgs) {
     let calls = 0;
     let initMajorNum, initMinorNum;
-    const history = shell(pending => {
+    const history = pendingHistory(pending => {
       pending.finish();
       switch (calls++) {
         case 0:

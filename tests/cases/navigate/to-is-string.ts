@@ -5,8 +5,8 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "works with string locations",
-  fn: function({ shell }: TestCaseArgs) {
-    const history = shell(pending => {
+  fn: function({ pendingHistory }: TestCaseArgs) {
+    const history = pendingHistory(pending => {
       expect(pending.location).toMatchObject({
         pathname: "/two",
         query: "test=ing"

@@ -6,9 +6,9 @@ export default {
   msg: "finishing pop sets location",
   async: true,
   assertions: 1,
-  fn: function({ shell, resolve }: AsyncTestCaseArgs) {
+  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
     let calls = 0;
-    const history = shell(pending => {
+    const history = pendingHistory(pending => {
       let localHistory = history;
       switch (calls++) {
         case 0:

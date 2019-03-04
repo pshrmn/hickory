@@ -2,8 +2,8 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "throws when given an invalid nav method",
-  fn: function({ shell }: TestCaseArgs) {
-    const history = shell(pending => {});
+  fn: function({ pendingHistory }: TestCaseArgs) {
+    const history = pendingHistory(pending => {});
 
     expect(() => {
       // @ts-ignore

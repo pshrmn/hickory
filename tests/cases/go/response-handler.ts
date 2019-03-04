@@ -6,9 +6,9 @@ export default {
   msg: `calls response handler with expected location and action`,
   async: true,
   assertions: 2,
-  fn: function({ shell, resolve }: AsyncTestCaseArgs) {
+  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
     let calls = 0;
-    const history = shell(pending => {
+    const history = pendingHistory(pending => {
       let localHistory = history;
       switch (calls++) {
         case 0:

@@ -2,8 +2,8 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "calling pending.finish() sets history's location",
-  fn: function({ shell }: TestCaseArgs) {
-    const history = shell(pending => {
+  fn: function({ pendingHistory }: TestCaseArgs) {
+    const history = pendingHistory(pending => {
       pending.finish();
     });
     history.navigate("/next");

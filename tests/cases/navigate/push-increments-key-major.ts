@@ -2,10 +2,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "push increments major key",
-  fn: function({ shell }: TestCaseArgs) {
+  fn: function({ pendingHistory }: TestCaseArgs) {
     let calls = 0;
     let initMajorNum;
-    const history = shell(pending => {
+    const history = pendingHistory(pending => {
       pending.finish();
       switch (calls++) {
         case 0:

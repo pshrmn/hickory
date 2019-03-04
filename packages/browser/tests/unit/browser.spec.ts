@@ -13,7 +13,7 @@ function runAsyncTest(test: TestCase) {
       { url: "http://example.com/one" },
       ({ window, resolve }) => {
         test.fn({
-          shell: Browser(),
+          pendingHistory: Browser(),
           resolve
         });
       }
@@ -25,7 +25,7 @@ function runTest(test: TestCase) {
   it(test.msg, () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       test.fn({
-        shell: Browser()
+        pendingHistory: Browser()
       });
     });
   });
@@ -44,8 +44,8 @@ function runSuite(suite: Suite) {
 describe("Browser", () => {
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
-      const shell = Browser();
-      const testHistory = shell(() => {});
+      const pendingHistory = Browser();
+      const testHistory = pendingHistory(() => {});
       expect(testHistory.location).toMatchObject({
         pathname: "/one",
         hash: "",
@@ -65,8 +65,8 @@ describe("Browser", () => {
   it('sets initial action to "push" when page has not been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState(null, "", "/has-no-key");
-      const shell = Browser();
-      shell(pending => {
+      const pendingHistory = Browser();
+      pendingHistory(pending => {
         expect(pending.action).toBe("push");
       });
     });
@@ -75,8 +75,8 @@ describe("Browser", () => {
   it('sets initial action to "pop" when page has been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/has-key");
-      const shell = Browser();
-      shell(pending => {
+      const pendingHistory = Browser();
+      pendingHistory(pending => {
         expect(pending.action).toBe("pop");
       });
     });
@@ -101,8 +101,8 @@ describe("Browser history.go", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       const realGo = window.history.go;
       const mockGo = (window.history.go = jest.fn());
-      const shell = Browser();
-      const testHistory = shell(pending => {
+      const pendingHistory = Browser();
+      const testHistory = pendingHistory(pending => {
         pending.finish();
       });
 
@@ -117,8 +117,8 @@ describe("Browser history.go", () => {
 describe("toHref", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/one" }, () => {
-      const shell = Browser();
-      const testHistory = shell(pending => {
+      const pendingHistory = Browser();
+      const testHistory = pendingHistory(pending => {
         pending.finish();
       });
       const path = testHistory.toHref({
