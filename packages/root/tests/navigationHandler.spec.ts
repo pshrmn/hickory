@@ -11,7 +11,7 @@ const initialLocation: SessionLocation = {
   pathname: "/",
   hash: "",
   query: "",
-  key: "0.0",
+  key: [0, 0],
   rawPathname: "/"
 };
 
@@ -19,7 +19,7 @@ const locationOne: SessionLocation = {
   pathname: "/one",
   hash: "",
   query: "",
-  key: "1.0",
+  key: [1, 0],
   rawPathname: "/one"
 };
 
@@ -27,7 +27,7 @@ const locationTwo: SessionLocation = {
   pathname: "/two",
   hash: "",
   query: "",
-  key: "2.0",
+  key: [2, 0],
   rawPathname: "/two"
 };
 
@@ -86,7 +86,7 @@ describe("navigateWith", () => {
         it("returns a push navigation object", () => {
           expect(nav.location).toMatchObject({
             pathname: "/next",
-            key: "1.0"
+            key: [1, 0]
           });
           expect(nav.action).toBe("push");
 
@@ -120,7 +120,7 @@ describe("navigateWith", () => {
         it("returns a replace navigation object", () => {
           expect(nav.location).toMatchObject({
             pathname: "/",
-            key: "0.1"
+            key: [0, 1]
           });
           expect(nav.action).toBe("replace");
           expect(rest.push.finish.mock.calls.length).toBe(0);
@@ -154,7 +154,7 @@ describe("navigateWith", () => {
         it("returns a push navigation object", () => {
           expect(nav.location).toMatchObject({
             pathname: "/next",
-            key: "1.0"
+            key: [1, 0]
           });
           expect(nav.action).toBe("push");
 
@@ -190,7 +190,7 @@ describe("navigateWith", () => {
         it("returns a replace navigation object", () => {
           expect(nav.location).toMatchObject({
             pathname: "/next",
-            key: "0.1"
+            key: [0, 1]
           });
           expect(nav.action).toBe("replace");
           expect(rest.push.finish.mock.calls.length).toBe(0);

@@ -38,7 +38,7 @@ export default {
         case 6:
           expect(pending.location).toMatchObject({
             pathname: "/four",
-            key: "3.0"
+            key: [3, 0]
           });
           expect(pending.action).toBe("pop");
           resolve();

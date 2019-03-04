@@ -43,7 +43,7 @@ export default {
           pending.finish();
           expect(localHistory.location).toMatchObject({
             pathname: "/seven",
-            key: "5.1"
+            key: [5, 1]
           });
           resolve();
       }

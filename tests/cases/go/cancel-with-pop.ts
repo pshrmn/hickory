@@ -42,7 +42,7 @@ export default {
           pending.finish();
           expect(localHistory.location).toMatchObject({
             pathname: "/three",
-            key: "2.0"
+            key: [2, 0]
           });
           resolve();
       }
