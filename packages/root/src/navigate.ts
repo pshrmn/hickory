@@ -1,4 +1,4 @@
-import { SessionLocation, Location } from "./types/location";
+import { SessionLocation, RawLocation } from "./types/location";
 import {
   PendingNavigation,
   FinishNavigation,
@@ -87,7 +87,7 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
     }
   }
 
-  function replaceNav(location: Location): PendingNavigation {
+  function replaceNav(location: RawLocation): PendingNavigation {
     const keyedLocation = locationUtils.keyed(
       location,
       keygen.minor(current().key)
@@ -100,7 +100,7 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
     );
   }
 
-  function pushNav(location: Location): PendingNavigation {
+  function pushNav(location: RawLocation): PendingNavigation {
     const keyedLocation = locationUtils.keyed(
       location,
       keygen.major(current().key)
