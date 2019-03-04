@@ -86,49 +86,4 @@ describe("browser integration tests", () => {
       });
     });
   });
-
-  describe("go", () => {
-    it("is detectable through a popstate listener", done => {
-      testHistory.destroy();
-
-      const pendingHistory = Browser();
-      let setup = true;
-      const history = pendingHistory(pending => {
-        pending.finish();
-        if (setup) {
-          return;
-        }
-        expect(pending.location.pathname).toEqual("/one");
-        done();
-      });
-      history.navigate("/one", "push");
-      history.navigate("/two", "push");
-      history.navigate("/three", "push");
-      setup = false;
-
-      history.go(-2);
-    });
-  });
-
-  describe("browser navigation", () => {
-    it("can detect navigation triggered by the browser", done => {
-      testHistory.destroy();
-
-      const pendingHistory = Browser();
-      let setup = true;
-      const history = pendingHistory(pending => {
-        pending.finish();
-        if (setup) {
-          return;
-        }
-        expect(pending.location.pathname).toEqual("/uno");
-        done();
-      });
-      history.navigate("/uno", "push");
-      history.navigate("/dos", "push");
-      history.navigate("/tres", "push");
-
-      window.history.go(-2);
-    });
-  });
 });
