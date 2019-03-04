@@ -10,7 +10,7 @@ import {
   PartialLocation,
   AnyLocation,
   LocationComponents,
-  Location,
+  RawLocation,
   Key
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
@@ -113,7 +113,7 @@ export default function locationFactory(
     return details;
   }
 
-  function genericLocation(value: ToArgument, state?: any): Location {
+  function genericLocation(value: ToArgument, state?: any): RawLocation {
     if (state === undefined) {
       state = null;
     }
@@ -144,7 +144,7 @@ export default function locationFactory(
     };
   }
 
-  function keyed(location: Location, key: Key): SessionLocation {
+  function keyed(location: RawLocation, key: Key): SessionLocation {
     return {
       ...location,
       key

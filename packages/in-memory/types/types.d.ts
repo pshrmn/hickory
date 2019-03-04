@@ -1,5 +1,5 @@
-import { PendingHistory, History, LocationComponents, SessionLocation, PartialLocation, Location, AnyLocation, LocationUtilOptions } from "@hickory/root";
-export { PendingHistory, History, SessionLocation, PartialLocation, AnyLocation, Location, LocationComponents };
+import { PendingHistory, History, LocationComponents, SessionLocation, PartialLocation, RawLocation, AnyLocation, LocationUtilOptions } from "@hickory/root";
+export { PendingHistory, History, SessionLocation, PartialLocation, AnyLocation, RawLocation, LocationComponents };
 export declare type InputLocation = string | PartialLocation;
 export declare type InputLocations = Array<InputLocation>;
 export interface SessionOptions {

@@ -1,5 +1,6 @@
 ## Next
 
+- Rename `Location` type to `RawLocation`.
 - `location.key` is now a two number tuple (`[1, 0]` instead of `1.0`).
 - Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
 - `Hash` returns a pending history function. The "real" history object is created by passing a response handler to the pending history.
