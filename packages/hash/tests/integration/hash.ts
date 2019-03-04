@@ -99,19 +99,19 @@ describe("hash integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            history.navigate("/eins", "push");
+            localHistory.navigate("/eins", "push");
             break;
           case 1:
             pending.finish();
-            history.navigate("/zwei", "push");
+            localHistory.navigate("/zwei", "push");
             break;
           case 2:
             pending.finish();
-            history.navigate("/drei", "push");
+            localHistory.navigate("/drei", "push");
             break;
           case 3:
             pending.finish();
-            history.go(-2);
+            localHistory.go(-2);
             break;
           case 4:
             pending.finish();
@@ -134,15 +134,15 @@ describe("hash integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            history.navigate("/uno", "push");
+            localHistory.navigate("/uno", "push");
             break;
           case 1:
             pending.finish();
-            history.navigate("/dos", "push");
+            localHistory.navigate("/dos", "push");
             break;
           case 2:
             pending.finish();
-            history.navigate("/tres", "push");
+            localHistory.navigate("/tres", "push");
             break;
           case 3:
             pending.finish();

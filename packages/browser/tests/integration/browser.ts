@@ -96,19 +96,19 @@ describe("browser integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            history.navigate("/one", "push");
+            localHistory.navigate("/one", "push");
             break;
           case 1:
             pending.finish();
-            history.navigate("/two", "push");
+            localHistory.navigate("/two", "push");
             break;
           case 2:
             pending.finish();
-            history.navigate("/three", "push");
+            localHistory.navigate("/three", "push");
             break;
           case 3:
             pending.finish();
-            history.go(-2);
+            localHistory.go(-2);
             break;
           case 4:
             pending.finish();
@@ -131,15 +131,15 @@ describe("browser integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            history.navigate("/uno", "push");
+            localHistory.navigate("/uno", "push");
             break;
           case 1:
             pending.finish();
-            history.navigate("/dos", "push");
+            localHistory.navigate("/dos", "push");
             break;
           case 2:
             pending.finish();
-            history.navigate("/tres", "push");
+            localHistory.navigate("/tres", "push");
             break;
           case 3:
             pending.finish();
