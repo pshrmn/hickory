@@ -2,7 +2,6 @@ import "jest";
 import { InMemory } from "../src";
 
 import { navigateSuite, goSuite, cancelSuite } from "../../../tests/cases";
-import { ignoreFirstCall } from "../../../tests/utils/ignoreFirst";
 
 import { TestCase, Suite } from "../../../tests/types";
 

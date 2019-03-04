@@ -1,5 +1,3 @@
-import { ignoreFirstCall } from "../../utils/ignoreFirst";
-
 import { TestCaseArgs } from "../../types";
 
 export default {

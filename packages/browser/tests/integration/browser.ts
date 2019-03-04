@@ -1,17 +1,6 @@
 ///<reference types="jasmine"/>
 import { Browser } from "../../src";
 
-function ignoreFirstCall(fn) {
-  let notCalled = true;
-  return function() {
-    if (notCalled) {
-      notCalled = false;
-      return;
-    }
-    fn.apply(null, arguments);
-  };
-}
-
 describe("browser integration tests", () => {
   let testHistory;
 
@@ -100,30 +89,40 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      testHistory.navigate("/one", "push");
-      testHistory.navigate("/two", "push");
-      testHistory.navigate("/three", "push");
-
-      const goRouter = ignoreFirstCall(function(pending) {
+      const pendingHistory = Browser();
+      let setup = true;
+      const testHistory = pendingHistory(pending => {
+        pending.finish();
+        if (setup) {
+          return;
+        }
         expect(pending.location.pathname).toEqual("/one");
         done();
       });
-      testHistory.respondWith(goRouter);
+      testHistory.navigate("/one", "push");
+      testHistory.navigate("/two", "push");
+      testHistory.navigate("/three", "push");
+      setup = false;
+
       testHistory.go(-2);
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.navigate("/uno", "push");
-      testHistory.navigate("/dos", "push");
-      testHistory.navigate("/tres", "push");
-
-      const goRouter = ignoreFirstCall(function(pending) {
+      const pendingHistory = Browser();
+      let setup = true;
+      const testHistory = pendingHistory(pending => {
+        pending.finish();
+        if (setup) {
+          return;
+        }
         expect(pending.location.pathname).toEqual("/uno");
         done();
       });
-      testHistory.respondWith(goRouter);
+      testHistory.navigate("/uno", "push");
+      testHistory.navigate("/dos", "push");
+      testHistory.navigate("/tres", "push");
 
       window.history.go(-2);
     });

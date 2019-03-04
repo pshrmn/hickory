@@ -1,5 +1,4 @@
 import "jest";
-import { ignoreFirstCall } from "../../utils/ignoreFirst";
 
 import { AsyncTestCaseArgs } from "../../types";
 

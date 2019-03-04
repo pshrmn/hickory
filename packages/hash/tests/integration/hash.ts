@@ -1,17 +1,6 @@
 ///<reference types="jasmine"/>
 import { Hash } from "../../src";
 
-function ignoreFirstCall(fn) {
-  let notCalled = true;
-  return function() {
-    if (notCalled) {
-      notCalled = false;
-      return;
-    }
-    fn.apply(null, arguments);
-  };
-}
-
 describe("hash integration tests", () => {
   let testHistory;
 
@@ -103,15 +92,20 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      testHistory.navigate("/eins", "push");
-      testHistory.navigate("/zwei", "push");
-      testHistory.navigate("/drei", "push");
-
-      const goRouter = ignoreFirstCall(function(pending) {
+      const pendingHistory = Hash();
+      let setup = true;
+      const testHistory = pendingHistory(pending => {
+        pending.finish();
+        if (setup) {
+          return;
+        }
         expect(pending.location.pathname).toEqual("/eins");
         done();
       });
-      testHistory.respondWith(goRouter);
+      testHistory.navigate("/eins", "push");
+      testHistory.navigate("/zwei", "push");
+      testHistory.navigate("/drei", "push");
+      setup = false;
 
       testHistory.go(-2);
     });
@@ -119,15 +113,20 @@ describe("hash integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.navigate("/uno", "push");
-      testHistory.navigate("/dos", "push");
-      testHistory.navigate("/tres", "push");
-
-      const goRouter = ignoreFirstCall(function(pending) {
+      const pendingHistory = Hash();
+      let setup = true;
+      const testHistory = pendingHistory(pending => {
+        pending.finish();
+        if (setup) {
+          return;
+        }
         expect(pending.location.pathname).toEqual("/uno");
         done();
       });
-      testHistory.respondWith(goRouter);
+      testHistory.navigate("/uno", "push");
+      testHistory.navigate("/dos", "push");
+      testHistory.navigate("/tres", "push");
+      setup = false;
 
       window.history.go(-2);
     });
