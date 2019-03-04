@@ -89,50 +89,71 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      testHistory.destroy();
-
       const pendingHistory = Browser();
-      let setup = true;
+      let calls = 0;
       const history = pendingHistory(pending => {
-        pending.finish();
-        if (setup) {
-          return;
-        }
-        expect(pending.location.pathname).toEqual("/one");
         let localHistory = history;
-        localHistory.destroy();
-        done();
-      });
-      history.navigate("/one", "push");
-      history.navigate("/two", "push");
-      history.navigate("/three", "push");
-      setup = false;
+        switch (calls++) {
+          case 0:
+            pending.finish();
+            history.navigate("/one", "push");
+            break;
+          case 1:
+            pending.finish();
+            history.navigate("/two", "push");
+            break;
+          case 2:
+            pending.finish();
+            history.navigate("/three", "push");
+            break;
+          case 3:
+            pending.finish();
+            history.go(-2);
+            break;
+          case 4:
+            pending.finish();
+            expect(pending.location.pathname).toEqual("/one");
 
-      history.go(-2);
+            localHistory.destroy();
+            done();
+        }
+      });
+      history.current();
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.destroy();
-
       const pendingHistory = Browser();
-      let setup = true;
+      let calls = 0;
       const history = pendingHistory(pending => {
-        pending.finish();
-        if (setup) {
-          return;
-        }
-        expect(pending.location.pathname).toEqual("/uno");
         let localHistory = history;
-        localHistory.destroy();
-        done();
-      });
-      history.navigate("/uno", "push");
-      history.navigate("/dos", "push");
-      history.navigate("/tres", "push");
+        switch (calls++) {
+          case 0:
+            pending.finish();
+            history.navigate("/uno", "push");
+            break;
+          case 1:
+            pending.finish();
+            history.navigate("/dos", "push");
+            break;
+          case 2:
+            pending.finish();
+            history.navigate("/tres", "push");
+            break;
+          case 3:
+            pending.finish();
+            window.history.go(-2);
+            break;
+          case 4:
+            pending.finish();
+            expect(pending.location.pathname).toEqual("/uno");
 
-      window.history.go(-2);
+            localHistory.destroy();
+            done();
+        }
+      });
+      history.current();
     });
   });
 });
