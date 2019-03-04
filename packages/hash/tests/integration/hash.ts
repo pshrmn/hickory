@@ -104,7 +104,7 @@ describe("hash integration tests", () => {
         }
         expect(pending.location.pathname).toEqual("/eins");
         let localHistory = history;
-        history.destroy();
+        localHistory.destroy();
         done();
       });
       history.navigate("/eins", "push");
@@ -130,7 +130,7 @@ describe("hash integration tests", () => {
         }
         expect(pending.location.pathname).toEqual("/uno");
         let localHistory = history;
-        history.destroy();
+        localHistory.destroy();
         done();
       });
       history.navigate("/uno", "push");

@@ -100,7 +100,7 @@ describe("browser integration tests", () => {
         }
         expect(pending.location.pathname).toEqual("/one");
         let localHistory = history;
-        history.destroy();
+        localHistory.destroy();
         done();
       });
       history.navigate("/one", "push");
@@ -125,7 +125,7 @@ describe("browser integration tests", () => {
         }
         expect(pending.location.pathname).toEqual("/uno");
         let localHistory = history;
-        history.destroy();
+        localHistory.destroy();
         done();
       });
       history.navigate("/uno", "push");
