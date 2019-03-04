@@ -1,3 +1,8 @@
+## Next
+
+- Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
+- `Hash` returns a pending history function. The "real" history object is created by passing a response handler to the pending history.
+
 ## 2.0.0-alpha.4
 
 - Add `history.cancel` function for cancelling the active navigation.

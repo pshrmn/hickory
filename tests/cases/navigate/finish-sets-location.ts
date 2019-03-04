@@ -2,11 +2,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "calling pending.finish() sets history's location",
-  fn: function({ history }: TestCaseArgs) {
-    function router(pending) {
+  fn: function({ pendingHistory }: TestCaseArgs) {
+    const history = pendingHistory(pending => {
       pending.finish();
-    }
-    history.respondWith(router);
+    });
     history.navigate("/next");
     expect(history.location).toMatchObject({
       pathname: "/next"

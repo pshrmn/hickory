@@ -12,7 +12,7 @@ import {
   LocationComponents,
   Location
 } from "./types/location";
-import { ToArgument } from "./types/navigation";
+import { ToArgument } from "./types/navigate";
 import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
 
 function defaultParseQuery(query?: string): any {

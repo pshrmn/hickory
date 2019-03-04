@@ -1,9 +1,4 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationHandler
-} from "@hickory/root";
+import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
 import {
   getStateFromHistory,
   domExists,
@@ -19,7 +14,7 @@ import {
   Action,
   NavType
 } from "@hickory/root";
-import { Options, HashHistory } from "./types";
+import { Options, HashHistory, PendingHashHistory } from "./types";
 
 export * from "./types";
 
@@ -31,7 +26,7 @@ function ensureHash(encode: (path: string) => string): void {
 
 function noop() {}
 
-export function Hash(options: Options = {}): HashHistory {
+export function Hash(options: Options = {}): PendingHashHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
@@ -42,54 +37,11 @@ export function Hash(options: Options = {}): HashHistory {
 
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
-  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
-  const prep = prepareNavigate({
-    locationUtils: locationUtilities,
-    keygen,
-    current: () => hashHistory.location,
-    push(location: SessionLocation) {
-      return () => {
-        const path = toHref(location);
-        const { key, state } = location;
-        try {
-          window.history.pushState({ key, state }, "", path);
-        } catch (e) {
-          window.location.assign(path);
-        }
-        hashHistory.location = location;
-        lastAction = "push";
-      };
-    },
-    replace(location: SessionLocation) {
-      return () => {
-        const path = toHref(location);
-        const { key, state } = location;
-        try {
-          window.history.replaceState({ key, state }, "", path);
-        } catch (e) {
-          window.location.replace(path);
-        }
-        hashHistory.location = location;
-        lastAction = "replace";
-      };
-    }
-  });
 
   const {
     decode: decodeHashPath,
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
-
-  let reverting = false;
-  function popstate(event: PopStateEvent) {
-    if (reverting) {
-      reverting = false;
-      return;
-    }
-    pop(event.state);
-  }
-
-  window.addEventListener("popstate", popstate, false);
 
   ensureHash(encodeHashPath);
 
@@ -112,69 +64,114 @@ export function Hash(options: Options = {}): HashHistory {
     return encodeHashPath(locationUtilities.stringifyLocation(location));
   }
 
-  let lastAction: Action =
-    getStateFromHistory().key !== undefined ? "pop" : "push";
+  return function pendingHashHistory(fn: ResponseHandler) {
+    let lastAction: Action =
+      getStateFromHistory().key !== undefined ? "pop" : "push";
 
-  const hashHistory: HashHistory = {
-    // location
-    location: locationFromBrowser(),
-    // set response handler
-    respondWith(fn: ResponseHandler) {
-      setHandler(fn);
-      cancelPending();
-      emitNavigation({
-        location: hashHistory.location,
-        action: lastAction,
-        finish: noop,
+    const {
+      emitNavigation,
+      cancelPending,
+      createNavigation,
+      prepare
+    } = navigateWith({
+      responseHandler: fn,
+      locationUtils: locationUtilities,
+      keygen,
+      current: () => hashHistory.location,
+      push: {
+        finish(location: SessionLocation) {
+          return () => {
+            const path = toHref(location);
+            const { key, state } = location;
+            try {
+              window.history.pushState({ key, state }, "", path);
+            } catch (e) {
+              window.location.assign(path);
+            }
+            hashHistory.location = location;
+            lastAction = "push";
+          };
+        },
         cancel: noop
-      });
-    },
-    // convenience
-    toHref,
-    cancel() {
-      cancelPending();
-    },
-    destroy() {
-      window.removeEventListener("popstate", popstate);
-    },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
-      const next = prep(to, navType);
-      cancelPending(next.action);
-      emitNavigation({
-        location: next.location,
-        action: next.action,
-        finish: next.finish,
-        cancel: noop
-      });
-    },
-    go(num: number): void {
-      window.history.go(num);
-    }
-  };
-
-  function pop(state: object): void {
-    cancelPending("pop");
-
-    const location: SessionLocation = locationFromBrowser(state);
-    const currentKey: string = hashHistory.location.key;
-    const diff: number = keygen.diff(currentKey, location.key);
-
-    emitNavigation({
-      location,
-      action: "pop",
-      finish: () => {
-        hashHistory.location = location;
-        lastAction = "pop";
       },
-      cancel: (nextAction?: Action) => {
-        if (nextAction === "pop") {
-          return;
-        }
-        reverting = true;
-        window.history.go(-1 * diff);
+      replace: {
+        finish(location: SessionLocation) {
+          return () => {
+            const path = toHref(location);
+            const { key, state } = location;
+            try {
+              window.history.replaceState({ key, state }, "", path);
+            } catch (e) {
+              window.location.replace(path);
+            }
+            hashHistory.location = location;
+            lastAction = "replace";
+          };
+        },
+        cancel: noop
       }
     });
-  }
 
-  return hashHistory;
+    let reverting = false;
+    function popstate(event: PopStateEvent) {
+      if (reverting) {
+        reverting = false;
+        return;
+      }
+      cancelPending("pop");
+
+      const location: SessionLocation = locationFromBrowser(event.state);
+      const currentKey: string = hashHistory.location.key;
+      const diff: number = keygen.diff(currentKey, location.key);
+
+      const navigation = createNavigation(
+        location,
+        "pop",
+        () => {
+          hashHistory.location = location;
+          lastAction = "pop";
+        },
+        (nextAction?: Action) => {
+          if (nextAction === "pop") {
+            return;
+          }
+          reverting = true;
+          window.history.go(-1 * diff);
+        }
+      );
+      emitNavigation(navigation);
+    }
+
+    window.addEventListener("popstate", popstate, false);
+
+    const hashHistory: HashHistory = {
+      location: locationFromBrowser(),
+      current() {
+        const nav = createNavigation(
+          hashHistory.location,
+          lastAction,
+          noop,
+          noop
+        );
+        emitNavigation(nav);
+      },
+      toHref,
+      cancel() {
+        cancelPending();
+      },
+      destroy() {
+        window.removeEventListener("popstate", popstate);
+      },
+      navigate(to: ToArgument, navType: NavType = "anchor"): void {
+        const navigation = prepare(to, navType);
+        cancelPending(navigation.action);
+        emitNavigation(navigation);
+      },
+      go(num: number): void {
+        window.history.go(num);
+      }
+    };
+
+    return hashHistory;
+  };
 }

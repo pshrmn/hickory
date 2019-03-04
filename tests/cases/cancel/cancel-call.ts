@@ -6,39 +6,40 @@ export default {
   msg: "cancels the pending navigation",
   async: true,
   assertions: 1,
-  fn: function({ history, resolve }: AsyncTestCaseArgs) {
+  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
     let calls = 0;
-    history.respondWith(pending => {
+    const history = pendingHistory(pending => {
+      let localHistory = history;
       switch (calls++) {
         case 0:
           pending.finish();
-          history.navigate("/two", "push");
+          localHistory.navigate("/two", "push");
           break;
         case 1:
           pending.finish();
-          history.navigate("/three", "push");
+          localHistory.navigate("/three", "push");
           break;
         case 2:
           pending.finish();
-          history.navigate("/four", "push");
+          localHistory.navigate("/four", "push");
           break;
         case 3:
           pending.finish();
-          history.navigate("/five", "push");
+          localHistory.navigate("/five", "push");
           break;
         case 4:
           pending.finish();
-          history.navigate("/six", "push");
+          localHistory.navigate("/six", "push");
           break;
         case 5:
           pending.finish();
-          history.go(-2);
+          localHistory.go(-1);
           break;
         case 6:
-          history.cancel();
+          localHistory.cancel();
           pending.finish();
           setTimeout(() => {
-            expect(history.location).toMatchObject({
+            expect(localHistory.location).toMatchObject({
               pathname: "/six",
               key: "5.0"
             });
@@ -46,5 +47,6 @@ export default {
           }, 25);
       }
     });
+    history.current();
   }
 };

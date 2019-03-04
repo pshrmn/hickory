@@ -1,28 +1,16 @@
 ///<reference types="jasmine"/>
 import { Hash } from "../../src";
 
-function ignoreFirstCall(fn) {
-  let notCalled = true;
-  return function() {
-    if (notCalled) {
-      notCalled = false;
-      return;
-    }
-    fn.apply(null, arguments);
-  };
-}
-
 describe("hash integration tests", () => {
   let testHistory;
 
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, "", "/#/");
-    testHistory = Hash();
-    function router(pending) {
+    const pendingHistory = Hash();
+    testHistory = pendingHistory(pending => {
       pending.finish();
-    }
-    testHistory.respondWith(router);
+    });
   });
 
   afterEach(() => {
@@ -104,33 +92,71 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      testHistory.navigate("/eins", "push");
-      testHistory.navigate("/zwei", "push");
-      testHistory.navigate("/drei", "push");
+      const pendingHistory = Hash();
+      let calls = 0;
+      const history = pendingHistory(pending => {
+        let localHistory = history;
+        switch (calls++) {
+          case 0:
+            pending.finish();
+            localHistory.navigate("/eins", "push");
+            break;
+          case 1:
+            pending.finish();
+            localHistory.navigate("/zwei", "push");
+            break;
+          case 2:
+            pending.finish();
+            localHistory.navigate("/drei", "push");
+            break;
+          case 3:
+            pending.finish();
+            localHistory.go(-2);
+            break;
+          case 4:
+            pending.finish();
+            expect(pending.location.pathname).toEqual("/eins");
 
-      const goRouter = ignoreFirstCall(function(pending) {
-        expect(pending.location.pathname).toEqual("/eins");
-        done();
+            localHistory.destroy();
+            done();
+        }
       });
-      testHistory.respondWith(goRouter);
-
-      testHistory.go(-2);
+      history.current();
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      testHistory.navigate("/uno", "push");
-      testHistory.navigate("/dos", "push");
-      testHistory.navigate("/tres", "push");
+      const pendingHistory = Hash();
+      let calls = 0;
+      const history = pendingHistory(pending => {
+        let localHistory = history;
+        switch (calls++) {
+          case 0:
+            pending.finish();
+            localHistory.navigate("/uno", "push");
+            break;
+          case 1:
+            pending.finish();
+            localHistory.navigate("/dos", "push");
+            break;
+          case 2:
+            pending.finish();
+            localHistory.navigate("/tres", "push");
+            break;
+          case 3:
+            pending.finish();
+            window.history.go(-2);
+            break;
+          case 4:
+            pending.finish();
+            expect(pending.location.pathname).toEqual("/uno");
 
-      const goRouter = ignoreFirstCall(function(pending) {
-        expect(pending.location.pathname).toEqual("/uno");
-        done();
+            localHistory.destroy();
+            done();
+        }
       });
-      testHistory.respondWith(goRouter);
-
-      window.history.go(-2);
+      history.current();
     });
   });
 });

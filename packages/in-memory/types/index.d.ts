@@ -1,3 +1,3 @@
-import { Options, InMemoryHistory } from "./types";
+import { Options, PendingInMemoryHistory } from "./types";
 export * from "./types";
-export declare function InMemory(options?: Options): InMemoryHistory;
+export declare function InMemory(options?: Options): PendingInMemoryHistory;

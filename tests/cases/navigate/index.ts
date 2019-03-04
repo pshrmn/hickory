@@ -1,4 +1,3 @@
-import NavigateNoResponseHandler from "./no-response-handler";
 import WithResponseHandler from "./with-response-handler";
 import InvalidMethod from "./invalid-method";
 import ToIsString from "./to-is-string";
@@ -19,7 +18,6 @@ import CancelCall from "./cancel-call-location";
 import { Suite } from "../../types";
 
 export const navigateSuite: Suite = [
-  NavigateNoResponseHandler,
   WithResponseHandler,
   InvalidMethod,
   ToIsString,

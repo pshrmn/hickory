@@ -1,9 +1,4 @@
-import {
-  locationUtils,
-  keyGenerator,
-  prepareNavigate,
-  navigationHandler
-} from "@hickory/root";
+import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
 
 import {
   SessionLocation,
@@ -16,6 +11,7 @@ import {
 
 import {
   Options,
+  PendingInMemoryHistory,
   InMemoryHistory,
   InputLocation,
   InputLocations,
@@ -26,7 +22,7 @@ export * from "./types";
 
 function noop() {}
 
-export function InMemory(options: Options = {}): InMemoryHistory {
+export function InMemory(options: Options = {}): PendingInMemoryHistory {
   const locationUtilities = locationUtils(options);
   const keygen = keyGenerator();
 
@@ -46,27 +42,6 @@ export function InMemory(options: Options = {}): InMemoryHistory {
       )
     );
   }
-  const { emitNavigation, cancelPending, setHandler } = navigationHandler();
-  const prep = prepareNavigate({
-    locationUtils: locationUtilities,
-    keygen,
-    current: () => memoryHistory.location,
-    push(location: SessionLocation) {
-      return () => {
-        memoryHistory.location = location;
-        index++;
-        locations = [...locations.slice(0, index), location];
-        lastAction = "push";
-      };
-    },
-    replace(location: SessionLocation) {
-      return () => {
-        memoryHistory.location = location;
-        locations[index] = memoryHistory.location;
-        lastAction = "replace";
-      };
-    }
-  });
 
   const destroyLocations = () => {
     locations = [];
@@ -77,89 +52,121 @@ export function InMemory(options: Options = {}): InMemoryHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
-  let lastAction: Action = "push";
+  return function pendingInMemoryHistory(fn: ResponseHandler) {
+    let lastAction: Action = "push";
 
-  const memoryHistory: InMemoryHistory = {
-    location: locations[index],
-    respondWith(fn: ResponseHandler) {
-      setHandler(fn);
-      cancelPending();
-      emitNavigation({
-        location: memoryHistory.location,
-        action: lastAction,
-        finish: noop,
-        cancel: noop
-      });
-    },
-    toHref,
-    cancel() {
-      cancelPending();
-    },
-    destroy(): void {
-      destroyLocations();
-    },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
-      const next = prep(to, navType);
-      cancelPending(next.action);
-      emitNavigation({
-        location: next.location,
-        action: next.action,
-        finish: next.finish,
-        cancel: noop
-      });
-    },
-    go(num?: number): void {
-      if (num == null || num === 0) {
-        emitNavigation({
-          location: memoryHistory.location,
-          action: "pop",
-          finish: () => {
-            lastAction = "pop";
-          },
-          cancel: noop
-        });
-      } else {
-        const originalIndex = index;
-        const newIndex = originalIndex + num;
-        if (newIndex < 0 || newIndex >= locations.length) {
-          return;
-        }
-
-        // Immediately update the index; this simulates browser behavior.
-        index = newIndex;
-
-        const location: SessionLocation = locations[newIndex];
-        emitNavigation({
-          location,
-          action: "pop",
-          finish: () => {
+    const {
+      emitNavigation,
+      cancelPending,
+      createNavigation,
+      prepare
+    } = navigateWith({
+      responseHandler: fn,
+      locationUtils: locationUtilities,
+      keygen,
+      current: () => memoryHistory.location,
+      push: {
+        finish(location: SessionLocation) {
+          return () => {
             memoryHistory.location = location;
-            lastAction = "pop";
-          },
-          cancel: (nextAction?: Action) => {
-            if (nextAction === "pop") {
-              return;
-            }
-            index = originalIndex;
-          }
-        });
-      }
-    },
-    reset(options: SessionOptions = {}) {
-      locations = initializeLocations(options.locations);
-      index = validIndex(options.index) ? options.index : 0;
-      memoryHistory.location = locations[index];
-      lastAction = "push";
-
-      cancelPending();
-      emitNavigation({
-        location: memoryHistory.location,
-        action: lastAction,
-        finish: noop,
+            index++;
+            locations = [...locations.slice(0, index), location];
+            lastAction = "push";
+          };
+        },
         cancel: noop
-      });
-    }
-  };
+      },
+      replace: {
+        finish(location: SessionLocation) {
+          return () => {
+            memoryHistory.location = location;
+            locations[index] = memoryHistory.location;
+            lastAction = "replace";
+          };
+        },
+        cancel: noop
+      }
+    });
 
-  return memoryHistory;
+    const memoryHistory: InMemoryHistory = {
+      location: locations[index],
+      current() {
+        const nav = createNavigation(
+          memoryHistory.location,
+          lastAction,
+          noop,
+          noop
+        );
+        emitNavigation(nav);
+      },
+      toHref,
+      cancel() {
+        cancelPending();
+      },
+      destroy(): void {
+        destroyLocations();
+      },
+      navigate(to: ToArgument, navType: NavType = "anchor"): void {
+        const navigation = prepare(to, navType);
+        cancelPending(navigation.action);
+        emitNavigation(navigation);
+      },
+      go(num?: number): void {
+        if (num == null || num === 0) {
+          const navigation = createNavigation(
+            memoryHistory.location,
+            "pop",
+            () => {
+              lastAction = "pop";
+            },
+            noop
+          );
+          emitNavigation(navigation);
+        } else {
+          const originalIndex = index;
+          const newIndex = originalIndex + num;
+          if (newIndex < 0 || newIndex >= locations.length) {
+            return;
+          }
+
+          // Immediately update the index; this simulates browser behavior.
+          index = newIndex;
+
+          const location: SessionLocation = locations[newIndex];
+          const navigation = createNavigation(
+            location,
+            "pop",
+            () => {
+              memoryHistory.location = location;
+              lastAction = "pop";
+            },
+            (nextAction?: Action) => {
+              if (nextAction === "pop") {
+                return;
+              }
+              index = originalIndex;
+            }
+          );
+          emitNavigation(navigation);
+        }
+      },
+      reset(options: SessionOptions = {}) {
+        locations = initializeLocations(options.locations);
+        index = validIndex(options.index) ? options.index : 0;
+        memoryHistory.location = locations[index];
+        lastAction = "push";
+
+        cancelPending();
+        const navigation = createNavigation(
+          memoryHistory.location,
+          lastAction,
+          noop,
+          noop
+        );
+        emitNavigation(navigation);
+      }
+    };
+
+    return memoryHistory;
+  };
 }

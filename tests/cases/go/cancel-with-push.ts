@@ -1,5 +1,4 @@
 import "jest";
-import { ignoreFirstCall } from "../../utils/ignoreFirst";
 
 import { AsyncTestCaseArgs } from "../../types";
 
@@ -7,9 +6,9 @@ export default {
   msg: "pop is cancelled if there is a push before pending response finishes",
   async: true,
   assertions: 1,
-  fn: function({ history, resolve }: AsyncTestCaseArgs) {
+  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
     let calls = 0;
-    history.respondWith(pending => {
+    const history = pendingHistory(pending => {
       switch (calls++) {
         case 0:
           pending.finish();
@@ -47,5 +46,6 @@ export default {
           resolve();
       }
     });
+    history.current();
   }
 };
