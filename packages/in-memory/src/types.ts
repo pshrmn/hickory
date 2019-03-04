@@ -1,14 +1,16 @@
 import {
+  PendingHistory,
   History,
   LocationComponents,
-  PartialLocation,
   SessionLocation,
-  AnyLocation,
+  PartialLocation,
   Location,
+  AnyLocation,
   LocationUtilOptions
 } from "@hickory/root";
 
 export {
+  PendingHistory,
   History,
   SessionLocation,
   PartialLocation,
@@ -32,3 +34,4 @@ export interface SessionHistory {
 }
 
 export type InMemoryHistory = History & SessionHistory;
+export type PendingInMemoryHistory = PendingHistory<InMemoryHistory>;
