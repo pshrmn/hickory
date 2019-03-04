@@ -8,7 +8,8 @@ export declare type PartialLocation = Partial<LocationComponents>;
 export interface Location extends LocationComponents {
     rawPathname: string;
 }
+export declare type Key = [number, number];
 export interface SessionLocation extends Location {
-    key: string;
+    key: Key;
 }
 export declare type AnyLocation = SessionLocation | PartialLocation;

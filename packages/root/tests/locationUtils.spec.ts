@@ -2,7 +2,7 @@ import "jest";
 import { locationUtils } from "../src";
 import * as qs from "qs";
 
-import { SessionLocation } from "../src/types";
+import { SessionLocation, Key } from "../src/types";
 
 describe("locationFactory", () => {
   describe("constructor", () => {
@@ -296,7 +296,7 @@ describe("locationFactory", () => {
     const { keyed, genericLocation } = locationUtils();
 
     it("attaches a key to a keyless location", () => {
-      const key = "3.1.4";
+      const key: Key = [3, 14];
       const keylessLocation = genericLocation("/test");
       const location = keyed(keylessLocation, key);
       expect(location.key).toBe(key);

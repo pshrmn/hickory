@@ -11,10 +11,10 @@ export interface Location extends LocationComponents {
   rawPathname: string;
 }
 
-// use SessionLocation instead of Location to prevent
-// errors from colliding with window.Location interface
+export type Key = [number, number];
+
 export interface SessionLocation extends Location {
-  key: string;
+  key: Key;
 }
 
 export type AnyLocation = SessionLocation | PartialLocation;

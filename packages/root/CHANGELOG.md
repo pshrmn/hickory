@@ -1,5 +1,6 @@
 ## Next
 
+- Convert key to a two number tuple (`[1, 0]` instead of `1.0`). (**Note:** `pathname` is almost always better than `key` for a "unique" identifier)
 - `history.current` function will emit a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
 - Unify `prepare` with pending navigation handlers. Users now create a "pending" history; the "real" history is created by passing a response handler to the "pending" history function.
 

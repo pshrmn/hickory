@@ -10,7 +10,8 @@ import {
   PartialLocation,
   AnyLocation,
   LocationComponents,
-  Location
+  Location,
+  Key
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
 import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
@@ -143,7 +144,7 @@ export default function locationFactory(
     };
   }
 
-  function keyed(location: Location, key: string): SessionLocation {
+  function keyed(location: Location, key: Key): SessionLocation {
     return {
       ...location,
       key

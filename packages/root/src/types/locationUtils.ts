@@ -1,4 +1,4 @@
-import { Location, SessionLocation, PartialLocation } from "./location";
+import { Location, SessionLocation, PartialLocation, Key } from "./location";
 
 export interface QueryFunctions {
   parse: (query?: string) => any;
@@ -15,7 +15,7 @@ export interface LocationUtilOptions {
 }
 
 export interface LocationUtils {
-  keyed(location: Location, key: string): SessionLocation;
+  keyed(location: Location, key: Key): SessionLocation;
   genericLocation(value: string | object, state?: any): Location;
   stringifyLocation(location: SessionLocation): string;
   stringifyLocation(location: PartialLocation): string;

@@ -41,7 +41,7 @@ export default {
           setTimeout(() => {
             expect(localHistory.location).toMatchObject({
               pathname: "/six",
-              key: "5.0"
+              key: [5, 0]
             });
             resolve();
           }, 25);

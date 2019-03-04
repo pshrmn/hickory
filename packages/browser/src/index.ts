@@ -111,9 +111,7 @@ export function Browser(options: Options = {}): PendingBrowserHistory {
       cancelPending("pop");
 
       const location = locationFromBrowser(event.state);
-      const currentKey = browserHistory.location.key;
-      const diff = keygen.diff(currentKey, location.key);
-
+      const diff = browserHistory.location.key[0] - location.key[0];
       const navigation = createNavigation(
         location,
         "pop",
@@ -126,7 +124,7 @@ export function Browser(options: Options = {}): PendingBrowserHistory {
             return;
           }
           reverting = true;
-          window.history.go(-1 * diff);
+          window.history.go(diff);
         }
       );
 

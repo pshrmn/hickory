@@ -121,8 +121,7 @@ export function Hash(options: Options = {}): PendingHashHistory {
       cancelPending("pop");
 
       const location: SessionLocation = locationFromBrowser(event.state);
-      const currentKey: string = hashHistory.location.key;
-      const diff: number = keygen.diff(currentKey, location.key);
+      const diff = hashHistory.location.key[0] - location.key[0];
 
       const navigation = createNavigation(
         location,
@@ -136,7 +135,7 @@ export function Hash(options: Options = {}): PendingHashHistory {
             return;
           }
           reverting = true;
-          window.history.go(-1 * diff);
+          window.history.go(diff);
         }
       );
       emitNavigation(navigation);

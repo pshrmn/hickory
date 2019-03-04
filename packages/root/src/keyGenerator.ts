@@ -1,29 +1,18 @@
+import { Key } from "./types/location";
 import { KeyFns } from "./types/keyGenerator";
-
-function parse(key: string): Array<number> {
-  return key.split(".").map((value: string): number => parseInt(value, 10));
-}
-
-function diff(first: string, second: string): number {
-  return parse(second)[0] - parse(first)[0];
-}
-
-function minor(current: string): string {
-  const [major, minor] = parse(current);
-  return `${major}.${minor + 1}`;
-}
 
 export default function createKeyGenerator(): KeyFns {
   let currentMajor: number = 0;
 
   return {
-    major: function(previous?: string): string {
+    major: function(previous?: Key): Key {
       if (previous) {
-        currentMajor = parse(previous)[0] + 1;
+        currentMajor = previous[0] + 1;
       }
-      return `${currentMajor++}.0`;
+      return [currentMajor++, 0];
     },
-    minor,
-    diff
+    minor: function(current: Key): Key {
+      return [current[0], current[1] + 1];
+    }
   };
 }
