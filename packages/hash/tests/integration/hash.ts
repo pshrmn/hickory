@@ -92,6 +92,7 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
+      window.history.pushState(null, "", "/#/");
       const pendingHistory = Hash();
       let setup = true;
       const testHistory = pendingHistory(pending => {
@@ -113,6 +114,7 @@ describe("hash integration tests", () => {
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
+      window.history.pushState(null, "", "/#/");
       const pendingHistory = Hash();
       let setup = true;
       const testHistory = pendingHistory(pending => {
