@@ -1,6 +1,6 @@
 export * from "./types";
 
 import { InMemory } from "./InMemory";
-import { InMemoryLite } from "./InMemoryLite";
+import { ServerFactory } from "./ServerSession";
 
-export { InMemory, InMemoryLite };
+export { InMemory, ServerFactory };

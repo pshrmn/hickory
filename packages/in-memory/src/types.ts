@@ -33,7 +33,6 @@ export interface InMemoryHistory extends History {
   reset(options?: SessionOptions): void;
 }
 
-export type InMemoryLiteOptions = HistoryOptions & {
+export interface LocationOptions {
   location: InputLocation;
-};
-export type InMemoryLiteHistory = History;
+}
