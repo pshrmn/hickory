@@ -36,22 +36,10 @@ describe("browser integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
-        console.log(
-          "BEFORE PUSHING",
-          (<jasmine.Spy>window.history.pushState).calls.count(),
-          (<jasmine.Spy>window.history.replaceState).calls.count()
-        );
-
         testHistory = Browser(pending => {
           pending.finish();
         });
         testHistory.navigate("/the-new-location", "push");
-
-        console.log(
-          "AFTER PUSHING",
-          (<jasmine.Spy>window.history.pushState).calls.count(),
-          (<jasmine.Spy>window.history.replaceState).calls.count()
-        );
 
         expect(window.location.pathname).toEqual("/the-new-location");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
