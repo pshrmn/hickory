@@ -6,18 +6,14 @@ describe("hash integration tests", () => {
 
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
-    window.history.pushState(null, "", "/#/");
+    window.history.pushState({ key: [0, 0] }, "", "/#/");
   });
 
   afterEach(() => {
     testHistory.destroy();
   });
 
-  it("passes", () => {
-    expect(1).toEqual(1);
-  });
-
-  /* describe("navigate()", () => {
+  describe("navigate()", () => {
     beforeEach(() => {
       spyOn(window.history, "pushState").and.callThrough();
       spyOn(window.history, "replaceState").and.callThrough();
@@ -171,5 +167,5 @@ describe("hash integration tests", () => {
       });
       testHistory.current();
     });
-  }); */
+  });
 });
