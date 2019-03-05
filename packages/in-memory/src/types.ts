@@ -32,3 +32,8 @@ export type InMemoryOptions = HistoryOptions & SessionOptions;
 export interface InMemoryHistory extends History {
   reset(options?: SessionOptions): void;
 }
+
+export type InMemoryLiteOptions = HistoryOptions & {
+  location: InputLocation;
+};
+export type InMemoryLiteHistory = History;
