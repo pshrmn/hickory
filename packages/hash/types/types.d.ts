@@ -1,8 +1,7 @@
-import { PendingHistory, History, LocationComponents, SessionLocation, PartialLocation, RawLocation, AnyLocation, LocationUtilOptions } from "@hickory/root";
-export { PendingHistory, History, SessionLocation, PartialLocation, AnyLocation, RawLocation, LocationComponents };
-export interface HashOptions {
+import { HistoryConstructor, HistoryOptions, History, LocationComponents, SessionLocation, PartialLocation, RawLocation, AnyLocation } from "@hickory/root";
+export { HistoryConstructor, HistoryOptions, History, SessionLocation, PartialLocation, AnyLocation, RawLocation, LocationComponents };
+export interface HashTypeOptions {
     hashType?: string;
 }
-export declare type Options = LocationUtilOptions & HashOptions;
+export declare type HashOptions = HistoryOptions & HashTypeOptions;
 export declare type HashHistory = History;
-export declare type PendingHashHistory = PendingHistory<HashHistory>;

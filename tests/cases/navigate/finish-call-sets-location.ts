@@ -3,12 +3,12 @@ import { TestCaseArgs } from "../../types";
 // should this be an integration test?
 export default {
   msg: "updates history's location when finish function is called",
-  fn: function({ pendingHistory }: TestCaseArgs) {
-    const history = pendingHistory(pending => {
+  fn: function({ constructor, options = {} }: TestCaseArgs) {
+    const history = constructor(pending => {
       expect(history.location.pathname).toBe("/one");
       pending.finish();
       expect(history.location.pathname).toBe("/two");
-    });
+    }, options);
     history.navigate("/two");
   }
 };

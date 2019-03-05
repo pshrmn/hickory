@@ -14,13 +14,16 @@ import {
   NavType,
   Action
 } from "@hickory/root";
-import { PendingBrowserHistory, BrowserHistory, Options } from "./types";
+import { BrowserHistoryOptions, BrowserHistory } from "./types";
 
 export * from "./types";
 
 function noop() {}
 
-export function Browser(options: Options = {}): PendingBrowserHistory {
+export function Browser(
+  fn: ResponseHandler,
+  options: BrowserHistoryOptions = {}
+): BrowserHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
@@ -48,119 +51,117 @@ export function Browser(options: Options = {}): PendingBrowserHistory {
     return locationUtilities.stringifyLocation(location);
   }
 
-  return function pendingBrowserHistory(fn: ResponseHandler) {
-    // set action before location because locationFromBrowser enforces
-    // that the location has a key
-    let lastAction: Action =
-      getStateFromHistory().key !== undefined ? "pop" : "push";
+  // set action before location because locationFromBrowser enforces
+  // that the location has a key
+  let lastAction: Action =
+    getStateFromHistory().key !== undefined ? "pop" : "push";
 
-    const {
-      emitNavigation,
-      cancelPending,
-      createNavigation,
-      prepare
-    } = navigateWith({
-      responseHandler: fn,
-      locationUtils: locationUtilities,
-      keygen,
-      current: () => browserHistory.location,
-      push: {
-        finish(location: SessionLocation) {
-          return () => {
-            const path = toHref(location);
-            const { key, state } = location;
-            try {
-              window.history.pushState({ key, state }, "", path);
-            } catch (e) {
-              window.location.assign(path);
-            }
-            browserHistory.location = location;
-            lastAction = "push";
-          };
-        },
-        cancel: noop
-      },
-      replace: {
-        finish(location: SessionLocation) {
-          return () => {
-            const path = toHref(location);
-            const { key, state } = location;
-            try {
-              window.history.replaceState({ key, state }, "", path);
-            } catch (e) {
-              window.location.replace(path);
-            }
-            browserHistory.location = location;
-            lastAction = "replace";
-          };
-        },
-        cancel: noop
-      }
-    });
-
-    // when true, pop will ignore the navigation
-    let reverting = false;
-    function popstate(event: PopStateEvent) {
-      if (reverting) {
-        reverting = false;
-        return;
-      }
-      if (ignorablePopstateEvent(event)) {
-        return;
-      }
-      cancelPending("pop");
-
-      const location = locationFromBrowser(event.state);
-      const diff = browserHistory.location.key[0] - location.key[0];
-      const navigation = createNavigation(
-        location,
-        "pop",
-        () => {
-          browserHistory.location = location;
-          lastAction = "pop";
-        },
-        (nextAction?: Action) => {
-          if (nextAction === "pop") {
-            return;
+  const {
+    emitNavigation,
+    cancelPending,
+    createNavigation,
+    prepare
+  } = navigateWith({
+    responseHandler: fn,
+    locationUtils: locationUtilities,
+    keygen,
+    current: () => browserHistory.location,
+    push: {
+      finish(location: SessionLocation) {
+        return () => {
+          const path = toHref(location);
+          const { key, state } = location;
+          try {
+            window.history.pushState({ key, state }, "", path);
+          } catch (e) {
+            window.location.assign(path);
           }
-          reverting = true;
-          window.history.go(diff);
-        }
-      );
-
-      emitNavigation(navigation);
+          browserHistory.location = location;
+          lastAction = "push";
+        };
+      },
+      cancel: noop
+    },
+    replace: {
+      finish(location: SessionLocation) {
+        return () => {
+          const path = toHref(location);
+          const { key, state } = location;
+          try {
+            window.history.replaceState({ key, state }, "", path);
+          } catch (e) {
+            window.location.replace(path);
+          }
+          browserHistory.location = location;
+          lastAction = "replace";
+        };
+      },
+      cancel: noop
     }
+  });
 
-    window.addEventListener("popstate", popstate, false);
+  // when true, pop will ignore the navigation
+  let reverting = false;
+  function popstate(event: PopStateEvent) {
+    if (reverting) {
+      reverting = false;
+      return;
+    }
+    if (ignorablePopstateEvent(event)) {
+      return;
+    }
+    cancelPending("pop");
 
-    const browserHistory: BrowserHistory = {
-      location: locationFromBrowser(),
-      current() {
-        const nav = createNavigation(
-          browserHistory.location,
-          lastAction,
-          noop,
-          noop
-        );
-        emitNavigation(nav);
+    const location = locationFromBrowser(event.state);
+    const diff = browserHistory.location.key[0] - location.key[0];
+    const navigation = createNavigation(
+      location,
+      "pop",
+      () => {
+        browserHistory.location = location;
+        lastAction = "pop";
       },
-      toHref,
-      cancel() {
-        cancelPending();
-      },
-      destroy() {
-        window.removeEventListener("popstate", popstate);
-      },
-      navigate(to: ToArgument, navType: NavType = "anchor"): void {
-        const navigation = prepare(to, navType);
-        cancelPending(navigation.action);
-        emitNavigation(navigation);
-      },
-      go(num: number): void {
-        window.history.go(num);
+      (nextAction?: Action) => {
+        if (nextAction === "pop") {
+          return;
+        }
+        reverting = true;
+        window.history.go(diff);
       }
-    };
+    );
 
-    return browserHistory;
+    emitNavigation(navigation);
+  }
+
+  window.addEventListener("popstate", popstate, false);
+
+  const browserHistory: BrowserHistory = {
+    location: locationFromBrowser(),
+    current() {
+      const nav = createNavigation(
+        browserHistory.location,
+        lastAction,
+        noop,
+        noop
+      );
+      emitNavigation(nav);
+    },
+    toHref,
+    cancel() {
+      cancelPending();
+    },
+    destroy() {
+      window.removeEventListener("popstate", popstate);
+    },
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+      const navigation = prepare(to, navType);
+      cancelPending(navigation.action);
+      emitNavigation(navigation);
+    },
+    go(num: number): void {
+      window.history.go(num);
+    }
   };
+
+  return browserHistory;
 }

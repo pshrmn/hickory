@@ -1,4 +1,4 @@
-import { Location, SessionLocation, PartialLocation, Key } from "./location";
+import { RawLocation, SessionLocation, PartialLocation, Key } from "./location";
 export interface QueryFunctions {
     parse: (query?: string) => any;
     stringify: (query?: any) => string;
@@ -11,8 +11,8 @@ export interface LocationUtilOptions {
     raw?: RawPathname;
 }
 export interface LocationUtils {
-    keyed(location: Location, key: Key): SessionLocation;
-    genericLocation(value: string | object, state?: any): Location;
+    keyed(location: RawLocation, key: Key): SessionLocation;
+    genericLocation(value: string | object, state?: any): RawLocation;
     stringifyLocation(location: SessionLocation): string;
     stringifyLocation(location: PartialLocation): string;
 }

@@ -1,4 +1,4 @@
-export { PendingHistory, History } from "./hickory";
+export { HistoryOptions, HistoryConstructor, History } from "./hickory";
 
 export {
   LocationComponents,

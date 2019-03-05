@@ -1,3 +1,4 @@
-import { PendingBrowserHistory, Options } from "./types";
+import { ResponseHandler } from "@hickory/root";
+import { BrowserHistoryOptions, BrowserHistory } from "./types";
 export * from "./types";
-export declare function Browser(options?: Options): PendingBrowserHistory;
+export declare function Browser(fn: ResponseHandler, options?: BrowserHistoryOptions): BrowserHistory;

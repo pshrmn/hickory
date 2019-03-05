@@ -2,10 +2,10 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "navigate with anchor method replaces for same location",
-  fn: function({ pendingHistory }: TestCaseArgs) {
-    const history = pendingHistory(pending => {
+  fn: function({ constructor, options = {} }: TestCaseArgs) {
+    const history = constructor(pending => {
       expect(pending.action).toBe("replace");
-    });
+    }, options);
     history.navigate("/one", "anchor");
   }
 };

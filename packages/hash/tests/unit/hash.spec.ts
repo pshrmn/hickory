@@ -13,7 +13,7 @@ function runAsyncTest(test: TestCase) {
       { url: "http://example.com/#/one" },
       ({ window, resolve }) => {
         test.fn({
-          pendingHistory: Hash(),
+          constructor: Hash,
           resolve
         });
       }
@@ -25,7 +25,7 @@ function runTest(test: TestCase) {
   it(test.msg, () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       test.fn({
-        pendingHistory: Hash()
+        constructor: Hash
       });
     });
   });
@@ -44,8 +44,7 @@ function runSuite(suite: Suite) {
 describe("Hash constructor", () => {
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/#/one" }, () => {
-      const pendingHistory = Hash();
-      const testHistory = pendingHistory(pending => {
+      const testHistory = Hash(pending => {
         pending.finish();
       });
       expect(testHistory.location).toMatchObject({
@@ -59,7 +58,9 @@ describe("Hash constructor", () => {
   it("throws if there is no DOM", () => {
     withDOM({ url: "http://example.com/#/one", setGlobal: false }, () => {
       expect(() => {
-        const pendingHistory = Hash();
+        const testHistory = Hash(pending => {
+          pending.finish();
+        });
       }).toThrow();
     });
   });
@@ -67,9 +68,9 @@ describe("Hash constructor", () => {
   it('sets initial action to "push" when page has not been previously visited', () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState(null, "", "/#has-no-key");
-      const pendingHistory = Hash();
-      const testHistory = pendingHistory(pending => {
+      const testHistory = Hash(pending => {
         expect(pending.action).toBe("push");
+        pending.finish();
       });
     });
   });
@@ -77,9 +78,9 @@ describe("Hash constructor", () => {
   it('sets initial action to "pop" when page has been previously visited', () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/#has-key");
-      const pendingHistory = Hash();
-      const testHistory = pendingHistory(pending => {
+      const testHistory = Hash(pending => {
         expect(pending.action).toBe("pop");
+        pending.finish();
       });
     });
   });
@@ -89,7 +90,9 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         withDOM({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const pendingHistory = Hash();
+          const testHistory = Hash(pending => {
+            pending.finish();
+          });
           expect(window.location.hash).toBe("#/");
         });
       });
@@ -99,7 +102,12 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         withDOM({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const testHistory = Hash({ hashType: "default" });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "default" }
+          );
           expect(window.location.hash).toBe("#/");
         });
       });
@@ -109,7 +117,12 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         withDOM({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const testHistory = Hash({ hashType: "bang" });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "bang" }
+          );
           expect(window.location.hash).toBe("#!/");
         });
       });
@@ -119,7 +132,12 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         withDOM({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const testHistory = Hash({ hashType: "clean" });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "clean" }
+          );
           expect(window.location.hash).toBe("#/");
         });
       });
@@ -127,22 +145,26 @@ describe("Hash constructor", () => {
   });
 
   describe("decodes from browser based on options.hashType", () => {
-    it("works with default hashType", () => {
+    it("works with no hashType (default)", () => {
       withDOM({ url: "http://example.com/#/the-path" }, () => {
-        // default and basic should be the same
-        const noTypeShell = Hash();
-        const noTypeHistory = noTypeShell(pending => {
+        const testHistory = Hash(pending => {
           pending.finish();
         });
-        expect(noTypeHistory.location).toMatchObject({
+        expect(testHistory.location).toMatchObject({
           pathname: "/the-path"
         });
+      });
+    });
 
-        const defaultShell = Hash({ hashType: "default" });
-        const defaultHistory = defaultShell(pending => {
-          pending.finish();
-        });
-        expect(defaultHistory.location).toMatchObject({
+    it("works with default hashType", () => {
+      withDOM({ url: "http://example.com/#/the-path" }, () => {
+        const testHistory = Hash(
+          pending => {
+            pending.finish();
+          },
+          { hashType: "default" }
+        );
+        expect(testHistory.location).toMatchObject({
           pathname: "/the-path"
         });
       });
@@ -151,11 +173,13 @@ describe("Hash constructor", () => {
     it("works with bang hashType", () => {
       // bang expects an exclamation point before the leading slash
       withDOM({ url: "http://example.com/#!/the-path" }, () => {
-        const pendingHistory = Hash({ hashType: "bang" });
-        const bangHistory = pendingHistory(pending => {
-          pending.finish();
-        });
-        expect(bangHistory.location).toMatchObject({
+        const testHistory = Hash(
+          pending => {
+            pending.finish();
+          },
+          { hashType: "bang" }
+        );
+        expect(testHistory.location).toMatchObject({
           pathname: "/the-path"
         });
       });
@@ -164,11 +188,13 @@ describe("Hash constructor", () => {
     it("works with default hashType", () => {
       // clean expects no leading slash
       withDOM({ url: "http://example.com/#the-path" }, () => {
-        const pendingHistory = Hash({ hashType: "clean" });
-        const cleanHistory = pendingHistory(pending => {
-          pending.finish();
-        });
-        expect(cleanHistory.location).toMatchObject({
+        const testHistory = Hash(
+          pending => {
+            pending.finish();
+          },
+          { hashType: "clean" }
+        );
+        expect(testHistory.location).toMatchObject({
           pathname: "/the-path"
         });
       });
@@ -193,8 +219,7 @@ describe("go", () => {
   it("calls window.history.go with provided value", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       const mockGo = (window.history.go = jest.fn());
-      const pendingHistory = Hash();
-      const testHistory = pendingHistory(pending => {
+      const testHistory = Hash(pending => {
         pending.finish();
       });
       [undefined, 0, 1, -1].forEach((value, index) => {
@@ -208,8 +233,7 @@ describe("go", () => {
 describe("toHref", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-      const pendingHistory = Hash();
-      const testHistory = pendingHistory(pending => {
+      const testHistory = Hash(pending => {
         pending.finish();
       });
       const currentPath = testHistory.toHref({
@@ -226,8 +250,7 @@ describe("toHref", () => {
     describe("[none provided]", () => {
       it("outputs expected string", () => {
         withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-          const pendingHistory = Hash();
-          const testHistory = pendingHistory(pending => {
+          const testHistory = Hash(pending => {
             pending.finish();
           });
           expect(testHistory.toHref(location)).toBe("#/simple-path");
@@ -238,10 +261,12 @@ describe("toHref", () => {
     describe("default", () => {
       it("outputs expected string", () => {
         withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-          const pendingHistory = Hash({ hashType: "default" });
-          const testHistory = pendingHistory(pending => {
-            pending.finish();
-          });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "default" }
+          );
           expect(testHistory.toHref(location)).toBe("#/simple-path");
         });
       });
@@ -250,10 +275,12 @@ describe("toHref", () => {
     describe("bang", () => {
       it("outputs expected string", () => {
         withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-          const pendingHistory = Hash({ hashType: "bang" });
-          const testHistory = pendingHistory(pending => {
-            pending.finish();
-          });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "bang" }
+          );
           expect(testHistory.toHref(location)).toBe("#!/simple-path");
         });
       });
@@ -262,10 +289,12 @@ describe("toHref", () => {
     describe("clean", () => {
       it("outputs expected string", () => {
         withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
-          const pendingHistory = Hash({ hashType: "clean" });
-          const testHistory = pendingHistory(pending => {
-            pending.finish();
-          });
+          const testHistory = Hash(
+            pending => {
+              pending.finish();
+            },
+            { hashType: "clean" }
+          );
           expect(testHistory.toHref(location)).toBe("#simple-path");
         });
       });

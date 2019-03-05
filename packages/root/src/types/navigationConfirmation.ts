@@ -1,5 +1,5 @@
 import { SessionLocation } from "./location";
-import { Action } from "./navigation";
+import { Action } from "./navigate";
 
 export interface NavigationInfo {
   to: SessionLocation;

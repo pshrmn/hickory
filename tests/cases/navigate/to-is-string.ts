@@ -4,13 +4,13 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "works with string locations",
-  fn: function({ pendingHistory }: TestCaseArgs) {
-    const history = pendingHistory(pending => {
+  fn: function({ constructor, options = {} }: TestCaseArgs) {
+    const history = constructor(pending => {
       expect(pending.location).toMatchObject({
         pathname: "/two",
         query: "test=ing"
       });
-    });
+    }, options);
     history.navigate("/two?test=ing");
   }
 };
