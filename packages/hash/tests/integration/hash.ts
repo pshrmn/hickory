@@ -7,10 +7,6 @@ describe("hash integration tests", () => {
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, "", "/#/");
-    const pendingHistory = Hash();
-    testHistory = pendingHistory(pending => {
-      pending.finish();
-    });
   });
 
   afterEach(() => {
@@ -29,6 +25,9 @@ describe("hash integration tests", () => {
     });
 
     it("new URL uses rawPathname, not pathname", () => {
+      testHistory = Hash(pending => {
+        pending.finish();
+      });
       testHistory.navigate(
         {
           pathname: "/encoded-percent%25"
@@ -41,6 +40,9 @@ describe("hash integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
+        testHistory = Hash(pending => {
+          pending.finish();
+        });
         testHistory.navigate("/a-new-position", "push");
         expect(window.location.hash).toEqual("#/a-new-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
@@ -50,6 +52,9 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
+        testHistory = Hash(pending => {
+          pending.finish();
+        });
         const providedState = { isSet: true };
         testHistory.navigate(
           {
@@ -66,6 +71,9 @@ describe("hash integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
+        testHistory = Hash(pending => {
+          pending.finish();
+        });
         testHistory.navigate("/the-same-position", "replace");
         expect(window.location.hash).toEqual("#/the-same-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
@@ -75,6 +83,9 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
+        testHistory = Hash(pending => {
+          pending.finish();
+        });
         const providedState = { isSet: true };
         testHistory.navigate(
           {
@@ -92,10 +103,9 @@ describe("hash integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      const pendingHistory = Hash();
       let calls = 0;
-      const history = pendingHistory(pending => {
-        let localHistory = history;
+      testHistory = Hash(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
@@ -121,16 +131,15 @@ describe("hash integration tests", () => {
             done();
         }
       });
-      history.current();
+      testHistory.current();
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      const pendingHistory = Hash();
       let calls = 0;
-      const history = pendingHistory(pending => {
-        let localHistory = history;
+      testHistory = Hash(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
@@ -156,7 +165,7 @@ describe("hash integration tests", () => {
             done();
         }
       });
-      history.current();
+      testHistory.current();
     });
   });
 });

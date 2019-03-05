@@ -1,6 +1,8 @@
 import { SessionLocation, AnyLocation } from "./location";
 import { ResponseHandler, ToArgument, NavType } from "./navigate";
-export declare type PendingHistory<H extends History = History> = (fn: ResponseHandler) => H;
+import { LocationUtilOptions } from "./locationUtils";
+export declare type HistoryOptions = LocationUtilOptions;
+export declare type HistoryConstructor = (fn: ResponseHandler, o?: HistoryOptions) => History;
 export interface History {
     location: SessionLocation;
     toHref(to: AnyLocation): string;

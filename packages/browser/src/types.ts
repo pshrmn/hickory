@@ -1,16 +1,17 @@
 import {
-  PendingHistory,
+  HistoryConstructor,
+  HistoryOptions,
   History,
   LocationComponents,
   SessionLocation,
   PartialLocation,
   RawLocation,
-  AnyLocation,
-  LocationUtilOptions
+  AnyLocation
 } from "@hickory/root";
 
 export {
-  PendingHistory,
+  HistoryConstructor,
+  HistoryOptions,
   History,
   SessionLocation,
   PartialLocation,
@@ -19,6 +20,5 @@ export {
   LocationComponents
 };
 
-export type Options = LocationUtilOptions;
+export type BrowserHistoryOptions = HistoryOptions;
 export type BrowserHistory = History;
-export type PendingBrowserHistory = PendingHistory<BrowserHistory>;

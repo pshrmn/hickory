@@ -1,16 +1,17 @@
 import {
-  PendingHistory,
+  HistoryConstructor,
+  HistoryOptions,
   History,
   LocationComponents,
   SessionLocation,
   PartialLocation,
   RawLocation,
-  AnyLocation,
-  LocationUtilOptions
+  AnyLocation
 } from "@hickory/root";
 
 export {
-  PendingHistory,
+  HistoryConstructor,
+  HistoryOptions,
   History,
   SessionLocation,
   PartialLocation,
@@ -27,11 +28,7 @@ export interface SessionOptions {
   index?: number;
 }
 
-export type Options = LocationUtilOptions & SessionOptions;
-
-export interface SessionHistory {
+export type InMemoryOptions = HistoryOptions & SessionOptions;
+export interface InMemoryHistory extends History {
   reset(options?: SessionOptions): void;
 }
-
-export type InMemoryHistory = History & SessionHistory;
-export type PendingInMemoryHistory = PendingHistory<InMemoryHistory>;

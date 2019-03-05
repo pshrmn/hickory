@@ -1,14 +1,12 @@
-import { PendingHistory, History, LocationComponents, SessionLocation, PartialLocation, RawLocation, AnyLocation, LocationUtilOptions } from "@hickory/root";
-export { PendingHistory, History, SessionLocation, PartialLocation, AnyLocation, RawLocation, LocationComponents };
+import { HistoryConstructor, HistoryOptions, History, LocationComponents, SessionLocation, PartialLocation, RawLocation, AnyLocation } from "@hickory/root";
+export { HistoryConstructor, HistoryOptions, History, SessionLocation, PartialLocation, AnyLocation, RawLocation, LocationComponents };
 export declare type InputLocation = string | PartialLocation;
 export declare type InputLocations = Array<InputLocation>;
 export interface SessionOptions {
     locations?: InputLocations;
     index?: number;
 }
-export declare type Options = LocationUtilOptions & SessionOptions;
-export interface SessionHistory {
+export declare type InMemoryOptions = HistoryOptions & SessionOptions;
+export interface InMemoryHistory extends History {
     reset(options?: SessionOptions): void;
 }
-export declare type InMemoryHistory = History & SessionHistory;
-export declare type PendingInMemoryHistory = PendingHistory<InMemoryHistory>;

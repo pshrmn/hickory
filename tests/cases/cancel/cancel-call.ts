@@ -6,9 +6,9 @@ export default {
   msg: "cancels the pending navigation",
   async: true,
   assertions: 1,
-  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
+  fn: function({ constructor, resolve, options = {} }: AsyncTestCaseArgs) {
     let calls = 0;
-    const history = pendingHistory(pending => {
+    const history = constructor(pending => {
       let localHistory = history;
       switch (calls++) {
         case 0:
@@ -46,7 +46,7 @@ export default {
             resolve();
           }, 25);
       }
-    });
+    }, options);
     history.current();
   }
 };

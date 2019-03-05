@@ -6,9 +6,9 @@ export default {
   msg: `calls response handler with expected location and action`,
   async: true,
   assertions: 2,
-  fn: function({ pendingHistory, resolve }: AsyncTestCaseArgs) {
+  fn: function({ constructor, resolve, options = {} }: AsyncTestCaseArgs) {
     let calls = 0;
-    const history = pendingHistory(pending => {
+    const history = constructor(pending => {
       let localHistory = history;
       switch (calls++) {
         case 0:
@@ -43,7 +43,7 @@ export default {
           expect(pending.action).toBe("pop");
           resolve();
       }
-    });
+    }, options);
     history.current();
   }
 };

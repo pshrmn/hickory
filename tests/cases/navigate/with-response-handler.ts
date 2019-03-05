@@ -2,9 +2,9 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "triggers a response handler call if handler is registered",
-  fn: function({ pendingHistory }: TestCaseArgs) {
+  fn: function({ constructor, options = {} }: TestCaseArgs) {
     const router = jest.fn();
-    const history = pendingHistory(router);
+    const history = constructor(router, options);
     history.navigate("/two");
     expect(router.mock.calls.length).toBe(1);
   }

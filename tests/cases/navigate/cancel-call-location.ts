@@ -2,12 +2,12 @@ import { TestCaseArgs } from "../../types";
 
 export default {
   msg: "calling cancel maintains current location",
-  fn: function({ pendingHistory }: TestCaseArgs) {
-    const history = pendingHistory(pending => {
+  fn: function({ constructor, options = {} }: TestCaseArgs) {
+    const history = constructor(pending => {
       expect(history.location.pathname).toBe("/one");
       pending.cancel();
       expect(history.location.pathname).toBe("/one");
-    });
+    }, options);
     history.navigate("/two", "replace");
   }
 };

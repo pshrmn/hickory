@@ -3,14 +3,9 @@ import { Browser } from "../../src";
 
 describe("browser integration tests", () => {
   let testHistory;
-
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, "", "/");
-    const pendingHistory = Browser();
-    testHistory = pendingHistory(pending => {
-      pending.finish();
-    });
   });
 
   afterEach(() => {
@@ -29,6 +24,9 @@ describe("browser integration tests", () => {
     });
 
     it("new URL uses rawPathname, not pathname", () => {
+      testHistory = Browser(pending => {
+        pending.finish();
+      });
       testHistory.navigate({
         pathname: "/encoded-percent%25"
       });
@@ -38,6 +36,9 @@ describe("browser integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
+        testHistory = Browser(pending => {
+          pending.finish();
+        });
         testHistory.navigate("/the-new-location", "push");
         expect(window.location.pathname).toEqual("/the-new-location");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
@@ -47,6 +48,9 @@ describe("browser integration tests", () => {
       });
 
       it("sets the state", () => {
+        testHistory = Browser(pending => {
+          pending.finish();
+        });
         const providedState = { isSet: true };
         testHistory.navigate(
           {
@@ -63,6 +67,9 @@ describe("browser integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
+        testHistory = Browser(pending => {
+          pending.finish();
+        });
         testHistory.navigate("/the-same-location", "replace");
         expect(window.location.pathname).toEqual("/the-same-location");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
@@ -72,6 +79,9 @@ describe("browser integration tests", () => {
       });
 
       it("sets the state", () => {
+        testHistory = Browser(pending => {
+          pending.finish();
+        });
         const providedState = { isSet: true };
         testHistory.navigate(
           {
@@ -89,10 +99,9 @@ describe("browser integration tests", () => {
 
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
-      const pendingHistory = Browser();
       let calls = 0;
-      const history = pendingHistory(pending => {
-        let localHistory = history;
+      testHistory = Browser(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
@@ -118,16 +127,15 @@ describe("browser integration tests", () => {
             done();
         }
       });
-      history.current();
+      testHistory.current();
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
-      const pendingHistory = Browser();
       let calls = 0;
-      const history = pendingHistory(pending => {
-        let localHistory = history;
+      testHistory = Browser(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
@@ -153,7 +161,7 @@ describe("browser integration tests", () => {
             done();
         }
       });
-      history.current();
+      testHistory.current();
     });
   });
 });

@@ -1,7 +1,8 @@
-import { PendingHistory } from "@hickory/root";
+import { HistoryConstructor, HistoryOptions } from "@hickory/root";
 
 export interface TestCaseArgs {
-  pendingHistory: PendingHistory;
+  constructor: HistoryConstructor;
+  options?: HistoryOptions;
 }
 
 export interface AsyncTestCaseArgs extends TestCaseArgs {
