@@ -6,7 +6,6 @@ describe("browser integration tests", () => {
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
     window.history.pushState(null, "", "/");
-    console.log('FAKE "RESET"');
   });
 
   afterEach(() => {
@@ -17,7 +16,6 @@ describe("browser integration tests", () => {
     beforeEach(() => {
       spyOn(window.history, "pushState").and.callThrough();
       spyOn(window.history, "replaceState").and.callThrough();
-      console.log("CREATED SPYS");
     });
 
     afterEach(() => {
@@ -48,6 +46,13 @@ describe("browser integration tests", () => {
           pending.finish();
         });
         testHistory.navigate("/the-new-location", "push");
+
+        console.log(
+          "AFTER PUSHING",
+          (<jasmine.Spy>window.history.pushState).calls.count(),
+          (<jasmine.Spy>window.history.replaceState).calls.count()
+        );
+
         expect(window.location.pathname).toEqual("/the-new-location");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
