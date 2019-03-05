@@ -1,3 +1,7 @@
+## 2.0.0-beta.0
+
+- `HistoryOptions` and `HistoryConstructor` types.
+
 ## 2.0.0-alpha.5
 
 - Rename `Location` type to `RawLocation`.

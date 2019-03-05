@@ -1,3 +1,8 @@
+## 2.0.0-beta.0
+
+- Pass `ResponseHandler` as first argument to `InMemory`.
+- Remove `PendingHistory` (`history` returned by calling `InMemory` function).
+
 ## 2.0.0-alpha.5
 
 - Rename `Location` type to `RawLocation`.
