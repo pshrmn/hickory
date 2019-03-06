@@ -1,10 +1,14 @@
 version: 2
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:11.10.0
+
+  working_directory: ~/repo
+
 jobs:
   build:
-    docker:
-      - image: circleci/node:11.10.0
-
-    working_directory: ~/repo
+    <<: *defaults
 
     steps:
       - checkout
@@ -22,10 +26,47 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+  unit-test:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
       - run:
           name: Unit Tests
           command: npm run test:unit
 
+  integration-test:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
       - run:
           name: Integration Tests
           command: npm run test:integration
+
+workflows:
+  version: 2
+
+  build_and_test:
+    jobs:
+      - build
+      - unit-test:
+          requires:
+            - build
+      - integration-test:
+          requires:
+            - build
