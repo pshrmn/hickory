@@ -12,7 +12,7 @@ import { LocationOptions } from "./types";
 
 function noop() {}
 
-export function SessionFactory(
+export function createRequestHistory(
   factoryOptions: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
   const locationUtilities = locationUtils(factoryOptions);

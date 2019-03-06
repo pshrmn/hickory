@@ -1,6 +1,6 @@
 export * from "./types";
 
 import { InMemory } from "./InMemory";
-import { SessionFactory } from "./SessionFactory";
+import { createRequestHistory } from "./createRequestHistory";
 
-export { InMemory, SessionFactory };
+export { InMemory, createRequestHistory };

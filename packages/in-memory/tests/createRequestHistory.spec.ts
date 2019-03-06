@@ -1,12 +1,12 @@
 import "jest";
 import * as qs from "qs";
 
-import { SessionFactory } from "../src";
+import { createRequestHistory } from "../src";
 
-describe("SessionFactory", () => {
+describe("createRequestHistory", () => {
   it("works with string locations", () => {
-    const Session = SessionFactory();
-    const testHistory = Session(
+    const RequestHistory = createRequestHistory();
+    const testHistory = RequestHistory(
       pending => {
         pending.finish();
       },
@@ -21,8 +21,8 @@ describe("SessionFactory", () => {
   });
 
   it("works with object locations", () => {
-    const Session = SessionFactory();
-    const testHistory = Session(
+    const RequestHistory = createRequestHistory();
+    const testHistory = RequestHistory(
       pending => {
         pending.finish();
       },
@@ -37,8 +37,8 @@ describe("SessionFactory", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const Session = SessionFactory();
-    const testHistory = Session(
+    const RequestHistory = createRequestHistory();
+    const testHistory = RequestHistory(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -50,8 +50,8 @@ describe("SessionFactory", () => {
   });
 
   it("sets key to [0,0]", () => {
-    const Session = SessionFactory();
-    const testHistory = Session(
+    const RequestHistory = createRequestHistory();
+    const testHistory = RequestHistory(
       pending => {
         expect(pending.location.key).toEqual([0, 0]);
         pending.finish();
@@ -63,13 +63,13 @@ describe("SessionFactory", () => {
   });
 
   it("uses the provided query parsing function to make the query value", () => {
-    const Session = SessionFactory({
+    const RequestHistory = createRequestHistory({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = Session(
+    const testHistory = RequestHistory(
       pending => {
         pending.finish();
       },
@@ -84,8 +84,8 @@ describe("SessionFactory", () => {
 describe("no-op functions", () => {
   describe("go", () => {
     it("doesn't throw", () => {
-      const Session = SessionFactory();
-      const testHistory = Session(
+      const RequestHistory = createRequestHistory();
+      const testHistory = RequestHistory(
         pending => {
           pending.finish();
         },
@@ -101,8 +101,8 @@ describe("no-op functions", () => {
 
   describe("navigate", () => {
     it("doesn't throw", () => {
-      const Session = SessionFactory();
-      const testHistory = Session(
+      const RequestHistory = createRequestHistory();
+      const testHistory = RequestHistory(
         pending => {
           pending.finish();
         },
@@ -118,8 +118,8 @@ describe("no-op functions", () => {
 
   describe("cancel", () => {
     it("doesn't throw", () => {
-      const Session = SessionFactory();
-      const testHistory = Session(
+      const RequestHistory = createRequestHistory();
+      const testHistory = RequestHistory(
         pending => {
           pending.finish();
         },
@@ -136,8 +136,8 @@ describe("no-op functions", () => {
 
 describe("toHref", () => {
   it("returns the location formatted as a string", () => {
-    const Session = SessionFactory();
-    const testHistory = Session(
+    const RequestHistory = createRequestHistory();
+    const testHistory = RequestHistory(
       pending => {
         pending.finish();
       },
@@ -150,13 +150,13 @@ describe("toHref", () => {
   });
 
   it("uses the provided query stringifying function to stringify the query value", () => {
-    const Session = SessionFactory({
+    const RequestHistory = createRequestHistory({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = Session(
+    const testHistory = RequestHistory(
       pending => {
         pending.finish();
       },
