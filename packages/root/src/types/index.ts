@@ -5,7 +5,8 @@ export {
   PartialLocation,
   SessionLocation,
   AnyLocation,
-  RawLocation
+  RawLocation,
+  Key
 } from "./location";
 
 export { KeyFns } from "./keyGenerator";

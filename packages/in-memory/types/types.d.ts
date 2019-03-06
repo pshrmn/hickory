@@ -10,3 +10,6 @@ export declare type InMemoryOptions = HistoryOptions & SessionOptions;
 export interface InMemoryHistory extends History {
     reset(options?: SessionOptions): void;
 }
+export interface LocationOptions {
+    location: InputLocation;
+}

@@ -3,9 +3,9 @@ import { ResponseHandler, ToArgument, NavType } from "./navigate";
 import { LocationUtilOptions } from "./locationUtils";
 
 export type HistoryOptions = LocationUtilOptions;
-export type HistoryConstructor = (
+export type HistoryConstructor<O> = (
   fn: ResponseHandler,
-  o?: HistoryOptions
+  options: O
 ) => History;
 
 export interface History {

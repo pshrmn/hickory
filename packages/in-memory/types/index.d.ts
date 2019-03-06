@@ -1,4 +1,4 @@
-import { ResponseHandler } from "@hickory/root";
-import { InMemoryOptions, InMemoryHistory } from "./types";
 export * from "./types";
-export declare function InMemory(fn: ResponseHandler, options?: InMemoryOptions): InMemoryHistory;
+import { InMemory } from "./InMemory";
+import { createServerHistory } from "./createServerHistory";
+export { InMemory, createServerHistory };
