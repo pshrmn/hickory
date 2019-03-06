@@ -53,7 +53,7 @@ jobs:
       - checkout
 
       - attach_workspace:
-        at: .
+          at: .
 
       - run:
           name: Integration Tests
