@@ -1,12 +1,12 @@
 import "jest";
 import * as qs from "qs";
 
-import { createRequestHistory } from "../src";
+import { createServerHistory } from "../src";
 
-describe("createRequestHistory", () => {
+describe("createServerHistory", () => {
   it("works with string locations", () => {
-    const RequestHistory = createRequestHistory();
-    const testHistory = RequestHistory(
+    const history = createServerHistory();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -21,8 +21,8 @@ describe("createRequestHistory", () => {
   });
 
   it("works with object locations", () => {
-    const RequestHistory = createRequestHistory();
-    const testHistory = RequestHistory(
+    const history = createServerHistory();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -37,8 +37,8 @@ describe("createRequestHistory", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const RequestHistory = createRequestHistory();
-    const testHistory = RequestHistory(
+    const history = createServerHistory();
+    const testHistory = history(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -50,8 +50,8 @@ describe("createRequestHistory", () => {
   });
 
   it("sets key to [0,0]", () => {
-    const RequestHistory = createRequestHistory();
-    const testHistory = RequestHistory(
+    const history = createServerHistory();
+    const testHistory = history(
       pending => {
         expect(pending.location.key).toEqual([0, 0]);
         pending.finish();
@@ -63,13 +63,13 @@ describe("createRequestHistory", () => {
   });
 
   it("uses the provided query parsing function to make the query value", () => {
-    const RequestHistory = createRequestHistory({
+    const history = createServerHistory({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = RequestHistory(
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -84,8 +84,8 @@ describe("createRequestHistory", () => {
 describe("no-op functions", () => {
   describe("go", () => {
     it("doesn't throw", () => {
-      const RequestHistory = createRequestHistory();
-      const testHistory = RequestHistory(
+      const history = createServerHistory();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -101,8 +101,8 @@ describe("no-op functions", () => {
 
   describe("navigate", () => {
     it("doesn't throw", () => {
-      const RequestHistory = createRequestHistory();
-      const testHistory = RequestHistory(
+      const history = createServerHistory();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -118,8 +118,8 @@ describe("no-op functions", () => {
 
   describe("cancel", () => {
     it("doesn't throw", () => {
-      const RequestHistory = createRequestHistory();
-      const testHistory = RequestHistory(
+      const history = createServerHistory();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -136,8 +136,8 @@ describe("no-op functions", () => {
 
 describe("toHref", () => {
   it("returns the location formatted as a string", () => {
-    const RequestHistory = createRequestHistory();
-    const testHistory = RequestHistory(
+    const history = createServerHistory();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -150,13 +150,13 @@ describe("toHref", () => {
   });
 
   it("uses the provided query stringifying function to stringify the query value", () => {
-    const RequestHistory = createRequestHistory({
+    const history = createServerHistory({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = RequestHistory(
+    const testHistory = history(
       pending => {
         pending.finish();
       },

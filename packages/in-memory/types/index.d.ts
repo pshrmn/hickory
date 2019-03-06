@@ -1,4 +1,4 @@
 export * from "./types";
 import { InMemory } from "./InMemory";
-import { createRequestHistory } from "./createRequestHistory";
-export { InMemory, createRequestHistory };
+import { createServerHistory } from "./createServerHistory";
+export { InMemory, createServerHistory };
