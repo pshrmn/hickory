@@ -1,3 +1,7 @@
+## Next
+
+- Export `createServerHistory` function, for creating many lightweight history constructors, for server-side rendering.
+
 ## 2.0.0-beta.0
 
 - Pass `ResponseHandler` as first argument to `InMemory`.
