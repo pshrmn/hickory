@@ -269,7 +269,7 @@ describe("locationFactory", () => {
         expect(output).toBe("/test");
       });
 
-      it("uses empty string for pathname if neither pathname or rawPathname provided", () => {
+      it("uses empty string for pathname if pathname is not provided", () => {
         const input = { hash: "test" };
         const output = stringifyLocation(input);
         expect(output).toBe("#test");
