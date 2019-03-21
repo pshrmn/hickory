@@ -19,13 +19,13 @@
     "gzipped": 790
   },
   "dist/hickory-in-memory.umd.js": {
-    "bundled": 16272,
-    "minified": 4701,
-    "gzipped": 1944
+    "bundled": 15340,
+    "minified": 4356,
+    "gzipped": 1758
   },
   "dist/hickory-in-memory.min.js": {
-    "bundled": 16272,
-    "minified": 4701,
-    "gzipped": 1944
+    "bundled": 15340,
+    "minified": 4356,
+    "gzipped": 1758
   }
 }

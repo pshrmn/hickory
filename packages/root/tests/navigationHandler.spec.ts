@@ -11,24 +11,21 @@ const initialLocation: SessionLocation = {
   pathname: "/",
   hash: "",
   query: "",
-  key: [0, 0],
-  rawPathname: "/"
+  key: [0, 0]
 };
 
 const locationOne: SessionLocation = {
   pathname: "/one",
   hash: "",
   query: "",
-  key: [1, 0],
-  rawPathname: "/one"
+  key: [1, 0]
 };
 
 const locationTwo: SessionLocation = {
   pathname: "/two",
   hash: "",
   query: "",
-  key: [2, 0],
-  rawPathname: "/two"
+  key: [2, 0]
 };
 
 function historyHelpers(initial: SessionLocation) {

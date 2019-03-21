@@ -10,11 +10,14 @@ import {
   PartialLocation,
   AnyLocation,
   LocationComponents,
-  RawLocation,
   Key
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
-import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
+import {
+  LocationUtilOptions,
+  LocationUtils,
+  RawPathname
+} from "./types/locationUtils";
 
 function defaultParseQuery(query?: string): any {
   return query ? query : "";
@@ -44,7 +47,6 @@ export default function locationFactory(
       parse: parseQuery = defaultParseQuery,
       stringify: stringifyQuery = defaultStringifyQuery
     } = {},
-    decode = true,
     baseSegment = "",
     raw = defaultRaw
   } = options;
@@ -59,7 +61,11 @@ export default function locationFactory(
     );
   }
 
-  function parsePath(value: string, state: any): LocationComponents {
+  function parsePath(
+    value: string,
+    state: any,
+    raw: RawPathname
+  ): LocationComponents {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
     let hash;
@@ -79,12 +85,10 @@ export default function locationFactory(
       query = parseQuery();
     }
 
-    const pathname = stripBaseSegment(value, baseSegment);
-
     const details: LocationComponents = {
       hash,
       query,
-      pathname
+      pathname: raw(stripBaseSegment(value, baseSegment))
     };
 
     if (state) {
@@ -96,10 +100,11 @@ export default function locationFactory(
 
   function getDetails(
     partial: PartialLocation,
-    state: any
+    state: any,
+    raw: RawPathname
   ): LocationComponents {
     const details: LocationComponents = {
-      pathname: partial.pathname == null ? "/" : partial.pathname,
+      pathname: raw(partial.pathname == null ? "/" : partial.pathname),
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parseQuery() : partial.query
     };
@@ -113,38 +118,16 @@ export default function locationFactory(
     return details;
   }
 
-  function genericLocation(value: ToArgument, state?: any): RawLocation {
+  function genericLocation(value: ToArgument, state?: any): LocationComponents {
     if (state === undefined) {
       state = null;
     }
-    const details =
-      typeof value === "string"
-        ? parsePath(value, state)
-        : getDetails(value, state);
-    const rawPathname = raw(details.pathname);
-
-    // it can be more convenient to interact with the decoded pathname,
-    // but leave the option for using the encoded value
-    if (decode) {
-      try {
-        details.pathname = decodeURI(details.pathname);
-      } catch (e) {
-        throw new URIError(
-          'Pathname "' +
-            details.pathname +
-            '" could not be decoded. ' +
-            "This is most likely due to a bad percent-encoding. For more information, " +
-            "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
-        );
-      }
-    }
-    return {
-      ...details,
-      rawPathname
-    };
+    return typeof value === "string"
+      ? parsePath(value, state, raw)
+      : getDetails(value, state, raw);
   }
 
-  function keyed(location: RawLocation, key: Key): SessionLocation {
+  function keyed(location: LocationComponents, key: Key): SessionLocation {
     return {
       ...location,
       key
@@ -156,9 +139,7 @@ export default function locationFactory(
     // with a question mark, and hash begins with a pound sign
     return (
       baseSegment +
-      completePathname(
-        (location as SessionLocation).rawPathname || location.pathname || ""
-      ) +
+      completePathname(location.pathname || "") +
       completeQuery(stringifyQuery(location.query)) +
       completeHash(location.hash)
     );

@@ -5,7 +5,6 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  RawLocation,
   AnyLocation
 } from "@hickory/root";
 
@@ -16,7 +15,6 @@ export {
   SessionLocation,
   PartialLocation,
   AnyLocation,
-  RawLocation,
   LocationComponents
 };
 

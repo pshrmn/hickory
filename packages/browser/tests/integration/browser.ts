@@ -23,7 +23,7 @@ describe("browser integration tests", () => {
       (<jasmine.Spy>window.history.replaceState).calls.reset();
     });
 
-    it("new URL uses rawPathname, not pathname", () => {
+    it("new URL is encoded", () => {
       testHistory = Browser(pending => {
         pending.finish();
       });
@@ -31,7 +31,7 @@ describe("browser integration tests", () => {
         pathname: "/encoded-percent%25"
       });
       expect(window.location.pathname).toEqual("/encoded-percent%25");
-      expect(testHistory.location.pathname).toEqual("/encoded-percent%");
+      expect(testHistory.location.pathname).toEqual("/encoded-percent%25");
     });
 
     describe("push navigation", () => {
