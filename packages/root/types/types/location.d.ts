@@ -5,11 +5,8 @@ export interface LocationComponents {
     state?: any;
 }
 export declare type PartialLocation = Partial<LocationComponents>;
-export interface RawLocation extends LocationComponents {
-    rawPathname: string;
-}
 export declare type Key = [number, number];
-export interface SessionLocation extends RawLocation {
+export interface SessionLocation extends LocationComponents {
     key: Key;
 }
 export declare type AnyLocation = SessionLocation | PartialLocation;

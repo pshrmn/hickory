@@ -5,7 +5,6 @@ export {
   PartialLocation,
   SessionLocation,
   AnyLocation,
-  RawLocation,
   Key
 } from "./location";
 

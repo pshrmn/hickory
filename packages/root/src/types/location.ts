@@ -7,13 +7,9 @@ export interface LocationComponents {
 
 export type PartialLocation = Partial<LocationComponents>;
 
-export interface RawLocation extends LocationComponents {
-  rawPathname: string;
-}
-
 export type Key = [number, number];
 
-export interface SessionLocation extends RawLocation {
+export interface SessionLocation extends LocationComponents {
   key: Key;
 }
 

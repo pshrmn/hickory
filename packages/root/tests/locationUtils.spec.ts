@@ -113,69 +113,23 @@ describe("locationFactory", () => {
           expect(output.pathname).toBe("/");
         });
       });
-
-      describe("decode option", () => {
-        it("decodes the pathname by default", () => {
-          const input = {
-            pathname: "/t%C3%B6rt%C3%A9nelem"
-          };
-          const output = genericLocation(input);
-          expect(output.pathname).toBe("/történelem");
-        });
-
-        it("does not decode when decode=false", () => {
-          const { genericLocation } = locationUtils({ decode: false });
-          const input = {
-            pathname: "/t%C3%B6rt%C3%A9nelem"
-          };
-          const output = genericLocation(input);
-          expect(output.pathname).toBe("/t%C3%B6rt%C3%A9nelem");
-        });
-
-        describe("bad encoding", () => {
-          it("throws URIError with clearer message when decoding fails", () => {
-            const input = {
-              pathname: "/bad%"
-            };
-            expect(() => {
-              const output = genericLocation(input);
-            }).toThrow(
-              'Pathname "/bad%" could not be decoded. ' +
-                "This is most likely due to a bad percent-encoding. For more information, " +
-                "see the third paragraph here https://tools.ietf.org/html/rfc3986#section-2.4"
-            );
-          });
-
-          it("does not throw URIError when decode=false", () => {
-            const { genericLocation } = locationUtils({ decode: false });
-            const input = {
-              pathname: "/bad%"
-            };
-            expect(() => {
-              const output = genericLocation(input);
-            }).not.toThrow();
-          });
-        });
-      });
     });
 
-    describe("rawPathname", () => {
+    describe("pathname", () => {
       it("is result of user provided `raw` option", () => {
+        function ensureEncodedPathname(pathname: string): string {
+          return encodeURI(pathname);
+        }
         const { genericLocation } = locationUtils({
-          raw: path =>
-            path
-              .split("")
-              .reverse()
-              .join("")
+          raw: ensureEncodedPathname
         });
-        const output = genericLocation("/test");
-        expect(output.rawPathname).toBe("tset/");
+        const output = genericLocation("/Beyoncé");
+        expect(output.pathname).toBe("/Beyonc%C3%A9");
       });
 
-      it("uses default fn if `raw` option is not provided", () => {
-        const output = genericLocation("/test%20ing");
-        expect(output.pathname).toBe("/test ing");
-        expect(output.rawPathname).toBe("/test%20ing");
+      it("uses provided string if `raw` option is not provided", () => {
+        const output = genericLocation("/Beyoncé");
+        expect(output.pathname).toBe("/Beyoncé");
       });
     });
 
@@ -313,15 +267,6 @@ describe("locationFactory", () => {
         };
         const output = stringifyLocation(input);
         expect(output).toBe("/test");
-      });
-
-      it("prefers rawPathname", () => {
-        const input = {
-          rawPathname: "/rawPathname",
-          pathname: "/pathname"
-        } as SessionLocation;
-        const output = stringifyLocation(input);
-        expect(output).toBe("/rawPathname");
       });
 
       it("uses empty string for pathname if neither pathname or rawPathname provided", () => {

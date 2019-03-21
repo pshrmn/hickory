@@ -1,3 +1,7 @@
+## Next
+
+- Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
+
 ## 2.0.0-beta.0
 
 - `HistoryOptions` and `HistoryConstructor` types.
