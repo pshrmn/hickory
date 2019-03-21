@@ -1,5 +1,10 @@
 ## Next
 
+- Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
+- Remove `RawLocation` type.
+
+## 2.0.0-beta.1
+
 - Export `createServerHistory` function, for creating many lightweight history constructors, for server-side rendering.
 
 ## 2.0.0-beta.0

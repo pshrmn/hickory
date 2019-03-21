@@ -1,6 +1,7 @@
 ## Next
 
 - Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
+- Remove `RawLocation` type.
 
 ## 2.0.0-beta.0
 
