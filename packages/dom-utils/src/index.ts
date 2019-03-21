@@ -1,7 +1,12 @@
 export function ensureEncodedPathname(pathname: string): string {
   const a = document.createElement("a");
   a.setAttribute("href", pathname);
-  return a.pathname;
+  const encoded = a.pathname;
+  if (encoded.charAt(0) !== "/") {
+    // IE11 fix
+    return "/" + encoded;
+  }
+  return encoded;
 }
 
 export function domExists(): boolean {
