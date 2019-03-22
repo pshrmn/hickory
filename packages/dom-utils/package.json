@@ -16,8 +16,7 @@
     "build": "rollup -c",
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
-    "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
-    "test": "jest"
+    "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\""
   },
   "repository": {
     "type": "git",
