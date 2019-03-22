@@ -1,9 +1,6 @@
+import encodePathname from "encodeurl";
 import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
-import {
-  getStateFromHistory,
-  domExists,
-  ensureEncodedPathname
-} from "@hickory/dom-utils";
+import { getStateFromHistory, domExists } from "@hickory/dom-utils";
 import hashEncoderAndDecoder from "./hashTypes";
 
 import {
@@ -35,7 +32,7 @@ export function Hash(
   }
 
   if (!options.raw) {
-    options.raw = ensureEncodedPathname;
+    options.raw = encodePathname;
   }
 
   const locationUtilities = locationUtils(options);
