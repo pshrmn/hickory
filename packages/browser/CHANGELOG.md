@@ -1,3 +1,7 @@
+## Next
+
+- Rename `raw` option to `pathname`.
+
 ## 2.0.0-beta.3
 
 - Use `encodeurl` package to ensure proper encoding across browsers.

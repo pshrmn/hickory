@@ -3,11 +3,11 @@ export interface QueryFunctions {
     parse: (query?: string) => any;
     stringify: (query?: any) => string;
 }
-export declare type RawPathname = (pathname: string) => string;
+export declare type ModifyPathname = (pathname: string) => string;
 export interface LocationUtilOptions {
     query?: QueryFunctions;
     baseSegment?: string;
-    raw?: RawPathname;
+    pathname?: ModifyPathname;
 }
 export interface LocationUtils {
     keyed(location: LocationComponents, key: Key): SessionLocation;

@@ -116,18 +116,18 @@ describe("locationFactory", () => {
     });
 
     describe("pathname", () => {
-      it("is result of user provided `raw` option", () => {
+      it("is result of user provided `pathname` option", () => {
         function ensureEncodedPathname(pathname: string): string {
           return encodeURI(pathname);
         }
         const { genericLocation } = locationUtils({
-          raw: ensureEncodedPathname
+          pathname: ensureEncodedPathname
         });
         const output = genericLocation("/Beyoncé");
         expect(output.pathname).toBe("/Beyonc%C3%A9");
       });
 
-      it("uses provided string if `raw` option is not provided", () => {
+      it("is the provided string if `pathname` option is not provided", () => {
         const output = genericLocation("/Beyoncé");
         expect(output.pathname).toBe("/Beyoncé");
       });

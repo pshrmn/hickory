@@ -10,12 +10,12 @@ export interface QueryFunctions {
   stringify: (query?: any) => string;
 }
 
-export type RawPathname = (pathname: string) => string;
+export type ModifyPathname = (pathname: string) => string;
 
 export interface LocationUtilOptions {
   query?: QueryFunctions;
   baseSegment?: string;
-  raw?: RawPathname;
+  pathname?: ModifyPathname;
 }
 
 export interface LocationUtils {

@@ -16,14 +16,14 @@ import { ToArgument } from "./types/navigate";
 import {
   LocationUtilOptions,
   LocationUtils,
-  RawPathname
+  ModifyPathname
 } from "./types/locationUtils";
 
-function defaultParseQuery(query?: string): any {
+function default_parse_query(query?: string): any {
   return query ? query : "";
 }
 
-function defaultStringifyQuery(query?: any): string {
+function default_stringify_query(query?: any): string {
   return query ? query : "";
 }
 
@@ -35,7 +35,7 @@ function isValidBase(baseSegment: string): boolean {
   );
 }
 
-function defaultRaw(p: string): string {
+function default_modify(p: string): string {
   return p;
 }
 
@@ -44,11 +44,11 @@ export default function locationFactory(
 ): LocationUtils {
   const {
     query: {
-      parse: parseQuery = defaultParseQuery,
-      stringify: stringifyQuery = defaultStringifyQuery
+      parse: parseQuery = default_parse_query,
+      stringify: stringifyQuery = default_stringify_query
     } = {},
     baseSegment = "",
-    raw = defaultRaw
+    pathname: modifyPathname = default_modify
   } = options;
 
   if (baseSegment !== "" && !isValidBase(baseSegment)) {
@@ -64,7 +64,7 @@ export default function locationFactory(
   function parsePath(
     value: string,
     state: any,
-    raw: RawPathname
+    modifyPathname: ModifyPathname
   ): LocationComponents {
     // hash is always after query, so split it off first
     const hashIndex = value.indexOf("#");
@@ -88,7 +88,7 @@ export default function locationFactory(
     const details: LocationComponents = {
       hash,
       query,
-      pathname: raw(stripBaseSegment(value, baseSegment))
+      pathname: modifyPathname(stripBaseSegment(value, baseSegment))
     };
 
     if (state) {
@@ -101,10 +101,12 @@ export default function locationFactory(
   function getDetails(
     partial: PartialLocation,
     state: any,
-    raw: RawPathname
+    modifyPathname: ModifyPathname
   ): LocationComponents {
     const details: LocationComponents = {
-      pathname: raw(partial.pathname == null ? "/" : partial.pathname),
+      pathname: modifyPathname(
+        partial.pathname == null ? "/" : partial.pathname
+      ),
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parseQuery() : partial.query
     };
@@ -123,8 +125,8 @@ export default function locationFactory(
       state = null;
     }
     return typeof value === "string"
-      ? parsePath(value, state, raw)
-      : getDetails(value, state, raw);
+      ? parsePath(value, state, modifyPathname)
+      : getDetails(value, state, modifyPathname);
   }
 
   function keyed(location: LocationComponents, key: Key): SessionLocation {

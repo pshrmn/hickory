@@ -28,8 +28,8 @@ export function Browser(
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
-  if (!options.raw) {
-    options.raw = encodePathname;
+  if (!options.pathname) {
+    options.pathname = encodePathname;
   }
 
   const locationUtilities = locationUtils(options);
