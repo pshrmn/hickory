@@ -13,7 +13,7 @@ export { KeyFns } from "./keyGenerator";
 export {
   LocationUtilOptions,
   QueryFunctions,
-  RawPathname,
+  ModifyPathname,
   LocationUtils
 } from "./locationUtils";
 

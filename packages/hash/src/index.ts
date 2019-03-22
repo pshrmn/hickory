@@ -31,8 +31,8 @@ export function Hash(
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
-  if (!options.raw) {
-    options.raw = encodePathname;
+  if (!options.pathname) {
+    options.pathname = encodePathname;
   }
 
   const locationUtilities = locationUtils(options);
