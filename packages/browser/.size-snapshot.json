@@ -1,31 +1,31 @@
 {
   "dist/hickory-browser.es.js": {
-    "bundled": 4771,
-    "minified": 1856,
-    "gzipped": 820,
+    "bundled": 4781,
+    "minified": 1865,
+    "gzipped": 824,
     "treeshaked": {
       "rollup": {
-        "code": 49,
-        "import_statements": 49
+        "code": 67,
+        "import_statements": 67
       },
       "webpack": {
-        "code": 1066
+        "code": 1117
       }
     }
   },
   "dist/hickory-browser.js": {
-    "bundled": 4809,
-    "minified": 1891,
-    "gzipped": 864
+    "bundled": 4969,
+    "minified": 2012,
+    "gzipped": 907
   },
   "dist/hickory-browser.umd.js": {
-    "bundled": 15561,
-    "minified": 4569,
-    "gzipped": 1876
+    "bundled": 16176,
+    "minified": 4713,
+    "gzipped": 1988
   },
   "dist/hickory-browser.min.js": {
-    "bundled": 15561,
-    "minified": 4569,
-    "gzipped": 1876
+    "bundled": 16176,
+    "minified": 4713,
+    "gzipped": 1988
   }
 }

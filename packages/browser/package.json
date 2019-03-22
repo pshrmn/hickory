@@ -32,6 +32,8 @@
   "license": "MIT",
   "dependencies": {
     "@hickory/dom-utils": "file:../dom-utils",
-    "@hickory/root": "file:../root"
+    "@hickory/root": "file:../root",
+    "@types/encodeurl": "^1.0.0",
+    "encodeurl": "^1.0.2"
   }
 }

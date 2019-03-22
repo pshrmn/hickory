@@ -1,5 +1,6 @@
 const typescript = require("rollup-plugin-typescript2");
 const resolve = require("rollup-plugin-node-resolve");
+const commonjs = require("rollup-plugin-commonjs");
 
 const customLaunchers = {
   // windows
@@ -127,11 +128,14 @@ module.exports = function(config) {
         typescript({
           tsconfigDefaults: tsConfig
         }),
-        resolve()
+        resolve(),
+        commonjs({
+          include: /node_modules/
+        })
       ],
       output: {
         format: "iife",
-        sourcemap: "inline"
+        sourcemap: false
       }
     }
   });
