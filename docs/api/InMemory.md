@@ -20,7 +20,7 @@ const history = InMemory();
 
 - `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-- `raw` - A function that will be used to set the `rawPathname` property of location objects. When creating a location from a string, this function will be passed the `pathname` section parsed from the string. When creating a location from an object, this function will be passed the `pathname` section of that object. The default value of this option is an identity function.
+- `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to return the provided string.
 
 - `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
