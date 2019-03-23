@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.5
 
 - Rename `domExists` to `dom_exists`
 - Rename `ignorablePopstateEvent` to `ignorable_popstate_event`

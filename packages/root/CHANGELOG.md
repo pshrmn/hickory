@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.5
 
 - Rename `locationUtils` to `location_utils`; its API is also now snake cased.
 - Rename `keyGenerator` to `key_generator`
