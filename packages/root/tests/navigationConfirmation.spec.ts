@@ -1,54 +1,54 @@
 import "jest";
-import { navigationConfirmation } from "../src";
+import { navigation_confirmation } from "../src";
 import { SessionLocation } from "../src/types/location";
 
-describe("navigationConfirmation", () => {
-  describe("confirmWith", () => {
+describe("navigation_confirmation", () => {
+  describe("confirm_with", () => {
     it("registers the function passed to it", () => {
-      const { confirmWith, confirmNavigation } = navigationConfirmation();
-      const allowNavigation = jest.fn();
+      const { confirm_with, confirm_navigation } = navigation_confirmation();
+      const allow_navigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
 
-      confirmWith(allowNavigation);
-      expect(allowNavigation.mock.calls.length).toBe(0);
+      confirm_with(allow_navigation);
+      expect(allow_navigation.mock.calls.length).toBe(0);
 
-      confirmNavigation(null, confirm, prevent);
-      expect(allowNavigation.mock.calls.length).toBe(1);
+      confirm_navigation(null, confirm, prevent);
+      expect(allow_navigation.mock.calls.length).toBe(1);
     });
   });
 
-  describe("removeConfirmation", () => {
+  describe("remove_confirmation", () => {
     it("does not call confirmation function after it has been removed", () => {
       const {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = navigationConfirmation();
-      const allowNavigation = jest.fn();
+        confirm_with,
+        confirm_navigation,
+        remove_confirmation
+      } = navigation_confirmation();
+      const allow_navigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
 
-      confirmWith(allowNavigation);
-      expect(allowNavigation.mock.calls.length).toBe(0);
+      confirm_with(allow_navigation);
+      expect(allow_navigation.mock.calls.length).toBe(0);
 
-      confirmNavigation(null, confirm, prevent);
-      expect(allowNavigation.mock.calls.length).toBe(1);
+      confirm_navigation(null, confirm, prevent);
+      expect(allow_navigation.mock.calls.length).toBe(1);
 
-      removeConfirmation();
-      confirmNavigation(null, confirm, prevent);
-      expect(allowNavigation.mock.calls.length).toBe(1);
+      remove_confirmation();
+      confirm_navigation(null, confirm, prevent);
+      expect(allow_navigation.mock.calls.length).toBe(1);
     });
   });
 
-  describe("confirmNavigation", () => {
+  describe("confirm_navigation", () => {
     it("calls confirm function if there is no confirmation function", () => {
-      const { confirmNavigation } = navigationConfirmation();
+      const { confirm_navigation } = navigation_confirmation();
 
       const confirm = jest.fn();
       const prevent = jest.fn();
 
-      confirmNavigation(
+      confirm_navigation(
         {
           to: { pathname: "/this-is-only-a-test" } as SessionLocation,
           from: { pathname: "/this-was-not-a-test" } as SessionLocation,
@@ -62,29 +62,29 @@ describe("navigationConfirmation", () => {
     });
 
     it("calls the confirm function with the info confirm/prevent fns", () => {
-      const { confirmWith, confirmNavigation } = navigationConfirmation();
+      const { confirm_with, confirm_navigation } = navigation_confirmation();
 
-      const allowNavigation = jest.fn();
+      const allow_navigation = jest.fn();
       const confirm = () => {};
       const prevent = () => {};
-      const toLoc = { pathname: "/this-is-only-a-test" };
-      const fromLoc = { pathname: "/this-was-not-a-test" };
+      const to_loc = { pathname: "/this-is-only-a-test" };
+      const from_loc = { pathname: "/this-was-not-a-test" };
       const action = "push";
 
-      confirmWith(allowNavigation);
-      confirmNavigation(
+      confirm_with(allow_navigation);
+      confirm_navigation(
         {
-          to: toLoc as SessionLocation,
-          from: fromLoc as SessionLocation,
+          to: to_loc as SessionLocation,
+          from: from_loc as SessionLocation,
           action
         },
         confirm,
         prevent
       );
-      const args = allowNavigation.mock.calls[0];
+      const args = allow_navigation.mock.calls[0];
       expect(args[0]).toEqual({
-        to: toLoc,
-        from: fromLoc,
+        to: to_loc,
+        from: from_loc,
         action
       });
       expect(args[1]).toBe(confirm);
@@ -92,23 +92,23 @@ describe("navigationConfirmation", () => {
     });
 
     it("will call a no-op function when cancelling if prevent function not provided", () => {
-      const { confirmWith, confirmNavigation } = navigationConfirmation();
+      const { confirm_with, confirm_navigation } = navigation_confirmation();
 
-      function autoPrevent(info: any, confirm: any, prevent: () => void) {
+      function auto_prevent(info: any, confirm: any, prevent: () => void) {
         prevent();
       }
 
       const confirm = () => {};
-      const toLoc = { pathname: "/this-is-only-a-test" };
-      const fromLoc = { pathname: "/this-was-not-a-test" };
+      const to_loc = { pathname: "/this-is-only-a-test" };
+      const from_loc = { pathname: "/this-was-not-a-test" };
       const action = "push";
 
-      confirmWith(autoPrevent);
+      confirm_with(auto_prevent);
       expect(() => {
-        confirmNavigation(
+        confirm_navigation(
           {
-            to: toLoc as SessionLocation,
-            from: fromLoc as SessionLocation,
+            to: to_loc as SessionLocation,
+            from: from_loc as SessionLocation,
             action
           },
           confirm
@@ -116,10 +116,10 @@ describe("navigationConfirmation", () => {
       }).not.toThrow();
     });
 
-    it("does not set confirm function if confirmWith is passed a non-function", () => {
-      const { confirmWith } = navigationConfirmation();
+    it("does not set confirm function if confirm_with is passed a non-function", () => {
+      const { confirm_with } = navigation_confirmation();
 
-      const nonFuncs = [
+      const non_funcs = [
         null,
         undefined,
         "test",
@@ -127,10 +127,10 @@ describe("navigationConfirmation", () => {
         [1, 2, 3],
         { key: "value" }
       ];
-      nonFuncs.forEach(nf => {
+      non_funcs.forEach(nf => {
         expect(() => {
-          confirmWith();
-        }).toThrow("confirmWith can only be passed a function");
+          confirm_with();
+        }).toThrow("confirm_with can only be passed a function");
       });
     });
   });

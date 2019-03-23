@@ -1,5 +1,5 @@
-import { navigateSuite } from "./navigate";
-import { goSuite } from "./go";
-import { cancelSuite } from "./cancel";
+import { navigate_suite } from "./navigate";
+import { go_suite } from "./go";
+import { cancel_suite } from "./cancel";
 
-export { navigateSuite, goSuite, cancelSuite };
+export { navigate_suite, go_suite, cancel_suite };

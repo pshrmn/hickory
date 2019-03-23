@@ -1,79 +1,75 @@
 import "jest";
-import { navigateWith, locationUtils, keyGenerator } from "../src";
+import { navigate_with, location_utils, key_generator } from "../src";
 
-import {
-  PendingNavigation,
-  SessionLocation,
-  NavigateArgs
-} from "@hickory/root";
+import { PendingNavigation, SessionLocation } from "@hickory/root";
 
-const initialLocation: SessionLocation = {
+const initial_location: SessionLocation = {
   pathname: "/",
   hash: "",
   query: "",
   key: [0, 0]
 };
 
-const locationOne: SessionLocation = {
+const location_one: SessionLocation = {
   pathname: "/one",
   hash: "",
   query: "",
   key: [1, 0]
 };
 
-const locationTwo: SessionLocation = {
+const location_two: SessionLocation = {
   pathname: "/two",
   hash: "",
   query: "",
   key: [2, 0]
 };
 
-function historyHelpers(initial: SessionLocation) {
+function history_helpers(initial: SessionLocation) {
   const current = jest.fn(() => {
     return initial;
   });
 
-  let finishPushMock;
-  const finishPush = jest.fn((l: SessionLocation) => {
-    finishPushMock = jest.fn();
-    return finishPushMock;
+  let finish_push_mock;
+  const finish_push = jest.fn((l: SessionLocation) => {
+    finish_push_mock = jest.fn();
+    return finish_push_mock;
   });
 
-  let finishReplaceMock;
-  const finishReplace = jest.fn((l: SessionLocation) => {
-    finishReplaceMock = jest.fn();
-    return finishReplaceMock;
+  let finish_replace_mock;
+  const finish_replace = jest.fn((l: SessionLocation) => {
+    finish_replace_mock = jest.fn();
+    return finish_replace_mock;
   });
 
   return {
     current,
     push: {
-      finish: finishPush,
+      finish: finish_push,
       cancel: () => {}
     },
     replace: {
-      finish: finishReplace,
+      finish: finish_replace,
       cancel: () => {}
     },
-    finishMock(name: "push" | "replace") {
-      return name === "push" ? finishPushMock : finishReplaceMock;
+    finish_mock(name: "push" | "replace") {
+      return name === "push" ? finish_push_mock : finish_replace_mock;
     }
   };
 }
 
-describe("navigateWith", () => {
+describe("navigate_with", () => {
   describe("prepare", () => {
     describe("anchor", () => {
       describe("new location", () => {
-        const utils = locationUtils();
-        const keygen = keyGenerator();
+        const utils = location_utils();
+        const keygen = key_generator();
 
-        const { finishMock, ...rest } = historyHelpers(initialLocation);
-        const { prepare, emitNavigation } = navigateWith({
-          responseHandler: pending => {
+        const { finish_mock, ...rest } = history_helpers(initial_location);
+        const { prepare, emit_navigation } = navigate_with({
+          response_handler: pending => {
             pending.finish();
           },
-          locationUtils: utils,
+          location_utils: utils,
           keygen,
           ...rest
         });
@@ -92,22 +88,22 @@ describe("navigateWith", () => {
         });
 
         it("finishing navigation calls function returned by push.finish", () => {
-          const finished = finishMock("push");
+          const finished = finish_mock("push");
           expect(finished.mock.calls.length).toBe(0);
-          emitNavigation(nav);
+          emit_navigation(nav);
           expect(finished.mock.calls.length).toBe(1);
         });
       });
 
       describe("same location", () => {
-        const utils = locationUtils();
-        const keygen = keyGenerator();
-        const { finishMock, ...rest } = historyHelpers(initialLocation);
-        const { prepare, emitNavigation } = navigateWith({
-          responseHandler: pending => {
+        const utils = location_utils();
+        const keygen = key_generator();
+        const { finish_mock, ...rest } = history_helpers(initial_location);
+        const { prepare, emit_navigation } = navigate_with({
+          response_handler: pending => {
             pending.finish();
           },
-          locationUtils: utils,
+          location_utils: utils,
           keygen,
           ...rest
         });
@@ -125,9 +121,9 @@ describe("navigateWith", () => {
         });
 
         it("finishing navigation calls the function returned by replace.finish", () => {
-          const finished = finishMock("replace");
+          const finished = finish_mock("replace");
           expect(finished.mock.calls.length).toBe(0);
-          emitNavigation(nav);
+          emit_navigation(nav);
           expect(finished.mock.calls.length).toBe(1);
         });
       });
@@ -135,14 +131,14 @@ describe("navigateWith", () => {
 
     describe("push", () => {
       describe("new location", () => {
-        const utils = locationUtils();
-        const keygen = keyGenerator();
-        const { finishMock, ...rest } = historyHelpers(initialLocation);
-        const { prepare, emitNavigation } = navigateWith({
-          responseHandler: pending => {
+        const utils = location_utils();
+        const keygen = key_generator();
+        const { finish_mock, ...rest } = history_helpers(initial_location);
+        const { prepare, emit_navigation } = navigate_with({
+          response_handler: pending => {
             pending.finish();
           },
-          locationUtils: utils,
+          location_utils: utils,
           keygen,
           ...rest
         });
@@ -160,9 +156,9 @@ describe("navigateWith", () => {
         });
 
         it("finishing navigation calls the function returned by push.finish", () => {
-          const finished = finishMock("push");
+          const finished = finish_mock("push");
           expect(finished.mock.calls.length).toBe(0);
-          emitNavigation(nav);
+          emit_navigation(nav);
           expect(finished.mock.calls.length).toBe(1);
         });
       });
@@ -170,14 +166,14 @@ describe("navigateWith", () => {
 
     describe("replace", () => {
       describe("new location", () => {
-        const utils = locationUtils();
-        const keygen = keyGenerator();
-        const { finishMock, ...rest } = historyHelpers(initialLocation);
-        const { prepare, emitNavigation } = navigateWith({
-          responseHandler: pending => {
+        const utils = location_utils();
+        const keygen = key_generator();
+        const { finish_mock, ...rest } = history_helpers(initial_location);
+        const { prepare, emit_navigation } = navigate_with({
+          response_handler: pending => {
             pending.finish();
           },
-          locationUtils: utils,
+          location_utils: utils,
           keygen,
           ...rest
         });
@@ -195,9 +191,9 @@ describe("navigateWith", () => {
         });
 
         it("finishing navigation calls the function returned by replace.finish", () => {
-          const finished = finishMock("replace");
+          const finished = finish_mock("replace");
           expect(finished.mock.calls.length).toBe(0);
-          emitNavigation(nav);
+          emit_navigation(nav);
           expect(finished.mock.calls.length).toBe(1);
         });
       });
@@ -205,13 +201,13 @@ describe("navigateWith", () => {
 
     describe("[invalid]", () => {
       it("throws", () => {
-        const utils = locationUtils();
-        const keygen = keyGenerator();
-        const { finishMock, ...rest } = historyHelpers(initialLocation);
+        const utils = location_utils();
+        const keygen = key_generator();
+        const { finish_mock, ...rest } = history_helpers(initial_location);
         const handler = jest.fn();
-        const { prepare } = navigateWith({
-          responseHandler: handler,
-          locationUtils: utils,
+        const { prepare } = navigate_with({
+          response_handler: handler,
+          location_utils: utils,
           keygen,
           ...rest
         });
@@ -224,20 +220,20 @@ describe("navigateWith", () => {
     });
   });
 
-  describe("createNavigation", () => {
+  describe("create_navigation", () => {
     it("returns a navigation object", () => {
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
       const handler = jest.fn();
-      const { createNavigation } = navigateWith({
-        responseHandler: handler,
-        locationUtils: utils,
+      const { create_navigation } = navigate_with({
+        response_handler: handler,
+        location_utils: utils,
         keygen,
         ...rest
       });
-      const nav = createNavigation(locationOne, "push", () => {}, () => {});
-      expect(nav.location).toBe(locationOne);
+      const nav = create_navigation(location_one, "push", () => {}, () => {});
+      expect(nav.location).toBe(location_one);
       expect(nav.action).toBe("push");
       expect(nav.cancelled).toBe(false);
       expect(typeof nav.finish).toBe("function");
@@ -245,253 +241,262 @@ describe("navigateWith", () => {
     });
   });
 
-  describe("emitNavigation", () => {
+  describe("emit_navigation", () => {
     it("calls response handler", () => {
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
       const handler = jest.fn();
-      const { emitNavigation, prepare } = navigateWith({
-        responseHandler: handler,
-        locationUtils: utils,
+      const { emit_navigation, prepare } = navigate_with({
+        response_handler: handler,
+        location_utils: utils,
         keygen,
         ...rest
       });
-      emitNavigation({} as PendingNavigation);
+      emit_navigation({} as PendingNavigation);
       expect(handler.mock.calls.length).toBe(1);
     });
   });
 
-  describe("cancelPending", () => {
+  describe("cancel_pending", () => {
     it("calls the pending navigation's cancel method with action", () => {
       const finish = jest.fn();
       const cancel = jest.fn();
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, cancelPending, createNavigation } = navigateWith({
-        responseHandler: pending => {
-          cancelPending("pop");
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const {
+        emit_navigation,
+        cancel_pending,
+        create_navigation
+      } = navigate_with({
+        response_handler: pending => {
+          cancel_pending("pop");
           expect(cancel.mock.calls.length).toBe(1);
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigation = createNavigation(locationOne, "push", finish, cancel);
-      emitNavigation(navigation);
+      const navigation = create_navigation(
+        location_one,
+        "push",
+        finish,
+        cancel
+      );
+      emit_navigation(navigation);
     });
   });
 
   describe("calling navigation.finish", () => {
     it("does nothing if not the current pending", () => {
-      const finishOne = jest.fn();
-      const finishTwo = jest.fn();
-      const cancelOne = jest.fn();
-      const cancelTwo = jest.fn();
+      const finish_one = jest.fn();
+      const finish_two = jest.fn();
+      const cancel_one = jest.fn();
+      const cancel_two = jest.fn();
       let calls = 0;
 
-      let originalPending;
+      let original_pending;
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           switch (calls++) {
             case 0:
-              originalPending = pending;
+              original_pending = pending;
               break;
             case 1:
               pending.finish();
-              expect(finishTwo.mock.calls.length).toBe(1);
-              originalPending.finish();
-              expect(finishOne.mock.calls.length).toBe(0);
+              expect(finish_two.mock.calls.length).toBe(1);
+              original_pending.finish();
+              expect(finish_one.mock.calls.length).toBe(0);
           }
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigationOne = createNavigation(
-        locationOne,
+      const navigation_one = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      const navigationTwo = createNavigation(
-        locationTwo,
+      const navigation_two = create_navigation(
+        location_two,
         "push",
-        finishTwo,
-        cancelTwo
+        finish_two,
+        cancel_two
       );
 
-      emitNavigation(navigationOne);
-      emitNavigation(navigationTwo);
+      emit_navigation(navigation_one);
+      emit_navigation(navigation_two);
     });
 
     it("does nothing if already called", () => {
-      const finishOne = jest.fn();
-      const cancelOne = jest.fn();
+      const finish_one = jest.fn();
+      const cancel_one = jest.fn();
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           pending.finish();
-          expect(finishOne.mock.calls.length).toBe(1);
+          expect(finish_one.mock.calls.length).toBe(1);
           pending.finish();
-          expect(finishOne.mock.calls.length).toBe(1);
+          expect(finish_one.mock.calls.length).toBe(1);
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigation = createNavigation(
-        locationOne,
+      const navigation = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      emitNavigation(navigation);
+      emit_navigation(navigation);
     });
 
     it("does nothing if already cancelled", () => {
-      const finishOne = jest.fn();
-      const cancelOne = jest.fn();
+      const finish_one = jest.fn();
+      const cancel_one = jest.fn();
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           pending.cancel();
-          expect(finishOne.mock.calls.length).toBe(0);
+          expect(finish_one.mock.calls.length).toBe(0);
           pending.finish();
-          expect(finishOne.mock.calls.length).toBe(0);
+          expect(finish_one.mock.calls.length).toBe(0);
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigation = createNavigation(
-        locationOne,
+      const navigation = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      emitNavigation(navigation);
+      emit_navigation(navigation);
     });
   });
 
   describe("calling navigation.cancel", () => {
     it("does nothing if not the current pending", () => {
-      const finishOne = jest.fn();
-      const finishTwo = jest.fn();
-      const cancelOne = jest.fn();
-      const cancelTwo = jest.fn();
+      const finish_one = jest.fn();
+      const finish_two = jest.fn();
+      const cancel_one = jest.fn();
+      const cancel_two = jest.fn();
       let calls = 0;
 
-      let originalPending;
+      let original_pending;
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           switch (calls++) {
             case 0:
-              originalPending = pending;
+              original_pending = pending;
               break;
             case 1:
               pending.finish();
-              expect(finishTwo.mock.calls.length).toBe(1);
-              originalPending.cancel();
-              expect(cancelOne.mock.calls.length).toBe(0);
+              expect(finish_two.mock.calls.length).toBe(1);
+              original_pending.cancel();
+              expect(cancel_one.mock.calls.length).toBe(0);
           }
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigationOne = createNavigation(
-        locationOne,
+      const navigation_one = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      const navigationTwo = createNavigation(
-        locationTwo,
+      const navigation_two = create_navigation(
+        location_two,
         "push",
-        finishTwo,
-        cancelTwo
+        finish_two,
+        cancel_two
       );
 
-      emitNavigation(navigationOne);
-      emitNavigation(navigationTwo);
+      emit_navigation(navigation_one);
+      emit_navigation(navigation_two);
     });
 
     it("does nothing if already called", () => {
-      const finishOne = jest.fn();
-      const cancelOne = jest.fn();
+      const finish_one = jest.fn();
+      const cancel_one = jest.fn();
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           pending.cancel();
-          expect(cancelOne.mock.calls.length).toBe(1);
+          expect(cancel_one.mock.calls.length).toBe(1);
           pending.cancel();
-          expect(cancelOne.mock.calls.length).toBe(1);
+          expect(cancel_one.mock.calls.length).toBe(1);
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigation = createNavigation(
-        locationOne,
+      const navigation = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      emitNavigation(navigation);
+      emit_navigation(navigation);
     });
 
     it("does nothing if already cancelled", () => {
-      const finishOne = jest.fn();
-      const cancelOne = jest.fn();
+      const finish_one = jest.fn();
+      const cancel_one = jest.fn();
 
-      const utils = locationUtils();
-      const keygen = keyGenerator();
-      const { finishMock, ...rest } = historyHelpers(initialLocation);
-      const { emitNavigation, createNavigation } = navigateWith({
-        responseHandler: pending => {
+      const utils = location_utils();
+      const keygen = key_generator();
+      const { finish_mock, ...rest } = history_helpers(initial_location);
+      const { emit_navigation, create_navigation } = navigate_with({
+        response_handler: pending => {
           pending.cancel();
-          expect(cancelOne.mock.calls.length).toBe(1);
+          expect(cancel_one.mock.calls.length).toBe(1);
           pending.cancel();
-          expect(cancelOne.mock.calls.length).toBe(1);
+          expect(cancel_one.mock.calls.length).toBe(1);
         },
-        locationUtils: utils,
+        location_utils: utils,
         keygen,
         ...rest
       });
 
-      const navigation = createNavigation(
-        locationOne,
+      const navigation = create_navigation(
+        location_one,
         "push",
-        finishOne,
-        cancelOne
+        finish_one,
+        cancel_one
       );
-      emitNavigation(navigation);
+      emit_navigation(navigation);
     });
   });
 });

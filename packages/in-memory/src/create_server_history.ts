@@ -1,4 +1,4 @@
-import { locationUtils } from "@hickory/root";
+import { location_utils } from "@hickory/root";
 
 import {
   AnyLocation,
@@ -12,17 +12,17 @@ import { LocationOptions } from "./types";
 
 function noop() {}
 
-export function createServerHistory(
-  factoryOptions: HistoryOptions = {}
+export function create_server_history(
+  factory_options: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
-  const locationUtilities = locationUtils(factoryOptions);
-  function toHref(location: AnyLocation): string {
-    return locationUtilities.stringifyLocation(location);
+  const location_utilities = location_utils(factory_options);
+  function to_href(location: AnyLocation): string {
+    return location_utilities.stringify_location(location);
   }
 
   return function(fn: ResponseHandler, options: LocationOptions): History {
-    const location = locationUtilities.keyed(
-      locationUtilities.genericLocation(options.location),
+    const location = location_utilities.keyed(
+      location_utilities.generic_location(options.location),
       [0, 0]
     );
 
@@ -36,7 +36,7 @@ export function createServerHistory(
           cancel: noop
         });
       },
-      toHref,
+      to_href,
       cancel: noop,
       destroy: noop,
       navigate: noop,

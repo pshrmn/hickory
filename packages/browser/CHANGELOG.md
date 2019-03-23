@@ -1,3 +1,8 @@
+## Next
+
+- Rename `toHref` property to `to_href`.
+- Rename `baseSegment` option to `base_segment`.
+
 ## 2.0.0-beta.4
 
 - Rename `raw` option to `pathname`.

@@ -1,11 +1,11 @@
-import { LocationUtils } from "./locationUtils";
-import { KeyFns } from "./keyGenerator";
+import { LocationUtils } from "./location_utils";
+import { KeyFns } from "./key_generator";
 import { PartialLocation, SessionLocation } from "./location";
 export declare type ToArgument = string | PartialLocation;
 export declare type Action = "push" | "replace" | "pop";
 export declare type NavType = "anchor" | "push" | "replace";
 export declare type FinishNavigation = () => void;
-export declare type CancelNavigation = (nextAction?: Action) => void;
+export declare type CancelNavigation = (next_action?: Action) => void;
 export interface PendingNavigation {
     location: SessionLocation;
     action: Action;
@@ -14,14 +14,14 @@ export interface PendingNavigation {
     cancelled?: boolean;
 }
 export declare type ResponseHandler = (resp: PendingNavigation) => void;
-export declare type Preparer = (to: ToArgument, navType: NavType) => PendingNavigation;
+export declare type Preparer = (to: ToArgument, nav_type: NavType) => PendingNavigation;
 export interface FinishCancel {
     finish(l: SessionLocation): FinishNavigation;
     cancel: CancelNavigation;
 }
 export interface NavigateArgs {
-    responseHandler: ResponseHandler;
-    locationUtils: LocationUtils;
+    response_handler: ResponseHandler;
+    location_utils: LocationUtils;
     keygen: KeyFns;
     current(): SessionLocation;
     push: FinishCancel;
@@ -29,7 +29,7 @@ export interface NavigateArgs {
 }
 export interface NavigateHelpers {
     prepare: Preparer;
-    emitNavigation(nav: PendingNavigation): void;
-    createNavigation(location: SessionLocation, action: Action, finish: FinishNavigation, cancel: CancelNavigation): PendingNavigation;
-    cancelPending: CancelNavigation;
+    emit_navigation(nav: PendingNavigation): void;
+    create_navigation(location: SessionLocation, action: Action, finish: FinishNavigation, cancel: CancelNavigation): PendingNavigation;
+    cancel_pending: CancelNavigation;
 }

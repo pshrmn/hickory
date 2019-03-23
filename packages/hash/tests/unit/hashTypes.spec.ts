@@ -1,115 +1,115 @@
-import 'jest';
-import hashEncoderAndDecoder from '../../src/hashTypes';
+import "jest";
+import hash_encoder_and_decoder from "../../src/hashTypes";
 
-function runTestCases(fn, cases) {
+function run_test_cases(fn, cases) {
   cases.forEach(([input, output]) => {
     expect(fn(input)).toBe(output);
   });
 }
 
-describe('hash types', () => {
-  describe('basic', () => {
-    const { encode, decode } = hashEncoderAndDecoder('basic');
-    it('decode removes #, ensures leading /', () => {
-      const testCases = [
-        ['#/with-slash', '/with-slash'],
-        ['#without-slash', '/without-slash']
+describe("hash types", () => {
+  describe("basic", () => {
+    const { encode, decode } = hash_encoder_and_decoder("basic");
+    it("decode removes #, ensures leading /", () => {
+      const test_cases = [
+        ["#/with-slash", "/with-slash"],
+        ["#without-slash", "/without-slash"]
       ];
-      runTestCases(decode, testCases);
+      run_test_cases(decode, test_cases);
     });
 
-    it('encode returns string that begins with #/', () => {
-      const testCases = [
-        ['/with-slash', '#/with-slash'],
-        ['without-slash', '#/without-slash']
+    it("encode returns string that begins with #/", () => {
+      const test_cases = [
+        ["/with-slash", "#/with-slash"],
+        ["without-slash", "#/without-slash"]
       ];
-      runTestCases(encode, testCases);
+      run_test_cases(encode, test_cases);
     });
 
-    describe('basic is the default option', () => {
-      const { encode, decode } = hashEncoderAndDecoder();
-      it('decode removes #, ensures leading /', () => {
-        const testCases = [
-          ['#/with-slash', '/with-slash'],
-          ['#without-slash', '/without-slash']
+    describe("basic is the default option", () => {
+      const { encode, decode } = hash_encoder_and_decoder();
+      it("decode removes #, ensures leading /", () => {
+        const test_cases = [
+          ["#/with-slash", "/with-slash"],
+          ["#without-slash", "/without-slash"]
         ];
-        runTestCases(decode, testCases);
+        run_test_cases(decode, test_cases);
       });
 
-      it('encode returns string that begins with #/', () => {
-        const testCases = [
-          ['/with-slash', '#/with-slash'],
-          ['without-slash', '#/without-slash']
+      it("encode returns string that begins with #/", () => {
+        const test_cases = [
+          ["/with-slash", "#/with-slash"],
+          ["without-slash", "#/without-slash"]
         ];
-        runTestCases(encode, testCases);
+        run_test_cases(encode, test_cases);
       });
     });
 
-    describe('basic is used when provided an invalid hash type', () => {
-      const { encode, decode } = hashEncoderAndDecoder('invalid-type');
-      it('decode removes #, ensures leading /', () => {
-        const testCases = [
-          ['#/with-slash', '/with-slash'],
-          ['#without-slash', '/without-slash']
+    describe("basic is used when provided an invalid hash type", () => {
+      const { encode, decode } = hash_encoder_and_decoder("invalid-type");
+      it("decode removes #, ensures leading /", () => {
+        const test_cases = [
+          ["#/with-slash", "/with-slash"],
+          ["#without-slash", "/without-slash"]
         ];
-        runTestCases(decode, testCases);
+        run_test_cases(decode, test_cases);
       });
 
-      it('encode returns string that begins with #/', () => {
-        const testCases = [
-          ['/with-slash', '#/with-slash'],
-          ['without-slash', '#/without-slash']
+      it("encode returns string that begins with #/", () => {
+        const test_cases = [
+          ["/with-slash", "#/with-slash"],
+          ["without-slash", "#/without-slash"]
         ];
-        runTestCases(encode, testCases);
+        run_test_cases(encode, test_cases);
       });
     });
   });
 
-  describe('clean', () => {
-    const { encode, decode } = hashEncoderAndDecoder('clean');
-    it('decode removes #, ensures leading /', () => {
-      const testCases = [
-        ['#/with-slash', '/with-slash'],
-        ['#without-slash', '/without-slash']
+  describe("clean", () => {
+    const { encode, decode } = hash_encoder_and_decoder("clean");
+    it("decode removes #, ensures leading /", () => {
+      const test_cases = [
+        ["#/with-slash", "/with-slash"],
+        ["#without-slash", "/without-slash"]
       ];
-      runTestCases(decode, testCases);
+      run_test_cases(decode, test_cases);
     });
 
-    it('encode returns string that begins with #, but no slash', () => {
-      const testCases = [
-        ['/with-slash', '#with-slash'],
-        ['without-slash', '#without-slash']
+    it("encode returns string that begins with #, but no slash", () => {
+      const test_cases = [
+        ["/with-slash", "#with-slash"],
+        ["without-slash", "#without-slash"]
       ];
-      runTestCases(encode, testCases);
+      run_test_cases(encode, test_cases);
     });
 
-    it('encodes with leading slash when at the root', () => {
-      const testCases = [
-        ['/', '#/'],
-        ['/?query=true', '#/?query=true'],
+    it("encodes with leading slash when at the root", () => {
+      const test_cases = [
+        ["/", "#/"],
+        ["/?query=true", "#/?query=true"],
         ,
-        ['/#hash', '#/#hash']
+        ["/#hash", "#/#hash"]
       ];
-      runTestCases(encode, testCases);
+      run_test_cases(encode, test_cases);
     });
   });
 
-  describe('bang', () => {
-    const { encode, decode } = hashEncoderAndDecoder('bang');
-    it('decode removes # and !, ensures leading /', () => {
-      const testCases = [
-        ['#/with-slash', '/with-slash'],
-        ['#without-slash', '/without-slash']
+  describe("bang", () => {
+    const { encode, decode } = hash_encoder_and_decoder("bang");
+    it("decode removes # and !, ensures leading /", () => {
+      const test_cases = [
+        ["#/with-slash", "/with-slash"],
+        ["#without-slash", "/without-slash"]
       ];
-      runTestCases(decode, testCases);
+      run_test_cases(decode, test_cases);
     });
 
-    it('encode returns string that begins with #!/', () => {
-      const testCases = [
-        ['/with-slash', '#!/with-slash'],
-        ['without-slash', '#!/without-slash']
+    it("encode returns string that begins with #!/", () => {
+      const test_cases = [
+        ["/with-slash", "#!/with-slash"],
+        ["without-slash", "#!/without-slash"]
       ];
-      runTestCases(encode, testCases);
+      run_test_cases(encode, test_cases);
     });
   });
 });

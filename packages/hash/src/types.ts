@@ -19,7 +19,7 @@ export {
 };
 
 export interface HashTypeOptions {
-  hashType?: string;
+  hash_type?: string;
 }
 export type HashOptions = HistoryOptions & HashTypeOptions;
 export type HashHistory = History;

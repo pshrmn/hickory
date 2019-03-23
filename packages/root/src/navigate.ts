@@ -10,10 +10,12 @@ import {
   NavigateHelpers
 } from "./types/navigate";
 
-export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
+export default function navigation_handler(
+  args: NavigateArgs
+): NavigateHelpers {
   const {
-    responseHandler,
-    locationUtils,
+    response_handler,
+    location_utils,
     keygen,
     current,
     push,
@@ -21,7 +23,7 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
   } = args;
   let pending: PendingNavigation | undefined;
 
-  function createNavigation(
+  function create_navigation(
     location: SessionLocation,
     action: Action,
     finish: FinishNavigation,
@@ -41,7 +43,7 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
         finish();
         pending = undefined;
       },
-      cancel(nextAction?: Action) {
+      cancel(next_action?: Action) {
         if (
           navigation.cancelled ||
           pending === undefined ||
@@ -49,7 +51,7 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
         ) {
           return;
         }
-        cancel(nextAction);
+        cancel(next_action);
         navigation.cancelled = true;
         pending = undefined;
       },
@@ -58,65 +60,65 @@ export default function navigationHandler(args: NavigateArgs): NavigateHelpers {
     return navigation;
   }
 
-  function emitNavigation(nav: PendingNavigation) {
+  function emit_navigation(nav: PendingNavigation) {
     pending = nav;
-    responseHandler(nav);
+    response_handler(nav);
   }
 
-  function cancelPending(action?: Action) {
+  function cancel_pending(action?: Action) {
     if (pending) {
       pending.cancel(action);
       pending = undefined;
     }
   }
 
-  function prepare(to: ToArgument, navType: NavType) {
-    const location = locationUtils.genericLocation(to);
-    switch (navType) {
+  function prepare(to: ToArgument, nav_type: NavType) {
+    const location = location_utils.generic_location(to);
+    switch (nav_type) {
       case "anchor":
-        return locationUtils.stringifyLocation(location) ===
-          locationUtils.stringifyLocation(current())
-          ? replaceNav(location)
-          : pushNav(location);
+        return location_utils.stringify_location(location) ===
+          location_utils.stringify_location(current())
+          ? replace_nav(location)
+          : push_nav(location);
       case "push":
-        return pushNav(location);
+        return push_nav(location);
       case "replace":
-        return replaceNav(location);
+        return replace_nav(location);
       default:
-        throw new Error(`Invalid navigation type: ${navType}`);
+        throw new Error(`Invalid navigation type: ${nav_type}`);
     }
   }
 
-  function replaceNav(location: LocationComponents): PendingNavigation {
-    const keyedLocation = locationUtils.keyed(
+  function replace_nav(location: LocationComponents): PendingNavigation {
+    const keyed_location = location_utils.keyed(
       location,
       keygen.minor(current().key)
     );
-    return createNavigation(
-      keyedLocation,
+    return create_navigation(
+      keyed_location,
       "replace",
-      replace.finish(keyedLocation),
+      replace.finish(keyed_location),
       replace.cancel
     );
   }
 
-  function pushNav(location: LocationComponents): PendingNavigation {
-    const keyedLocation = locationUtils.keyed(
+  function push_nav(location: LocationComponents): PendingNavigation {
+    const keyed_location = location_utils.keyed(
       location,
       keygen.major(current().key)
     );
-    return createNavigation(
-      keyedLocation,
+    return create_navigation(
+      keyed_location,
       "push",
-      push.finish(keyedLocation),
+      push.finish(keyed_location),
       push.cancel
     );
   }
 
   return {
     prepare,
-    emitNavigation,
-    createNavigation,
-    cancelPending
+    emit_navigation,
+    create_navigation,
+    cancel_pending
   };
 }

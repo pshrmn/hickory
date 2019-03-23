@@ -1,17 +1,17 @@
 import "jest";
-import { locationUtils } from "../src";
+import { location_utils } from "../src";
 import * as qs from "qs";
 
 import { SessionLocation, Key } from "../src/types";
 
 describe("locationFactory", () => {
   describe("constructor", () => {
-    it("throws when attempting to use an invalid baseSegment", () => {
+    it("throws when attempting to use an invalid base_segment", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
-          const creators = locationUtils({
-            baseSegment: value
+          const creators = location_utils({
+            base_segment: value
           });
         }).toThrow();
       });
@@ -30,10 +30,10 @@ describe("locationFactory", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const common = locationUtils();
-          const parsed = common.genericLocation("/test?one=two");
+          const common = location_utils();
+          const parsed = common.generic_location("/test?one=two");
           expect(parsed.query).toBe("one=two");
-          const stringified = common.stringifyLocation({
+          const stringified = common.stringify_location({
             pathname: "/test",
             query: "?three=four"
           });
@@ -45,50 +45,50 @@ describe("locationFactory", () => {
         it("calls parse when creating a location", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = locationUtils({
+          const common = location_utils({
             query: { parse, stringify }
           });
-          const location = common.genericLocation("/test?two=dos");
+          const location = common.generic_location("/test?two=dos");
           expect(parse.mock.calls.length).toBe(1);
         });
 
         it("calls stringify when creating a path", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = locationUtils({
+          const common = location_utils({
             query: { parse, stringify }
           });
-          const path = common.stringifyLocation({ pathname: "/test" });
+          const path = common.stringify_location({ pathname: "/test" });
           expect(stringify.mock.calls.length).toBe(1);
         });
       });
     });
   });
 
-  describe("genericLocation", () => {
-    const { genericLocation } = locationUtils();
+  describe("generic_location", () => {
+    const { generic_location } = location_utils();
 
     describe("pathname", () => {
       describe("string argument", () => {
         it("is parsed from a string location", () => {
-          const loc = genericLocation("/pathname?query=this#hash");
+          const loc = generic_location("/pathname?query=this#hash");
           expect(loc.pathname).toBe("/pathname");
         });
 
-        describe("baseSegment", () => {
-          const { genericLocation } = locationUtils({
-            baseSegment: "/prefix"
+        describe("base_segment", () => {
+          const { generic_location } = location_utils({
+            base_segment: "/prefix"
           });
 
-          it("strips the baseSegment off of the string", () => {
-            const location = genericLocation("/prefix/this/is/the/rest");
+          it("strips the base_segment off of the string", () => {
+            const location = generic_location("/prefix/this/is/the/rest");
             expect(location.pathname).toBe("/this/is/the/rest");
           });
         });
 
         it("attaches provided state", () => {
           const state = "hi!";
-          const loc = genericLocation("/pathname", state);
+          const loc = generic_location("/pathname", state);
           expect(loc.state).toBe(state);
         });
       });
@@ -100,7 +100,7 @@ describe("locationFactory", () => {
             query: "one=two",
             hash: "hello"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.pathname).toBe("/test");
         });
 
@@ -109,7 +109,7 @@ describe("locationFactory", () => {
             query: "one=two",
             hash: "hello"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.pathname).toBe("/");
         });
       });
@@ -120,15 +120,15 @@ describe("locationFactory", () => {
         function ensureEncodedPathname(pathname: string): string {
           return encodeURI(pathname);
         }
-        const { genericLocation } = locationUtils({
+        const { generic_location } = location_utils({
           pathname: ensureEncodedPathname
         });
-        const output = genericLocation("/Beyoncé");
+        const output = generic_location("/Beyoncé");
         expect(output.pathname).toBe("/Beyonc%C3%A9");
       });
 
       it("is the provided string if `pathname` option is not provided", () => {
-        const output = genericLocation("/Beyoncé");
+        const output = generic_location("/Beyoncé");
         expect(output.pathname).toBe("/Beyoncé");
       });
     });
@@ -136,7 +136,7 @@ describe("locationFactory", () => {
     describe("query", () => {
       describe("string argument", () => {
         it("is parsed from a string location", () => {
-          const loc = genericLocation("/pathname?query=this#hash");
+          const loc = generic_location("/pathname?query=this#hash");
           expect(loc.query).toBe("query=this");
         });
       });
@@ -148,7 +148,7 @@ describe("locationFactory", () => {
             query: "one=two",
             hash: "hello"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.query).toBe("one=two");
         });
 
@@ -157,20 +157,20 @@ describe("locationFactory", () => {
             pathname: "/test",
             hash: "hello"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.query).toBe("");
         });
       });
 
       describe("query.parse option", () => {
         it("uses the provided query parsing function to make the query value", () => {
-          const { genericLocation } = locationUtils({
+          const { generic_location } = location_utils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
             }
           });
-          const loc = genericLocation("/pathname?query=this#hash");
+          const loc = generic_location("/pathname?query=this#hash");
           expect(loc.query).toEqual({ query: "this" });
         });
       });
@@ -179,7 +179,7 @@ describe("locationFactory", () => {
     describe("hash", () => {
       describe("string argument", () => {
         it("is parsed from a string location", () => {
-          const loc = genericLocation("/pathname?query=this#hash");
+          const loc = generic_location("/pathname?query=this#hash");
           expect(loc.hash).toBe("hash");
         });
       });
@@ -191,7 +191,7 @@ describe("locationFactory", () => {
             query: "one=two",
             hash: "hello"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.hash).toBe("hello");
         });
 
@@ -200,7 +200,7 @@ describe("locationFactory", () => {
             pathname: "/test",
             search: "one=two"
           };
-          const output = genericLocation(input);
+          const output = generic_location(input);
           expect(output.hash).toBe("");
         });
       });
@@ -215,7 +215,7 @@ describe("locationFactory", () => {
           const state = {
             omg: "bff"
           };
-          const output = genericLocation(input, state);
+          const output = generic_location(input, state);
           expect(output.state).toBeDefined();
           expect(output.state).toEqual(state);
         });
@@ -223,55 +223,55 @@ describe("locationFactory", () => {
 
       describe("object argument", () => {
         it("adds state if provided", () => {
-          const state = { fromLocation: false };
-          const output = genericLocation({ pathname: "/" }, state);
+          const state = { from_location: false };
+          const output = generic_location({ pathname: "/" }, state);
           expect(output.state).toEqual(state);
         });
 
         it("prefers location.state over state argument", () => {
-          const locState = { fromLocation: true };
-          const justState = { fromLocation: false };
-          const output = genericLocation(
-            { pathname: "/", state: locState },
-            justState
+          const loc_state = { from_location: true };
+          const just_state = { from_location: false };
+          const output = generic_location(
+            { pathname: "/", state: loc_state },
+            just_state
           );
-          expect(output.state).toEqual(locState);
+          expect(output.state).toEqual(loc_state);
         });
       });
 
       it("is undefined if not provided", () => {
-        const output = genericLocation("/");
+        const output = generic_location("/");
         expect(output.state).toBeUndefined();
       });
     });
   });
 
   describe("keyed", () => {
-    const { keyed, genericLocation } = locationUtils();
+    const { keyed, generic_location } = location_utils();
 
     it("attaches a key to a keyless location", () => {
       const key: Key = [3, 14];
-      const keylessLocation = genericLocation("/test");
-      const location = keyed(keylessLocation, key);
+      const keyless_location = generic_location("/test");
+      const location = keyed(keyless_location, key);
       expect(location.key).toBe(key);
     });
   });
 
-  describe("stringifyLocation", () => {
-    const { stringifyLocation } = locationUtils();
+  describe("stringify_location", () => {
+    const { stringify_location } = location_utils();
 
     describe("pathname", () => {
       it("begins the returned URI with the pathname", () => {
         const input = {
           pathname: "/test"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/test");
       });
 
       it("uses empty string for pathname if pathname is not provided", () => {
         const input = { hash: "test" };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("#test");
       });
 
@@ -279,21 +279,21 @@ describe("locationFactory", () => {
         const input = {
           pathname: "test"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/test");
       });
 
-      describe("baseSegment", () => {
-        it("adds the baseSegment to the generated string", () => {
-          const { stringifyLocation } = locationUtils({
-            baseSegment: "/prefix"
+      describe("base_segment", () => {
+        it("adds the base_segment to the generated string", () => {
+          const { stringify_location } = location_utils({
+            base_segment: "/prefix"
           });
           const location = {
             pathname: "/one/two/three",
             search: "",
             hash: "four"
           };
-          const path = stringifyLocation(location);
+          const path = stringify_location(location);
           expect(path).toBe("/prefix/one/two/three#four");
         });
       });
@@ -305,7 +305,7 @@ describe("locationFactory", () => {
           pathname: "/",
           query: "one=two"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/?one=two");
       });
 
@@ -314,7 +314,7 @@ describe("locationFactory", () => {
           pathname: "/",
           query: "?one=two"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/?one=two");
       });
 
@@ -322,13 +322,13 @@ describe("locationFactory", () => {
         const input = {
           pathname: "/"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output.indexOf("?")).toBe(-1);
       });
 
       describe("query.stringify option", () => {
         it("uses the provided stringify function to turn query into a string", () => {
-          const { stringifyLocation } = locationUtils({
+          const { stringify_location } = location_utils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
@@ -338,7 +338,7 @@ describe("locationFactory", () => {
             pathname: "/",
             query: { one: "two" }
           };
-          const output = stringifyLocation(input);
+          const output = stringify_location(input);
           expect(output).toBe("/?one=two");
         });
       });
@@ -350,7 +350,7 @@ describe("locationFactory", () => {
           pathname: "/",
           hash: "yes"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/#yes");
       });
 
@@ -359,14 +359,14 @@ describe("locationFactory", () => {
           pathname: "/",
           hash: "#no"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output).toBe("/#no");
       });
 
       it("does not include the hash if it is falsy", () => {
-        const falsyValues = ["", null, undefined];
-        falsyValues.forEach(v => {
-          const output = stringifyLocation({ pathname: "/", hash: v });
+        const falsy_values = ["", null, undefined];
+        falsy_values.forEach(v => {
+          const output = stringify_location({ pathname: "/", hash: v });
           expect(output.indexOf("#")).toBe(-1);
         });
       });
@@ -377,7 +377,7 @@ describe("locationFactory", () => {
           query: "before=true",
           hash: "after"
         };
-        const output = stringifyLocation(input);
+        const output = stringify_location(input);
         expect(output.indexOf("?")).toBeLessThan(output.indexOf("#"));
       });
     });

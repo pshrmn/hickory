@@ -6,12 +6,12 @@ export interface QueryFunctions {
 export declare type ModifyPathname = (pathname: string) => string;
 export interface LocationUtilOptions {
     query?: QueryFunctions;
-    baseSegment?: string;
+    base_segment?: string;
     pathname?: ModifyPathname;
 }
 export interface LocationUtils {
     keyed(location: LocationComponents, key: Key): SessionLocation;
-    genericLocation(value: string | object, state?: any): LocationComponents;
-    stringifyLocation(location: SessionLocation): string;
-    stringifyLocation(location: PartialLocation): string;
+    generic_location(value: string | object, state?: any): LocationComponents;
+    stringify_location(location: SessionLocation): string;
+    stringify_location(location: PartialLocation): string;
 }

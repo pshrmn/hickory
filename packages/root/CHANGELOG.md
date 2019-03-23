@@ -1,3 +1,10 @@
+## Next
+
+- Rename `locationUtils` to `location_utils`
+- Rename `keyGenerator` to `key_generator`
+- Rename `navigateWith` to `navigate_with`
+- Rename `navigationConfirmation` to `navigation_confirmation`
+
 ## 2.0.0-beta.4
 
 - Rename `raw` option to `pathname`.

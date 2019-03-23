@@ -8,21 +8,21 @@ export {
   Key
 } from "./location";
 
-export { KeyFns } from "./keyGenerator";
+export { KeyFns } from "./key_generator";
 
 export {
   LocationUtilOptions,
   QueryFunctions,
   ModifyPathname,
   LocationUtils
-} from "./locationUtils";
+} from "./location_utils";
 
 export {
   NavigationInfo,
   ConfirmationFunction,
   ConfirmationMethods,
   BlockingHistory
-} from "./navigationConfirmation";
+} from "./navigation_confirmation";
 
 export {
   ToArgument,

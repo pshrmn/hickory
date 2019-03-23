@@ -1,8 +1,8 @@
 import {
-  completePathname,
-  completeHash,
-  completeQuery,
-  stripBaseSegment
+  complete_pathname,
+  complete_hash,
+  complete_query,
+  strip_base_segment
 } from "@hickory/location-utils";
 
 import {
@@ -17,7 +17,7 @@ import {
   LocationUtilOptions,
   LocationUtils,
   ModifyPathname
-} from "./types/locationUtils";
+} from "./types/location_utils";
 
 function default_parse_query(query?: string): any {
   return query ? query : "";
@@ -27,11 +27,11 @@ function default_stringify_query(query?: any): string {
   return query ? query : "";
 }
 
-function isValidBase(baseSegment: string): boolean {
+function is_valid_base(base_segment: string): boolean {
   return (
-    typeof baseSegment === "string" &&
-    baseSegment.charAt(0) === "/" &&
-    baseSegment.charAt(baseSegment.length - 1) !== "/"
+    typeof base_segment === "string" &&
+    base_segment.charAt(0) === "/" &&
+    base_segment.charAt(base_segment.length - 1) !== "/"
   );
 }
 
@@ -39,56 +39,56 @@ function default_modify(p: string): string {
   return p;
 }
 
-export default function locationFactory(
+export default function location_factory(
   options: LocationUtilOptions = {}
 ): LocationUtils {
   const {
     query: {
-      parse: parseQuery = default_parse_query,
-      stringify: stringifyQuery = default_stringify_query
+      parse: parse_query = default_parse_query,
+      stringify: stringify_query = default_stringify_query
     } = {},
-    baseSegment = "",
-    pathname: modifyPathname = default_modify
+    base_segment = "",
+    pathname: modify_pathname = default_modify
   } = options;
 
-  if (baseSegment !== "" && !isValidBase(baseSegment)) {
+  if (base_segment !== "" && !is_valid_base(base_segment)) {
     throw new Error(
-      'The baseSegment "' +
-        baseSegment +
+      'The base_segment "' +
+        base_segment +
         '" is not valid.' +
-        " The baseSegment must begin with a forward slash and end with a" +
+        " The base_segment must begin with a forward slash and end with a" +
         " non-forward slash character."
     );
   }
 
-  function parsePath(
+  function parse_path(
     value: string,
     state: any,
-    modifyPathname: ModifyPathname
+    modify_pathname: ModifyPathname
   ): LocationComponents {
     // hash is always after query, so split it off first
-    const hashIndex = value.indexOf("#");
+    const hash_index = value.indexOf("#");
     let hash;
-    if (hashIndex !== -1) {
-      hash = value.substring(hashIndex + 1);
-      value = value.substring(0, hashIndex);
+    if (hash_index !== -1) {
+      hash = value.substring(hash_index + 1);
+      value = value.substring(0, hash_index);
     } else {
       hash = "";
     }
 
-    const queryIndex = value.indexOf("?");
+    const query_index = value.indexOf("?");
     let query;
-    if (queryIndex !== -1) {
-      query = parseQuery(value.substring(queryIndex + 1));
-      value = value.substring(0, queryIndex);
+    if (query_index !== -1) {
+      query = parse_query(value.substring(query_index + 1));
+      value = value.substring(0, query_index);
     } else {
-      query = parseQuery();
+      query = parse_query();
     }
 
     const details: LocationComponents = {
       hash,
       query,
-      pathname: modifyPathname(stripBaseSegment(value, baseSegment))
+      pathname: modify_pathname(strip_base_segment(value, base_segment))
     };
 
     if (state) {
@@ -98,17 +98,17 @@ export default function locationFactory(
     return details;
   }
 
-  function getDetails(
+  function get_details(
     partial: PartialLocation,
     state: any,
-    modifyPathname: ModifyPathname
+    modify_pathname: ModifyPathname
   ): LocationComponents {
     const details: LocationComponents = {
-      pathname: modifyPathname(
+      pathname: modify_pathname(
         partial.pathname == null ? "/" : partial.pathname
       ),
       hash: partial.hash == null ? "" : partial.hash,
-      query: partial.query == null ? parseQuery() : partial.query
+      query: partial.query == null ? parse_query() : partial.query
     };
 
     if (partial.state) {
@@ -120,13 +120,16 @@ export default function locationFactory(
     return details;
   }
 
-  function genericLocation(value: ToArgument, state?: any): LocationComponents {
+  function generic_location(
+    value: ToArgument,
+    state?: any
+  ): LocationComponents {
     if (state === undefined) {
       state = null;
     }
     return typeof value === "string"
-      ? parsePath(value, state, modifyPathname)
-      : getDetails(value, state, modifyPathname);
+      ? parse_path(value, state, modify_pathname)
+      : get_details(value, state, modify_pathname);
   }
 
   function keyed(location: LocationComponents, key: Key): SessionLocation {
@@ -136,16 +139,16 @@ export default function locationFactory(
     };
   }
 
-  function stringifyLocation(location: AnyLocation): string {
+  function stringify_location(location: AnyLocation): string {
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
-      baseSegment +
-      completePathname(location.pathname || "") +
-      completeQuery(stringifyQuery(location.query)) +
-      completeHash(location.hash)
+      base_segment +
+      complete_pathname(location.pathname || "") +
+      complete_query(stringify_query(location.query)) +
+      complete_hash(location.hash)
     );
   }
 
-  return { genericLocation, keyed, stringifyLocation };
+  return { generic_location, keyed, stringify_location };
 }

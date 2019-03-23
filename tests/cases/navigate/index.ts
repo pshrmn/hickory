@@ -17,7 +17,7 @@ import CancelCall from "./cancel-call-location";
 
 import { Suite } from "../../types";
 
-export const navigateSuite: Suite = [
+export const navigate_suite: Suite = [
   WithResponseHandler,
   InvalidMethod,
   ToIsString,
