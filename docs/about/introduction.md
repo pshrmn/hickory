@@ -9,10 +9,12 @@ At the root of your project, you will create a history object. There are three c
 ```js
 import Browser from "@hickory/Browser";
 
-const history = Browser();
+const history = Browser(responseHandler, options);
 ```
 
-Each type can be passed an `options` object, which will customize the history object that you are creating. For example, you can pass `parse` and `stringify` options to control the `query` property of your location objects. This allows you to represent queries as objects within your application, but easily convert them to and from strings for URIs. Each type's API documentation includes these possible values.
+When creating a history object, it must be passed a response handler function. This is a function that will be called whenever there is navigation (as well as immediately with the initial location).
+
+Additionally, you may pass an `options` object, which will customize the history object that you are creating. For example, you can pass `parse` and `stringify` options to control the `query` property of your location objects. This allows you to represent queries as objects within your application, but easily convert them to and from strings for URIs. Each type's API documentation includes these possible values.
 
 ## Locations
 
@@ -107,18 +109,6 @@ While the above three methods take locations as their argument, `go` takes a num
 // { key: '3.0', ... }
 history.go(-2);
 // { key: '1.0', ... }
-```
-
-## Detecting Navigation
-
-Triggering navigation does not do a whole lot if your application does not know that the navigation happened. Hickory expects to be paired with a router, which is added using your history instance's `respondWith` method. Whenever a location change happens, your Hickory history object will call the function passed to `respondWith`. That function call will be passed a "pending navigation" object, which contains the new `location` object, the navigation's `action` type, a `finish` function, and a `cancel` function. Once the router has finished performing any initialization for the new location (e.g. fetching data from your server based on a param from the location), the `finish` function should be called. That will finalize the navigation (e.g. in a browser, it will update the URI displayed in the address bar). If another location change occurs prior to the previous one finishing, that previous location change's `cancel` method should be called. This allows Hickory to prevent unnecessary entries in the history array of locations.
-
-```js
-history.respondWith(function(pending) {
-  // do any route matching/data loading, and once that
-  // is done, call finish.
-  pending.finish();
-});
 ```
 
 ## One history

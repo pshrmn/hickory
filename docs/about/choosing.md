@@ -18,7 +18,7 @@ npm install @hickory/browser
 
 The browser history relies on the user's browser to handle keeping track of locations. It uses the [`window.history`](https://developer.mozilla.org/en-US/docs/Web/API/Window/history) API to update the internal list of visited locations. It also uses an event listener to detect navigation triggered outside of your application (e.g. the user pressing the browser's forward/back buttons).
 
-Whenever the browser history needs to create a location from the browser, it uses the `pathname`, `search`, and `hash` properties from `window.location` to create a path string. It then parses that string to create a location object. The parsing step is important because it will parse the search value to create the correct `query` value for your application. Parsing will also strip the `baseSegment` off of the `pathname` (if you are using that feature).
+Whenever the browser history needs to create a location from the browser, it uses the `pathname`, `search`, and `hash` properties from `window.location` to create a path string. It then parses that string to create a location object. The parsing step is important because it will parse the search value to create the correct `query` value for your application. Parsing will also strip the `base_segment` off of the `pathname` (if you are using that feature).
 
 ```js
 // the following window.location
@@ -46,17 +46,17 @@ How do you make your server capable of working with the browser history? There i
 A simple example of this can be demonstrated with Express:
 
 ```js
-const express = require('express');
+const express = require("express");
 
 const app = express();
 
 // we want to catch any requests for static files and
 // actually serve those files
-app.use('/static', express.static(__dirname, '/public/'));
+app.use("/static", express.static(__dirname, "/public/"));
 
 // all other requests will just server our index.html file
-app.get('*', function(request, response) {
-  response.sendFile('./index.html');
+app.get("*", function(request, response) {
+  response.sendFile("./index.html");
 });
 ```
 
@@ -79,7 +79,7 @@ npm install @hickory/in-memory
 ```
 
 ```js
-import InMemory from '@hickory/in-memory';
+import InMemory from "@hickory/in-memory";
 
 const history = InMemory();
 ```
@@ -90,11 +90,7 @@ There is a small amount of additional functionality that the in-memory history p
 
 ```js
 const history = InMemory({
-  locations: [
-    '/one',
-    '/two',
-    { pathname: '/three' }
-  ],
+  locations: ["/one", "/two", { pathname: "/three" }],
   index: 2
 });
 // history.location = { pathname: '/three' }

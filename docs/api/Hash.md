@@ -3,8 +3,19 @@
 ```js
 import { Hash } from "@hickory/hash";
 
-const history = Hash();
+const history = Hash(responseHandler, options);
 ```
+
+## Response Handler
+
+When creating a history object, it must be passed a response handler function. This function will be called every time that a location change occurs. Any route matching/data loading that you need to perform should be triggered by this function.
+
+The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
+
+- `location` - This is the location object that is being navigated to.
+- `action` - This is the string (`pop`, `push`, or `replace`) for the navigation type.
+- `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
+- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `pop` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
 
 ## Options
 
@@ -26,18 +37,18 @@ const history = Hash();
 
 - `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to fully encode a location's `pathname`.
 
-- `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
-**Note:** While you _can_ use the `baseSegment` with a `Hash` history, you probably should not. The `baseSegment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
+**Note:** While you _can_ use the `base_segment` with a `Hash` history, you probably should not. The `base_segment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
 
 ```js
-const history = Hash({ baseSegment: "/test" });
+const history = Hash({ base_segment: "/test" });
 ```
 
 The `/test` segment will be stripped from and included in the hash segment of the full URI.
 
 ```js
-const uri = history.toHref({ pathname: "/pathname" });
+const uri = history.to_href({ pathname: "/pathname" });
 // uri === '#/test/pathname'
 ```
 
@@ -124,40 +135,18 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### toHref()
+### to_href()
 
 ```js
-history.toHref({ pathname: "/spamalot" });
+history.to_href({ pathname: "/spamalot" });
 // #/spamalot
 ```
 
-The `toHref` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
+The `to_href` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
 
 #### arguments
 
 `location` - The location to create a path for.
-
-### respondWith()
-
-```js
-history.respondWith(pendingNavigation => {
-  console.log(pendingNavigation.action, pendingNavigation.location);
-  pendingNavigation.finish();
-});
-```
-
-The `respondWith` function is used to pass a response handler to the history instance. The function passed will be called every time that a location change occurs. Any route matching/data loading that you need to perform should be triggered by this function.
-
-The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
-
-- `location` - This is the location object that is being navigated to.
-- `action` - This is the string (`pop`, `push`, or `replace`) for the navigation type.
-- `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
-- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `pop` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
-
-#### arguments
-
-`fn` - The function to be called when the location changes.
 
 ### destroy()
 

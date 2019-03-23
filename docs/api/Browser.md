@@ -3,8 +3,19 @@
 ```js
 import { Browser } from "@hickory/browser";
 
-const history = Browser();
+const history = Browser(responseHandler, options);
 ```
+
+## Response Handler
+
+When creating a history object, it must be passed a response handler function. This function will be called every time that a location change occurs. Any route matching/data loading that you need to perform should be triggered by this function.
+
+The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
+
+- `location` - This is the location object that is being navigated to.
+- `action` - This is the string (`pop`, `push`, or `replace`) for the navigation type.
+- `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
+- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `pop` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
 
 ## Options
 
@@ -18,7 +29,7 @@ const history = Browser();
 
 - `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to fully encode a location's `pathname`.
 
-- `baseSegment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
 ## Properties
 
@@ -101,40 +112,18 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### toHref()
+### to_href()
 
 ```js
-history.toHref({ pathname: "/spamalot" });
+history.to_href({ pathname: "/spamalot" });
 // /spamalot
 ```
 
-The `toHref` function generates the string representation of the location object. This string will be prepended with the `baseSegment` (if you provided one).
+The `to_href` function generates the string representation of the location object. This string will be prepended with the `base_segment` (if you provided one).
 
 #### arguments
 
 `location` - The location to create a path for.
-
-### respondWith()
-
-```js
-history.respondWith(pendingNavigation => {
-  console.log(pendingNavigation.action, pendingNavigation.location);
-  pendingNavigation.finish();
-});
-```
-
-The `respondWith` function is used to pass a response handler to the history instance. The function passed will be called every time that a location change occurs. Any route matching/data loading that you need to perform should be triggered by this function.
-
-The response handler function will be passed a "pending navigation" object. This object has four properties: `location`, `action`, `finish`, and `cancel`.
-
-- `location` - This is the location object that is being navigated to.
-- `action` - This is the string (`pop`, `push`, or `replace`) for the navigation type.
-- `finish` - Once all matching/loading has finished, then you need to call the `finish` method to finalize the navigation. If you do not call this, the navigation will not actually occur.
-- `cancel` - This method allows you to cancel a navigation. It should be called if another location change occurs while the current pending navigation is still pending. Calling `cancel` gives your history instance the opportunity to roll back to its previous state. This is only really necessary for `pop` navigation since the browser has already changed the location before Hickory knows about the location change. This method takes one argument, an action string; the action string may be used to alter the cancel behavior.
-
-#### arguments
-
-`fn` - The function to be called when the location changes.
 
 ### destroy()
 
