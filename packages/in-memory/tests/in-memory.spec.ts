@@ -1,14 +1,14 @@
 import "jest";
 import { InMemory } from "../src";
 
-import { navigateSuite, goSuite, cancelSuite } from "../../../tests/cases";
+import { navigate_suite, go_suite, cancel_suite } from "../../../tests/cases";
 
 import { TestCase, Suite } from "../../../tests/types";
 
 import { InMemoryOptions, HistoryConstructor } from "@hickory/in-memory";
 
 interface FnOptions {
-  constructor: HistoryConstructor;
+  constructor: HistoryConstructor<InMemoryOptions>;
   options: InMemoryOptions;
 }
 
@@ -16,7 +16,7 @@ interface AsyncFnOptions extends FnOptions {
   resolve: (value?: {} | PromiseLike<{}>) => void;
 }
 
-function runAsyncTest(test: TestCase) {
+function run_async_test(test: TestCase) {
   it(test.msg, async () => {
     expect.assertions(test.assertions);
     await new Promise(resolve => {
@@ -31,7 +31,7 @@ function runAsyncTest(test: TestCase) {
   });
 }
 
-function runTest(test: TestCase) {
+function run_test(test: TestCase) {
   it(test.msg, () => {
     test.fn({
       constructor: InMemory,
@@ -42,22 +42,22 @@ function runTest(test: TestCase) {
   });
 }
 
-function runSuite(suite: Suite) {
+function run_suite(suite: Suite) {
   suite.forEach(test => {
     if (test.async) {
-      runAsyncTest(test);
+      run_async_test(test);
     } else {
-      runTest(test);
+      run_test(test);
     }
   });
 }
 
 describe("Memory constructor", () => {
   it("initializes with root location (/) if none provided", () => {
-    const testHistory = InMemory(pending => {
+    const test_history = InMemory(pending => {
       pending.finish();
     });
-    expect(testHistory.location).toMatchObject({
+    expect(test_history.location).toMatchObject({
       pathname: "/",
       hash: "",
       query: ""
@@ -65,7 +65,7 @@ describe("Memory constructor", () => {
   });
 
   it("works with string locations", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -73,14 +73,14 @@ describe("Memory constructor", () => {
         locations: ["/one#step"]
       }
     );
-    expect(testHistory.location).toMatchObject({
+    expect(test_history.location).toMatchObject({
       pathname: "/one",
       hash: "step"
     });
   });
 
   it("works with object locations", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -88,14 +88,14 @@ describe("Memory constructor", () => {
         locations: [{ pathname: "/two", hash: "daloo" }]
       }
     );
-    expect(testHistory.location).toMatchObject({
+    expect(test_history.location).toMatchObject({
       pathname: "/two",
       hash: "daloo"
     });
   });
 
   it("uses the provided index to select initial location", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -104,14 +104,14 @@ describe("Memory constructor", () => {
         index: 2
       }
     );
-    expect(testHistory.location).toMatchObject({
+    expect(test_history.location).toMatchObject({
       pathname: "/three"
     });
   });
 
   it("defaults to index 0 if provided index is out of bounds", () => {
     [-1, 3].forEach(value => {
-      const testHistory = InMemory(
+      const test_history = InMemory(
         pending => {
           pending.finish();
         },
@@ -120,14 +120,14 @@ describe("Memory constructor", () => {
           index: value
         }
       );
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/one"
       });
     });
   });
 
   it('sets initial action to "push"', () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -141,21 +141,21 @@ describe("Memory constructor", () => {
 });
 
 describe("cancel", () => {
-  runSuite(cancelSuite);
+  run_suite(cancel_suite);
 });
 
 describe("navigate()", () => {
-  runSuite(navigateSuite);
+  run_suite(navigate_suite);
 });
 
 describe("go suite", () => {
-  runSuite(goSuite);
+  run_suite(go_suite);
 });
 
 describe("go", () => {
   describe("with no value", () => {
     it('calls response handler with current location and "pop" action', done => {
-      const testHistory = InMemory(pending => {
+      const test_history = InMemory(pending => {
         expect(pending.location).toMatchObject({
           pathname: "/"
         });
@@ -163,15 +163,15 @@ describe("go", () => {
         done();
         pending.finish();
       });
-      testHistory.go();
+      test_history.go();
     });
   });
 
   describe("with a value", () => {
     it("does nothing if the value is outside of the range", () => {
       const router = jest.fn();
-      const testHistory = InMemory(router);
-      testHistory.go(10);
+      const test_history = InMemory(router);
+      test_history.go(10);
       // just verifying that a popstate event hasn't emitted to
       // trigger the history's event handler
       expect(router.mock.calls.length).toBe(0);
@@ -179,9 +179,9 @@ describe("go", () => {
   });
 });
 
-describe("toHref", () => {
+describe("to_href", () => {
   it("returns the location formatted as a string", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -189,7 +189,7 @@ describe("toHref", () => {
         locations: [{ pathname: "/one", query: "test=query" }]
       }
     );
-    const currentPath = testHistory.toHref(testHistory.location);
+    const currentPath = test_history.to_href(test_history.location);
     expect(currentPath).toBe("/one?test=query");
   });
 });
@@ -197,7 +197,7 @@ describe("toHref", () => {
 describe("reset()", () => {
   describe("locations", () => {
     it("works with string locations", () => {
-      const testHistory = InMemory(
+      const test_history = InMemory(
         pending => {
           pending.finish();
         },
@@ -205,20 +205,20 @@ describe("reset()", () => {
           locations: ["/one", "/two", "/three"]
         }
       );
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/one"
       });
 
-      testHistory.reset({
+      test_history.reset({
         locations: ["/uno", "/dos"]
       });
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/uno"
       });
     });
 
     it("works with object locations", () => {
-      const testHistory = InMemory(
+      const test_history = InMemory(
         pending => {
           pending.finish();
         },
@@ -226,20 +226,20 @@ describe("reset()", () => {
           locations: ["/one", "/two", "/three"]
         }
       );
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/one"
       });
 
-      testHistory.reset({
+      test_history.reset({
         locations: [{ pathname: "/uno" }, { pathname: "/dos" }]
       });
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/uno"
       });
     });
 
     it("uses default '/' location if no locations are provided", () => {
-      const testHistory = InMemory(
+      const test_history = InMemory(
         pending => {
           pending.finish();
         },
@@ -247,34 +247,34 @@ describe("reset()", () => {
           locations: ["/one", "/two", "/three"]
         }
       );
-      expect(testHistory.location).toMatchObject({
+      expect(test_history.location).toMatchObject({
         pathname: "/one"
       });
 
-      testHistory.reset();
-      expect(testHistory.location).toMatchObject({
+      test_history.reset();
+      expect(test_history.location).toMatchObject({
         pathname: "/"
       });
     });
 
     it("reset removes existing locations", () => {
       const router = jest.fn();
-      const testHistory = InMemory(router, {
+      const test_history = InMemory(router, {
         locations: ["/one", "/two", "/three"]
       });
 
       // reset the call from attaching the router
       router.mockReset();
 
-      testHistory.go(2);
+      test_history.go(2);
 
       // response handler is called because we can pop
       expect(router.mock.calls.length).toBe(1);
 
-      testHistory.reset({ locations: ["/uno"] });
+      test_history.reset({ locations: ["/uno"] });
       router.mockReset();
 
-      testHistory.go(2);
+      test_history.go(2);
 
       // response handler is not called because there is no location
       // to pop to
@@ -283,7 +283,7 @@ describe("reset()", () => {
   });
 
   it("sets location using provided index value", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -292,17 +292,17 @@ describe("reset()", () => {
         index: 1
       }
     );
-    expect(testHistory.location.pathname).toBe("/two");
+    expect(test_history.location.pathname).toBe("/two");
 
-    testHistory.reset({
+    test_history.reset({
       locations: ["/uno", "/dos", "/tres"],
       index: 2
     });
-    expect(testHistory.location.pathname).toBe("/tres");
+    expect(test_history.location.pathname).toBe("/tres");
   });
 
   it("uses location at index 0 if index is not provided", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -311,16 +311,16 @@ describe("reset()", () => {
         index: 1
       }
     );
-    expect(testHistory.location.pathname).toBe("/two");
+    expect(test_history.location.pathname).toBe("/two");
 
-    testHistory.reset({
+    test_history.reset({
       locations: ["/uno", "/dos", "/tres"]
     });
-    expect(testHistory.location.pathname).toBe("/uno");
+    expect(test_history.location.pathname).toBe("/uno");
   });
 
   it("uses location at index 0 if provided index < 0", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -329,17 +329,17 @@ describe("reset()", () => {
         index: 1
       }
     );
-    expect(testHistory.location.pathname).toBe("/two");
+    expect(test_history.location.pathname).toBe("/two");
 
-    testHistory.reset({
+    test_history.reset({
       locations: ["/uno", "/dos", "/tres"],
       index: -1
     });
-    expect(testHistory.location.pathname).toBe("/uno");
+    expect(test_history.location.pathname).toBe("/uno");
   });
 
   it("uses location at index 0 if index is larger than length of locations array", () => {
-    const testHistory = InMemory(
+    const test_history = InMemory(
       pending => {
         pending.finish();
       },
@@ -348,23 +348,23 @@ describe("reset()", () => {
         index: 1
       }
     );
-    expect(testHistory.location.pathname).toBe("/two");
+    expect(test_history.location.pathname).toBe("/two");
 
-    testHistory.reset({
+    test_history.reset({
       locations: ["/uno", "/dos", "/tres"],
       index: 7
     });
-    expect(testHistory.location.pathname).toBe("/uno");
+    expect(test_history.location.pathname).toBe("/uno");
   });
 
   describe("emitting new location", () => {
     it("emits the new location", () => {
       const router = jest.fn();
-      const testHistory = InMemory(router, {
+      const test_history = InMemory(router, {
         locations: ["/one", "/two", "/three"]
       });
 
-      testHistory.reset({
+      test_history.reset({
         locations: ["/uno", "/dos"]
       });
       expect(router.mock.calls.length).toBe(1);
@@ -377,11 +377,11 @@ describe("reset()", () => {
 
     it('emits the action as "push"', () => {
       const router = jest.fn();
-      const testHistory = InMemory(router, {
+      const test_history = InMemory(router, {
         locations: ["/one", "/two", "/three"]
       });
 
-      testHistory.reset({
+      test_history.reset({
         locations: ["/uno", "/dos"]
       });
       expect(router.mock.calls[0][0]).toMatchObject({

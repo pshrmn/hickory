@@ -5,7 +5,7 @@ import { JSDOM, DOMWindow } from "jsdom";
 
 export interface MetaArgs {
   url: string;
-  setGlobal?: boolean;
+  set_global?: boolean;
 }
 
 export interface DOMArgs {
@@ -17,46 +17,46 @@ export interface AsyncDOMArgs extends DOMArgs {
   resolve: (value?: any | PromiseLike<any>) => void;
 }
 
-export function withDOM(meta: MetaArgs, callback: (args: DOMArgs) => void) {
-  const { url, setGlobal = true } = meta;
+export function with_dom(meta: MetaArgs, callback: (args: DOMArgs) => void) {
+  const { url, set_global = true } = meta;
   const dom = new JSDOM("", { url });
   const window = dom.window;
 
-  if (setGlobal) {
+  if (set_global) {
     global.window = window;
     global.document = window.document;
   }
 
   callback({ dom, window });
 
-  if (setGlobal) {
+  if (set_global) {
     global.window = undefined;
     global.document = undefined;
   }
 }
 
-export function asyncWithDOM(
+export function async_with_dom(
   meta: MetaArgs,
   callback: (args: AsyncDOMArgs) => void
 ) {
-  const { url, setGlobal = true } = meta;
+  const { url, set_global = true } = meta;
   const dom = new JSDOM("", { url });
   const window = dom.window;
 
-  if (setGlobal) {
+  if (set_global) {
     global.window = window;
     global.document = window.document;
   }
 
-  function resetGlobals() {
-    if (setGlobal) {
+  function reset_globals() {
+    if (set_global) {
       global.window = undefined;
       global.document = undefined;
     }
   }
 
   return new Promise(resolve => callback({ dom, window, resolve })).then(
-    resetGlobals,
-    resetGlobals
+    reset_globals,
+    reset_globals
   );
 }

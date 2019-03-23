@@ -1,3 +1,9 @@
+## Next
+
+- Rename `domExists` to `dom_exists`
+- Rename `ignorablePopstateEvent` to `ignorable_popstate_event`
+- Rename `getStateFromHistory` to `get_state_from_history`
+
 ## 2.0.0-beta.3
 
 - Remove `ensureEncodedPathname` function.

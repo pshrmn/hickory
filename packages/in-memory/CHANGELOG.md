@@ -1,3 +1,7 @@
+## Next
+
+- Rename `toHref` property to `to_href`.
+
 ## 2.0.0-beta.2
 
 - Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.

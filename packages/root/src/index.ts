@@ -1,8 +1,13 @@
 export * from "./types";
 
-import locationUtils from "./locationUtils";
-import keyGenerator from "./keyGenerator";
-import navigateWith from "./navigate";
-import navigationConfirmation from "./navigationConfirmation";
+import location_utils from "./location_utils";
+import key_generator from "./key_generator";
+import navigate_with from "./navigate";
+import navigation_confirmation from "./navigation_confirmation";
 
-export { locationUtils, keyGenerator, navigationConfirmation, navigateWith };
+export {
+  location_utils,
+  key_generator,
+  navigation_confirmation,
+  navigate_with
+};

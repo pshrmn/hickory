@@ -1,3 +1,8 @@
+## Next
+
+- Rename `toHref` property to `to_href`.
+- Rename `hashType` option to `hash_type`
+
 ## 2.0.0-beta.4
 
 - Rename `raw` option to `pathname`.

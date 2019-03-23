@@ -14,16 +14,16 @@ export type ConfirmationFunction = (
 ) => void;
 
 export interface ConfirmationMethods {
-  confirmNavigation(
+  confirm_navigation(
     info: NavigationInfo,
     confirm: () => void,
     prevent?: () => void
   ): void;
-  confirmWith(fn?: ConfirmationFunction): void;
-  removeConfirmation(): void;
+  confirm_with(fn?: ConfirmationFunction): void;
+  remove_confirmation(): void;
 }
 
 export interface BlockingHistory {
-  confirmWith(fn?: ConfirmationFunction): void;
-  removeConfirmation(): void;
+  confirm_with(fn?: ConfirmationFunction): void;
+  remove_confirmation(): void;
 }

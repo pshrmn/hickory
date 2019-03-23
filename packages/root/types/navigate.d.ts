@@ -1,2 +1,2 @@
 import { NavigateArgs, NavigateHelpers } from "./types/navigate";
-export default function navigationHandler(args: NavigateArgs): NavigateHelpers;
+export default function navigation_handler(args: NavigateArgs): NavigateHelpers;
