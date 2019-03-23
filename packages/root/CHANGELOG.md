@@ -1,9 +1,9 @@
 ## Next
 
-- Rename `locationUtils` to `location_utils`
+- Rename `locationUtils` to `location_utils`; its API is also now snake cased.
 - Rename `keyGenerator` to `key_generator`
-- Rename `navigateWith` to `navigate_with`
-- Rename `navigationConfirmation` to `navigation_confirmation`
+- Rename `navigateWith` to `navigate_with`; its API is also now snake cased.
+- Rename `navigationConfirmation` to `navigation_confirmation`; its API is also now snake cased.
 
 ## 2.0.0-beta.4
 
