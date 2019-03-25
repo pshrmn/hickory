@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.6
 
 - Lowercase export (`InMemory` to `in_memory`).
 
