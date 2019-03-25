@@ -4,12 +4,12 @@ Hickory provides a three packages that allow you to easily power navigation with
 
 ## Creation
 
-At the root of your project, you will create a history object. There are three choices: `Browser`, `Hash`, and `InMemory`. You can read more about how to pick the right one for your application in the [choosing your history type](./choosing.md) documentation. For simplicity, all example code here will use the `Browser` history type.
+At the root of your project, you will create a history object. There are three choices: `browser`, `hash`, and `in_memory`. (There is also a fourth, lightweight option for server rendering). You can read more about how to pick the right one for your application in the [choosing your history type](./choosing.md) documentation. For simplicity, all example code here will use the `browser` history type.
 
 ```js
-import Browser from "@hickory/Browser";
+import { browser } from "@hickory/browser";
 
-const history = Browser(responseHandler, options);
+const history = browser(responseHandler, options);
 ```
 
 When creating a history object, it must be passed a response handler function. This is a function that will be called whenever there is navigation (as well as immediately with the initial location).

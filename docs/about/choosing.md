@@ -37,7 +37,7 @@ location = {
 }
 ```
 
-Generally speaking, if you are running your application in a browser, you will want to use the browser history. However, whether or not you _can_ use it depends on the server that is serving your application. If you can configure your server to respond to any possible pathname request, then you can use the `Browser` history. However, if your application is hosted on a static file server, then you will have to use the `Hash` history.
+Generally speaking, if you are running your application in a browser, you will want to use the browser history. However, whether or not you _can_ use it depends on the server that is serving your application. If you can configure your server to respond to any possible pathname request, then you can use the `browser` history. However, if your application is hosted on a static file server, then you will have to use the `hash` history.
 
 ### Setting up your server to support browser history.
 
@@ -79,9 +79,9 @@ npm install @hickory/in-memory
 ```
 
 ```js
-import InMemory from "@hickory/in-memory";
+import { in_memory } from "@hickory/in-memory";
 
-const history = InMemory();
+const history = in_memory(responseHandler);
 ```
 
 The in-memory history does not have a browser to rely on to keep track of visited locations, so it does this itself. This is done by storing visited locations in an array and keeping an index value to track the current position. This mimics the behavior of a browser, but the code can be run anywhere. This makes in-memory a great choice if you are doing server side rendering for an application, testing out some code that needs to be location-aware, or running in a mobile application. The in-memory history could also be used in a browser if you have an application that needs to perform navigation, but you don't want it to affect the URI.
@@ -89,7 +89,7 @@ The in-memory history does not have a browser to rely on to keep track of visite
 There is a small amount of additional functionality that the in-memory history provides. When creating an in-memory history, you can pass initial locations and the initial index. This can be helpful for restoring a session. You are also able to directly access these values as the `locations` and `index` properties of the history object.
 
 ```js
-const history = InMemory({
+const history = in_memory(responseHandler, {
   locations: ["/one", "/two", { pathname: "/three" }],
   index: 2
 });

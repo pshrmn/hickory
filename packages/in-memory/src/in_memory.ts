@@ -19,7 +19,7 @@ import {
 
 function noop() {}
 
-export function InMemory(
+export function in_memory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): InMemoryHistory {

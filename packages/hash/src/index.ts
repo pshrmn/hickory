@@ -23,7 +23,7 @@ function ensure_hash(encode: (path: string) => string): void {
 
 function noop() {}
 
-export function Hash(
+export function hash(
   fn: ResponseHandler,
   options: HashOptions = {}
 ): HashHistory {

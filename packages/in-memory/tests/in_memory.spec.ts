@@ -1,5 +1,5 @@
 import "jest";
-import { InMemory } from "../src";
+import { in_memory } from "../src";
 
 import { navigate_suite, go_suite, cancel_suite } from "../../../tests/cases";
 
@@ -21,7 +21,7 @@ function run_async_test(test: TestCase) {
     expect.assertions(test.assertions);
     await new Promise(resolve => {
       test.fn({
-        constructor: InMemory,
+        constructor: in_memory,
         options: {
           locations: ["/one"]
         },
@@ -34,7 +34,7 @@ function run_async_test(test: TestCase) {
 function run_test(test: TestCase) {
   it(test.msg, () => {
     test.fn({
-      constructor: InMemory,
+      constructor: in_memory,
       options: {
         locations: ["/one"]
       }
@@ -54,7 +54,7 @@ function run_suite(suite: Suite) {
 
 describe("Memory constructor", () => {
   it("initializes with root location (/) if none provided", () => {
-    const test_history = InMemory(pending => {
+    const test_history = in_memory(pending => {
       pending.finish();
     });
     expect(test_history.location).toMatchObject({
@@ -65,7 +65,7 @@ describe("Memory constructor", () => {
   });
 
   it("works with string locations", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -80,7 +80,7 @@ describe("Memory constructor", () => {
   });
 
   it("works with object locations", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -95,7 +95,7 @@ describe("Memory constructor", () => {
   });
 
   it("uses the provided index to select initial location", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -111,7 +111,7 @@ describe("Memory constructor", () => {
 
   it("defaults to index 0 if provided index is out of bounds", () => {
     [-1, 3].forEach(value => {
-      const test_history = InMemory(
+      const test_history = in_memory(
         pending => {
           pending.finish();
         },
@@ -127,7 +127,7 @@ describe("Memory constructor", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -155,7 +155,7 @@ describe("go suite", () => {
 describe("go", () => {
   describe("with no value", () => {
     it('calls response handler with current location and "pop" action', done => {
-      const test_history = InMemory(pending => {
+      const test_history = in_memory(pending => {
         expect(pending.location).toMatchObject({
           pathname: "/"
         });
@@ -170,7 +170,7 @@ describe("go", () => {
   describe("with a value", () => {
     it("does nothing if the value is outside of the range", () => {
       const router = jest.fn();
-      const test_history = InMemory(router);
+      const test_history = in_memory(router);
       test_history.go(10);
       // just verifying that a popstate event hasn't emitted to
       // trigger the history's event handler
@@ -181,7 +181,7 @@ describe("go", () => {
 
 describe("to_href", () => {
   it("returns the location formatted as a string", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -197,7 +197,7 @@ describe("to_href", () => {
 describe("reset()", () => {
   describe("locations", () => {
     it("works with string locations", () => {
-      const test_history = InMemory(
+      const test_history = in_memory(
         pending => {
           pending.finish();
         },
@@ -218,7 +218,7 @@ describe("reset()", () => {
     });
 
     it("works with object locations", () => {
-      const test_history = InMemory(
+      const test_history = in_memory(
         pending => {
           pending.finish();
         },
@@ -239,7 +239,7 @@ describe("reset()", () => {
     });
 
     it("uses default '/' location if no locations are provided", () => {
-      const test_history = InMemory(
+      const test_history = in_memory(
         pending => {
           pending.finish();
         },
@@ -259,7 +259,7 @@ describe("reset()", () => {
 
     it("reset removes existing locations", () => {
       const router = jest.fn();
-      const test_history = InMemory(router, {
+      const test_history = in_memory(router, {
         locations: ["/one", "/two", "/three"]
       });
 
@@ -283,7 +283,7 @@ describe("reset()", () => {
   });
 
   it("sets location using provided index value", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -302,7 +302,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if index is not provided", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -320,7 +320,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if provided index < 0", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -339,7 +339,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if index is larger than length of locations array", () => {
-    const test_history = InMemory(
+    const test_history = in_memory(
       pending => {
         pending.finish();
       },
@@ -360,7 +360,7 @@ describe("reset()", () => {
   describe("emitting new location", () => {
     it("emits the new location", () => {
       const router = jest.fn();
-      const test_history = InMemory(router, {
+      const test_history = in_memory(router, {
         locations: ["/one", "/two", "/three"]
       });
 
@@ -377,7 +377,7 @@ describe("reset()", () => {
 
     it('emits the action as "push"', () => {
       const router = jest.fn();
-      const test_history = InMemory(router, {
+      const test_history = in_memory(router, {
         locations: ["/one", "/two", "/three"]
       });
 

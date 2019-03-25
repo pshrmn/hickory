@@ -2,7 +2,7 @@
   "dist/hickory-browser.es.js": {
     "bundled": 4871,
     "minified": 1906,
-    "gzipped": 823,
+    "gzipped": 821,
     "treeshaked": {
       "rollup": {
         "code": 67,
@@ -16,7 +16,7 @@
   "dist/hickory-browser.js": {
     "bundled": 5050,
     "minified": 2044,
-    "gzipped": 909
+    "gzipped": 908
   },
   "dist/hickory-browser.umd.js": {
     "bundled": 16479,
