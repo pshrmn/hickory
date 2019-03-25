@@ -1,5 +1,5 @@
 import "jest";
-import { Hash } from "../../src";
+import { hash } from "../../src";
 
 import { with_dom, async_with_dom } from "../../../../tests/utils/dom";
 import {
@@ -17,7 +17,7 @@ function run_async_test(test: TestCase) {
       { url: "http://example.com/#/one" },
       ({ window, resolve }) => {
         test.fn({
-          constructor: Hash,
+          constructor: hash,
           resolve
         });
       }
@@ -29,7 +29,7 @@ function run_test(test: TestCase) {
   it(test.msg, () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
       test.fn({
-        constructor: Hash
+        constructor: hash
       });
     });
   });
@@ -45,10 +45,10 @@ function run_suite(suite: Suite) {
   });
 }
 
-describe("Hash constructor", () => {
+describe("hash constructor", () => {
   it("initializes using window.location", () => {
     with_dom({ url: "http://example.com/#/one" }, () => {
-      const test_history = Hash(pending => {
+      const test_history = hash(pending => {
         pending.finish();
       });
       expect(test_history.location).toMatchObject({
@@ -62,7 +62,7 @@ describe("Hash constructor", () => {
   it("throws if there is no DOM", () => {
     with_dom({ url: "http://example.com/#/one", set_global: false }, () => {
       expect(() => {
-        const test_history = Hash(pending => {
+        const test_history = hash(pending => {
           pending.finish();
         });
       }).toThrow();
@@ -72,7 +72,7 @@ describe("Hash constructor", () => {
   it('sets initial action to "push" when page has not been previously visited', () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState(null, "", "/#has-no-key");
-      const test_history = Hash(pending => {
+      const test_history = hash(pending => {
         expect(pending.action).toBe("push");
         pending.finish();
       });
@@ -82,7 +82,7 @@ describe("Hash constructor", () => {
   it('sets initial action to "pop" when page has been previously visited', () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/#has-key");
-      const test_history = Hash(pending => {
+      const test_history = hash(pending => {
         expect(pending.action).toBe("pop");
         pending.finish();
       });
@@ -94,7 +94,7 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         with_dom({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const test_history = Hash(pending => {
+          const test_history = hash(pending => {
             pending.finish();
           });
           expect(window.location.hash).toBe("#/");
@@ -106,7 +106,7 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         with_dom({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },
@@ -121,7 +121,7 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         with_dom({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },
@@ -136,7 +136,7 @@ describe("Hash constructor", () => {
       it("sets the expected hash format", () => {
         with_dom({ url: "http://example.com/" }, ({ window }) => {
           expect(window.location.hash).toBe("");
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },
@@ -151,7 +151,7 @@ describe("Hash constructor", () => {
   describe("decodes from browser based on options.hash_type", () => {
     it("works with no hash_type (default)", () => {
       with_dom({ url: "http://example.com/#/the-path" }, () => {
-        const test_history = Hash(pending => {
+        const test_history = hash(pending => {
           pending.finish();
         });
         expect(test_history.location).toMatchObject({
@@ -162,7 +162,7 @@ describe("Hash constructor", () => {
 
     it("works with default hash_type", () => {
       with_dom({ url: "http://example.com/#/the-path" }, () => {
-        const test_history = Hash(
+        const test_history = hash(
           pending => {
             pending.finish();
           },
@@ -177,7 +177,7 @@ describe("Hash constructor", () => {
     it("works with bang hash_type", () => {
       // bang expects an exclamation point before the leading slash
       with_dom({ url: "http://example.com/#!/the-path" }, () => {
-        const test_history = Hash(
+        const test_history = hash(
           pending => {
             pending.finish();
           },
@@ -192,7 +192,7 @@ describe("Hash constructor", () => {
     it("works with default hash_type", () => {
       // clean expects no leading slash
       with_dom({ url: "http://example.com/#the-path" }, () => {
-        const test_history = Hash(
+        const test_history = hash(
           pending => {
             pending.finish();
           },
@@ -223,7 +223,7 @@ describe("go", () => {
   it("calls window.history.go with provided value", () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
       const mock_go = (window.history.go = jest.fn());
-      const test_history = Hash(pending => {
+      const test_history = hash(pending => {
         pending.finish();
       });
       [undefined, 0, 1, -1].forEach((value, index) => {
@@ -237,7 +237,7 @@ describe("go", () => {
 describe("to_href", () => {
   it("returns the location formatted as a string", () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
-      const test_history = Hash(pending => {
+      const test_history = hash(pending => {
         pending.finish();
       });
       const current_path = test_history.to_href({
@@ -254,7 +254,7 @@ describe("to_href", () => {
     describe("[none provided]", () => {
       it("outputs expected string", () => {
         with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
-          const test_history = Hash(pending => {
+          const test_history = hash(pending => {
             pending.finish();
           });
           expect(test_history.to_href(location)).toBe("#/simple-path");
@@ -265,7 +265,7 @@ describe("to_href", () => {
     describe("default", () => {
       it("outputs expected string", () => {
         with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },
@@ -279,7 +279,7 @@ describe("to_href", () => {
     describe("bang", () => {
       it("outputs expected string", () => {
         with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },
@@ -293,7 +293,7 @@ describe("to_href", () => {
     describe("clean", () => {
       it("outputs expected string", () => {
         with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
-          const test_history = Hash(
+          const test_history = hash(
             pending => {
               pending.finish();
             },

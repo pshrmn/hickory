@@ -1,5 +1,5 @@
 ///<reference types="jasmine"/>
-import { Hash } from "../../src";
+import { hash } from "../../src";
 
 describe("hash integration tests", () => {
   let test_history;
@@ -25,7 +25,7 @@ describe("hash integration tests", () => {
     });
 
     it("new URL is encoded", () => {
-      test_history = Hash(pending => {
+      test_history = hash(pending => {
         pending.finish();
       });
       test_history.navigate(
@@ -40,7 +40,7 @@ describe("hash integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
-        test_history = Hash(pending => {
+        test_history = hash(pending => {
           pending.finish();
         });
         test_history.navigate("/a-new-position", "push");
@@ -52,7 +52,7 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = Hash(pending => {
+        test_history = hash(pending => {
           pending.finish();
         });
         const provided_state = { is_set: true };
@@ -71,7 +71,7 @@ describe("hash integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
-        test_history = Hash(pending => {
+        test_history = hash(pending => {
           pending.finish();
         });
         test_history.navigate("/the-same-position", "replace");
@@ -83,7 +83,7 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = Hash(pending => {
+        test_history = hash(pending => {
           pending.finish();
         });
         const provided_state = { is_set: true };
@@ -104,7 +104,7 @@ describe("hash integration tests", () => {
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
       let calls = 0;
-      test_history = Hash(pending => {
+      test_history = hash(pending => {
         let local_history = test_history;
         switch (calls++) {
           case 0:
@@ -138,7 +138,7 @@ describe("hash integration tests", () => {
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
       let calls = 0;
-      test_history = Hash(pending => {
+      test_history = hash(pending => {
         let local_history = test_history;
         switch (calls++) {
           case 0:

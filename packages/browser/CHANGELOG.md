@@ -1,3 +1,7 @@
+## Next
+
+- Lowercase export (`Browser` to `browser`).
+
 ## 2.0.0-beta.5
 
 - Rename `toHref` property to `to_href`.

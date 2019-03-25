@@ -20,7 +20,7 @@ export * from "./types";
 
 function noop() {}
 
-export function Browser(
+export function browser(
   fn: ResponseHandler,
   options: BrowserHistoryOptions = {}
 ): BrowserHistory {

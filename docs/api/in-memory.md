@@ -1,9 +1,9 @@
-# Hash API
+# In Memory API
 
 ```js
-import { Hash } from "@hickory/hash";
+import { in_memory } from "@hickory/in-memory";
 
-const history = Hash(responseHandler, options);
+const history = in_memory(responseHandler, options);
 ```
 
 ## Response Handler
@@ -19,6 +19,10 @@ The response handler function will be passed a "pending navigation" object. This
 
 ## Options
 
+- `locations` - An array of location objects or strings.
+
+- `index` - The index of the "current" location in the locations array.
+
 - `query` - An object with two required properties: `parse` and `stringify`.
 
   - `parse` - A function that will convert a search string to a query value. This function should return a default value when it is called with no arguments.
@@ -27,32 +31,9 @@ The response handler function will be passed a "pending navigation" object. This
 
 - `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-- `hashType` - The `hashType` specifies how we translate `window.location.hash` to a location (and vice versa). The options are `default`, `bang`. and `clean`.
-
-  - `default` - The encoded path begins with `#/`. If you do not provide a `hashType` option, this one will be used.
-
-  - `bang` - The encoded path begins with `#!/`.
-
-  - `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
-
-- `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to fully encode a location's `pathname`.
+- `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to return the provided string.
 
 - `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
-
-**Note:** While you _can_ use the `base_segment` with a `Hash` history, you probably should not. The `base_segment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
-
-```js
-const history = Hash({ base_segment: "/test" });
-```
-
-The `/test` segment will be stripped from and included in the hash segment of the full URI.
-
-```js
-const uri = history.to_href({ pathname: "/pathname" });
-// uri === '#/test/pathname'
-```
-
-Any pathname segments that exist prior to the hash section (or the full URI) will be ignored.
 
 ## Properties
 
@@ -135,14 +116,32 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
+### reset()
+
+```js
+history.reset({
+  locations: ["/one", "/two"],
+  index: 1
+});
+```
+
+Reset the location state of the `history` instance.
+
+#### arguments
+
+An object with the following (optional) properties:
+
+- `locations` - An array of location objects or strings.
+- `index` - The index of the "current" location in the locations array.
+
 ### to_href()
 
 ```js
 history.to_href({ pathname: "/spamalot" });
-// #/spamalot
+// /spamalot
 ```
 
-The `to_href` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
+The `to_href` function generates the string representation of the location object.
 
 #### arguments
 

@@ -1,8 +1,8 @@
 {
   "dist/hickory-in-memory.es.js": {
-    "bundled": 5460,
-    "minified": 1835,
-    "gzipped": 738,
+    "bundled": 5462,
+    "minified": 1837,
+    "gzipped": 735,
     "treeshaked": {
       "rollup": {
         "code": 22,
@@ -14,18 +14,18 @@
     }
   },
   "dist/hickory-in-memory.js": {
-    "bundled": 5558,
-    "minified": 1926,
-    "gzipped": 789
+    "bundled": 5561,
+    "minified": 1929,
+    "gzipped": 788
   },
   "dist/hickory-in-memory.umd.js": {
-    "bundled": 15652,
-    "minified": 4387,
-    "gzipped": 1757
+    "bundled": 15655,
+    "minified": 4388,
+    "gzipped": 1760
   },
   "dist/hickory-in-memory.min.js": {
-    "bundled": 15652,
-    "minified": 4387,
-    "gzipped": 1757
+    "bundled": 15655,
+    "minified": 4388,
+    "gzipped": 1760
   }
 }

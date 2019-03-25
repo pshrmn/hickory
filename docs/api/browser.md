@@ -1,9 +1,9 @@
 # Browser API
 
 ```js
-import { Browser } from "@hickory/browser";
+import { browser } from "@hickory/browser";
 
-const history = Browser(responseHandler, options);
+const history = browser(responseHandler, options);
 ```
 
 ## Response Handler

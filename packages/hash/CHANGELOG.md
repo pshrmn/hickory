@@ -1,3 +1,7 @@
+## Next
+
+- Lowercase export (`Hash` to `hash`).
+
 ## 2.0.0-beta.5
 
 - Rename `toHref` property to `to_href`.
