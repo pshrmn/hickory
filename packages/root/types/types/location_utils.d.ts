@@ -3,7 +3,7 @@ export interface QueryFunctions {
     parse: (query?: string) => any;
     stringify: (query?: any) => string;
 }
-export declare type VerifyPathname = (pathname: string) => void;
+export declare type VerifyPathname = (pathname: string) => boolean;
 export interface LocationUtilOptions {
     query?: QueryFunctions;
     base_segment?: string;

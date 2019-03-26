@@ -35,7 +35,9 @@ function is_valid_base(base_segment: string): boolean {
   );
 }
 
-function default_verify(p: string): void {}
+function default_verify(p: string): boolean {
+  return true;
+}
 
 export default function location_factory(
   options: LocationUtilOptions = {}
@@ -59,11 +61,7 @@ export default function location_factory(
     );
   }
 
-  function parse_path(
-    value: string,
-    state: any,
-    verify_pathname: VerifyPathname
-  ): LocationComponents {
+  function parse_path(value: string, state: any): LocationComponents {
     // hash is always after query, so split it off first
     const hash_index = value.indexOf("#");
     let hash;
@@ -84,7 +82,6 @@ export default function location_factory(
     }
 
     const pathname = strip_base_segment(value, base_segment);
-    verify_pathname(pathname);
 
     const details: LocationComponents = {
       hash,
@@ -101,8 +98,7 @@ export default function location_factory(
 
   function get_details(
     partial: PartialLocation,
-    state: any,
-    verify_pathname: VerifyPathname
+    state: any
   ): LocationComponents {
     const details: LocationComponents = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
@@ -116,8 +112,6 @@ export default function location_factory(
       details.state = state;
     }
 
-    verify_pathname(details.pathname);
-
     return details;
   }
 
@@ -128,9 +122,14 @@ export default function location_factory(
     if (state === undefined) {
       state = null;
     }
-    return typeof value === "string"
-      ? parse_path(value, state, verify_pathname)
-      : get_details(value, state, verify_pathname);
+    const location =
+      typeof value === "string"
+        ? parse_path(value, state)
+        : get_details(value, state);
+    if (!verify_pathname(location.pathname)) {
+      throw new Error(`Invalid pathname: ${location.pathname}`);
+    }
+    return location;
   }
 
   function keyed(location: LocationComponents, key: Key): SessionLocation {

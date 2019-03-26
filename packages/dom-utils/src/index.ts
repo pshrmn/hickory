@@ -1,9 +1,7 @@
 import encode_pathname from "encodeurl";
 
-export function verify_encoded_pathname(pathname: string) {
-  if (pathname !== encode_pathname(pathname)) {
-    throw new Error(`The pathname "${pathname}" is not fully encoded.`);
-  }
+export function verify_encoded_pathname(pathname: string): boolean {
+  return pathname === encode_pathname(pathname);
 }
 
 export function dom_exists(): boolean {

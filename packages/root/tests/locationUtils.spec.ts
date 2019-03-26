@@ -116,14 +116,13 @@ describe("locationFactory", () => {
     });
 
     describe("pathname", () => {
-      it("calls user provided `pathname` option", () => {
-        const verify_pathname = jest.fn();
+      it("if user provided `pathname` option returns false, it throws", () => {
         const { generic_location } = location_utils({
-          pathname: verify_pathname
+          pathname: () => false
         });
-        expect(verify_pathname.mock.calls.length).toBe(0);
-        const output = generic_location("/Beyoncé");
-        expect(verify_pathname.mock.calls.length).toBe(1);
+        expect(() => {
+          const output = generic_location("/Beyoncé");
+        }).toThrow();
       });
 
       it("is the provided string if `pathname` option is not provided", () => {

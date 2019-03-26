@@ -10,7 +10,7 @@ export interface QueryFunctions {
   stringify: (query?: any) => string;
 }
 
-export type VerifyPathname = (pathname: string) => void;
+export type VerifyPathname = (pathname: string) => boolean;
 
 export interface LocationUtilOptions {
   query?: QueryFunctions;

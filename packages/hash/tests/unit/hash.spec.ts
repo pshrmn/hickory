@@ -218,6 +218,19 @@ describe("go suite", () => {
   run_suite(go_suite);
 });
 
+describe("hash history.navigate", () => {
+  it("throws if trying to navigate with a non-encoded pathname", () => {
+    with_dom({ url: "http://example.com/one" }, ({ window }) => {
+      const test_history = hash(pending => {
+        pending.finish();
+      });
+      expect(() => {
+        test_history.navigate("/test ing");
+      }).toThrow();
+    });
+  });
+});
+
 describe("go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
