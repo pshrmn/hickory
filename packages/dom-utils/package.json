@@ -16,7 +16,8 @@
     "build": "rollup -c",
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
-    "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\""
+    "prettier": "prettier --single-quote --write \"{src,tests}/**/*.ts\"",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,9 @@
     "dom"
   ],
   "author": "Paul Sherman",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/encodeurl": "^1.0.0",
+    "encodeurl": "^1.0.2"
+  }
 }

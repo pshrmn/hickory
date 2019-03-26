@@ -31,7 +31,7 @@ The response handler function will be passed a "pending navigation" object. This
 
 - `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-- `pathname` - A function that will be used to modify the `pathname` property of location objects. The default behavior is to return the provided string.
+- `pathname` - A function that will be used to validate the `pathname`. The default behavior is to return `true` (any `pathname` is acceptable).
 
 - `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
