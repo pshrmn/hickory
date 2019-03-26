@@ -1,6 +1,9 @@
-import encode_pathname from "encodeurl";
 import { location_utils, key_generator, navigate_with } from "@hickory/root";
-import { get_state_from_history, dom_exists } from "@hickory/dom-utils";
+import {
+  get_state_from_history,
+  dom_exists,
+  verify_encoded_pathname
+} from "@hickory/dom-utils";
 import hash_encoder_and_decoder from "./hashTypes";
 
 import {
@@ -32,7 +35,7 @@ export function hash(
   }
 
   if (!options.pathname) {
-    options.pathname = encode_pathname;
+    options.pathname = verify_encoded_pathname;
   }
 
   const location_utilities = location_utils(options);

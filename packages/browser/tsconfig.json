@@ -5,7 +5,7 @@
     "lib": ["es5", "es6", "dom"],
     "target": "es5",
     "module": "es6",
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "moduleResolution": "Node",
     "declaration": true,
     "declarationDir": "types",

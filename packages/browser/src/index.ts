@@ -1,9 +1,9 @@
-import encode_pathname from "encodeurl";
 import { location_utils, key_generator, navigate_with } from "@hickory/root";
 import {
   ignorable_popstate_event,
   get_state_from_history,
-  dom_exists
+  dom_exists,
+  verify_encoded_pathname
 } from "@hickory/dom-utils";
 
 import {
@@ -29,7 +29,7 @@ export function browser(
   }
 
   if (!options.pathname) {
-    options.pathname = encode_pathname;
+    options.pathname = verify_encoded_pathname;
   }
 
   const location_utilities = location_utils(options);
