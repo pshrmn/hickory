@@ -116,15 +116,14 @@ describe("locationFactory", () => {
     });
 
     describe("pathname", () => {
-      it("is result of user provided `pathname` option", () => {
-        function ensureEncodedPathname(pathname: string): string {
-          return encodeURI(pathname);
-        }
+      it("calls user provided `pathname` option", () => {
+        const verify_pathname = jest.fn();
         const { generic_location } = location_utils({
-          pathname: ensureEncodedPathname
+          pathname: verify_pathname
         });
+        expect(verify_pathname.mock.calls.length).toBe(0);
         const output = generic_location("/Beyoncé");
-        expect(output.pathname).toBe("/Beyonc%C3%A9");
+        expect(verify_pathname.mock.calls.length).toBe(1);
       });
 
       it("is the provided string if `pathname` option is not provided", () => {

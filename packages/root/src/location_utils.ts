@@ -16,7 +16,7 @@ import { ToArgument } from "./types/navigate";
 import {
   LocationUtilOptions,
   LocationUtils,
-  ModifyPathname
+  VerifyPathname
 } from "./types/location_utils";
 
 function default_parse_query(query?: string): any {
@@ -35,9 +35,7 @@ function is_valid_base(base_segment: string): boolean {
   );
 }
 
-function default_modify(p: string): string {
-  return p;
-}
+function default_verify(p: string): void {}
 
 export default function location_factory(
   options: LocationUtilOptions = {}
@@ -48,7 +46,7 @@ export default function location_factory(
       stringify: stringify_query = default_stringify_query
     } = {},
     base_segment = "",
-    pathname: modify_pathname = default_modify
+    pathname: verify_pathname = default_verify
   } = options;
 
   if (base_segment !== "" && !is_valid_base(base_segment)) {
@@ -64,7 +62,7 @@ export default function location_factory(
   function parse_path(
     value: string,
     state: any,
-    modify_pathname: ModifyPathname
+    verify_pathname: VerifyPathname
   ): LocationComponents {
     // hash is always after query, so split it off first
     const hash_index = value.indexOf("#");
@@ -85,10 +83,13 @@ export default function location_factory(
       query = parse_query();
     }
 
+    const pathname = strip_base_segment(value, base_segment);
+    verify_pathname(pathname);
+
     const details: LocationComponents = {
       hash,
       query,
-      pathname: modify_pathname(strip_base_segment(value, base_segment))
+      pathname
     };
 
     if (state) {
@@ -101,12 +102,10 @@ export default function location_factory(
   function get_details(
     partial: PartialLocation,
     state: any,
-    modify_pathname: ModifyPathname
+    verify_pathname: VerifyPathname
   ): LocationComponents {
     const details: LocationComponents = {
-      pathname: modify_pathname(
-        partial.pathname == null ? "/" : partial.pathname
-      ),
+      pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
       query: partial.query == null ? parse_query() : partial.query
     };
@@ -116,6 +115,8 @@ export default function location_factory(
     } else if (state) {
       details.state = state;
     }
+
+    verify_pathname(details.pathname);
 
     return details;
   }
@@ -128,8 +129,8 @@ export default function location_factory(
       state = null;
     }
     return typeof value === "string"
-      ? parse_path(value, state, modify_pathname)
-      : get_details(value, state, modify_pathname);
+      ? parse_path(value, state, verify_pathname)
+      : get_details(value, state, verify_pathname);
   }
 
   function keyed(location: LocationComponents, key: Key): SessionLocation {
