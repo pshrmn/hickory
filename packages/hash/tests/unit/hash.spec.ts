@@ -1,5 +1,5 @@
 import "jest";
-import { hash } from "../../src";
+import { hash } from "../../src/hash";
 
 import { with_dom, async_with_dom } from "../../../../tests/utils/dom";
 import {

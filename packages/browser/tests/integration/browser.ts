@@ -1,5 +1,5 @@
 ///<reference types="jasmine"/>
-import { browser } from "../../src";
+import { browser } from "../../src/browser";
 
 describe("browser integration tests", () => {
   let test_history;

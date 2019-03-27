@@ -1,5 +1,5 @@
 import "jest";
-import { browser } from "../../src";
+import { browser } from "../../src/browser";
 
 import { with_dom, async_with_dom } from "../../../../tests/utils/dom";
 import {
