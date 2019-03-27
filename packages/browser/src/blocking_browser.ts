@@ -1,4 +1,9 @@
-import { location_utils, key_generator, navigate_with } from "@hickory/root";
+import {
+  location_utils,
+  key_generator,
+  navigate_with,
+  navigation_confirmation
+} from "@hickory/root";
 import {
   ignorable_popstate_event,
   get_state_from_history,
@@ -14,14 +19,14 @@ import {
   NavType,
   Action
 } from "@hickory/root";
-import { BrowserHistoryOptions, BrowserHistory } from "./types";
+import { BrowserHistoryOptions, BlockingBrowserHistory } from "./types";
 
 function noop() {}
 
-export function browser(
+export function blocking_browser(
   fn: ResponseHandler,
   options: BrowserHistoryOptions = {}
-): BrowserHistory {
+): BlockingBrowserHistory {
   if (!dom_exists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
@@ -32,6 +37,7 @@ export function browser(
 
   const location_utilities = location_utils(options);
   const keygen = key_generator();
+  const blocking = navigation_confirmation();
 
   function location_from_browser(provided_state?: object): SessionLocation {
     const { pathname, search, hash } = window.location;
@@ -112,28 +118,41 @@ export function browser(
 
     const location = location_from_browser(event.state);
     const diff = browser_history.location.key[0] - location.key[0];
-    const navigation = create_navigation(
-      location,
-      "pop",
-      () => {
-        browser_history.location = location;
-        last_action = "pop";
+
+    blocking.confirm_navigation(
+      {
+        to: location,
+        from: browser_history.location,
+        action: "pop"
       },
-      (next_action?: Action) => {
-        if (next_action === "pop") {
-          return;
-        }
+      () => {
+        const navigation = create_navigation(
+          location,
+          "pop",
+          () => {
+            browser_history.location = location;
+            last_action = "pop";
+          },
+          (next_action?: Action) => {
+            if (next_action === "pop") {
+              return;
+            }
+            reverting = true;
+            window.history.go(diff);
+          }
+        );
+        emit_navigation(navigation);
+      },
+      () => {
         reverting = true;
         window.history.go(diff);
       }
     );
-
-    emit_navigation(navigation);
   }
 
   window.addEventListener("popstate", popstate, false);
 
-  const browser_history: BrowserHistory = {
+  const browser_history: BlockingBrowserHistory = {
     location: location_from_browser(),
     current() {
       const nav = create_navigation(
@@ -145,6 +164,8 @@ export function browser(
       emit_navigation(nav);
     },
     to_href,
+    confirm_with: blocking.confirm_with,
+    remove_confirmation: blocking.remove_confirmation,
     cancel() {
       cancel_pending();
     },
@@ -154,7 +175,16 @@ export function browser(
     navigate(to: ToArgument, nav_type: NavType = "anchor"): void {
       const navigation = prepare(to, nav_type);
       cancel_pending(navigation.action);
-      emit_navigation(navigation);
+      blocking.confirm_navigation(
+        {
+          to: navigation.location,
+          from: browser_history.location,
+          action: navigation.action
+        },
+        () => {
+          emit_navigation(navigation);
+        }
+      );
     },
     go(num: number): void {
       window.history.go(num);

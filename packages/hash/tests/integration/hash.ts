@@ -1,5 +1,5 @@
 ///<reference types="jasmine"/>
-import { hash } from "../../src/hash";
+import { hash } from "../../src";
 
 describe("hash integration tests", () => {
   let test_history;

@@ -16,8 +16,6 @@ import {
 } from "@hickory/root";
 import { HashOptions, HashHistory } from "./types";
 
-export * from "./types";
-
 function ensure_hash(encode: (path: string) => string): void {
   if (window.location.hash === "") {
     window.history.replaceState(null, "", encode("/"));

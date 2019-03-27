@@ -1,7 +1,7 @@
 ///<reference types="jasmine"/>
-import { browser } from "../../src";
+import { blocking_browser } from "../../src";
 
-describe("browser integration tests", () => {
+describe("blocking_browser integration tests", () => {
   let test_history;
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
@@ -24,7 +24,7 @@ describe("browser integration tests", () => {
     });
 
     it("new URL is encoded", () => {
-      test_history = browser(pending => {
+      test_history = blocking_browser(pending => {
         pending.finish();
       });
       test_history.navigate({
@@ -36,7 +36,7 @@ describe("browser integration tests", () => {
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
-        test_history = browser(pending => {
+        test_history = blocking_browser(pending => {
           pending.finish();
         });
         test_history.navigate("/the-new-location", "push");
@@ -49,7 +49,7 @@ describe("browser integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = browser(pending => {
+        test_history = blocking_browser(pending => {
           pending.finish();
         });
         const provided_state = { is_set: true };
@@ -68,7 +68,7 @@ describe("browser integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
-        test_history = browser(pending => {
+        test_history = blocking_browser(pending => {
           pending.finish();
         });
         test_history.navigate("/the-same-location", "replace");
@@ -80,7 +80,7 @@ describe("browser integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = browser(pending => {
+        test_history = blocking_browser(pending => {
           pending.finish();
         });
         const provided_state = { is_set: true };
@@ -101,7 +101,7 @@ describe("browser integration tests", () => {
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
       let calls = 0;
-      test_history = browser(pending => {
+      test_history = blocking_browser(pending => {
         let local_history = test_history;
         switch (calls++) {
           case 0:
@@ -135,7 +135,7 @@ describe("browser integration tests", () => {
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
       let calls = 0;
-      test_history = browser(pending => {
+      test_history = blocking_browser(pending => {
         let local_history = test_history;
         switch (calls++) {
           case 0:

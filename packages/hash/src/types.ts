@@ -5,7 +5,8 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  AnyLocation
+  AnyLocation,
+  ConfirmationFunction
 } from "@hickory/root";
 
 export {
@@ -23,3 +24,7 @@ export interface HashTypeOptions {
 }
 export type HashOptions = HistoryOptions & HashTypeOptions;
 export type HashHistory = History;
+export interface BlockingHashHistory extends HashHistory {
+  confirm_with(fn?: ConfirmationFunction): void;
+  remove_confirmation(): void;
+}

@@ -5,7 +5,8 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  AnyLocation
+  AnyLocation,
+  ConfirmationFunction
 } from "@hickory/root";
 
 export {
@@ -20,3 +21,7 @@ export {
 
 export type BrowserHistoryOptions = HistoryOptions;
 export type BrowserHistory = History;
+export interface BlockingBrowserHistory extends BrowserHistory {
+  confirm_with(fn?: ConfirmationFunction): void;
+  remove_confirmation(): void;
+}
