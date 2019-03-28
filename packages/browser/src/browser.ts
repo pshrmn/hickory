@@ -2,8 +2,7 @@ import { location_utils, key_generator, navigate_with } from "@hickory/root";
 import {
   ignorable_popstate_event,
   get_state_from_history,
-  dom_exists,
-  verify_encoded_pathname
+  dom_exists
 } from "@hickory/dom-utils";
 
 import {
@@ -26,10 +25,6 @@ export function browser(
 ): BrowserHistory {
   if (!dom_exists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
-  }
-
-  if (!options.pathname) {
-    options.pathname = verify_encoded_pathname;
   }
 
   const location_utilities = location_utils(options);

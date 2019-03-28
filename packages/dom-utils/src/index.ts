@@ -1,9 +1,3 @@
-import encode_pathname from "encodeurl";
-
-export function verify_encoded_pathname(pathname: string): boolean {
-  return pathname === encode_pathname(pathname);
-}
-
 export function dom_exists(): boolean {
   return !!(window && window.location);
 }
