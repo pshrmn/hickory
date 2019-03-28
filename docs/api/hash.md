@@ -35,8 +35,6 @@ The response handler function will be passed a "pending navigation" object. This
 
   - `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
 
-- `pathname` - A function that will be used to validate the `pathname`. The default behavior is to verify that the provided `pathname` string is fully encoded.
-
 - `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
 **Note:** While you _can_ use the `base_segment` with a `hash` history, you probably should not. The `base_segment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
