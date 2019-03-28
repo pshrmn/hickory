@@ -1,6 +1,6 @@
 {
   "name": "@hickory/in-memory",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.7",
   "description": "Hickory's in-memory history",
   "main": "dist/hickory-in-memory.js",
   "module": "dist/hickory-in-memory.es.js",
