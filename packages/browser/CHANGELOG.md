@@ -1,6 +1,6 @@
 ## Next
 
-- Default `options.pathname` checks that the `pathname` string is fully encoded.
+- Remove `pathname` option.
 
 ## 2.0.0-beta.6
 

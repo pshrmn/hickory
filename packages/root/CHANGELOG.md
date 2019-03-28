@@ -1,6 +1,6 @@
 ## Next
 
-- `options.pathname` is a verification function; if it fails, `generic_location` throws.
+- Remove `pathname` option.
 
 ## 2.0.0-beta.5
 

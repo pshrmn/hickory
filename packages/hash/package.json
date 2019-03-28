@@ -33,8 +33,6 @@
   "dependencies": {
     "@hickory/dom-utils": "file:../dom-utils",
     "@hickory/location-utils": "file:../location-utils",
-    "@hickory/root": "file:../root",
-    "@types/encodeurl": "^1.0.0",
-    "encodeurl": "^1.0.2"
+    "@hickory/root": "file:../root"
   }
 }

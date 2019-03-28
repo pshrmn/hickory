@@ -35,10 +35,6 @@ function is_valid_base(base_segment: string): boolean {
   );
 }
 
-function default_verify(p: string): boolean {
-  return true;
-}
-
 export default function location_factory(
   options: LocationUtilOptions = {}
 ): LocationUtils {
@@ -47,8 +43,7 @@ export default function location_factory(
       parse: parse_query = default_parse_query,
       stringify: stringify_query = default_stringify_query
     } = {},
-    base_segment = "",
-    pathname: verify_pathname = default_verify
+    base_segment = ""
   } = options;
 
   if (base_segment !== "" && !is_valid_base(base_segment)) {
@@ -126,9 +121,6 @@ export default function location_factory(
       typeof value === "string"
         ? parse_path(value, state)
         : get_details(value, state);
-    if (!verify_pathname(location.pathname)) {
-      throw new Error(`Invalid pathname: ${location.pathname}`);
-    }
     return location;
   }
 

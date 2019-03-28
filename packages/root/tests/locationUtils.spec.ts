@@ -116,18 +116,24 @@ describe("locationFactory", () => {
     });
 
     describe("pathname", () => {
-      it("if user provided `pathname` option returns false, it throws", () => {
-        const { generic_location } = location_utils({
-          pathname: () => false
-        });
-        expect(() => {
-          const output = generic_location("/Beyoncé");
-        }).toThrow();
-      });
-
-      it("is the provided string if `pathname` option is not provided", () => {
+      it("is the provided string", () => {
         const output = generic_location("/Beyoncé");
         expect(output.pathname).toBe("/Beyoncé");
+      });
+
+      it("is the provided pathname property", () => {
+        const output = generic_location({ pathname: "/Jay-Z" });
+        expect(output.pathname).toBe("/Jay-Z");
+      });
+
+      it("does not include a hash", () => {
+        const output = generic_location("/Kendrick#Lamar");
+        expect(output.pathname).toBe("/Kendrick");
+      });
+
+      it("does not include a query", () => {
+        const output = generic_location("/Chance?the=Rapper");
+        expect(output.pathname).toBe("/Chance");
       });
     });
 
