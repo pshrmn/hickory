@@ -1,11 +1,11 @@
-import { SessionLocation, AnyLocation } from "./location";
+import { SessionLocation, Hrefable } from "./location";
 import { ResponseHandler, ToArgument, NavType } from "./navigate";
 import { LocationUtilOptions } from "./location_utils";
 export declare type HistoryOptions = LocationUtilOptions;
 export declare type HistoryConstructor<O> = (fn: ResponseHandler, options: O) => History;
 export interface History {
     location: SessionLocation;
-    to_href(to: AnyLocation): string;
+    href(to: Hrefable): string;
     current(): void;
     cancel(): void;
     destroy(): void;

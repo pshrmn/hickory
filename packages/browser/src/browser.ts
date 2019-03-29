@@ -7,7 +7,7 @@ import {
 
 import {
   SessionLocation,
-  AnyLocation,
+  Hrefable,
   ResponseHandler,
   ToArgument,
   NavType,
@@ -38,12 +38,12 @@ export function browser(
       key = keygen.major();
       window.history.replaceState({ key, state }, "", path);
     }
-    const location = location_utilities.generic_location(path, state);
+    const location = location_utilities.location(path, state);
     return location_utilities.keyed(location, key);
   }
 
-  function to_href(location: AnyLocation): string {
-    return location_utilities.stringify_location(location);
+  function href(location: Hrefable): string {
+    return location_utilities.stringify(location);
   }
 
   // set action before location because location_from_browser enforces
@@ -64,7 +64,7 @@ export function browser(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = to_href(location);
+          const path = href(location);
           const { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
@@ -80,7 +80,7 @@ export function browser(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = to_href(location);
+          const path = href(location);
           const { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
@@ -141,7 +141,7 @@ export function browser(
       );
       emit_navigation(nav);
     },
-    to_href,
+    href,
     cancel() {
       cancel_pending();
     },

@@ -4,7 +4,7 @@ import hash_encoder_and_decoder from "./hashTypes";
 
 import {
   SessionLocation,
-  AnyLocation,
+  Hrefable,
   ToArgument,
   ResponseHandler,
   Action,
@@ -49,14 +49,11 @@ export function hash(
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    return location_utilities.keyed(
-      location_utilities.generic_location(path),
-      key
-    );
+    return location_utilities.keyed(location_utilities.location(path), key);
   }
 
-  function to_href(location: AnyLocation): string {
-    return encode_hash_path(location_utilities.stringify_location(location));
+  function href(location: Hrefable): string {
+    return encode_hash_path(location_utilities.stringify(location));
   }
 
   let last_action: Action =
@@ -75,7 +72,7 @@ export function hash(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = to_href(location);
+          const path = href(location);
           const { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
@@ -91,7 +88,7 @@ export function hash(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = to_href(location);
+          const path = href(location);
           const { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
@@ -148,7 +145,7 @@ export function hash(
       );
       emit_navigation(nav);
     },
-    to_href,
+    href,
     cancel() {
       cancel_pending();
     },

@@ -9,4 +9,4 @@ export declare type Key = [number, number];
 export interface SessionLocation extends LocationComponents {
     key: Key;
 }
-export declare type AnyLocation = SessionLocation | PartialLocation;
+export declare type Hrefable = PartialLocation | string;

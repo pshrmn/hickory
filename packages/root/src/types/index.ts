@@ -4,7 +4,7 @@ export {
   LocationComponents,
   PartialLocation,
   SessionLocation,
-  AnyLocation,
+  Hrefable,
   Key
 } from "./location";
 

@@ -179,7 +179,7 @@ describe("go", () => {
   });
 });
 
-describe("to_href", () => {
+describe("href", () => {
   it("returns the location formatted as a string", () => {
     const test_history = in_memory(
       pending => {
@@ -189,7 +189,7 @@ describe("to_href", () => {
         locations: [{ pathname: "/one", query: "test=query" }]
       }
     );
-    const currentPath = test_history.to_href(test_history.location);
+    const currentPath = test_history.href(test_history.location);
     expect(currentPath).toBe("/one?test=query");
   });
 });

@@ -1,5 +1,5 @@
 export { HistoryOptions, HistoryConstructor, History } from "./hickory";
-export { LocationComponents, PartialLocation, SessionLocation, AnyLocation, Key } from "./location";
+export { LocationComponents, PartialLocation, SessionLocation, Hrefable, Key } from "./location";
 export { KeyFns } from "./key_generator";
 export { LocationUtilOptions, QueryFunctions, VerifyPathname, LocationUtils } from "./location_utils";
 export { NavigationInfo, ConfirmationFunction, ConfirmationMethods, BlockingHistory } from "./navigation_confirmation";

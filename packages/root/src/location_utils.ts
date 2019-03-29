@@ -8,7 +8,7 @@ import {
 import {
   SessionLocation,
   PartialLocation,
-  AnyLocation,
+  Hrefable,
   LocationComponents,
   Key
 } from "./types/location";
@@ -110,10 +110,7 @@ export default function location_factory(
     return details;
   }
 
-  function generic_location(
-    value: ToArgument,
-    state?: any
-  ): LocationComponents {
+  function location(value: ToArgument, state?: any): LocationComponents {
     if (state === undefined) {
       state = null;
     }
@@ -131,16 +128,25 @@ export default function location_factory(
     };
   }
 
-  function stringify_location(location: AnyLocation): string {
+  function stringify(location: Hrefable): string {
+    if (typeof location === "string") {
+      const first_char = location.charAt(0);
+      // keep hash/query only strings relative
+      if (first_char === "#" || first_char === "?") {
+        return location;
+      }
+      return base_segment + complete_pathname(location);
+    }
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
-      base_segment +
-      complete_pathname(location.pathname || "") +
+      (location.pathname !== undefined
+        ? base_segment + complete_pathname(location.pathname)
+        : "") +
       complete_query(stringify_query(location.query)) +
       complete_hash(location.hash)
     );
   }
 
-  return { generic_location, keyed, stringify_location };
+  return { location, keyed, stringify };
 }

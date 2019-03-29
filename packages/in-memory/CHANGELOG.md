@@ -1,3 +1,8 @@
+## Next
+
+- Rename `to_href` to `href`.
+- `href` function can take a location object or a string.
+
 ## 2.0.0-beta.6
 
 - Lowercase export (`InMemory` to `in_memory`).
