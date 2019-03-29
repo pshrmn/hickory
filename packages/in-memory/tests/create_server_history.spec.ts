@@ -134,7 +134,7 @@ describe("no-op functions", () => {
   });
 });
 
-describe("to_href", () => {
+describe("href", () => {
   it("returns the location formatted as a string", () => {
     const history = create_server_history();
     const test_history = history(
@@ -145,7 +145,7 @@ describe("to_href", () => {
         location: { pathname: "/one", query: "test=query" }
       }
     );
-    const currentPath = test_history.to_href(test_history.location);
+    const currentPath = test_history.href(test_history.location);
     expect(currentPath).toBe("/one?test=query");
   });
 
@@ -164,7 +164,7 @@ describe("to_href", () => {
         location: "/"
       }
     );
-    const href = test_history.to_href({ pathname: "/yo", query: { one: 1 } });
+    const href = test_history.href({ pathname: "/yo", query: { one: 1 } });
     expect(href).toEqual("/yo?one=1");
   });
 });

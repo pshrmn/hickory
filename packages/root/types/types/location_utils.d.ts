@@ -1,4 +1,4 @@
-import { LocationComponents, SessionLocation, PartialLocation, Key } from "./location";
+import { LocationComponents, SessionLocation, Hrefable, Key } from "./location";
 export interface QueryFunctions {
     parse: (query?: string) => any;
     stringify: (query?: any) => string;
@@ -11,7 +11,6 @@ export interface LocationUtilOptions {
 }
 export interface LocationUtils {
     keyed(location: LocationComponents, key: Key): SessionLocation;
-    generic_location(value: string | object, state?: any): LocationComponents;
-    stringify_location(location: SessionLocation): string;
-    stringify_location(location: PartialLocation): string;
+    location(value: string | object, state?: any): LocationComponents;
+    stringify(location: Hrefable): string;
 }

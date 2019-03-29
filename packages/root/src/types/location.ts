@@ -13,4 +13,4 @@ export interface SessionLocation extends LocationComponents {
   key: Key;
 }
 
-export type AnyLocation = SessionLocation | PartialLocation;
+export type Hrefable = PartialLocation | string;

@@ -5,7 +5,7 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  AnyLocation
+  Hrefable
 } from "@hickory/root";
 
 export {
@@ -14,12 +14,11 @@ export {
   History,
   SessionLocation,
   PartialLocation,
-  AnyLocation,
+  Hrefable,
   LocationComponents
 };
 
-export type InputLocation = string | PartialLocation;
-export type InputLocations = Array<InputLocation>;
+export type InputLocations = Array<Hrefable>;
 
 export interface SessionOptions {
   locations?: InputLocations;
@@ -32,5 +31,5 @@ export interface InMemoryHistory extends History {
 }
 
 export interface LocationOptions {
-  location: InputLocation;
+  location: Hrefable;
 }

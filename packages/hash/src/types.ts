@@ -5,7 +5,7 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  AnyLocation
+  Hrefable
 } from "@hickory/root";
 
 export {
@@ -14,7 +14,7 @@ export {
   History,
   SessionLocation,
   PartialLocation,
-  AnyLocation,
+  Hrefable,
   LocationComponents
 };
 

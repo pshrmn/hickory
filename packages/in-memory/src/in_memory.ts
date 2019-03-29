@@ -2,7 +2,7 @@ import { location_utils, key_generator, navigate_with } from "@hickory/root";
 
 import {
   SessionLocation,
-  AnyLocation,
+  Hrefable,
   ToArgument,
   ResponseHandler,
   NavType,
@@ -12,7 +12,6 @@ import {
 import {
   InMemoryOptions,
   InMemoryHistory,
-  InputLocation,
   InputLocations,
   SessionOptions
 } from "./types";
@@ -35,11 +34,8 @@ export function in_memory(
   function initialize_locations(
     locs: InputLocations = ["/"]
   ): Array<SessionLocation> {
-    return locs.map((loc: InputLocation) =>
-      location_utilities.keyed(
-        location_utilities.generic_location(loc),
-        keygen.major()
-      )
+    return locs.map((loc: Hrefable) =>
+      location_utilities.keyed(location_utilities.location(loc), keygen.major())
     );
   }
 
@@ -48,8 +44,8 @@ export function in_memory(
     index = -1;
   };
 
-  function to_href(location: AnyLocation): string {
-    return location_utilities.stringify_location(location);
+  function href(location: Hrefable): string {
+    return location_utilities.stringify(location);
   }
 
   let last_action: Action = "push";
@@ -98,7 +94,7 @@ export function in_memory(
       );
       emit_navigation(nav);
     },
-    to_href,
+    href,
     cancel() {
       cancel_pending();
     },

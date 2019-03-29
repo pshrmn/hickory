@@ -234,13 +234,13 @@ describe("go", () => {
   });
 });
 
-describe("to_href", () => {
+describe("href", () => {
   it("returns the location formatted as a string", () => {
     with_dom({ url: "http://example.com/#/one" }, ({ window }) => {
       const test_history = hash(pending => {
         pending.finish();
       });
-      const current_path = test_history.to_href({
+      const current_path = test_history.href({
         pathname: "/one",
         query: "test=query"
       });
@@ -257,7 +257,7 @@ describe("to_href", () => {
           const test_history = hash(pending => {
             pending.finish();
           });
-          expect(test_history.to_href(location)).toBe("#/simple-path");
+          expect(test_history.href(location)).toBe("#/simple-path");
         });
       });
     });
@@ -271,7 +271,7 @@ describe("to_href", () => {
             },
             { hash_type: "default" }
           );
-          expect(test_history.to_href(location)).toBe("#/simple-path");
+          expect(test_history.href(location)).toBe("#/simple-path");
         });
       });
     });
@@ -285,7 +285,7 @@ describe("to_href", () => {
             },
             { hash_type: "bang" }
           );
-          expect(test_history.to_href(location)).toBe("#!/simple-path");
+          expect(test_history.href(location)).toBe("#!/simple-path");
         });
       });
     });
@@ -299,7 +299,7 @@ describe("to_href", () => {
             },
             { hash_type: "clean" }
           );
-          expect(test_history.to_href(location)).toBe("#simple-path");
+          expect(test_history.href(location)).toBe("#simple-path");
         });
       });
     });

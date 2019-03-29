@@ -73,11 +73,11 @@ export default function navigation_handler(
   }
 
   function prepare(to: ToArgument, nav_type: NavType) {
-    const location = location_utils.generic_location(to);
+    const location = location_utils.location(to);
     switch (nav_type) {
       case "anchor":
-        return location_utils.stringify_location(location) ===
-          location_utils.stringify_location(current())
+        return location_utils.stringify(location) ===
+          location_utils.stringify(current())
           ? replace_nav(location)
           : push_nav(location);
       case "push":

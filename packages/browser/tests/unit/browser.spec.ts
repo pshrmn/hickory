@@ -120,13 +120,13 @@ describe("browser history.go", () => {
   });
 });
 
-describe("to_href", () => {
+describe("href", () => {
   it("returns the location formatted as a string", () => {
     with_dom({ url: "http://example.com/one" }, () => {
       const test_history = browser(pending => {
         pending.finish();
       });
-      const path = test_history.to_href({
+      const path = test_history.href({
         pathname: "/one",
         query: "test=query"
       });

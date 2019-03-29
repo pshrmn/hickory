@@ -1,7 +1,6 @@
-import { HistoryConstructor, HistoryOptions, History, LocationComponents, SessionLocation, PartialLocation, AnyLocation } from "@hickory/root";
-export { HistoryConstructor, HistoryOptions, History, SessionLocation, PartialLocation, AnyLocation, LocationComponents };
-export declare type InputLocation = string | PartialLocation;
-export declare type InputLocations = Array<InputLocation>;
+import { HistoryConstructor, HistoryOptions, History, LocationComponents, SessionLocation, PartialLocation, Hrefable } from "@hickory/root";
+export { HistoryConstructor, HistoryOptions, History, SessionLocation, PartialLocation, Hrefable, LocationComponents };
+export declare type InputLocations = Array<Hrefable>;
 export interface SessionOptions {
     locations?: InputLocations;
     index?: number;
@@ -11,5 +10,5 @@ export interface InMemoryHistory extends History {
     reset(options?: SessionOptions): void;
 }
 export interface LocationOptions {
-    location: InputLocation;
+    location: Hrefable;
 }
