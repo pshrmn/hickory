@@ -202,7 +202,7 @@ describe("locationFactory", () => {
         it("sets hash to empty string if none is provided", () => {
           const input = {
             pathname: "/test",
-            search: "one=two"
+            query: "one=two"
           };
           const output = location(input);
           expect(output.hash).toBe("");
@@ -294,11 +294,23 @@ describe("locationFactory", () => {
           });
           const loc = {
             pathname: "/one/two/three",
-            search: "",
+            query: "",
             hash: "four"
           };
           const path = stringify(loc);
           expect(path).toBe("/prefix/one/two/three#four");
+        });
+
+        it("does not include the base_segment if there is no pathname", () => {
+          const { stringify } = location_utils({
+            base_segment: "/prefix"
+          });
+          const loc = {
+            query: "?test=ing",
+            hash: "four"
+          };
+          const path = stringify(loc);
+          expect(path).toBe("?test=ing#four");
         });
       });
     });
@@ -391,27 +403,55 @@ describe("locationFactory", () => {
         expect(stringify("/test")).toBe("/test");
       });
 
-      describe("prefixed forward slash", () => {
+      describe("beginning with a pathname", () => {
         it("prefixes pathname that is missing a forward slash", () => {
           expect(stringify("test")).toBe("/test");
         });
 
-        it("does not prefix if string begins with a query", () => {
-          expect(stringify("?test=true")).toBe("?test=true");
-        });
-
-        it("does not prefix if string begins with a hash", () => {
-          expect(stringify("#test")).toBe("#test");
-        });
-      });
-
-      describe("base_segment", () => {
-        it("prefixes the string with the the base_segment", () => {
+        it("prefixes with base_segment", () => {
           const { stringify } = location_utils({
             base_segment: "/prefix"
           });
           const path = stringify("/one/two/three#four");
           expect(path).toBe("/prefix/one/two/three#four");
+        });
+
+        it("prefixes pathname when joining with base_segment", () => {
+          const { stringify } = location_utils({
+            base_segment: "/prefix"
+          });
+          const path = stringify("one");
+          expect(path).toBe("/prefix/one");
+        });
+      });
+
+      describe("beginning with a query", () => {
+        it("returns the provided string", () => {
+          const { stringify } = location_utils();
+          expect(stringify("?test=true")).toBe("?test=true");
+        });
+
+        it("if there is a base_segment, it is not prepended", () => {
+          const { stringify } = location_utils({
+            base_segment: "/prefix"
+          });
+          const path = stringify("?test=true");
+          expect(path).toBe("?test=true");
+        });
+      });
+
+      describe("beginning with a hash", () => {
+        it("returns the provided string", () => {
+          const { stringify } = location_utils();
+          expect(stringify("#test")).toBe("#test");
+        });
+
+        it("if there is a base_segment, it is not prepended", () => {
+          const { stringify } = location_utils({
+            base_segment: "/prefix"
+          });
+          const path = stringify("#test");
+          expect(path).toBe("#test");
         });
       });
     });

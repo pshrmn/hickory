@@ -131,17 +131,18 @@ export default function location_factory(
   function stringify(location: Hrefable): string {
     if (typeof location === "string") {
       const first_char = location.charAt(0);
-      let href = location;
-      if (first_char !== "/" && first_char !== "#" && first_char !== "?") {
-        href = complete_pathname(href);
+      // keep hash/query only strings relative
+      if (first_char === "#" || first_char === "?") {
+        return location;
       }
-      return base_segment + href;
+      return base_segment + complete_pathname(location);
     }
     // ensure that pathname begins with a forward slash, query begins
     // with a question mark, and hash begins with a pound sign
     return (
-      base_segment +
-      complete_pathname(location.pathname || "") +
+      (location.pathname !== undefined
+        ? base_segment + complete_pathname(location.pathname)
+        : "") +
       complete_query(stringify_query(location.query)) +
       complete_hash(location.hash)
     );
