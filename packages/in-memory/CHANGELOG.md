@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.8
 
 - Rename `to_href` to `href`.
 - `href` function can take a location object or a string.
