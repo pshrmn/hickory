@@ -27,7 +27,7 @@ The response handler function will be passed a "pending navigation" object. This
 
 - `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-- `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
 ## Properties
 
@@ -110,14 +110,14 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### to_href()
+### href()
 
 ```js
-history.to_href({ pathname: "/spamalot" });
+history.href({ pathname: "/spamalot" });
 // /spamalot
 ```
 
-The `to_href` function generates the string representation of the location object. This string will be prepended with the `base_segment` (if you provided one).
+The `href` function generates the string representation of the location object. This string will be prepended with the `base` (if you provided one).
 
 #### arguments
 
