@@ -12,7 +12,7 @@ import { LocationOptions } from "./types";
 
 function noop() {}
 
-export function create_server_history(
+export function reusable_server_history(
   factory_options: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
   const utils = location_utils(factory_options);
