@@ -6,12 +6,12 @@ A new history object is created for every render. Once a render is completed, th
 
 While the `in_memory` history could work, it is also more expensive than is necessary because it creates a full history object.
 
-The `create_server_history` function is used to create a lightweight history function. Note that that says function and not object. In your module, you will call `create_server_history` in the global scope. This will save you from having to re-create the object creation/stringifying functions for every new render.
+The `reusable_server_history` function is used to create a lightweight history function. In your module, you will call `reusable_server_history` in the global scope. The function call returns a history constructor, which is used to create a history instance. This will save you from having to re-create the object creation/stringifying functions for every new render.
 
 ```js
-import { create_server_history } from "@hickory/in-memory";
+import { reusable_server_history } from "@hickory/in-memory";
 
-const server_history = create_server_history();
+const server_history = reusable_server_history();
 
 function handler(req, res) {
   const history = server_history({ location: req.url });
