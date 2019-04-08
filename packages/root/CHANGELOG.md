@@ -1,3 +1,7 @@
+## Next
+
+- Rename `base_segment` option to `base`.
+
 ## 2.0.0-beta.9
 
 - `navigate_with` receives `utils`, not `location_utils`.

@@ -35,18 +35,18 @@ The response handler function will be passed a "pending navigation" object. This
 
   - `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
 
-- `base_segment` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
 
-**Note:** While you _can_ use the `base_segment` with a `hash` history, you probably should not. The `base_segment` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
+**Note:** While you _can_ use the `base` with a `hash` history, you probably should not. The `base` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
 
 ```js
-const history = hash({ base_segment: "/test" });
+const history = hash({ base: "/test" });
 ```
 
 The `/test` segment will be stripped from and included in the hash segment of the full URI.
 
 ```js
-const uri = history.to_href({ pathname: "/pathname" });
+const uri = history.href({ pathname: "/pathname" });
 // uri === '#/test/pathname'
 ```
 
@@ -133,14 +133,14 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### to_href()
+### href()
 
 ```js
-history.to_href({ pathname: "/spamalot" });
+history.href({ pathname: "/spamalot" });
 // #/spamalot
 ```
 
-The `to_href` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
+The `href` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
 
 #### arguments
 

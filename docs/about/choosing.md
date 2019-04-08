@@ -18,7 +18,7 @@ npm install @hickory/browser
 
 The browser history relies on the user's browser to handle keeping track of locations. It uses the [`window.history`](https://developer.mozilla.org/en-US/docs/Web/API/Window/history) API to update the internal list of visited locations. It also uses an event listener to detect navigation triggered outside of your application (e.g. the user pressing the browser's forward/back buttons).
 
-Whenever the browser history needs to create a location from the browser, it uses the `pathname`, `search`, and `hash` properties from `window.location` to create a path string. It then parses that string to create a location object. The parsing step is important because it will parse the search value to create the correct `query` value for your application. Parsing will also strip the `base_segment` off of the `pathname` (if you are using that feature).
+Whenever the browser history needs to create a location from the browser, it uses the `pathname`, `search`, and `hash` properties from `window.location` to create a path string. It then parses that string to create a location object. The parsing step is important because it will parse the search value to create the correct `query` value for your application. Parsing will also strip the `base` off of the `pathname` (if you are using that feature).
 
 ```js
 // the following window.location

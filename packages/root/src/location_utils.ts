@@ -13,11 +13,7 @@ import {
   Key
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
-import {
-  LocationUtilOptions,
-  LocationUtils,
-  VerifyPathname
-} from "./types/location_utils";
+import { LocationUtilOptions, LocationUtils } from "./types/location_utils";
 
 function default_parse_query(query?: string): any {
   return query ? query : "";
@@ -27,11 +23,11 @@ function default_stringify_query(query?: any): string {
   return query ? query : "";
 }
 
-function is_valid_base(base_segment: string): boolean {
+function is_valid_base(base: string): boolean {
   return (
-    typeof base_segment === "string" &&
-    base_segment.charAt(0) === "/" &&
-    base_segment.charAt(base_segment.length - 1) !== "/"
+    typeof base === "string" &&
+    base.charAt(0) === "/" &&
+    base.charAt(base.length - 1) !== "/"
   );
 }
 
@@ -43,15 +39,15 @@ export default function location_factory(
       parse: parse_query = default_parse_query,
       stringify: stringify_query = default_stringify_query
     } = {},
-    base_segment = ""
+    base = ""
   } = options;
 
-  if (base_segment !== "" && !is_valid_base(base_segment)) {
+  if (base !== "" && !is_valid_base(base)) {
     throw new Error(
-      'The base_segment "' +
-        base_segment +
+      'The base segment "' +
+        base +
         '" is not valid.' +
-        " The base_segment must begin with a forward slash and end with a" +
+        ' The "base" option must begin with a forward slash and end with a' +
         " non-forward slash character."
     );
   }
@@ -76,7 +72,7 @@ export default function location_factory(
       query = parse_query();
     }
 
-    const pathname = strip_base_segment(value, base_segment);
+    const pathname = strip_base_segment(value, base);
 
     const details: LocationComponents = {
       hash,
@@ -134,7 +130,7 @@ export default function location_factory(
         if (first_char === "#" || first_char === "?") {
           return location;
         }
-        return base_segment + complete_pathname(location);
+        return base + complete_pathname(location);
       }
       // Ensure that pathname begins with a forward slash, query begins
       // with a question mark, and hash begins with a pound sign.
@@ -142,7 +138,7 @@ export default function location_factory(
       // start with the receive the base segment.
       return (
         (location.pathname !== undefined
-          ? base_segment + complete_pathname(location.pathname)
+          ? base + complete_pathname(location.pathname)
           : "") +
         complete_query(stringify_query(location.query)) +
         complete_hash(location.hash)

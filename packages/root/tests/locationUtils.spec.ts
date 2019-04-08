@@ -6,12 +6,12 @@ import { SessionLocation, Key } from "../src/types";
 
 describe("locationFactory", () => {
   describe("constructor", () => {
-    it("throws when attempting to use an invalid base_segment", () => {
+    it("throws when attempting to use an invalid base", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
           const creators = location_utils({
-            base_segment: value
+            base: value
           });
         }).toThrow();
       });
@@ -75,12 +75,12 @@ describe("locationFactory", () => {
           expect(loc.pathname).toBe("/pathname");
         });
 
-        describe("base_segment", () => {
+        describe("base", () => {
           const { location } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
 
-          it("strips the base_segment off of the string", () => {
+          it("strips the base off of the string", () => {
             const loc = location("/prefix/this/is/the/rest");
             expect(loc.pathname).toBe("/this/is/the/rest");
           });
@@ -287,10 +287,10 @@ describe("locationFactory", () => {
         expect(output).toBe("/test");
       });
 
-      describe("base_segment", () => {
-        it("adds the base_segment to the generated string", () => {
+      describe("base", () => {
+        it("adds the base to the generated string", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const loc = {
             pathname: "/one/two/three",
@@ -301,9 +301,9 @@ describe("locationFactory", () => {
           expect(path).toBe("/prefix/one/two/three#four");
         });
 
-        it("does not include the base_segment if there is no pathname", () => {
+        it("does not include the base if there is no pathname", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const loc = {
             query: "?test=ing",
@@ -408,17 +408,17 @@ describe("locationFactory", () => {
           expect(stringify("test")).toBe("/test");
         });
 
-        it("prefixes with base_segment", () => {
+        it("prefixes with base", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const path = stringify("/one/two/three#four");
           expect(path).toBe("/prefix/one/two/three#four");
         });
 
-        it("prefixes pathname when joining with base_segment", () => {
+        it("prefixes pathname when joining with base", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const path = stringify("one");
           expect(path).toBe("/prefix/one");
@@ -431,9 +431,9 @@ describe("locationFactory", () => {
           expect(stringify("?test=true")).toBe("?test=true");
         });
 
-        it("if there is a base_segment, it is not prepended", () => {
+        it("if there is a base, it is not prepended", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const path = stringify("?test=true");
           expect(path).toBe("?test=true");
@@ -446,9 +446,9 @@ describe("locationFactory", () => {
           expect(stringify("#test")).toBe("#test");
         });
 
-        it("if there is a base_segment, it is not prepended", () => {
+        it("if there is a base, it is not prepended", () => {
           const { stringify } = location_utils({
-            base_segment: "/prefix"
+            base: "/prefix"
           });
           const path = stringify("#test");
           expect(path).toBe("#test");
