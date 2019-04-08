@@ -30,7 +30,7 @@ export function hash(
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
-  const location_utilities = location_utils(options);
+  const utils = location_utils(options);
   const keygen = key_generator();
 
   const {
@@ -49,11 +49,11 @@ export function hash(
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    return location_utilities.keyed(location_utilities.location(path), key);
+    return utils.keyed(utils.location(path), key);
   }
 
   function href(location: Hrefable): string {
-    return encode_hash_path(location_utilities.stringify(location));
+    return encode_hash_path(utils.stringify(location));
   }
 
   let last_action: Action =
@@ -66,7 +66,7 @@ export function hash(
     prepare
   } = navigate_with({
     response_handler: fn,
-    location_utils: location_utilities,
+    utils,
     keygen,
     current: () => hash_history.location,
     push: {
@@ -114,22 +114,23 @@ export function hash(
     const location: SessionLocation = location_from_browser(event.state);
     const diff = hash_history.location.key[0] - location.key[0];
 
-    const navigation = create_navigation(
-      location,
-      "pop",
-      () => {
-        hash_history.location = location;
-        last_action = "pop";
-      },
-      (next_action?: Action) => {
-        if (next_action === "pop") {
-          return;
+    emit_navigation(
+      create_navigation(
+        location,
+        "pop",
+        () => {
+          hash_history.location = location;
+          last_action = "pop";
+        },
+        (next_action?: Action) => {
+          if (next_action === "pop") {
+            return;
+          }
+          reverting = true;
+          window.history.go(diff);
         }
-        reverting = true;
-        window.history.go(diff);
-      }
+      )
     );
-    emit_navigation(navigation);
   }
 
   window.addEventListener("popstate", popstate, false);
@@ -137,13 +138,9 @@ export function hash(
   const hash_history: HashHistory = {
     location: location_from_browser(),
     current() {
-      const nav = create_navigation(
-        hash_history.location,
-        last_action,
-        noop,
-        noop
+      emit_navigation(
+        create_navigation(hash_history.location, last_action, noop, noop)
       );
-      emit_navigation(nav);
     },
     href,
     cancel() {

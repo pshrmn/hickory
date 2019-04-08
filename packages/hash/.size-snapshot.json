@@ -1,8 +1,8 @@
 {
   "dist/hickory-hash.es.js": {
-    "bundled": 6947,
-    "minified": 2659,
-    "gzipped": 1014,
+    "bundled": 6807,
+    "minified": 2638,
+    "gzipped": 1007,
     "treeshaked": {
       "rollup": {
         "code": 81,
@@ -14,18 +14,18 @@
     }
   },
   "dist/hickory-hash.js": {
-    "bundled": 7138,
-    "minified": 2841,
-    "gzipped": 1066
+    "bundled": 6998,
+    "minified": 2820,
+    "gzipped": 1058
   },
   "dist/hickory-hash.umd.js": {
-    "bundled": 17739,
-    "minified": 4968,
-    "gzipped": 1959
+    "bundled": 17546,
+    "minified": 4888,
+    "gzipped": 1940
   },
   "dist/hickory-hash.min.js": {
-    "bundled": 17739,
-    "minified": 4968,
-    "gzipped": 1959
+    "bundled": 17546,
+    "minified": 4888,
+    "gzipped": 1940
   }
 }

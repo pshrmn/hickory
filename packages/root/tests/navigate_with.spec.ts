@@ -69,7 +69,7 @@ describe("navigate_with", () => {
           response_handler: pending => {
             pending.finish();
           },
-          location_utils: utils,
+          utils,
           keygen,
           ...rest
         });
@@ -103,7 +103,7 @@ describe("navigate_with", () => {
           response_handler: pending => {
             pending.finish();
           },
-          location_utils: utils,
+          utils,
           keygen,
           ...rest
         });
@@ -138,7 +138,7 @@ describe("navigate_with", () => {
           response_handler: pending => {
             pending.finish();
           },
-          location_utils: utils,
+          utils,
           keygen,
           ...rest
         });
@@ -173,7 +173,7 @@ describe("navigate_with", () => {
           response_handler: pending => {
             pending.finish();
           },
-          location_utils: utils,
+          utils,
           keygen,
           ...rest
         });
@@ -207,7 +207,7 @@ describe("navigate_with", () => {
         const handler = jest.fn();
         const { prepare } = navigate_with({
           response_handler: handler,
-          location_utils: utils,
+          utils,
           keygen,
           ...rest
         });
@@ -228,7 +228,7 @@ describe("navigate_with", () => {
       const handler = jest.fn();
       const { create_navigation } = navigate_with({
         response_handler: handler,
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -249,7 +249,7 @@ describe("navigate_with", () => {
       const handler = jest.fn();
       const { emit_navigation, prepare } = navigate_with({
         response_handler: handler,
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -275,7 +275,7 @@ describe("navigate_with", () => {
           cancel_pending("pop");
           expect(cancel.mock.calls.length).toBe(1);
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -316,7 +316,7 @@ describe("navigate_with", () => {
               expect(finish_one.mock.calls.length).toBe(0);
           }
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -352,7 +352,7 @@ describe("navigate_with", () => {
           pending.finish();
           expect(finish_one.mock.calls.length).toBe(1);
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -380,7 +380,7 @@ describe("navigate_with", () => {
           pending.finish();
           expect(finish_one.mock.calls.length).toBe(0);
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -421,7 +421,7 @@ describe("navigate_with", () => {
               expect(cancel_one.mock.calls.length).toBe(0);
           }
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -457,7 +457,7 @@ describe("navigate_with", () => {
           pending.cancel();
           expect(cancel_one.mock.calls.length).toBe(1);
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });
@@ -485,7 +485,7 @@ describe("navigate_with", () => {
           pending.cancel();
           expect(cancel_one.mock.calls.length).toBe(1);
         },
-        location_utils: utils,
+        utils,
         keygen,
         ...rest
       });

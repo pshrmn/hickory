@@ -1,3 +1,8 @@
+## Next
+
+- `navigate_with` receives `utils`, not `location_utils`.
+- Internal cleanup
+
 ## 2.0.0-beta.8
 
 - The `stringify` function from `location_utils` can receive a location object or a string.
