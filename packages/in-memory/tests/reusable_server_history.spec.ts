@@ -1,11 +1,11 @@
 import "jest";
 import * as qs from "qs";
 
-import { create_server_history } from "../src";
+import { reusable_server_history } from "../src";
 
-describe("create_server_history", () => {
+describe("reusable_server_history", () => {
   it("works with string locations", () => {
-    const history = create_server_history();
+    const history = reusable_server_history();
     const test_history = history(
       pending => {
         pending.finish();
@@ -21,7 +21,7 @@ describe("create_server_history", () => {
   });
 
   it("works with object locations", () => {
-    const history = create_server_history();
+    const history = reusable_server_history();
     const test_history = history(
       pending => {
         pending.finish();
@@ -37,7 +37,7 @@ describe("create_server_history", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const history = create_server_history();
+    const history = reusable_server_history();
     const test_history = history(
       pending => {
         expect(pending.action).toBe("push");
@@ -50,7 +50,7 @@ describe("create_server_history", () => {
   });
 
   it("sets key to [0,0]", () => {
-    const history = create_server_history();
+    const history = reusable_server_history();
     const test_history = history(
       pending => {
         expect(pending.location.key).toEqual([0, 0]);
@@ -63,7 +63,7 @@ describe("create_server_history", () => {
   });
 
   it("uses the provided query parsing function to make the query value", () => {
-    const history = create_server_history({
+    const history = reusable_server_history({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
@@ -84,7 +84,7 @@ describe("create_server_history", () => {
 describe("no-op functions", () => {
   describe("go", () => {
     it("doesn't throw", () => {
-      const history = create_server_history();
+      const history = reusable_server_history();
       const test_history = history(
         pending => {
           pending.finish();
@@ -101,7 +101,7 @@ describe("no-op functions", () => {
 
   describe("navigate", () => {
     it("doesn't throw", () => {
-      const history = create_server_history();
+      const history = reusable_server_history();
       const test_history = history(
         pending => {
           pending.finish();
@@ -118,7 +118,7 @@ describe("no-op functions", () => {
 
   describe("cancel", () => {
     it("doesn't throw", () => {
-      const history = create_server_history();
+      const history = reusable_server_history();
       const test_history = history(
         pending => {
           pending.finish();
@@ -136,7 +136,7 @@ describe("no-op functions", () => {
 
 describe("href", () => {
   it("returns the location formatted as a string", () => {
-    const history = create_server_history();
+    const history = reusable_server_history();
     const test_history = history(
       pending => {
         pending.finish();
@@ -150,7 +150,7 @@ describe("href", () => {
   });
 
   it("uses the provided query stringifying function to stringify the query value", () => {
-    const history = create_server_history({
+    const history = reusable_server_history({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
