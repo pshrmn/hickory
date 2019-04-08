@@ -5,12 +5,9 @@ export interface QueryFunctions {
   stringify: (query?: any) => string;
 }
 
-export type VerifyPathname = (pathname: string) => boolean;
-
 export interface LocationUtilOptions {
   query?: QueryFunctions;
-  base_segment?: string;
-  pathname?: VerifyPathname;
+  base?: string;
 }
 
 export interface LocationUtils {
