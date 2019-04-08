@@ -27,7 +27,7 @@ export interface FinishCancel {
 
 export interface NavigateArgs {
   response_handler: ResponseHandler;
-  location_utils: LocationUtils;
+  utils: LocationUtils;
   keygen: KeyFns;
   current(): SessionLocation;
   push: FinishCancel;

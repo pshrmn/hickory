@@ -56,7 +56,7 @@ export default function location_factory(
     );
   }
 
-  function parse_path(value: string, state: any): LocationComponents {
+  function from_string(value: string, state: any): LocationComponents {
     // hash is always after query, so split it off first
     const hash_index = value.indexOf("#");
     let hash;
@@ -91,7 +91,7 @@ export default function location_factory(
     return details;
   }
 
-  function get_details(
+  function from_object(
     partial: PartialLocation,
     state: any
   ): LocationComponents {
@@ -110,43 +110,43 @@ export default function location_factory(
     return details;
   }
 
-  function location(value: ToArgument, state?: any): LocationComponents {
-    if (state === undefined) {
-      state = null;
-    }
-    const location =
-      typeof value === "string"
-        ? parse_path(value, state)
-        : get_details(value, state);
-    return location;
-  }
-
-  function keyed(location: LocationComponents, key: Key): SessionLocation {
-    return {
-      ...location,
-      key
-    };
-  }
-
-  function stringify(location: Hrefable): string {
-    if (typeof location === "string") {
-      const first_char = location.charAt(0);
-      // keep hash/query only strings relative
-      if (first_char === "#" || first_char === "?") {
-        return location;
+  return {
+    location(value: ToArgument, state?: any): LocationComponents {
+      if (state === undefined) {
+        state = null;
       }
-      return base_segment + complete_pathname(location);
+      const location =
+        typeof value === "string"
+          ? from_string(value, state)
+          : from_object(value, state);
+      return location;
+    },
+    keyed(location: LocationComponents, key: Key): SessionLocation {
+      return {
+        ...location,
+        key
+      };
+    },
+    stringify(location: Hrefable): string {
+      if (typeof location === "string") {
+        const first_char = location.charAt(0);
+        // keep hash/query only strings relative
+        if (first_char === "#" || first_char === "?") {
+          return location;
+        }
+        return base_segment + complete_pathname(location);
+      }
+      // Ensure that pathname begins with a forward slash, query begins
+      // with a question mark, and hash begins with a pound sign.
+      // If there is no pathname, it is relative and shouldn't
+      // start with the receive the base segment.
+      return (
+        (location.pathname !== undefined
+          ? base_segment + complete_pathname(location.pathname)
+          : "") +
+        complete_query(stringify_query(location.query)) +
+        complete_hash(location.hash)
+      );
     }
-    // ensure that pathname begins with a forward slash, query begins
-    // with a question mark, and hash begins with a pound sign
-    return (
-      (location.pathname !== undefined
-        ? base_segment + complete_pathname(location.pathname)
-        : "") +
-      complete_query(stringify_query(location.query)) +
-      complete_hash(location.hash)
-    );
-  }
-
-  return { location, keyed, stringify };
+  };
 }

@@ -22,7 +22,7 @@ export function in_memory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): InMemoryHistory {
-  const location_utilities = location_utils(options);
+  const utils = location_utils(options);
   const keygen = key_generator();
 
   let locations = initialize_locations(options.locations);
@@ -35,7 +35,7 @@ export function in_memory(
     locs: InputLocations = ["/"]
   ): Array<SessionLocation> {
     return locs.map((loc: Hrefable) =>
-      location_utilities.keyed(location_utilities.location(loc), keygen.major())
+      utils.keyed(utils.location(loc), keygen.major())
     );
   }
 
@@ -45,7 +45,7 @@ export function in_memory(
   };
 
   function href(location: Hrefable): string {
-    return location_utilities.stringify(location);
+    return utils.stringify(location);
   }
 
   let last_action: Action = "push";
@@ -57,7 +57,7 @@ export function in_memory(
     prepare
   } = navigate_with({
     response_handler: fn,
-    location_utils: location_utilities,
+    utils,
     keygen,
     current: () => memory_history.location,
     push: {
@@ -86,13 +86,9 @@ export function in_memory(
   const memory_history: InMemoryHistory = {
     location: locations[index],
     current() {
-      const nav = create_navigation(
-        memory_history.location,
-        last_action,
-        noop,
-        noop
+      emit_navigation(
+        create_navigation(memory_history.location, last_action, noop, noop)
       );
-      emit_navigation(nav);
     },
     href,
     cancel() {
@@ -108,15 +104,16 @@ export function in_memory(
     },
     go(num?: number): void {
       if (num == null || num === 0) {
-        const navigation = create_navigation(
-          memory_history.location,
-          "pop",
-          () => {
-            last_action = "pop";
-          },
-          noop
+        emit_navigation(
+          create_navigation(
+            memory_history.location,
+            "pop",
+            () => {
+              last_action = "pop";
+            },
+            noop
+          )
         );
-        emit_navigation(navigation);
       } else {
         const original_index = index;
         const new_index = original_index + num;
@@ -128,21 +125,22 @@ export function in_memory(
         index = new_index;
 
         const location: SessionLocation = locations[new_index];
-        const navigation = create_navigation(
-          location,
-          "pop",
-          () => {
-            memory_history.location = location;
-            last_action = "pop";
-          },
-          (next_action?: Action) => {
-            if (next_action === "pop") {
-              return;
+        emit_navigation(
+          create_navigation(
+            location,
+            "pop",
+            () => {
+              memory_history.location = location;
+              last_action = "pop";
+            },
+            (next_action?: Action) => {
+              if (next_action === "pop") {
+                return;
+              }
+              index = original_index;
             }
-            index = original_index;
-          }
+          )
         );
-        emit_navigation(navigation);
       }
     },
     reset(options: SessionOptions = {}) {
@@ -152,13 +150,9 @@ export function in_memory(
       last_action = "push";
 
       cancel_pending();
-      const navigation = create_navigation(
-        memory_history.location,
-        last_action,
-        noop,
-        noop
+      emit_navigation(
+        create_navigation(memory_history.location, last_action, noop, noop)
       );
-      emit_navigation(navigation);
     }
   };
 

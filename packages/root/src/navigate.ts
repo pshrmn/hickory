@@ -13,14 +13,7 @@ import {
 export default function navigation_handler(
   args: NavigateArgs
 ): NavigateHelpers {
-  const {
-    response_handler,
-    location_utils,
-    keygen,
-    current,
-    push,
-    replace
-  } = args;
+  const { response_handler, utils, keygen, current, push, replace } = args;
   let pending: PendingNavigation | undefined;
 
   function create_navigation(
@@ -33,22 +26,14 @@ export default function navigation_handler(
       location,
       action,
       finish() {
-        if (
-          navigation.cancelled ||
-          pending === undefined ||
-          pending !== navigation
-        ) {
+        if (pending !== navigation) {
           return;
         }
         finish();
         pending = undefined;
       },
       cancel(next_action?: Action) {
-        if (
-          navigation.cancelled ||
-          pending === undefined ||
-          pending !== navigation
-        ) {
+        if (pending !== navigation) {
           return;
         }
         cancel(next_action);
@@ -73,11 +58,10 @@ export default function navigation_handler(
   }
 
   function prepare(to: ToArgument, nav_type: NavType) {
-    const location = location_utils.location(to);
+    const location = utils.location(to);
     switch (nav_type) {
       case "anchor":
-        return location_utils.stringify(location) ===
-          location_utils.stringify(current())
+        return utils.stringify(location) === utils.stringify(current())
           ? replace_nav(location)
           : push_nav(location);
       case "push":
@@ -90,10 +74,7 @@ export default function navigation_handler(
   }
 
   function replace_nav(location: LocationComponents): PendingNavigation {
-    const keyed_location = location_utils.keyed(
-      location,
-      keygen.minor(current().key)
-    );
+    const keyed_location = utils.keyed(location, keygen.minor(current().key));
     return create_navigation(
       keyed_location,
       "replace",
@@ -103,10 +84,7 @@ export default function navigation_handler(
   }
 
   function push_nav(location: LocationComponents): PendingNavigation {
-    const keyed_location = location_utils.keyed(
-      location,
-      keygen.major(current().key)
-    );
+    const keyed_location = utils.keyed(location, keygen.major(current().key));
     return create_navigation(
       keyed_location,
       "push",

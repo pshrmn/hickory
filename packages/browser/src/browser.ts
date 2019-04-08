@@ -27,7 +27,7 @@ export function browser(
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
-  const location_utilities = location_utils(options);
+  const utils = location_utils(options);
   const keygen = key_generator();
 
   function location_from_browser(provided_state?: object): SessionLocation {
@@ -38,12 +38,12 @@ export function browser(
       key = keygen.major();
       window.history.replaceState({ key, state }, "", path);
     }
-    const location = location_utilities.location(path, state);
-    return location_utilities.keyed(location, key);
+    const location = utils.location(path, state);
+    return utils.keyed(location, key);
   }
 
   function href(location: Hrefable): string {
-    return location_utilities.stringify(location);
+    return utils.stringify(location);
   }
 
   // set action before location because location_from_browser enforces
@@ -58,7 +58,7 @@ export function browser(
     prepare
   } = navigate_with({
     response_handler: fn,
-    location_utils: location_utilities,
+    utils,
     keygen,
     current: () => browser_history.location,
     push: {
@@ -109,23 +109,23 @@ export function browser(
 
     const location = location_from_browser(event.state);
     const diff = browser_history.location.key[0] - location.key[0];
-    const navigation = create_navigation(
-      location,
-      "pop",
-      () => {
-        browser_history.location = location;
-        last_action = "pop";
-      },
-      (next_action?: Action) => {
-        if (next_action === "pop") {
-          return;
+    emit_navigation(
+      create_navigation(
+        location,
+        "pop",
+        () => {
+          browser_history.location = location;
+          last_action = "pop";
+        },
+        (next_action?: Action) => {
+          if (next_action === "pop") {
+            return;
+          }
+          reverting = true;
+          window.history.go(diff);
         }
-        reverting = true;
-        window.history.go(diff);
-      }
+      )
     );
-
-    emit_navigation(navigation);
   }
 
   window.addEventListener("popstate", popstate, false);
@@ -133,13 +133,9 @@ export function browser(
   const browser_history: BrowserHistory = {
     location: location_from_browser(),
     current() {
-      const nav = create_navigation(
-        browser_history.location,
-        last_action,
-        noop,
-        noop
+      emit_navigation(
+        create_navigation(browser_history.location, last_action, noop, noop)
       );
-      emit_navigation(nav);
     },
     href,
     cancel() {
