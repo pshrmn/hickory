@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.9
 
 - Rename `create_server_history` to `reusable_server_history`.
 - Clean up internals
