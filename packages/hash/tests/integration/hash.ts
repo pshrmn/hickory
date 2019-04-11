@@ -2,7 +2,7 @@
 import { hash } from "../../src/hash";
 
 describe("hash integration tests", () => {
-  let test_history;
+  let testHistory;
 
   beforeEach(() => {
     // we cannot fully reset the history, but this can give us a blank state
@@ -10,7 +10,7 @@ describe("hash integration tests", () => {
   });
 
   afterEach(() => {
-    test_history.destroy();
+    testHistory.destroy();
   });
 
   describe("navigate()", () => {
@@ -25,25 +25,25 @@ describe("hash integration tests", () => {
     });
 
     it("new URL is encoded", () => {
-      test_history = hash(pending => {
+      testHistory = hash(pending => {
         pending.finish();
       });
-      test_history.navigate(
+      testHistory.navigate(
         {
           pathname: "/encoded-percent%25"
         },
         "push"
       );
       expect(window.location.hash).toEqual("#/encoded-percent%25");
-      expect(test_history.location.pathname).toEqual("/encoded-percent%25");
+      expect(testHistory.location.pathname).toEqual("/encoded-percent%25");
     });
 
     describe("push navigation", () => {
       it("uses history.pushState", () => {
-        test_history = hash(pending => {
+        testHistory = hash(pending => {
           pending.finish();
         });
-        test_history.navigate("/a-new-position", "push");
+        testHistory.navigate("/a-new-position", "push");
         expect(window.location.hash).toEqual("#/a-new-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -52,18 +52,18 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = hash(pending => {
+        testHistory = hash(pending => {
           pending.finish();
         });
-        const provided_state = { is_set: true };
-        test_history.navigate(
+        const providedState = { isSet: true };
+        testHistory.navigate(
           {
             pathname: "/next",
-            state: provided_state
+            state: providedState
           },
           "push"
         );
-        const { state, key } = test_history.location;
+        const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
         expect(window.history.state.key).toEqual(key);
       });
@@ -71,10 +71,10 @@ describe("hash integration tests", () => {
 
     describe("replace navigation", () => {
       it("uses history.replaceState", () => {
-        test_history = hash(pending => {
+        testHistory = hash(pending => {
           pending.finish();
         });
-        test_history.navigate("/the-same-position", "replace");
+        testHistory.navigate("/the-same-position", "replace");
         expect(window.location.hash).toEqual("#/the-same-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -83,18 +83,18 @@ describe("hash integration tests", () => {
       });
 
       it("sets the state", () => {
-        test_history = hash(pending => {
+        testHistory = hash(pending => {
           pending.finish();
         });
-        const provided_state = { is_set: true };
-        test_history.navigate(
+        const providedState = { isSet: true };
+        testHistory.navigate(
           {
             pathname: "/next",
-            state: provided_state
+            state: providedState
           },
           "replace"
         );
-        const { state, key } = test_history.location;
+        const { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
         expect(window.history.state.key).toEqual(key);
       });
@@ -104,54 +104,54 @@ describe("hash integration tests", () => {
   describe("go", () => {
     it("is detectable through a popstate listener", done => {
       let calls = 0;
-      test_history = hash(pending => {
-        let local_history = test_history;
+      testHistory = hash(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
-            local_history.navigate("/eins", "push");
+            localHistory.navigate("/eins", "push");
             break;
           case 1:
             pending.finish();
-            local_history.navigate("/zwei", "push");
+            localHistory.navigate("/zwei", "push");
             break;
           case 2:
             pending.finish();
-            local_history.navigate("/drei", "push");
+            localHistory.navigate("/drei", "push");
             break;
           case 3:
             pending.finish();
-            local_history.go(-2);
+            localHistory.go(-2);
             break;
           case 4:
             pending.finish();
             expect(pending.location.pathname).toEqual("/eins");
 
-            local_history.destroy();
+            localHistory.destroy();
             done();
         }
       });
-      test_history.current();
+      testHistory.current();
     });
   });
 
   describe("browser navigation", () => {
     it("can detect navigation triggered by the browser", done => {
       let calls = 0;
-      test_history = hash(pending => {
-        let local_history = test_history;
+      testHistory = hash(pending => {
+        let localHistory = testHistory;
         switch (calls++) {
           case 0:
             pending.finish();
-            local_history.navigate("/uno", "push");
+            localHistory.navigate("/uno", "push");
             break;
           case 1:
             pending.finish();
-            local_history.navigate("/dos", "push");
+            localHistory.navigate("/dos", "push");
             break;
           case 2:
             pending.finish();
-            local_history.navigate("/tres", "push");
+            localHistory.navigate("/tres", "push");
             break;
           case 3:
             pending.finish();
@@ -161,11 +161,11 @@ describe("hash integration tests", () => {
             pending.finish();
             expect(pending.location.pathname).toEqual("/uno");
 
-            local_history.destroy();
+            localHistory.destroy();
             done();
         }
       });
-      test_history.current();
+      testHistory.current();
     });
   });
 });

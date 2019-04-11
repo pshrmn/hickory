@@ -1,9 +1,9 @@
 # In Memory API
 
 ```js
-import { in_memory } from "@hickory/in-memory";
+import { inMemory } from "@hickory/in-memory";
 
-const history = in_memory(responseHandler, options);
+const history = inMemory(responseHandler, options);
 ```
 
 ## Response Handler

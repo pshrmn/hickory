@@ -1,4 +1,4 @@
-import { strip_prefix, ensure_begins_with } from "@hickory/location-utils";
+import { stripPrefix, ensureBeginsWith } from "@hickory/location-utils";
 
 const DEFAULT = "default";
 const CLEAN = "clean";
@@ -12,7 +12,7 @@ export interface EncodingFns {
 // no matter with type of hash configuration we are using,
 // our decode function should return a string that begins
 // with a forward slash
-export default function hash_encoder_and_decoder(
+export default function hashEncoderAndDecoder(
   type: string = DEFAULT
 ): EncodingFns {
   switch (type) {
@@ -23,42 +23,42 @@ export default function hash_encoder_and_decoder(
           // slash because the hash needs at least one character after the
           // pound sign. We do the same even if there is a query or hash
           // for consistency.
-          let no_slash = strip_prefix(path, "/");
+          let noSlash = stripPrefix(path, "/");
           if (
-            no_slash === "" ||
-            no_slash.charAt(0) === "?" ||
-            no_slash.charAt(0) === "#"
+            noSlash === "" ||
+            noSlash.charAt(0) === "?" ||
+            noSlash.charAt(0) === "#"
           ) {
-            no_slash = "/" + no_slash;
+            noSlash = "/" + noSlash;
           }
-          return "#" + no_slash;
+          return "#" + noSlash;
         },
         decode: (path: string): string => {
-          const no_hash = strip_prefix(path, "#");
-          return ensure_begins_with(no_hash, "/");
+          const noHash = stripPrefix(path, "#");
+          return ensureBeginsWith(noHash, "/");
         }
       };
     case BANG:
       return {
         encode: (path: string): string => {
-          const withSlash = ensure_begins_with(path, "/");
-          return "#" + ensure_begins_with(withSlash, "!");
+          const withSlash = ensureBeginsWith(path, "/");
+          return "#" + ensureBeginsWith(withSlash, "!");
         },
         decode: (path: string): string => {
-          const no_hash = strip_prefix(path, "#");
-          const noBang = strip_prefix(no_hash, "!");
-          return ensure_begins_with(noBang, "/");
+          const noHash = stripPrefix(path, "#");
+          const noBang = stripPrefix(noHash, "!");
+          return ensureBeginsWith(noBang, "/");
         }
       };
     case DEFAULT:
     default:
       return {
         encode: (path: string): string => {
-          return "#" + ensure_begins_with(path, "/");
+          return "#" + ensureBeginsWith(path, "/");
         },
         decode: (path: string): string => {
-          const no_hash = strip_prefix(path, "#");
-          return ensure_begins_with(no_hash, "/");
+          const noHash = stripPrefix(path, "#");
+          return ensureBeginsWith(noHash, "/");
         }
       };
   }

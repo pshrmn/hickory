@@ -1,12 +1,12 @@
 import "jest";
 import * as qs from "qs";
 
-import { reusable_server_history } from "../src";
+import { createReusable } from "../src";
 
-describe("reusable_server_history", () => {
+describe("createReusable", () => {
   it("works with string locations", () => {
-    const history = reusable_server_history();
-    const test_history = history(
+    const history = createReusable();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -14,15 +14,15 @@ describe("reusable_server_history", () => {
         location: "/one#step"
       }
     );
-    expect(test_history.location).toMatchObject({
+    expect(testHistory.location).toMatchObject({
       pathname: "/one",
       hash: "step"
     });
   });
 
   it("works with object locations", () => {
-    const history = reusable_server_history();
-    const test_history = history(
+    const history = createReusable();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -30,15 +30,15 @@ describe("reusable_server_history", () => {
         location: { pathname: "/two", hash: "daloo" }
       }
     );
-    expect(test_history.location).toMatchObject({
+    expect(testHistory.location).toMatchObject({
       pathname: "/two",
       hash: "daloo"
     });
   });
 
   it('sets initial action to "push"', () => {
-    const history = reusable_server_history();
-    const test_history = history(
+    const history = createReusable();
+    const testHistory = history(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -50,8 +50,8 @@ describe("reusable_server_history", () => {
   });
 
   it("sets key to [0,0]", () => {
-    const history = reusable_server_history();
-    const test_history = history(
+    const history = createReusable();
+    const testHistory = history(
       pending => {
         expect(pending.location.key).toEqual([0, 0]);
         pending.finish();
@@ -63,13 +63,13 @@ describe("reusable_server_history", () => {
   });
 
   it("uses the provided query parsing function to make the query value", () => {
-    const history = reusable_server_history({
+    const history = createReusable({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const test_history = history(
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -77,15 +77,15 @@ describe("reusable_server_history", () => {
         location: "/pathname?query=this#hash"
       }
     );
-    expect(test_history.location.query).toEqual({ query: "this" });
+    expect(testHistory.location.query).toEqual({ query: "this" });
   });
 });
 
 describe("no-op functions", () => {
   describe("go", () => {
     it("doesn't throw", () => {
-      const history = reusable_server_history();
-      const test_history = history(
+      const history = createReusable();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -94,15 +94,15 @@ describe("no-op functions", () => {
         }
       );
       expect(() => {
-        test_history.go(-1);
+        testHistory.go(-1);
       }).not.toThrow();
     });
   });
 
   describe("navigate", () => {
     it("doesn't throw", () => {
-      const history = reusable_server_history();
-      const test_history = history(
+      const history = createReusable();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -111,15 +111,15 @@ describe("no-op functions", () => {
         }
       );
       expect(() => {
-        test_history.navigate("/elsewhere");
+        testHistory.navigate("/elsewhere");
       }).not.toThrow();
     });
   });
 
   describe("cancel", () => {
     it("doesn't throw", () => {
-      const history = reusable_server_history();
-      const test_history = history(
+      const history = createReusable();
+      const testHistory = history(
         pending => {
           pending.finish();
         },
@@ -128,7 +128,7 @@ describe("no-op functions", () => {
         }
       );
       expect(() => {
-        test_history.cancel();
+        testHistory.cancel();
       }).not.toThrow();
     });
   });
@@ -136,8 +136,8 @@ describe("no-op functions", () => {
 
 describe("href", () => {
   it("returns the location formatted as a string", () => {
-    const history = reusable_server_history();
-    const test_history = history(
+    const history = createReusable();
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -145,18 +145,18 @@ describe("href", () => {
         location: { pathname: "/one", query: "test=query" }
       }
     );
-    const currentPath = test_history.href(test_history.location);
+    const currentPath = testHistory.href(testHistory.location);
     expect(currentPath).toBe("/one?test=query");
   });
 
   it("uses the provided query stringifying function to stringify the query value", () => {
-    const history = reusable_server_history({
+    const history = createReusable({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const test_history = history(
+    const testHistory = history(
       pending => {
         pending.finish();
       },
@@ -164,7 +164,7 @@ describe("href", () => {
         location: "/"
       }
     );
-    const href = test_history.href({ pathname: "/yo", query: { one: 1 } });
+    const href = testHistory.href({ pathname: "/yo", query: { one: 1 } });
     expect(href).toEqual("/yo?one=1");
   });
 });

@@ -1,3 +1,7 @@
+## Next
+
+- Revert snake casing
+
 ## 2.0.0-beta.10
 
 - Rename `base_segment` option to `base`.

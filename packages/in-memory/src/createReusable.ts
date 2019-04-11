@@ -1,4 +1,4 @@
-import { location_utils } from "@hickory/root";
+import { locationUtils } from "@hickory/root";
 
 import {
   Hrefable,
@@ -12,10 +12,10 @@ import { LocationOptions } from "./types";
 
 function noop() {}
 
-export function reusable_server_history(
-  factory_options: HistoryOptions = {}
+export function createReusable(
+  options: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
-  const utils = location_utils(factory_options);
+  const utils = locationUtils(options);
   function href(location: Hrefable): string {
     return utils.stringify(location);
   }

@@ -1,8 +1,8 @@
 import {
-  complete_pathname,
-  complete_hash,
-  complete_query,
-  strip_base_segment
+  completePathname,
+  completeHash,
+  completeQuery,
+  stripBase
 } from "@hickory/location-utils";
 
 import {
@@ -13,17 +13,17 @@ import {
   Key
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
-import { LocationUtilOptions, LocationUtils } from "./types/location_utils";
+import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
 
-function default_parse_query(query?: string): any {
+function defaultParseQuery(query?: string): any {
   return query ? query : "";
 }
 
-function default_stringify_query(query?: any): string {
+function defaultStringifyQuery(query?: any): string {
   return query ? query : "";
 }
 
-function is_valid_base(base: string): boolean {
+function isValidBase(base: string): boolean {
   return (
     typeof base === "string" &&
     base.charAt(0) === "/" &&
@@ -31,18 +31,18 @@ function is_valid_base(base: string): boolean {
   );
 }
 
-export default function location_factory(
+export default function locationUtils(
   options: LocationUtilOptions = {}
 ): LocationUtils {
   const {
     query: {
-      parse: parse_query = default_parse_query,
-      stringify: stringify_query = default_stringify_query
+      parse: parseQuery = defaultParseQuery,
+      stringify: stringifyQuery = defaultStringifyQuery
     } = {},
     base = ""
   } = options;
 
-  if (base !== "" && !is_valid_base(base)) {
+  if (base !== "" && !isValidBase(base)) {
     throw new Error(
       'The base segment "' +
         base +
@@ -52,27 +52,27 @@ export default function location_factory(
     );
   }
 
-  function from_string(value: string, state: any): LocationComponents {
+  function fromString(value: string, state: any): LocationComponents {
     // hash is always after query, so split it off first
-    const hash_index = value.indexOf("#");
+    const hashIndex = value.indexOf("#");
     let hash;
-    if (hash_index !== -1) {
-      hash = value.substring(hash_index + 1);
-      value = value.substring(0, hash_index);
+    if (hashIndex !== -1) {
+      hash = value.substring(hashIndex + 1);
+      value = value.substring(0, hashIndex);
     } else {
       hash = "";
     }
 
-    const query_index = value.indexOf("?");
+    const queryIndex = value.indexOf("?");
     let query;
-    if (query_index !== -1) {
-      query = parse_query(value.substring(query_index + 1));
-      value = value.substring(0, query_index);
+    if (queryIndex !== -1) {
+      query = parseQuery(value.substring(queryIndex + 1));
+      value = value.substring(0, queryIndex);
     } else {
-      query = parse_query();
+      query = parseQuery();
     }
 
-    const pathname = strip_base_segment(value, base);
+    const pathname = stripBase(value, base);
 
     const details: LocationComponents = {
       hash,
@@ -87,14 +87,14 @@ export default function location_factory(
     return details;
   }
 
-  function from_object(
+  function fromObject(
     partial: PartialLocation,
     state: any
   ): LocationComponents {
     const details: LocationComponents = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
-      query: partial.query == null ? parse_query() : partial.query
+      query: partial.query == null ? parseQuery() : partial.query
     };
 
     if (partial.state) {
@@ -113,8 +113,8 @@ export default function location_factory(
       }
       const location =
         typeof value === "string"
-          ? from_string(value, state)
-          : from_object(value, state);
+          ? fromString(value, state)
+          : fromObject(value, state);
       return location;
     },
     keyed(location: LocationComponents, key: Key): SessionLocation {
@@ -125,12 +125,12 @@ export default function location_factory(
     },
     stringify(location: Hrefable): string {
       if (typeof location === "string") {
-        const first_char = location.charAt(0);
+        const firstChar = location.charAt(0);
         // keep hash/query only strings relative
-        if (first_char === "#" || first_char === "?") {
+        if (firstChar === "#" || firstChar === "?") {
           return location;
         }
-        return base + complete_pathname(location);
+        return base + completePathname(location);
       }
       // Ensure that pathname begins with a forward slash, query begins
       // with a question mark, and hash begins with a pound sign.
@@ -138,10 +138,10 @@ export default function location_factory(
       // start with the receive the base segment.
       return (
         (location.pathname !== undefined
-          ? base + complete_pathname(location.pathname)
+          ? base + completePathname(location.pathname)
           : "") +
-        complete_query(stringify_query(location.query)) +
-        complete_hash(location.hash)
+        completeQuery(stringifyQuery(location.query)) +
+        completeHash(location.hash)
       );
     }
   };

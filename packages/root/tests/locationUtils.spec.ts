@@ -1,5 +1,5 @@
 import "jest";
-import { location_utils } from "../src";
+import { locationUtils } from "../src";
 import * as qs from "qs";
 
 import { SessionLocation, Key } from "../src/types";
@@ -10,7 +10,7 @@ describe("locationFactory", () => {
       const badValues = ["does-not-start-with-a-slash", "/ends-with-slash/"];
       badValues.forEach(value => {
         expect(() => {
-          const creators = location_utils({
+          const creators = locationUtils({
             base: value
           });
         }).toThrow();
@@ -30,7 +30,7 @@ describe("locationFactory", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const common = location_utils();
+          const common = locationUtils();
           const parsed = common.location("/test?one=two");
           expect(parsed.query).toBe("one=two");
           const stringified = common.stringify({
@@ -45,7 +45,7 @@ describe("locationFactory", () => {
         it("calls parse when creating a location", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = location_utils({
+          const common = locationUtils({
             query: { parse, stringify }
           });
           const loc = common.location("/test?two=dos");
@@ -55,7 +55,7 @@ describe("locationFactory", () => {
         it("calls stringify when creating a path", () => {
           const parse = jest.fn();
           const stringify = jest.fn();
-          const common = location_utils({
+          const common = locationUtils({
             query: { parse, stringify }
           });
           const path = common.stringify({ pathname: "/test" });
@@ -66,7 +66,7 @@ describe("locationFactory", () => {
   });
 
   describe("location", () => {
-    const { location } = location_utils();
+    const { location } = locationUtils();
 
     describe("pathname", () => {
       describe("string argument", () => {
@@ -76,7 +76,7 @@ describe("locationFactory", () => {
         });
 
         describe("base", () => {
-          const { location } = location_utils({
+          const { location } = locationUtils({
             base: "/prefix"
           });
 
@@ -168,7 +168,7 @@ describe("locationFactory", () => {
 
       describe("query.parse option", () => {
         it("uses the provided query parsing function to make the query value", () => {
-          const { location } = location_utils({
+          const { location } = locationUtils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
@@ -227,19 +227,19 @@ describe("locationFactory", () => {
 
       describe("object argument", () => {
         it("adds state if provided", () => {
-          const state = { from_location: false };
+          const state = { fromLocation: false };
           const output = location({ pathname: "/" }, state);
           expect(output.state).toEqual(state);
         });
 
         it("prefers location.state over state argument", () => {
-          const loc_state = { from_location: true };
-          const just_state = { from_location: false };
+          const locState = { fromLocation: true };
+          const justState = { fromLocation: false };
           const output = location(
-            { pathname: "/", state: loc_state },
-            just_state
+            { pathname: "/", state: locState },
+            justState
           );
-          expect(output.state).toEqual(loc_state);
+          expect(output.state).toEqual(locState);
         });
       });
 
@@ -251,18 +251,18 @@ describe("locationFactory", () => {
   });
 
   describe("keyed", () => {
-    const { keyed, location } = location_utils();
+    const { keyed, location } = locationUtils();
 
     it("attaches a key to a keyless location", () => {
       const key: Key = [3, 14];
-      const keyless_location = location("/test");
-      const loc = keyed(keyless_location, key);
+      const keyless = location("/test");
+      const loc = keyed(keyless, key);
       expect(loc.key).toBe(key);
     });
   });
 
   describe("stringify", () => {
-    const { stringify } = location_utils();
+    const { stringify } = locationUtils();
 
     describe("pathname", () => {
       it("begins the returned URI with the pathname", () => {
@@ -289,7 +289,7 @@ describe("locationFactory", () => {
 
       describe("base", () => {
         it("adds the base to the generated string", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const loc = {
@@ -302,7 +302,7 @@ describe("locationFactory", () => {
         });
 
         it("does not include the base if there is no pathname", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const loc = {
@@ -344,7 +344,7 @@ describe("locationFactory", () => {
 
       describe("query.stringify option", () => {
         it("uses the provided stringify function to turn query into a string", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
@@ -380,8 +380,8 @@ describe("locationFactory", () => {
       });
 
       it("does not include the hash if it is falsy", () => {
-        const falsy_values = ["", null, undefined];
-        falsy_values.forEach(v => {
+        const falsyValues = ["", null, undefined];
+        falsyValues.forEach(v => {
           const output = stringify({ pathname: "/", hash: v });
           expect(output.indexOf("#")).toBe(-1);
         });
@@ -409,7 +409,7 @@ describe("locationFactory", () => {
         });
 
         it("prefixes with base", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const path = stringify("/one/two/three#four");
@@ -417,7 +417,7 @@ describe("locationFactory", () => {
         });
 
         it("prefixes pathname when joining with base", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const path = stringify("one");
@@ -427,12 +427,12 @@ describe("locationFactory", () => {
 
       describe("beginning with a query", () => {
         it("returns the provided string", () => {
-          const { stringify } = location_utils();
+          const { stringify } = locationUtils();
           expect(stringify("?test=true")).toBe("?test=true");
         });
 
         it("if there is a base, it is not prepended", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const path = stringify("?test=true");
@@ -442,12 +442,12 @@ describe("locationFactory", () => {
 
       describe("beginning with a hash", () => {
         it("returns the provided string", () => {
-          const { stringify } = location_utils();
+          const { stringify } = locationUtils();
           expect(stringify("#test")).toBe("#test");
         });
 
         it("if there is a base, it is not prepended", () => {
-          const { stringify } = location_utils({
+          const { stringify } = locationUtils({
             base: "/prefix"
           });
           const path = stringify("#test");

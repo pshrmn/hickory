@@ -6,7 +6,7 @@ import CancelWithPop from "./cancel-with-pop";
 
 import { Suite } from "../../types";
 
-export const go_suite: Suite = [
+export const goSuite: Suite = [
   ResponseHandler,
   FinishingPop,
   CancelWithPush,

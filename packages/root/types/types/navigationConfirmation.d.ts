@@ -7,11 +7,11 @@ export interface NavigationInfo {
 }
 export declare type ConfirmationFunction = (info: NavigationInfo, confirm: () => void, prevent?: () => void) => void;
 export interface ConfirmationMethods {
-    confirm_navigation(info: NavigationInfo, confirm: () => void, prevent?: () => void): void;
-    confirm_with(fn?: ConfirmationFunction): void;
-    remove_confirmation(): void;
+    confirmNavigation(info: NavigationInfo, confirm: () => void, prevent?: () => void): void;
+    confirmWith(fn?: ConfirmationFunction): void;
+    removeConfirmation(): void;
 }
 export interface BlockingHistory {
-    confirm_with(fn?: ConfirmationFunction): void;
-    remove_confirmation(): void;
+    confirmWith(fn?: ConfirmationFunction): void;
+    removeConfirmation(): void;
 }
