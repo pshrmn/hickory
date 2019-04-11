@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.11
 
 - Rename `in_memory` to `inMemory`.
 - Rename `reusable_server_history` to `createReusable`.
