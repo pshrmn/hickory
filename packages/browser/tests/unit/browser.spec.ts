@@ -1,19 +1,15 @@
 import "jest";
 import { browser } from "../../src/browser";
 
-import { with_dom, async_with_dom } from "../../../../tests/utils/dom";
-import {
-  navigate_suite,
-  go_suite,
-  cancel_suite
-} from "../../../../tests/cases";
+import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
+import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
-function run_async_test(test: TestCase) {
+function runAsyncTest(test: TestCase) {
   it(test.msg, async () => {
     expect.assertions(test.assertions);
-    await async_with_dom(
+    await asyncWithDOM(
       { url: "http://example.com/one" },
       ({ window, resolve }) => {
         test.fn({
@@ -25,9 +21,9 @@ function run_async_test(test: TestCase) {
   });
 }
 
-function run_test(test: TestCase) {
+function runTest(test: TestCase) {
   it(test.msg, () => {
-    with_dom({ url: "http://example.com/one" }, ({ window }) => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
       test.fn({
         constructor: browser
       });
@@ -35,23 +31,23 @@ function run_test(test: TestCase) {
   });
 }
 
-function run_suite(suite: Suite) {
+function runSuite(suite: Suite) {
   suite.forEach(test => {
     if (test.async) {
-      run_async_test(test);
+      runAsyncTest(test);
     } else {
-      run_test(test);
+      runTest(test);
     }
   });
 }
 
 describe("browser", () => {
   it("initializes using window.location", () => {
-    with_dom({ url: "http://example.com/one" }, ({ window }) => {
-      const test_history = browser(pending => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      const testHistory = browser(pending => {
         pending.finish();
       });
-      expect(test_history.location).toMatchObject({
+      expect(testHistory.location).toMatchObject({
         pathname: "/one",
         hash: "",
         query: ""
@@ -60,9 +56,9 @@ describe("browser", () => {
   });
 
   it("throws if there is no DOM", () => {
-    with_dom({ url: "http://example.com/one", set_global: false }, () => {
+    withDOM({ url: "http://example.com/one", setGlobal: false }, () => {
       expect(() => {
-        const test_history = browser(pending => {
+        const testHistory = browser(pending => {
           pending.finish();
         });
       }).toThrow();
@@ -70,9 +66,9 @@ describe("browser", () => {
   });
 
   it('sets initial action to "push" when page has not been previously visited', () => {
-    with_dom({ url: "http://example.com/one" }, ({ window }) => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState(null, "", "/has-no-key");
-      const test_history = browser(pending => {
+      const testHistory = browser(pending => {
         expect(pending.action).toBe("push");
         pending.finish();
       });
@@ -80,9 +76,9 @@ describe("browser", () => {
   });
 
   it('sets initial action to "pop" when page has been previously visited', () => {
-    with_dom({ url: "http://example.com/one" }, ({ window }) => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/has-key");
-      const test_history = browser(pending => {
+      const testHistory = browser(pending => {
         expect(pending.action).toBe("pop");
         pending.finish();
       });
@@ -91,30 +87,30 @@ describe("browser", () => {
 });
 
 describe("cancel", () => {
-  run_suite(cancel_suite);
+  runSuite(cancelSuite);
 });
 
 describe("navigate()", () => {
-  run_suite(navigate_suite);
+  runSuite(navigateSuite);
 });
 
 describe("go", () => {
-  run_suite(go_suite);
+  runSuite(goSuite);
 });
 
 describe("browser history.go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
-    with_dom({ url: "http://example.com/one" }, ({ window }) => {
-      const real_go = window.history.go;
-      const mock_go = (window.history.go = jest.fn());
-      const test_history = browser(pending => {
+    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+      const realGo = window.history.go;
+      const mockGo = (window.history.go = jest.fn());
+      const testHistory = browser(pending => {
         pending.finish();
       });
 
       [undefined, 0, 1, -1].forEach((value, index) => {
-        test_history.go(value);
-        expect(mock_go.mock.calls[index][0]).toBe(value);
+        testHistory.go(value);
+        expect(mockGo.mock.calls[index][0]).toBe(value);
       });
     });
   });
@@ -122,11 +118,11 @@ describe("browser history.go", () => {
 
 describe("href", () => {
   it("returns the location formatted as a string", () => {
-    with_dom({ url: "http://example.com/one" }, () => {
-      const test_history = browser(pending => {
+    withDOM({ url: "http://example.com/one" }, () => {
+      const testHistory = browser(pending => {
         pending.finish();
       });
-      const path = test_history.href({
+      const path = testHistory.href({
         pathname: "/one",
         query: "test=query"
       });

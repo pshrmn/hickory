@@ -1,3 +1,8 @@
+## Next
+
+- Rename `in_memory` to `inMemory`.
+- Rename `reusable_server_history` to `createReusable`.
+
 ## 2.0.0-beta.10
 
 - Rename `base_segment` option to `base`.

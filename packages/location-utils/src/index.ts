@@ -1,4 +1,4 @@
-export function ensure_begins_with(
+export function ensureBeginsWith(
   str: string | undefined | null,
   prefix: string
 ): string {
@@ -8,26 +8,26 @@ export function ensure_begins_with(
   return str.indexOf(prefix) === 0 ? str : prefix + str;
 }
 
-export function complete_pathname(pathname?: string): string {
-  return ensure_begins_with(pathname, "/");
+export function completePathname(pathname?: string): string {
+  return ensureBeginsWith(pathname, "/");
 }
 
-export function complete_hash(hash?: string): string {
-  return ensure_begins_with(hash, "#");
+export function completeHash(hash?: string): string {
+  return ensureBeginsWith(hash, "#");
 }
 
-export function complete_query(query?: string): string {
-  return ensure_begins_with(query, "?");
+export function completeQuery(query?: string): string {
+  return ensureBeginsWith(query, "?");
 }
 
-export function strip_prefix(str: string, prefix: string): string {
+export function stripPrefix(str: string, prefix: string): string {
   return str.indexOf(prefix) === 0 ? str.slice(prefix.length) : str;
 }
 
-function has_base_segment(path: string, prefix: string): boolean {
+function hasBase(path: string, prefix: string): boolean {
   return new RegExp("^" + prefix + "(\\/|\\?|#|$)", "i").test(path);
 }
 
-export function strip_base_segment(path: string, prefix: string): string {
-  return has_base_segment(path, prefix) ? path.substr(prefix.length) : path;
+export function stripBase(path: string, prefix: string): string {
+  return hasBase(path, prefix) ? path.substr(prefix.length) : path;
 }

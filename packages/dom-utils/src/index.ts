@@ -1,4 +1,4 @@
-export function dom_exists(): boolean {
+export function domExists(): boolean {
   return !!(window && window.location);
 }
 
@@ -8,7 +8,7 @@ export function dom_exists(): boolean {
  * events where event.state is undefined when you click
  * the back button)
  */
-export function ignorable_popstate_event(event: PopStateEvent) {
+export function ignorablePopstateEvent(event: PopStateEvent) {
   return (
     event.state === undefined && navigator.userAgent.indexOf("CriOS") === -1
   );
@@ -17,7 +17,7 @@ export function ignorable_popstate_event(event: PopStateEvent) {
 /*
  * IE 11 might throw, so just catch and return empty object when that happens
  */
-export function get_state_from_history() {
+export function getStateFromHistory() {
   try {
     return window.history.state || {};
   } catch (e) {

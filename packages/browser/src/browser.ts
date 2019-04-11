@@ -1,8 +1,8 @@
-import { location_utils, key_generator, navigate_with } from "@hickory/root";
+import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
 import {
-  ignorable_popstate_event,
-  get_state_from_history,
-  dom_exists
+  ignorablePopstateEvent,
+  getStateFromHistory,
+  domExists
 } from "@hickory/dom-utils";
 
 import {
@@ -23,17 +23,17 @@ export function browser(
   fn: ResponseHandler,
   options: BrowserHistoryOptions = {}
 ): BrowserHistory {
-  if (!dom_exists()) {
+  if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
-  const utils = location_utils(options);
-  const keygen = key_generator();
+  const utils = locationUtils(options);
+  const keygen = keyGenerator();
 
-  function location_from_browser(provided_state?: object): SessionLocation {
+  function fromBrowser(providedState?: object): SessionLocation {
     const { pathname, search, hash } = window.location;
     const path = pathname + search + hash;
-    let { key, state } = provided_state || get_state_from_history();
+    let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
       window.history.replaceState({ key, state }, "", path);
@@ -46,21 +46,21 @@ export function browser(
     return utils.stringify(location);
   }
 
-  // set action before location because location_from_browser enforces
+  // set action before location because fromBrowser enforces
   // that the location has a key
-  let last_action: Action =
-    get_state_from_history().key !== undefined ? "pop" : "push";
+  let lastAction: Action =
+    getStateFromHistory().key !== undefined ? "pop" : "push";
 
   const {
-    emit_navigation,
-    cancel_pending,
-    create_navigation,
+    emitNavigation,
+    cancelPending,
+    createNavigation,
     prepare
-  } = navigate_with({
-    response_handler: fn,
+  } = navigateWith({
+    responseHandler: fn,
     utils,
     keygen,
-    current: () => browser_history.location,
+    current: () => browserHistory.location,
     push: {
       finish(location: SessionLocation) {
         return () => {
@@ -71,8 +71,8 @@ export function browser(
           } catch (e) {
             window.location.assign(path);
           }
-          browser_history.location = location;
-          last_action = "push";
+          browserHistory.location = location;
+          lastAction = "push";
         };
       },
       cancel: noop
@@ -87,8 +87,8 @@ export function browser(
           } catch (e) {
             window.location.replace(path);
           }
-          browser_history.location = location;
-          last_action = "replace";
+          browserHistory.location = location;
+          lastAction = "replace";
         };
       },
       cancel: noop
@@ -102,23 +102,23 @@ export function browser(
       reverting = false;
       return;
     }
-    if (ignorable_popstate_event(event)) {
+    if (ignorablePopstateEvent(event)) {
       return;
     }
-    cancel_pending("pop");
+    cancelPending("pop");
 
-    const location = location_from_browser(event.state);
-    const diff = browser_history.location.key[0] - location.key[0];
-    emit_navigation(
-      create_navigation(
+    const location = fromBrowser(event.state);
+    const diff = browserHistory.location.key[0] - location.key[0];
+    emitNavigation(
+      createNavigation(
         location,
         "pop",
         () => {
-          browser_history.location = location;
-          last_action = "pop";
+          browserHistory.location = location;
+          lastAction = "pop";
         },
-        (next_action?: Action) => {
-          if (next_action === "pop") {
+        (nextAction?: Action) => {
+          if (nextAction === "pop") {
             return;
           }
           reverting = true;
@@ -130,29 +130,29 @@ export function browser(
 
   window.addEventListener("popstate", popstate, false);
 
-  const browser_history: BrowserHistory = {
-    location: location_from_browser(),
+  const browserHistory: BrowserHistory = {
+    location: fromBrowser(),
     current() {
-      emit_navigation(
-        create_navigation(browser_history.location, last_action, noop, noop)
+      emitNavigation(
+        createNavigation(browserHistory.location, lastAction, noop, noop)
       );
     },
     href,
     cancel() {
-      cancel_pending();
+      cancelPending();
     },
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
-    navigate(to: ToArgument, nav_type: NavType = "anchor"): void {
-      const navigation = prepare(to, nav_type);
-      cancel_pending(navigation.action);
-      emit_navigation(navigation);
+    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+      const navigation = prepare(to, navType);
+      cancelPending(navigation.action);
+      emitNavigation(navigation);
     },
     go(num: number): void {
       window.history.go(num);
     }
   };
 
-  return browser_history;
+  return browserHistory;
 }
