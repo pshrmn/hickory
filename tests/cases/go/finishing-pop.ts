@@ -13,7 +13,7 @@ export default {
       switch (calls++) {
         case 0:
           pending.finish();
-          localHistory.navigate("/two");
+          localHistory.navigate({ url: "/two" });
           break;
         case 1:
           pending.finish();

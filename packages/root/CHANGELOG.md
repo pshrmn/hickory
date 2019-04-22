@@ -1,3 +1,9 @@
+## Next
+
+- `locationUtils.location` can take an object of shape `{ url: string, state: any }`.
+- Remove `string` option from first argument to `locationUtils.location`.
+- Remove `state` argument from `locationUtils.location`.
+
 ## 2.0.0-beta.11
 
 - Revert snake casing

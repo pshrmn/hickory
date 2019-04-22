@@ -13,23 +13,23 @@ export default {
       switch (calls++) {
         case 0:
           pending.finish();
-          localHistory.navigate("/two", "push");
+          localHistory.navigate({ url: "/two" }, "push");
           break;
         case 1:
           pending.finish();
-          localHistory.navigate("/three", "push");
+          localHistory.navigate({ url: "/three" }, "push");
           break;
         case 2:
           pending.finish();
-          localHistory.navigate("/four", "push");
+          localHistory.navigate({ url: "/four" }, "push");
           break;
         case 3:
           pending.finish();
-          localHistory.navigate("/five", "push");
+          localHistory.navigate({ url: "/five" }, "push");
           break;
         case 4:
           pending.finish();
-          localHistory.navigate("/six", "push");
+          localHistory.navigate({ url: "/six" }, "push");
           break;
         case 5:
           pending.finish();

@@ -11,7 +11,7 @@ describe("createReusable", () => {
         pending.finish();
       },
       {
-        location: "/one#step"
+        location: { url: "/one#step" }
       }
     );
     expect(testHistory.location).toMatchObject({
@@ -44,7 +44,7 @@ describe("createReusable", () => {
         pending.finish();
       },
       {
-        location: "/one"
+        location: { url: "/one" }
       }
     );
   });
@@ -57,7 +57,7 @@ describe("createReusable", () => {
         pending.finish();
       },
       {
-        location: "/one"
+        location: { url: "/one" }
       }
     );
   });
@@ -74,7 +74,7 @@ describe("createReusable", () => {
         pending.finish();
       },
       {
-        location: "/pathname?query=this#hash"
+        location: { url: "/pathname?query=this#hash" }
       }
     );
     expect(testHistory.location.query).toEqual({ query: "this" });
@@ -90,7 +90,7 @@ describe("no-op functions", () => {
           pending.finish();
         },
         {
-          location: "/one#step"
+          location: { url: "/one#step" }
         }
       );
       expect(() => {
@@ -107,11 +107,11 @@ describe("no-op functions", () => {
           pending.finish();
         },
         {
-          location: "/one#step"
+          location: { url: "/one#step" }
         }
       );
       expect(() => {
-        testHistory.navigate("/elsewhere");
+        testHistory.navigate({ url: "/elsewhere" });
       }).not.toThrow();
     });
   });
@@ -124,7 +124,7 @@ describe("no-op functions", () => {
           pending.finish();
         },
         {
-          location: "/one#step"
+          location: { url: "/one#step" }
         }
       );
       expect(() => {
@@ -161,7 +161,7 @@ describe("href", () => {
         pending.finish();
       },
       {
-        location: "/"
+        location: { url: "/" }
       }
     );
     const href = testHistory.href({ pathname: "/yo", query: { one: 1 } });

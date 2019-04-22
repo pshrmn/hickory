@@ -5,7 +5,7 @@ export default {
   fn: function({ constructor, options = {} }: TestCaseArgs) {
     const router = jest.fn();
     const history = constructor(router, options);
-    history.navigate("/two");
+    history.navigate({ url: "/two" });
     expect(router.mock.calls.length).toBe(1);
   }
 };

@@ -43,7 +43,7 @@ describe("hash integration tests", () => {
         testHistory = hash(pending => {
           pending.finish();
         });
-        testHistory.navigate("/a-new-position", "push");
+        testHistory.navigate({ url: "/a-new-position" }, "push");
         expect(window.location.hash).toEqual("#/a-new-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(1);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -74,7 +74,7 @@ describe("hash integration tests", () => {
         testHistory = hash(pending => {
           pending.finish();
         });
-        testHistory.navigate("/the-same-position", "replace");
+        testHistory.navigate({ url: "/the-same-position" }, "replace");
         expect(window.location.hash).toEqual("#/the-same-position");
         expect((<jasmine.Spy>window.history.pushState).calls.count()).toBe(0);
         expect((<jasmine.Spy>window.history.replaceState).calls.count()).toBe(
@@ -109,15 +109,15 @@ describe("hash integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            localHistory.navigate("/eins", "push");
+            localHistory.navigate({ url: "/eins" }, "push");
             break;
           case 1:
             pending.finish();
-            localHistory.navigate("/zwei", "push");
+            localHistory.navigate({ url: "/zwei" }, "push");
             break;
           case 2:
             pending.finish();
-            localHistory.navigate("/drei", "push");
+            localHistory.navigate({ url: "/drei" }, "push");
             break;
           case 3:
             pending.finish();
@@ -143,15 +143,15 @@ describe("hash integration tests", () => {
         switch (calls++) {
           case 0:
             pending.finish();
-            localHistory.navigate("/uno", "push");
+            localHistory.navigate({ url: "/uno" }, "push");
             break;
           case 1:
             pending.finish();
-            localHistory.navigate("/dos", "push");
+            localHistory.navigate({ url: "/dos" }, "push");
             break;
           case 2:
             pending.finish();
-            localHistory.navigate("/tres", "push");
+            localHistory.navigate({ url: "/tres" }, "push");
             break;
           case 3:
             pending.finish();

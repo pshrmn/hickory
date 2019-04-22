@@ -23,7 +23,7 @@ function runAsyncTest(test: TestCase) {
       test.fn({
         constructor: inMemory,
         options: {
-          locations: ["/one"]
+          locations: [{ url: "/one" }]
         },
         resolve
       } as AsyncFnOptions);
@@ -36,7 +36,7 @@ function runTest(test: TestCase) {
     test.fn({
       constructor: inMemory,
       options: {
-        locations: ["/one"]
+        locations: [{ url: "/one" }]
       }
     } as FnOptions);
   });
@@ -70,7 +70,7 @@ describe("Memory constructor", () => {
         pending.finish();
       },
       {
-        locations: ["/one#step"]
+        locations: [{ url: "/one#step" }]
       }
     );
     expect(testHistory.location).toMatchObject({
@@ -100,7 +100,7 @@ describe("Memory constructor", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 2
       }
     );
@@ -116,7 +116,7 @@ describe("Memory constructor", () => {
           pending.finish();
         },
         {
-          locations: ["/one", "/two", "/three"],
+          locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
           index: value
         }
       );
@@ -133,7 +133,7 @@ describe("Memory constructor", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 0
       }
     );
@@ -202,7 +202,7 @@ describe("reset()", () => {
           pending.finish();
         },
         {
-          locations: ["/one", "/two", "/three"]
+          locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
         }
       );
       expect(testHistory.location).toMatchObject({
@@ -210,7 +210,7 @@ describe("reset()", () => {
       });
 
       testHistory.reset({
-        locations: ["/uno", "/dos"]
+        locations: [{ url: "/uno" }, { url: "/dos" }]
       });
       expect(testHistory.location).toMatchObject({
         pathname: "/uno"
@@ -223,7 +223,7 @@ describe("reset()", () => {
           pending.finish();
         },
         {
-          locations: ["/one", "/two", "/three"]
+          locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
         }
       );
       expect(testHistory.location).toMatchObject({
@@ -244,7 +244,7 @@ describe("reset()", () => {
           pending.finish();
         },
         {
-          locations: ["/one", "/two", "/three"]
+          locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
         }
       );
       expect(testHistory.location).toMatchObject({
@@ -260,7 +260,7 @@ describe("reset()", () => {
     it("reset removes existing locations", () => {
       const router = jest.fn();
       const testHistory = inMemory(router, {
-        locations: ["/one", "/two", "/three"]
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
       // reset the call from attaching the router
@@ -271,7 +271,7 @@ describe("reset()", () => {
       // response handler is called because we can pop
       expect(router.mock.calls.length).toBe(1);
 
-      testHistory.reset({ locations: ["/uno"] });
+      testHistory.reset({ locations: [{ url: "/uno" }] });
       router.mockReset();
 
       testHistory.go(2);
@@ -288,14 +288,14 @@ describe("reset()", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 1
       }
     );
     expect(testHistory.location.pathname).toBe("/two");
 
     testHistory.reset({
-      locations: ["/uno", "/dos", "/tres"],
+      locations: [{ url: "/uno" }, { url: "/dos" }, { url: "/tres" }],
       index: 2
     });
     expect(testHistory.location.pathname).toBe("/tres");
@@ -307,14 +307,14 @@ describe("reset()", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 1
       }
     );
     expect(testHistory.location.pathname).toBe("/two");
 
     testHistory.reset({
-      locations: ["/uno", "/dos", "/tres"]
+      locations: [{ url: "/uno" }, { url: "/dos" }, { url: "/tres" }]
     });
     expect(testHistory.location.pathname).toBe("/uno");
   });
@@ -325,14 +325,14 @@ describe("reset()", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 1
       }
     );
     expect(testHistory.location.pathname).toBe("/two");
 
     testHistory.reset({
-      locations: ["/uno", "/dos", "/tres"],
+      locations: [{ url: "/uno" }, { url: "/dos" }, { url: "/tres" }],
       index: -1
     });
     expect(testHistory.location.pathname).toBe("/uno");
@@ -344,14 +344,14 @@ describe("reset()", () => {
         pending.finish();
       },
       {
-        locations: ["/one", "/two", "/three"],
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }],
         index: 1
       }
     );
     expect(testHistory.location.pathname).toBe("/two");
 
     testHistory.reset({
-      locations: ["/uno", "/dos", "/tres"],
+      locations: [{ url: "/uno" }, { url: "/dos" }, { url: "/tres" }],
       index: 7
     });
     expect(testHistory.location.pathname).toBe("/uno");
@@ -361,11 +361,11 @@ describe("reset()", () => {
     it("emits the new location", () => {
       const router = jest.fn();
       const testHistory = inMemory(router, {
-        locations: ["/one", "/two", "/three"]
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
       testHistory.reset({
-        locations: ["/uno", "/dos"]
+        locations: [{ url: "/uno" }, { url: "/dos" }]
       });
       expect(router.mock.calls.length).toBe(1);
       expect(router.mock.calls[0][0]).toMatchObject({
@@ -378,11 +378,11 @@ describe("reset()", () => {
     it('emits the action as "push"', () => {
       const router = jest.fn();
       const testHistory = inMemory(router, {
-        locations: ["/one", "/two", "/three"]
+        locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
       testHistory.reset({
-        locations: ["/uno", "/dos"]
+        locations: [{ url: "/uno" }, { url: "/dos" }]
       });
       expect(router.mock.calls[0][0]).toMatchObject({
         action: "push"

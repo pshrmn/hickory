@@ -32,9 +32,9 @@ export function inMemory(
     return value !== undefined && value >= 0 && value < locations.length;
   }
   function initializeLocations(
-    locs: InputLocations = ["/"]
+    locs: InputLocations = [{ url: "/" }]
   ): Array<SessionLocation> {
-    return locs.map((loc: Hrefable) =>
+    return locs.map((loc: ToArgument) =>
       utils.keyed(utils.location(loc), keygen.major())
     );
   }

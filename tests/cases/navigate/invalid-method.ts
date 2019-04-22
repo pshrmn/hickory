@@ -7,7 +7,7 @@ export default {
 
     expect(() => {
       // @ts-ignore
-      history.navigate("/somewhere", "throws");
+      history.navigate({ url: "/somewhere" }, "throws");
     }).toThrowError("Invalid navigation type: throws");
   }
 };

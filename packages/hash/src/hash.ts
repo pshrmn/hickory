@@ -42,14 +42,15 @@ export function hash(
 
   function fromBrowser(providedState?: object): SessionLocation {
     let { hash } = window.location;
-    const path = decodeHashPath(hash);
+    const url = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    return utils.keyed(utils.location(path), key);
+    const location = utils.location({ url, state });
+    return utils.keyed(location, key);
   }
 
   function href(location: Hrefable): string {

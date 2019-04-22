@@ -19,6 +19,6 @@ export default {
           expect(currentMinor).toBe(0);
       }
     }, options);
-    history.navigate("/next");
+    history.navigate({ url: "/next" });
   }
 };
