@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.12
 
 - `locationUtils.location` can take an object of shape `{ url: string, state: any }`.
 - Remove `string` option from first argument to `locationUtils.location`.

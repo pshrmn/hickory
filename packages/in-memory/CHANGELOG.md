@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.12
 
 - `history.navigate()` takes one argument, an object with an optional `state` property. The object can either contain URL components (`pathname`, `query`, and `hash`) or a URL string under the `url` property.
 - `inMemory`'s `locations` option no longer takes strings. Now, must be a URL object or a URL components object.
