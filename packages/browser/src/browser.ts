@@ -32,13 +32,13 @@ export function browser(
 
   function fromBrowser(providedState?: object): SessionLocation {
     const { pathname, search, hash } = window.location;
-    const path = pathname + search + hash;
+    const url = pathname + search + hash;
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
-      window.history.replaceState({ key, state }, "", path);
+      window.history.replaceState({ key, state }, "", url);
     }
-    const location = utils.location(path, state);
+    const location = utils.location({ url, state });
     return utils.keyed(location, key);
   }
 

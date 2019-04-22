@@ -10,7 +10,8 @@ import {
   PartialLocation,
   Hrefable,
   LocationComponents,
-  Key
+  Key,
+  URLWithState
 } from "./types/location";
 import { ToArgument } from "./types/navigate";
 import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
@@ -29,6 +30,12 @@ function isValidBase(base: string): boolean {
     base.charAt(0) === "/" &&
     base.charAt(base.length - 1) !== "/"
   );
+}
+
+function isURLWithState(
+  obj: URLWithState | PartialLocation
+): obj is URLWithState {
+  return obj.hasOwnProperty("url");
 }
 
 export default function locationUtils(
@@ -52,27 +59,28 @@ export default function locationUtils(
     );
   }
 
-  function fromString(value: string, state: any): LocationComponents {
+  function fromUrl(value: URLWithState): LocationComponents {
+    let { url, state } = value;
     // hash is always after query, so split it off first
-    const hashIndex = value.indexOf("#");
+    const hashIndex = url.indexOf("#");
     let hash;
     if (hashIndex !== -1) {
-      hash = value.substring(hashIndex + 1);
-      value = value.substring(0, hashIndex);
+      hash = url.substring(hashIndex + 1);
+      url = url.substring(0, hashIndex);
     } else {
       hash = "";
     }
 
-    const queryIndex = value.indexOf("?");
+    const queryIndex = url.indexOf("?");
     let query;
     if (queryIndex !== -1) {
-      query = parseQuery(value.substring(queryIndex + 1));
-      value = value.substring(0, queryIndex);
+      query = parseQuery(url.substring(queryIndex + 1));
+      url = url.substring(0, queryIndex);
     } else {
       query = parseQuery();
     }
 
-    const pathname = stripBase(value, base);
+    const pathname = stripBase(url, base);
 
     const details: LocationComponents = {
       hash,
@@ -87,10 +95,7 @@ export default function locationUtils(
     return details;
   }
 
-  function fromObject(
-    partial: PartialLocation,
-    state: any
-  ): LocationComponents {
+  function fromPartial(partial: PartialLocation): LocationComponents {
     const details: LocationComponents = {
       pathname: partial.pathname == null ? "/" : partial.pathname,
       hash: partial.hash == null ? "" : partial.hash,
@@ -99,23 +104,14 @@ export default function locationUtils(
 
     if (partial.state) {
       details.state = partial.state;
-    } else if (state) {
-      details.state = state;
     }
 
     return details;
   }
 
   return {
-    location(value: ToArgument, state?: any): LocationComponents {
-      if (state === undefined) {
-        state = null;
-      }
-      const location =
-        typeof value === "string"
-          ? fromString(value, state)
-          : fromObject(value, state);
-      return location;
+    location(value: ToArgument): LocationComponents {
+      return isURLWithState(value) ? fromUrl(value) : fromPartial(value);
     },
     keyed(location: LocationComponents, key: Key): SessionLocation {
       return {

@@ -1,7 +1,7 @@
 import { LocationUtils } from "./locationUtils";
 import { KeyFns } from "./keyGenerator";
-import { PartialLocation, SessionLocation } from "./location";
-export declare type ToArgument = string | PartialLocation;
+import { PartialLocation, SessionLocation, URLWithState } from "./location";
+export declare type ToArgument = PartialLocation | URLWithState;
 export declare type Action = "push" | "replace" | "pop";
 export declare type NavType = "anchor" | "push" | "replace";
 export declare type FinishNavigation = () => void;

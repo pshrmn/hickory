@@ -8,6 +8,6 @@ export default {
       pending.cancel();
       expect(history.location.pathname).toBe("/one");
     }, options);
-    history.navigate("/two", "replace");
+    history.navigate({ url: "/two" }, "replace");
   }
 };

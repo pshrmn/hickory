@@ -4,6 +4,10 @@ export interface LocationComponents {
     hash: string;
     state?: any;
 }
+export interface URLWithState {
+    url: string;
+    state?: any;
+}
 export declare type PartialLocation = Partial<LocationComponents>;
 export declare type Key = [number, number];
 export interface SessionLocation extends LocationComponents {

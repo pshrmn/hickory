@@ -4,7 +4,7 @@ export default {
   msg: "does nothing if pending.finish() is not called",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
     const history = constructor(pending => {}, options);
-    history.navigate("/two");
+    history.navigate({ url: "/two" });
     expect(history.location.pathname).toBe("/one");
   }
 };

@@ -6,6 +6,6 @@ export default {
     const history = constructor(pending => {
       expect(pending.action).toBe("push");
     }, options);
-    history.navigate("/two");
+    history.navigate({ url: "/two" });
   }
 };

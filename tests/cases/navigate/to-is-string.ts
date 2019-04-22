@@ -11,6 +11,6 @@ export default {
         query: "test=ing"
       });
     }, options);
-    history.navigate("/two?test=ing");
+    history.navigate({ url: "/two?test=ing" });
   }
 };

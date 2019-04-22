@@ -35,7 +35,10 @@ export function inMemory(
     locs: InputLocations = ["/"]
   ): Array<SessionLocation> {
     return locs.map((loc: Hrefable) =>
-      utils.keyed(utils.location(loc), keygen.major())
+      utils.keyed(
+        utils.location(typeof loc === "string" ? { url: loc } : loc),
+        keygen.major()
+      )
     );
   }
 

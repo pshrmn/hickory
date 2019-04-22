@@ -1,3 +1,7 @@
+## Next
+
+- `history.navigate()` takes one argument, an object with an optional `state` property. The object can either contain URL components (`pathname`, `query`, and `hash`) or a URL string under the `url` property.
+
 ## 2.0.0-beta.10
 
 - Rename `base_segment` option to `base`.

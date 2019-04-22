@@ -6,6 +6,6 @@ export default {
     const history = constructor(pending => {
       expect(pending.action).toBe("replace");
     }, options);
-    history.navigate("/one", "anchor");
+    history.navigate({ url: "/one" }, "anchor");
   }
 };

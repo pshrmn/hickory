@@ -6,7 +6,7 @@ export default {
     const history = constructor(pending => {
       pending.finish();
     }, options);
-    history.navigate("/next");
+    history.navigate({ url: "/next" });
     expect(history.location).toMatchObject({
       pathname: "/next"
     });

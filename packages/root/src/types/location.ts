@@ -5,6 +5,11 @@ export interface LocationComponents {
   state?: any;
 }
 
+export interface URLWithState {
+  url: string;
+  state?: any;
+}
+
 export type PartialLocation = Partial<LocationComponents>;
 
 export type Key = [number, number];

@@ -21,6 +21,6 @@ export default {
           expect(currentMinor).toBe(initMinorNum + 1);
       }
     }, options);
-    history.navigate("/one");
+    history.navigate({ url: "/one" });
   }
 };

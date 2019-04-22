@@ -9,6 +9,6 @@ export default {
       pending.finish();
       expect(history.location.pathname).toBe("/two");
     }, options);
-    history.navigate("/two");
+    history.navigate({ url: "/two" });
   }
 };

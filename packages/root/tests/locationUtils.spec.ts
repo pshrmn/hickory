@@ -31,7 +31,7 @@ describe("locationFactory", () => {
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
           const common = locationUtils();
-          const parsed = common.location("/test?one=two");
+          const parsed = common.location({ url: "/test?one=two" });
           expect(parsed.query).toBe("one=two");
           const stringified = common.stringify({
             pathname: "/test",
@@ -48,7 +48,7 @@ describe("locationFactory", () => {
           const common = locationUtils({
             query: { parse, stringify }
           });
-          const loc = common.location("/test?two=dos");
+          const loc = common.location({ url: "/test?two=dos" });
           expect(parse.mock.calls.length).toBe(1);
         });
 
@@ -69,31 +69,37 @@ describe("locationFactory", () => {
     const { location } = locationUtils();
 
     describe("pathname", () => {
-      describe("string argument", () => {
-        it("is parsed from a string location", () => {
-          const loc = location("/pathname?query=this#hash");
-          expect(loc.pathname).toBe("/pathname");
+      describe("base", () => {
+        const { location } = locationUtils({
+          base: "/prefix"
         });
 
-        describe("base", () => {
-          const { location } = locationUtils({
-            base: "/prefix"
-          });
-
-          it("strips the base off of the string", () => {
-            const loc = location("/prefix/this/is/the/rest");
-            expect(loc.pathname).toBe("/this/is/the/rest");
-          });
-        });
-
-        it("attaches provided state", () => {
-          const state = "hi!";
-          const loc = location("/pathname", state);
-          expect(loc.state).toBe(state);
+        it("strips the base off of the string", () => {
+          const loc = location({ url: "/prefix/this/is/the/rest" });
+          expect(loc.pathname).toBe("/this/is/the/rest");
         });
       });
 
-      describe("object argument", () => {
+      describe("other parts", () => {
+        it("does not include a hash", () => {
+          const output = location({ url: "/Kendrick#Lamar" });
+          expect(output.pathname).toBe("/Kendrick");
+        });
+
+        it("does not include a query", () => {
+          const output = location({ url: "/Chance?the=Rapper" });
+          expect(output.pathname).toBe("/Chance");
+        });
+      });
+
+      describe("url object argument", () => {
+        it("is parsed from the url string", () => {
+          const loc = location({ url: "/pathname?query=this#hash" });
+          expect(loc.pathname).toBe("/pathname");
+        });
+      });
+
+      describe("partial object argument", () => {
         it("uses provided pathname", () => {
           const input = {
             pathname: "/test",
@@ -115,37 +121,15 @@ describe("locationFactory", () => {
       });
     });
 
-    describe("pathname", () => {
-      it("is the provided string", () => {
-        const output = location("/Beyoncé");
-        expect(output.pathname).toBe("/Beyoncé");
-      });
-
-      it("is the provided pathname property", () => {
-        const output = location({ pathname: "/Jay-Z" });
-        expect(output.pathname).toBe("/Jay-Z");
-      });
-
-      it("does not include a hash", () => {
-        const output = location("/Kendrick#Lamar");
-        expect(output.pathname).toBe("/Kendrick");
-      });
-
-      it("does not include a query", () => {
-        const output = location("/Chance?the=Rapper");
-        expect(output.pathname).toBe("/Chance");
-      });
-    });
-
     describe("query", () => {
-      describe("string argument", () => {
-        it("is parsed from a string location", () => {
-          const loc = location("/pathname?query=this#hash");
+      describe("url object argument", () => {
+        it("is parsed from the url string", () => {
+          const loc = location({ url: "/pathname?query=this#hash" });
           expect(loc.query).toBe("query=this");
         });
       });
 
-      describe("object argument", () => {
+      describe("partial object argument", () => {
         it("uses provided query", () => {
           const input = {
             pathname: "/test",
@@ -174,21 +158,21 @@ describe("locationFactory", () => {
               stringify: qs.stringify
             }
           });
-          const loc = location("/pathname?query=this#hash");
+          const loc = location({ url: "/pathname?query=this#hash" });
           expect(loc.query).toEqual({ query: "this" });
         });
       });
     });
 
     describe("hash", () => {
-      describe("string argument", () => {
-        it("is parsed from a string location", () => {
-          const loc = location("/pathname?query=this#hash");
+      describe("url object argument", () => {
+        it("is parsed from the url string", () => {
+          const loc = location({ url: "/pathname?query=this#hash" });
           expect(loc.hash).toBe("hash");
         });
       });
 
-      describe("object argument", () => {
+      describe("partial object argument", () => {
         it("uses provided hash", () => {
           const input = {
             pathname: "/test",
@@ -211,40 +195,31 @@ describe("locationFactory", () => {
     });
 
     describe("state", () => {
-      describe("string argument", () => {
-        it("adds state if provided", () => {
-          const input = {
-            pathname: "/"
-          };
+      describe("url object argument", () => {
+        it("is the state property from the object", () => {
           const state = {
             omg: "bff"
           };
-          const output = location(input, state);
+          const input = {
+            url: "/",
+            state
+          };
+          const output = location(input);
           expect(output.state).toBeDefined();
-          expect(output.state).toEqual(state);
+          expect(output.state).toMatchObject(state);
         });
       });
 
-      describe("object argument", () => {
+      describe("partial object argument", () => {
         it("adds state if provided", () => {
           const state = { fromLocation: false };
-          const output = location({ pathname: "/" }, state);
+          const output = location({ pathname: "/", state });
           expect(output.state).toEqual(state);
-        });
-
-        it("prefers location.state over state argument", () => {
-          const locState = { fromLocation: true };
-          const justState = { fromLocation: false };
-          const output = location(
-            { pathname: "/", state: locState },
-            justState
-          );
-          expect(output.state).toEqual(locState);
         });
       });
 
       it("is undefined if not provided", () => {
-        const output = location("/");
+        const output = location({ url: "/" });
         expect(output.state).toBeUndefined();
       });
     });
@@ -255,7 +230,7 @@ describe("locationFactory", () => {
 
     it("attaches a key to a keyless location", () => {
       const key: Key = [3, 14];
-      const keyless = location("/test");
+      const keyless = location({ url: "/test" });
       const loc = keyed(keyless, key);
       expect(loc.key).toBe(key);
     });

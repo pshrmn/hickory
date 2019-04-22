@@ -63,7 +63,7 @@ The current location object.
 ### navigate()
 
 ```js
-history.navigate("/the-producers");
+history.navigate({ url: "/the-producers" });
 history.navigate({
   pathname: "/oklahoma",
   state: { musical: true }
@@ -77,7 +77,7 @@ There are three ways that it can do this: `push`, `replace`, and `anchor`.
 1.  `push` navigation pushes the new location onto the session history after the current location. Any existing locations after the current location are dropped.
 
 ```js
-history.navigate("/lion-king", "push");
+history.navigate({ url: "/lion-king" }, "push");
 history.navigate(
   {
     pathname: "/wicked",
@@ -90,7 +90,7 @@ history.navigate(
 2.  `replace` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
 
 ```js
-history.navigate("/cats", "replace");
+history.navigate({ url: "/cats" }, "replace");
 history.navigate(
   {
     pathname: "/rent",
@@ -103,7 +103,7 @@ history.navigate(
 3.  `anchor` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `replace`; when they are different, it will act like `push`.
 
 ```js
-history.navigate("/hairspray", "anchor");
+history.navigate({ url: "/hairspray" }, "anchor");
 history.navigate(
   {
     pathname: "/hamilton",

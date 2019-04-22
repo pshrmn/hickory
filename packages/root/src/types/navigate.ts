@@ -1,8 +1,8 @@
 import { LocationUtils } from "./locationUtils";
 import { KeyFns } from "./keyGenerator";
-import { PartialLocation, SessionLocation } from "./location";
+import { PartialLocation, SessionLocation, URLWithState } from "./location";
 
-export type ToArgument = string | PartialLocation;
+export type ToArgument = PartialLocation | URLWithState;
 
 export type Action = "push" | "replace" | "pop";
 export type NavType = "anchor" | "push" | "replace";

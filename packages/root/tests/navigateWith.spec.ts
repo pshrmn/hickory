@@ -74,7 +74,7 @@ describe("navigateWith", () => {
           ...rest
         });
 
-        const nav = prepare("/next", "anchor");
+        const nav = prepare({ url: "/next" }, "anchor");
 
         it("returns a push navigation object", () => {
           expect(nav.location).toMatchObject({
@@ -108,7 +108,7 @@ describe("navigateWith", () => {
           ...rest
         });
 
-        const nav = prepare("/", "anchor");
+        const nav = prepare({ url: "/" }, "anchor");
 
         it("returns a replace navigation object", () => {
           expect(nav.location).toMatchObject({
@@ -142,7 +142,7 @@ describe("navigateWith", () => {
           keygen,
           ...rest
         });
-        const nav = prepare("/next", "push");
+        const nav = prepare({ url: "/next" }, "push");
 
         it("returns a push navigation object", () => {
           expect(nav.location).toMatchObject({
@@ -178,7 +178,7 @@ describe("navigateWith", () => {
           ...rest
         });
 
-        const nav = prepare("/next", "replace");
+        const nav = prepare({ url: "/next" }, "replace");
 
         it("returns a replace navigation object", () => {
           expect(nav.location).toMatchObject({
@@ -214,7 +214,7 @@ describe("navigateWith", () => {
 
         expect(() => {
           // @ts-ignore
-          const nav = prepare("/next", "test");
+          const nav = prepare({ url: "/next" }, "test");
         }).toThrow();
       });
     });

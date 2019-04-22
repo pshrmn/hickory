@@ -12,30 +12,30 @@ export default {
       switch (calls++) {
         case 0:
           pending.finish();
-          history.navigate("/two", "push");
+          history.navigate({ url: "/two" }, "push");
           break;
         case 1:
           pending.finish();
-          history.navigate("/three", "push");
+          history.navigate({ url: "/three" }, "push");
           break;
         case 2:
           pending.finish();
-          history.navigate("/four", "push");
+          history.navigate({ url: "/four" }, "push");
           break;
         case 3:
           pending.finish();
-          history.navigate("/five", "push");
+          history.navigate({ url: "/five" }, "push");
           break;
         case 4:
           pending.finish();
-          history.navigate("/six", "push");
+          history.navigate({ url: "/six" }, "push");
           break;
         case 5:
           pending.finish();
           history.go(-2);
           break;
         case 6:
-          history.navigate("/seven", "push");
+          history.navigate({ url: "/seven" }, "push");
           break;
         case 7:
           pending.finish();

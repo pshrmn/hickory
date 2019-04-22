@@ -21,7 +21,14 @@ export function createReusable(
   }
 
   return function(fn: ResponseHandler, options: LocationOptions): History {
-    const location = utils.keyed(utils.location(options.location), [0, 0]);
+    const location = utils.keyed(
+      utils.location(
+        typeof options.location === "string"
+          ? { url: options.location }
+          : options.location
+      ),
+      [0, 0]
+    );
 
     return {
       location,
