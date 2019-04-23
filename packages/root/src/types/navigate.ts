@@ -1,8 +1,6 @@
 import { LocationUtils } from "./locationUtils";
 import { KeyFns } from "./keyGenerator";
-import { PartialLocation, SessionLocation, URLWithState } from "./location";
-
-export type ToArgument = PartialLocation | URLWithState;
+import { SessionLocation, URLWithState } from "./location";
 
 export type Action = "push" | "replace" | "pop";
 export type NavType = "anchor" | "push" | "replace";
@@ -18,7 +16,10 @@ export interface PendingNavigation {
 
 export type ResponseHandler = (resp: PendingNavigation) => void;
 
-export type Preparer = (to: ToArgument, navType: NavType) => PendingNavigation;
+export type Preparer = (
+  to: URLWithState,
+  navType: NavType
+) => PendingNavigation;
 
 export interface FinishCancel {
   finish(l: SessionLocation): FinishNavigation;

@@ -3,7 +3,7 @@ import "jest";
 import { TestCaseArgs } from "../../types";
 
 export default {
-  msg: "works with string locations",
+  msg: "creates object from url string",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
     const history = constructor(pending => {
       expect(pending.location).toMatchObject({

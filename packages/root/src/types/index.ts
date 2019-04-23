@@ -5,7 +5,8 @@ export {
   PartialLocation,
   SessionLocation,
   Hrefable,
-  Key
+  Key,
+  URLWithState
 } from "./location";
 
 export { KeyFns } from "./keyGenerator";
@@ -24,7 +25,6 @@ export {
 } from "./navigationConfirmation";
 
 export {
-  ToArgument,
   Action,
   NavType,
   FinishNavigation,

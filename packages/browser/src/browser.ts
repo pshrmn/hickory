@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  navigateWith,
+  createBase
+} from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -9,13 +14,15 @@ import {
   SessionLocation,
   Hrefable,
   ResponseHandler,
-  ToArgument,
+  URLWithState,
   NavType,
   Action
 } from "@hickory/root";
 import { BrowserHistoryOptions, BrowserHistory } from "./types";
 
 export * from "./types";
+
+export { createBase };
 
 function noop() {}
 
@@ -144,7 +151,7 @@ export function browser(
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: URLWithState, navType: NavType = "anchor"): void {
       const navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);

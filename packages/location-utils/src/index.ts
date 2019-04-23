@@ -23,11 +23,3 @@ export function completeQuery(query?: string): string {
 export function stripPrefix(str: string, prefix: string): string {
   return str.indexOf(prefix) === 0 ? str.slice(prefix.length) : str;
 }
-
-function hasBase(path: string, prefix: string): boolean {
-  return new RegExp("^" + prefix + "(\\/|\\?|#|$)", "i").test(path);
-}
-
-export function stripBase(path: string, prefix: string): string {
-  return hasBase(path, prefix) ? path.substr(prefix.length) : path;
-}

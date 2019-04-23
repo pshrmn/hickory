@@ -1,5 +1,5 @@
-import { SessionLocation, Hrefable } from "./location";
-import { ResponseHandler, ToArgument, NavType } from "./navigate";
+import { SessionLocation, URLWithState, Hrefable } from "./location";
+import { ResponseHandler, NavType } from "./navigate";
 import { LocationUtilOptions } from "./locationUtils";
 
 export type HistoryOptions = LocationUtilOptions;
@@ -14,6 +14,6 @@ export interface History {
   current(): void;
   cancel(): void;
   destroy(): void;
-  navigate(to: ToArgument, navType?: NavType): void;
+  navigate(to: URLWithState, navType?: NavType): void;
   go(num?: number): void;
 }

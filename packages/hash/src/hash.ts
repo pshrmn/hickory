@@ -1,11 +1,16 @@
-import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  navigateWith,
+  createBase
+} from "@hickory/root";
 import { getStateFromHistory, domExists } from "@hickory/dom-utils";
 import hashEncoderAndDecoder from "./hashTypes";
 
 import {
   SessionLocation,
   Hrefable,
-  ToArgument,
+  URLWithState,
   ResponseHandler,
   Action,
   NavType
@@ -13,6 +18,8 @@ import {
 import { HashOptions, HashHistory } from "./types";
 
 export * from "./types";
+
+export { createBase };
 
 function ensureHash(encode: (path: string) => string): void {
   if (window.location.hash === "") {
@@ -150,7 +157,7 @@ export function hash(
     destroy() {
       window.removeEventListener("popstate", popstate);
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: URLWithState, navType: NavType = "anchor"): void {
       const navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);

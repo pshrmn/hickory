@@ -3,7 +3,7 @@ import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
 import {
   SessionLocation,
   Hrefable,
-  ToArgument,
+  URLWithState,
   ResponseHandler,
   NavType,
   Action
@@ -34,7 +34,7 @@ export function inMemory(
   function initializeLocations(
     locs: InputLocations = [{ url: "/" }]
   ): Array<SessionLocation> {
-    return locs.map((loc: ToArgument) =>
+    return locs.map((loc: URLWithState) =>
       utils.keyed(utils.location(loc), keygen.major())
     );
   }
@@ -97,7 +97,7 @@ export function inMemory(
     destroy(): void {
       destroyLocation();
     },
-    navigate(to: ToArgument, navType: NavType = "anchor"): void {
+    navigate(to: URLWithState, navType: NavType = "anchor"): void {
       const navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);

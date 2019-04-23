@@ -1,3 +1,7 @@
+## Next
+
+- Remove `stripBase` function.
+
 ## 2.0.0-beta.11
 
 - Revert snake casing.

@@ -1,7 +1,6 @@
 import WithResponseHandler from "./with-response-handler";
 import InvalidMethod from "./invalid-method";
-import ToIsString from "./to-is-string";
-import ToIsObject from "./to-is-object";
+import To from "./to";
 import PushingIncrementsKeyMajor from "./push-increments-key-major";
 import ReplaceIncrementsKeyMinor from "./replace-increments-key-minor";
 import NavigateNoMethodNewLocation from "./navigate-no-method-new-location";
@@ -20,8 +19,7 @@ import { Suite } from "../../types";
 export const navigateSuite: Suite = [
   WithResponseHandler,
   InvalidMethod,
-  ToIsString,
-  ToIsObject,
+  To,
   PushingIncrementsKeyMajor,
   ReplaceIncrementsKeyMinor,
   NavigateNoMethodNewLocation,

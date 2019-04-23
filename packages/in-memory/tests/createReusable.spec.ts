@@ -4,7 +4,7 @@ import * as qs from "qs";
 import { createReusable } from "../src";
 
 describe("createReusable", () => {
-  it("works with string locations", () => {
+  it("creates initial location from location.url", () => {
     const history = createReusable();
     const testHistory = history(
       pending => {
@@ -17,22 +17,6 @@ describe("createReusable", () => {
     expect(testHistory.location).toMatchObject({
       pathname: "/one",
       hash: "step"
-    });
-  });
-
-  it("works with object locations", () => {
-    const history = createReusable();
-    const testHistory = history(
-      pending => {
-        pending.finish();
-      },
-      {
-        location: { pathname: "/two", hash: "daloo" }
-      }
-    );
-    expect(testHistory.location).toMatchObject({
-      pathname: "/two",
-      hash: "daloo"
     });
   });
 
@@ -142,7 +126,7 @@ describe("href", () => {
         pending.finish();
       },
       {
-        location: { pathname: "/one", query: "test=query" }
+        location: { url: "/one?test=query" }
       }
     );
     const currentPath = testHistory.href(testHistory.location);

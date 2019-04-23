@@ -64,7 +64,7 @@ describe("Memory constructor", () => {
     });
   });
 
-  it("works with string locations", () => {
+  it("creates locations from url strings", () => {
     const testHistory = inMemory(
       pending => {
         pending.finish();
@@ -76,21 +76,6 @@ describe("Memory constructor", () => {
     expect(testHistory.location).toMatchObject({
       pathname: "/one",
       hash: "step"
-    });
-  });
-
-  it("works with object locations", () => {
-    const testHistory = inMemory(
-      pending => {
-        pending.finish();
-      },
-      {
-        locations: [{ pathname: "/two", hash: "daloo" }]
-      }
-    );
-    expect(testHistory.location).toMatchObject({
-      pathname: "/two",
-      hash: "daloo"
     });
   });
 
@@ -186,7 +171,7 @@ describe("href", () => {
         pending.finish();
       },
       {
-        locations: [{ pathname: "/one", query: "test=query" }]
+        locations: [{ url: "/one?test=query" }]
       }
     );
     const currentPath = testHistory.href(testHistory.location);
@@ -196,7 +181,7 @@ describe("href", () => {
 
 describe("reset()", () => {
   describe("locations", () => {
-    it("works with string locations", () => {
+    it("creates locations from url strings", () => {
       const testHistory = inMemory(
         pending => {
           pending.finish();
@@ -211,27 +196,6 @@ describe("reset()", () => {
 
       testHistory.reset({
         locations: [{ url: "/uno" }, { url: "/dos" }]
-      });
-      expect(testHistory.location).toMatchObject({
-        pathname: "/uno"
-      });
-    });
-
-    it("works with object locations", () => {
-      const testHistory = inMemory(
-        pending => {
-          pending.finish();
-        },
-        {
-          locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
-        }
-      );
-      expect(testHistory.location).toMatchObject({
-        pathname: "/one"
-      });
-
-      testHistory.reset({
-        locations: [{ pathname: "/uno" }, { pathname: "/dos" }]
       });
       expect(testHistory.location).toMatchObject({
         pathname: "/uno"
