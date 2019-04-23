@@ -1,3 +1,9 @@
+## Next
+
+- `location` function only takes object with `url` property as its first argument. It also takes an optional second argument, which is a location object to inherit properties from.
+- Export `createBase` function for using a base segment with URLs.
+- `base` option for `locationUtils` is an object with `add` and `remove` properties (object returned by `createBase`).
+
 ## 2.0.0-beta.12
 
 - `locationUtils.location` can take an object of shape `{ url: string, state: any }`.

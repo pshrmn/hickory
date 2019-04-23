@@ -1,31 +1,31 @@
 {
   "dist/hickory-root.es.js": {
-    "bundled": 8299,
-    "minified": 2999,
-    "gzipped": 1292,
+    "bundled": 8900,
+    "minified": 3298,
+    "gzipped": 1380,
     "treeshaked": {
       "rollup": {
         "code": 32,
         "import_statements": 32
       },
       "webpack": {
-        "code": 1828
+        "code": 1016
       }
     }
   },
   "dist/hickory-root.js": {
-    "bundled": 8466,
-    "minified": 3152,
-    "gzipped": 1333
+    "bundled": 9099,
+    "minified": 3484,
+    "gzipped": 1442
   },
   "dist/hickory-root.umd.js": {
-    "bundled": 10215,
-    "minified": 3005,
-    "gzipped": 1371
+    "bundled": 10681,
+    "minified": 3246,
+    "gzipped": 1438
   },
   "dist/hickory-root.min.js": {
-    "bundled": 10215,
-    "minified": 3005,
-    "gzipped": 1371
+    "bundled": 10681,
+    "minified": 3246,
+    "gzipped": 1438
   }
 }

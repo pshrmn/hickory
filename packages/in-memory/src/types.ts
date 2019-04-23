@@ -2,7 +2,7 @@ import {
   HistoryConstructor,
   HistoryOptions,
   History,
-  ToArgument,
+  URLWithState,
   LocationComponents,
   SessionLocation,
   PartialLocation,
@@ -15,12 +15,12 @@ export {
   History,
   SessionLocation,
   PartialLocation,
-  ToArgument,
+  URLWithState,
   Hrefable,
   LocationComponents
 };
 
-export type InputLocations = Array<ToArgument>;
+export type InputLocations = Array<URLWithState>;
 
 export interface SessionOptions {
   locations?: InputLocations;
@@ -33,5 +33,5 @@ export interface InMemoryHistory extends History {
 }
 
 export interface LocationOptions {
-  location: ToArgument;
+  location: URLWithState;
 }

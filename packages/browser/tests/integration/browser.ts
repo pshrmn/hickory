@@ -28,7 +28,7 @@ describe("browser integration tests", () => {
         pending.finish();
       });
       testHistory.navigate({
-        pathname: "/encoded-percent%25"
+        url: "/encoded-percent%25"
       });
       expect(window.location.pathname).toEqual("/encoded-percent%25");
       expect(testHistory.location.pathname).toEqual("/encoded-percent%25");
@@ -55,7 +55,7 @@ describe("browser integration tests", () => {
         const providedState = { isSet: true };
         testHistory.navigate(
           {
-            pathname: "/next",
+            url: "/next",
             state: providedState
           },
           "push"
@@ -86,7 +86,7 @@ describe("browser integration tests", () => {
         const providedState = { isSet: true };
         testHistory.navigate(
           {
-            pathname: "/next",
+            url: "/next",
             state: providedState
           },
           "replace"

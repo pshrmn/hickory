@@ -1,19 +1,16 @@
 import {
   completePathname,
   completeHash,
-  completeQuery,
-  stripBase
+  completeQuery
 } from "@hickory/location-utils";
 
 import {
   SessionLocation,
-  PartialLocation,
   Hrefable,
   LocationComponents,
   Key,
   URLWithState
 } from "./types/location";
-import { ToArgument } from "./types/navigate";
 import { LocationUtilOptions, LocationUtils } from "./types/locationUtils";
 
 function defaultParseQuery(query?: string): any {
@@ -24,20 +21,6 @@ function defaultStringifyQuery(query?: any): string {
   return query ? query : "";
 }
 
-function isValidBase(base: string): boolean {
-  return (
-    typeof base === "string" &&
-    base.charAt(0) === "/" &&
-    base.charAt(base.length - 1) !== "/"
-  );
-}
-
-function isURLWithState(
-  obj: URLWithState | PartialLocation
-): obj is URLWithState {
-  return obj.hasOwnProperty("url");
-}
-
 export default function locationUtils(
   options: LocationUtilOptions = {}
 ): LocationUtils {
@@ -46,78 +29,69 @@ export default function locationUtils(
       parse: parseQuery = defaultParseQuery,
       stringify: stringifyQuery = defaultStringifyQuery
     } = {},
-    base = ""
+    base
   } = options;
 
-  if (base !== "" && !isValidBase(base)) {
-    throw new Error(
-      'The base segment "' +
-        base +
-        '" is not valid.' +
-        ' The "base" option must begin with a forward slash and end with a' +
-        " non-forward slash character."
-    );
-  }
-
-  function fromUrl(value: URLWithState): LocationComponents {
-    let { url, state } = value;
-    // hash is always after query, so split it off first
-    const hashIndex = url.indexOf("#");
-    let hash;
-    if (hashIndex !== -1) {
-      hash = url.substring(hashIndex + 1);
-      url = url.substring(0, hashIndex);
-    } else {
-      hash = "";
-    }
-
-    const queryIndex = url.indexOf("?");
-    let query;
-    if (queryIndex !== -1) {
-      query = parseQuery(url.substring(queryIndex + 1));
-      url = url.substring(0, queryIndex);
-    } else {
-      query = parseQuery();
-    }
-
-    const pathname = stripBase(url, base);
-
-    const details: LocationComponents = {
-      hash,
-      query,
-      pathname
-    };
-
-    if (state) {
-      details.state = state;
-    }
-
-    return details;
-  }
-
-  function fromPartial(partial: PartialLocation): LocationComponents {
-    const details: LocationComponents = {
-      pathname: partial.pathname == null ? "/" : partial.pathname,
-      hash: partial.hash == null ? "" : partial.hash,
-      query: partial.query == null ? parseQuery() : partial.query
-    };
-
-    if (partial.state) {
-      details.state = partial.state;
-    }
-
-    return details;
-  }
-
   return {
-    location(value: ToArgument): LocationComponents {
-      return isURLWithState(value) ? fromUrl(value) : fromPartial(value);
+    location(
+      value: URLWithState,
+      current?: LocationComponents
+    ): LocationComponents {
+      let { url, state } = value;
+      // special cases for empty/hash URLs
+      if (url === "" || url.charAt(0) === "#") {
+        if (!current) {
+          current = { pathname: "/", hash: "", query: parseQuery() };
+        }
+        const details: LocationComponents = {
+          pathname: current.pathname,
+          hash: url.charAt(0) === "#" ? url.substring(1) : current.hash,
+          query: current.query
+        };
+        if (state) {
+          details.state = state;
+        }
+        return details;
+      }
+
+      // hash is always after query, so split it off first
+      const hashIndex = url.indexOf("#");
+      let hash;
+      if (hashIndex !== -1) {
+        hash = url.substring(hashIndex + 1);
+        url = url.substring(0, hashIndex);
+      } else {
+        hash = "";
+      }
+
+      const queryIndex = url.indexOf("?");
+      let rawQuery;
+      if (queryIndex !== -1) {
+        rawQuery = url.substring(queryIndex + 1);
+        url = url.substring(0, queryIndex);
+      }
+      const query = parseQuery(rawQuery);
+
+      let pathname = base ? base.remove(url) : url;
+      if (pathname === "") {
+        pathname = "/";
+      }
+
+      const details: LocationComponents = {
+        hash,
+        query,
+        pathname
+      };
+
+      if (state) {
+        details.state = state;
+      }
+
+      return details;
     },
     keyed(location: LocationComponents, key: Key): SessionLocation {
-      return {
-        ...location,
-        key
-      };
+      (location as SessionLocation).key = key;
+      return location as SessionLocation;
     },
     stringify(location: Hrefable): string {
       if (typeof location === "string") {
@@ -126,16 +100,21 @@ export default function locationUtils(
         if (firstChar === "#" || firstChar === "?") {
           return location;
         }
-        return base + completePathname(location);
+        const pathname = completePathname(location);
+        return base ? base.add(pathname) : pathname;
       }
       // Ensure that pathname begins with a forward slash, query begins
       // with a question mark, and hash begins with a pound sign.
       // If there is no pathname, it is relative and shouldn't
       // start with the receive the base segment.
+      const pathname =
+        location.pathname !== undefined
+          ? base
+            ? base.add(completePathname(location.pathname))
+            : completePathname(location.pathname)
+          : "";
       return (
-        (location.pathname !== undefined
-          ? base + completePathname(location.pathname)
-          : "") +
+        pathname +
         completeQuery(stringifyQuery(location.query)) +
         completeHash(location.hash)
       );

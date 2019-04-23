@@ -1,10 +1,13 @@
-import { SessionLocation, LocationComponents } from "./types/location";
+import {
+  SessionLocation,
+  LocationComponents,
+  URLWithState
+} from "./types/location";
 import {
   PendingNavigation,
   FinishNavigation,
   CancelNavigation,
   Action,
-  ToArgument,
   NavType,
   NavigateArgs,
   NavigateHelpers
@@ -55,11 +58,12 @@ export default function navigateWith(args: NavigateArgs): NavigateHelpers {
     }
   }
 
-  function prepare(to: ToArgument, navType: NavType) {
-    const location = utils.location(to);
+  function prepare(to: URLWithState, navType: NavType) {
+    const currentLocation = current();
+    const location = utils.location(to, currentLocation);
     switch (navType) {
       case "anchor":
-        return utils.stringify(location) === utils.stringify(current())
+        return utils.stringify(location) === utils.stringify(currentLocation)
           ? replaceNav(location)
           : pushNav(location);
       case "push":

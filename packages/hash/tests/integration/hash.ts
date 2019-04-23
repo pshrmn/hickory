@@ -30,7 +30,7 @@ describe("hash integration tests", () => {
       });
       testHistory.navigate(
         {
-          pathname: "/encoded-percent%25"
+          url: "/encoded-percent%25"
         },
         "push"
       );
@@ -58,7 +58,7 @@ describe("hash integration tests", () => {
         const providedState = { isSet: true };
         testHistory.navigate(
           {
-            pathname: "/next",
+            url: "/next",
             state: providedState
           },
           "push"
@@ -89,7 +89,7 @@ describe("hash integration tests", () => {
         const providedState = { isSet: true };
         testHistory.navigate(
           {
-            pathname: "/next",
+            url: "/next",
             state: providedState
           },
           "replace"

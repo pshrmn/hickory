@@ -1,7 +1,6 @@
 import { LocationUtils } from "./locationUtils";
 import { KeyFns } from "./keyGenerator";
-import { PartialLocation, SessionLocation, URLWithState } from "./location";
-export declare type ToArgument = PartialLocation | URLWithState;
+import { SessionLocation, URLWithState } from "./location";
 export declare type Action = "push" | "replace" | "pop";
 export declare type NavType = "anchor" | "push" | "replace";
 export declare type FinishNavigation = () => void;
@@ -14,7 +13,7 @@ export interface PendingNavigation {
     cancelled?: boolean;
 }
 export declare type ResponseHandler = (resp: PendingNavigation) => void;
-export declare type Preparer = (to: ToArgument, navType: NavType) => PendingNavigation;
+export declare type Preparer = (to: URLWithState, navType: NavType) => PendingNavigation;
 export interface FinishCancel {
     finish(l: SessionLocation): FinishNavigation;
     cancel: CancelNavigation;
