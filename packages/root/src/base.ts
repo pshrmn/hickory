@@ -25,8 +25,12 @@ export default function createBase(
   const { emptyRoot = false, strict = false } = options || {};
   return {
     add(path: string) {
-      if (path === "/" && emptyRoot) {
-        return base;
+      if (emptyRoot) {
+        if (path === "/") {
+          return base;
+        } else if (path.startsWith("/?") || path.startsWith("/#")) {
+          return `${base}${path.substr(1)}`;
+        }
       } else if (path.charAt(0) === "?" || path.charAt(0) === "#") {
         return path;
       }

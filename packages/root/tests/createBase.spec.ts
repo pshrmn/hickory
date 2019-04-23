@@ -34,22 +34,36 @@ describe("createBase", () => {
     });
 
     describe("emptyRoot", () => {
-      it("(true) returns string without trailing slash", () => {
+      describe("root location", () => {
+        it("(true) returns string without trailing slash", () => {
+          const base = createBase("/prefix", { emptyRoot: true });
+          const output = base.add("/");
+          expect(output).toEqual("/prefix");
+        });
+
+        it("(false) returns string with trailing slash", () => {
+          const base = createBase("/prefix", { emptyRoot: false });
+          const output = base.add("/");
+          expect(output).toEqual("/prefix/");
+        });
+
+        it("(default) returns string with trailing slash", () => {
+          const base = createBase("/prefix");
+          const output = base.add("/");
+          expect(output).toEqual("/prefix/");
+        });
+      });
+
+      it("emptyRoot = true & root location with query", () => {
         const base = createBase("/prefix", { emptyRoot: true });
-        const output = base.add("/");
-        expect(output).toEqual("/prefix");
+        const output = base.add("/?test=value");
+        expect(output).toEqual("/prefix?test=value");
       });
 
-      it("(false) returns string with trailing slash", () => {
-        const base = createBase("/prefix", { emptyRoot: false });
-        const output = base.add("/");
-        expect(output).toEqual("/prefix/");
-      });
-
-      it("(default) returns string with trailing slash", () => {
-        const base = createBase("/prefix");
-        const output = base.add("/");
-        expect(output).toEqual("/prefix/");
+      it("emptyRoot = true & root location with hash", () => {
+        const base = createBase("/prefix", { emptyRoot: true });
+        const output = base.add("/#test");
+        expect(output).toEqual("/prefix#test");
       });
     });
   });
