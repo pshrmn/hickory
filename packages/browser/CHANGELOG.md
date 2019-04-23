@@ -1,5 +1,6 @@
 ## Next
 
+- Rename `history.href` to `history.url`.
 - The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
 - Add `createBase` export.
 

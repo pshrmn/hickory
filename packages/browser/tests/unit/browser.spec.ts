@@ -116,13 +116,13 @@ describe("browser history.go", () => {
   });
 });
 
-describe("href", () => {
+describe("url", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/one" }, () => {
       const testHistory = browser(pending => {
         pending.finish();
       });
-      const path = testHistory.href({
+      const path = testHistory.url({
         pathname: "/one",
         query: "test=query"
       });

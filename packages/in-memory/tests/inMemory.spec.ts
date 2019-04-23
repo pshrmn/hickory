@@ -164,7 +164,7 @@ describe("go", () => {
   });
 });
 
-describe("href", () => {
+describe("url", () => {
   it("returns the location formatted as a string", () => {
     const testHistory = inMemory(
       pending => {
@@ -174,7 +174,7 @@ describe("href", () => {
         locations: [{ url: "/one?test=query" }]
       }
     );
-    const currentPath = testHistory.href(testHistory.location);
+    const currentPath = testHistory.url(testHistory.location);
     expect(currentPath).toBe("/one?test=query");
   });
 });

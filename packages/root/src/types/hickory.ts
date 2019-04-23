@@ -10,7 +10,7 @@ export type HistoryConstructor<O> = (
 
 export interface History {
   location: SessionLocation;
-  href(to: Hrefable): string;
+  url(to: Hrefable): string;
   current(): void;
   cancel(): void;
   destroy(): void;
