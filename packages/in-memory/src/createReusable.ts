@@ -16,7 +16,7 @@ export function createReusable(
   options: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
   const utils = locationUtils(options);
-  function href(location: Hrefable): string {
+  function url(location: Hrefable): string {
     return utils.stringify(location);
   }
 
@@ -33,7 +33,7 @@ export function createReusable(
           cancel: noop
         });
       },
-      href,
+      url,
       cancel: noop,
       destroy: noop,
       navigate: noop,

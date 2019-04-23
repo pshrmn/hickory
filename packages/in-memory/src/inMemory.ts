@@ -44,7 +44,7 @@ export function inMemory(
     index = -1;
   };
 
-  function href(location: Hrefable): string {
+  function url(location: Hrefable): string {
     return utils.stringify(location);
   }
 
@@ -90,7 +90,7 @@ export function inMemory(
         createNavigation(memoryHistory.location, lastAction, noop, noop)
       );
     },
-    href,
+    url,
     cancel() {
       cancelPending();
     },

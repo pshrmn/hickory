@@ -60,7 +60,7 @@ export function hash(
     return utils.keyed(location, key);
   }
 
-  function href(location: Hrefable): string {
+  function url(location: Hrefable): string {
     return encodeHashPath(utils.stringify(location));
   }
 
@@ -80,7 +80,7 @@ export function hash(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = href(location);
+          const path = url(location);
           const { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
@@ -96,7 +96,7 @@ export function hash(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = href(location);
+          const path = url(location);
           const { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
@@ -150,7 +150,7 @@ export function hash(
         createNavigation(hashHistory.location, lastAction, noop, noop)
       );
     },
-    href,
+    url,
     cancel() {
       cancelPending();
     },

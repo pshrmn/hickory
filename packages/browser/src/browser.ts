@@ -49,7 +49,7 @@ export function browser(
     return utils.keyed(location, key);
   }
 
-  function href(location: Hrefable): string {
+  function url(location: Hrefable): string {
     return utils.stringify(location);
   }
 
@@ -71,7 +71,7 @@ export function browser(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = href(location);
+          const path = url(location);
           const { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
@@ -87,7 +87,7 @@ export function browser(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = href(location);
+          const path = url(location);
           const { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
@@ -144,7 +144,7 @@ export function browser(
         createNavigation(browserHistory.location, lastAction, noop, noop)
       );
     },
-    href,
+    url,
     cancel() {
       cancelPending();
     },

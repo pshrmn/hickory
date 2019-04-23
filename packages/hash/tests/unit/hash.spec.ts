@@ -230,13 +230,13 @@ describe("go", () => {
   });
 });
 
-describe("href", () => {
+describe("url", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/#/one" }, ({ window }) => {
       const testHistory = hash(pending => {
         pending.finish();
       });
-      const currentPath = testHistory.href({
+      const currentPath = testHistory.url({
         pathname: "/one",
         query: "test=query"
       });
@@ -253,7 +253,7 @@ describe("href", () => {
           const testHistory = hash(pending => {
             pending.finish();
           });
-          expect(testHistory.href(location)).toBe("#/simple-path");
+          expect(testHistory.url(location)).toBe("#/simple-path");
         });
       });
     });
@@ -267,7 +267,7 @@ describe("href", () => {
             },
             { hashType: "default" }
           );
-          expect(testHistory.href(location)).toBe("#/simple-path");
+          expect(testHistory.url(location)).toBe("#/simple-path");
         });
       });
     });
@@ -281,7 +281,7 @@ describe("href", () => {
             },
             { hashType: "bang" }
           );
-          expect(testHistory.href(location)).toBe("#!/simple-path");
+          expect(testHistory.url(location)).toBe("#!/simple-path");
         });
       });
     });
@@ -295,7 +295,7 @@ describe("href", () => {
             },
             { hashType: "clean" }
           );
-          expect(testHistory.href(location)).toBe("#simple-path");
+          expect(testHistory.url(location)).toBe("#simple-path");
         });
       });
     });

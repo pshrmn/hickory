@@ -5,7 +5,7 @@ export declare type HistoryOptions = LocationUtilOptions;
 export declare type HistoryConstructor<O> = (fn: ResponseHandler, options: O) => History;
 export interface History {
     location: SessionLocation;
-    href(to: Hrefable): string;
+    url(to: Hrefable): string;
     current(): void;
     cancel(): void;
     destroy(): void;
