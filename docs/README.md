@@ -6,6 +6,7 @@
   - [Confirming Navigation](./about/confirming-navigation.md)
   - [Glossary](./about/glossary.md)
 - API
-  - [Browser](./api/Browser.md)
-  - [Hash](./api/Hash.md)
-  - [InMemory](./api/InMemory.md)
+  - [browser](./api/browser.md)
+  - [hash](./api/hash.md)
+  - [inMemory](./api/inMemory.md)
+  - [createBase](./api/createBase.md)
