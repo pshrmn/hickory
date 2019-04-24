@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.13
 
 - Rename `history.href` to `history.url`.
 - The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
