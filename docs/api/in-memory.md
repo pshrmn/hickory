@@ -31,7 +31,8 @@ The response handler function will be passed a "pending navigation" object. This
 
 - `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
 
-- `base` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base` - An object with `add` and `remove` functions for adding and removing a base segment
+  from locations/URLs, which is useful if the application isn't hosted from the root directory of a domain. The object can be created using the [`createBase`](./createBase.md) function.
 
 ## Properties
 

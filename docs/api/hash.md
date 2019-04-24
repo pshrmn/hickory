@@ -35,7 +35,8 @@ The response handler function will be passed a "pending navigation" object. This
 
   - `clean` - The encoded path begins with `#` (no leading slash). This has one exception, which is the root location because there has to be at least one charater after the pound sign for a valid hash string.
 
-- `base` - This is a string that begins with a forward slash and ends with a non-foward slash character. It should be provided if your application is not being served from the root of your server.
+- `base` - An object with `add` and `remove` functions for adding and removing a base segment
+  from locations/URLs, which is useful if the application isn't hosted from the root directory of a domain. The object can be created using the [`createBase`](./createBase.md) function.
 
 **Note:** While you _can_ use the `base` with a `hash` history, you probably should not. The `base` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
 
