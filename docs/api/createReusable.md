@@ -14,6 +14,8 @@ import { createReusable } from "@hickory/in-memory";
 const reusable = createReusable();
 
 function handler(req, res) {
-  const history = reusable({ location: req.url });
+  const history = reusable({
+    location: { url: req.url }
+  });
 }
 ```

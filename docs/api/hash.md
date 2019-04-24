@@ -63,9 +63,8 @@ The current location object.
 ### navigate()
 
 ```js
-history.navigate({ url: "/the-producers" });
 history.navigate({
-  pathname: "/oklahoma",
+  url: "/oklahoma",
   state: { musical: true }
 });
 ```
@@ -78,44 +77,23 @@ There are three ways that it can do this: `push`, `replace`, and `anchor`.
 
 ```js
 history.navigate({ url: "/lion-king" }, "push");
-history.navigate(
-  {
-    pathname: "/wicked",
-    state: { musical: true }
-  },
-  "push"
-);
 ```
 
 2.  `replace` navigation replaces the current location with the new location. Any existing locations after the current location are unaffected.
 
 ```js
 history.navigate({ url: "/cats" }, "replace");
-history.navigate(
-  {
-    pathname: "/rent",
-    state: { musical: true }
-  },
-  "replace"
-);
 ```
 
 3.  `anchor` mimics the behavior of clicking on an `<a>` element. When the new location's URL is exactly the same as the current location's, it will act like `replace`; when they are different, it will act like `push`.
 
 ```js
 history.navigate({ url: "/hairspray" }, "anchor");
-history.navigate(
-  {
-    pathname: "/hamilton",
-    state: { musical: true }
-  },
-  "anchor"
-);
 ```
 
 #### arguments
 
-`to` - This can either be a string or an object. If it is a string, it will be parsed to create a location object. If it is an object, then its properties will be used to create a new location object. If the provided object is missing any location properties, then those will be given default values on the new location object.
+`to` - An object with a `url` property, which is the URL to navigate to. The object can also include a `state` property, which is state that should be attached to the location.
 
 `navType` - `anchor`, `push`, or `replace`. If none are provided, this will default to `anchor`.
 
