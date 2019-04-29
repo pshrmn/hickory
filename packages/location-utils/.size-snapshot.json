@@ -1,8 +1,8 @@
 {
   "dist/hickory-location-utils.es.js": {
-    "bundled": 589,
-    "minified": 390,
-    "gzipped": 182,
+    "bundled": 302,
+    "minified": 173,
+    "gzipped": 132,
     "treeshaked": {
       "rollup": {
         "code": 0,
@@ -14,18 +14,18 @@
     }
   },
   "dist/hickory-location-utils.js": {
-    "bundled": 780,
-    "minified": 563,
-    "gzipped": 247
+    "bundled": 419,
+    "minified": 278,
+    "gzipped": 182
   },
   "dist/hickory-location-utils.umd.js": {
-    "bundled": 1127,
-    "minified": 542,
-    "gzipped": 317
+    "bundled": 742,
+    "minified": 402,
+    "gzipped": 268
   },
   "dist/hickory-location-utils.min.js": {
-    "bundled": 1127,
-    "minified": 542,
-    "gzipped": 317
+    "bundled": 742,
+    "minified": 402,
+    "gzipped": 268
   }
 }

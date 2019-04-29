@@ -25,8 +25,6 @@ The response handler function will be passed a "pending navigation" object. This
 
   - `stringify` - A function that will convert a query value into a search string. This function should return an empty string when it is called with no arguments.
 
-- `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
-
 - `hashType` - The `hashType` specifies how we translate `window.location.hash` to a location (and vice versa). The options are `default`, `bang`. and `clean`.
 
   - `default` - The encoded path begins with `#/`. If you do not provide a `hashType` option, this one will be used.
@@ -47,7 +45,7 @@ const history = hash({ base: "/test" });
 The `/test` segment will be stripped from and included in the hash segment of the full URI.
 
 ```js
-const uri = history.href({ pathname: "/pathname" });
+const uri = history.url({ pathname: "/pathname" });
 // uri === '#/test/pathname'
 ```
 
@@ -112,18 +110,35 @@ The `go` function is used to jump forward and backward to already visited locati
 
 `num` - The number of steps forward or backward to go.
 
-### href()
+### url()
 
 ```js
-history.href({ pathname: "/spamalot" });
-// #/spamalot
+history.url({ pathname: "/spamalot" });
+// /spamalot
+
+const base = createBase("/hip/hip");
+const hiptory = browser(fn, { base });
+hiptory.url("/hooray");
+// /hip/hip/hooray
 ```
 
-The `href` function generates the string representation of the location object. This string could be parsed to create the same location object, which means that for a hash history, it will be prepended with the pound sign (`#`).
+The `url` function returns a URL string. It can take either a location object or a string.
+
+If the `history` is configured with a base segment, the base segment will be prepended to the URL string.
+
+When the argument is an object:
+
+1. If the `pathname` is `undefined`, the returned string will have no pathname component, including no base segment.
+2. If the `pathname` is included, it is expected to be absolute (begin with a forward slash `/`).
+
+When the argument is a string:
+
+1. If the first character is a question mark (`?`) or hash symbol (`#`), the returned string will have no pathname component, including no base segment.
+2. When there is a pathname, it is expected to be absolute (begin with a forward slash).
 
 #### arguments
 
-`location` - The location to create a path for.
+`location` - A location object or a string.
 
 ### destroy()
 

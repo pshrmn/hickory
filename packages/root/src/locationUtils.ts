@@ -1,8 +1,4 @@
-import {
-  completePathname,
-  completeHash,
-  completeQuery
-} from "@hickory/location-utils";
+import { ensureBeginsWith } from "@hickory/location-utils";
 
 import {
   SessionLocation,
@@ -96,27 +92,22 @@ export default function locationUtils(
     stringify(location: Hrefable): string {
       if (typeof location === "string") {
         const firstChar = location.charAt(0);
-        // keep hash/query only strings relative
         if (firstChar === "#" || firstChar === "?") {
           return location;
         }
-        const pathname = completePathname(location);
-        return base ? base.add(pathname) : pathname;
+        return base ? base.add(location) : location;
       }
-      // Ensure that pathname begins with a forward slash, query begins
-      // with a question mark, and hash begins with a pound sign.
-      // If there is no pathname, it is relative and shouldn't
-      // start with the receive the base segment.
+
       const pathname =
         location.pathname !== undefined
           ? base
-            ? base.add(completePathname(location.pathname))
-            : completePathname(location.pathname)
+            ? base.add(location.pathname)
+            : location.pathname
           : "";
       return (
         pathname +
-        completeQuery(stringifyQuery(location.query)) +
-        completeHash(location.hash)
+        ensureBeginsWith(stringifyQuery(location.query), "?") +
+        ensureBeginsWith(location.hash, "#")
       );
     }
   };

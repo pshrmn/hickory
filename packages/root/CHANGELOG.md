@@ -1,3 +1,7 @@
+## Next
+
+- Location util's `stringify` function expects pathname to be absolute.
+
 ## 2.0.0-beta.13
 
 - `location` function only takes object with `url` property as its first argument. It also takes an optional second argument, which is a location object to inherit properties from.

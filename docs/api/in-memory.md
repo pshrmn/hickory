@@ -29,8 +29,6 @@ The response handler function will be passed a "pending navigation" object. This
 
   - `stringify` - A function that will convert a query value into a search string. This function should return an empty string when it is called with no arguments.
 
-- `decode` - Whether or not to automatically decode the `pathname` when creating a location. This should almost always be `true`, but if you have a reason to use invalid URIs, then you _can_ set this to `false` (possibly to your own peril). (default: `true`)
-
 - `base` - An object with `add` and `remove` functions for adding and removing a base segment
   from locations/URLs, which is useful if the application isn't hosted from the root directory of a domain. The object can be created using the [`createBase`](./createBase.md) function.
 
@@ -111,18 +109,35 @@ An object with the following (optional) properties:
 - `locations` - An array of location objects or strings.
 - `index` - The index of the "current" location in the locations array.
 
-### href()
+### url()
 
 ```js
-history.href({ pathname: "/spamalot" });
+history.url({ pathname: "/spamalot" });
 // /spamalot
+
+const base = createBase("/hip/hip");
+const hiptory = browser(fn, { base });
+hiptory.url("/hooray");
+// /hip/hip/hooray
 ```
 
-The `href` function generates the string representation of the location object.
+The `url` function returns a URL string. It can take either a location object or a string.
+
+If the `history` is configured with a base segment, the base segment will be prepended to the URL string.
+
+When the argument is an object:
+
+1. If the `pathname` is `undefined`, the returned string will have no pathname component, including no base segment.
+2. If the `pathname` is included, it is expected to be absolute (begin with a forward slash `/`).
+
+When the argument is a string:
+
+1. If the first character is a question mark (`?`) or hash symbol (`#`), the returned string will have no pathname component, including no base segment.
+2. When there is a pathname, it is expected to be absolute (begin with a forward slash).
 
 #### arguments
 
-`location` - The location to create a path for.
+`location` - A location object or a string.
 
 ### destroy()
 
