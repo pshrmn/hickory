@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.14
 
 - Location util's `stringify` function expects pathname to be absolute.
 
