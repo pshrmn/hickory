@@ -6,11 +6,11 @@ const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
 const typescript = require("rollup-plugin-typescript2");
 
 exports.replaceWithProduction = replace({
-  "process.env.NODE_ENV": "production"
+  "process.env.NODE_ENV": `"production"`
 });
 
 exports.replaceWithDevelopment = replace({
-  "process.env.NODE_ENV": "production"
+  "process.env.NODE_ENV": `"development"`
 });
 
 exports.resolveNode = resolve();

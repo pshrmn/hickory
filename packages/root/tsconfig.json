@@ -9,7 +9,8 @@
     "declaration": true,
     "declarationDir": "types",
     "outDir": ".build",
-    "types": ["node"]
+    "types": ["node"],
+    "esModuleInterop": true
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"]

@@ -1,3 +1,7 @@
+## Next
+
+- `url` function expects pathname to be absolute.
+
 ## 2.0.0-beta.13
 
 - Rename `history.href` to `history.url`.

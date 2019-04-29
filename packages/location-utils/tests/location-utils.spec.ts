@@ -1,60 +1,20 @@
 import "jest";
-import {
-  completePathname,
-  completeHash,
-  completeQuery,
-  stripPrefix
-} from "../src";
+import { ensureBeginsWith, stripPrefix } from "../src";
 
 describe("location utils", () => {
-  describe("completePathname", () => {
-    it("prepends forward slash if it doesn't exist", () => {
-      expect(completePathname("test")).toBe("/test");
+  describe("ensureBeginsWith", () => {
+    it("returns empty string if first argument is undefined", () => {
+      expect(ensureBeginsWith(undefined, "?")).toBe("");
     });
 
-    it("does nothing if pathname already begins with forward slash", () => {
-      expect(completePathname("/best")).toBe("/best");
+    it("prepends second argument if first argument does not begin with it", () => {
+      const input = "test=ing";
+      expect(ensureBeginsWith(input, "?")).toBe(`?${input}`);
     });
 
-    it("returns empty string if argument is falsy", () => {
-      const falsy = [undefined, null, ""];
-      falsy.forEach(value => {
-        expect(completePathname(value)).toBe("");
-      });
-    });
-  });
-
-  describe("completeHash", () => {
-    it("prepends pound sign if it doesn't exist", () => {
-      expect(completeHash("test")).toBe("#test");
-    });
-
-    it("does nothing if hash already begins with pound sign", () => {
-      expect(completeHash("#best")).toBe("#best");
-    });
-
-    it("returns empty string if argument is falsy", () => {
-      const falsy = [undefined, null, ""];
-      falsy.forEach(value => {
-        expect(completeHash(value)).toBe("");
-      });
-    });
-  });
-
-  describe("completeQuery", () => {
-    it("prepends forward slash if it doesn't exist", () => {
-      expect(completeQuery("test=one")).toBe("?test=one");
-    });
-
-    it("does nothing if pathname already begins with forward slash", () => {
-      expect(completeQuery("?best=two")).toBe("?best=two");
-    });
-
-    it("returns empty string if argument is falsy", () => {
-      const falsy = [undefined, null, ""];
-      falsy.forEach(value => {
-        expect(completeQuery(value)).toBe("");
-      });
+    it("returns first argument if it begins with the second argument", () => {
+      const input = "?test=ing";
+      expect(ensureBeginsWith(input, "?")).toBe(input);
     });
   });
 

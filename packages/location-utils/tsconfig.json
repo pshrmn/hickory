@@ -7,7 +7,8 @@
     "module": "es6",
     "declaration": true,
     "declarationDir": "types",
-    "types": ["node"]
+    "types": ["node"],
+    "esModuleInterop": true
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"]

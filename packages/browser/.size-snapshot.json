@@ -19,13 +19,13 @@
     "gzipped": 836
   },
   "dist/hickory-browser.umd.js": {
-    "bundled": 15472,
-    "minified": 4662,
-    "gzipped": 1919
+    "bundled": 14750,
+    "minified": 4601,
+    "gzipped": 1899
   },
   "dist/hickory-browser.min.js": {
-    "bundled": 15472,
-    "minified": 4662,
-    "gzipped": 1919
+    "bundled": 14750,
+    "minified": 4601,
+    "gzipped": 1899
   }
 }

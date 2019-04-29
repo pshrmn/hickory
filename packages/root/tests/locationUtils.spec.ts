@@ -4,7 +4,7 @@ import * as qs from "qs";
 
 import { LocationComponents, Key } from "../src/types";
 
-describe("locationFactory", () => {
+describe("location utils", () => {
   describe("constructor", () => {
     describe("query option", () => {
       const consoleWarn = console.warn;
@@ -283,14 +283,6 @@ describe("locationFactory", () => {
           expect(output).toBe("#test");
         });
 
-        it("prepends forward slash if pathname does not have one", () => {
-          const input = {
-            pathname: "test"
-          };
-          const output = stringify(input);
-          expect(output).toBe("/test");
-        });
-
         describe("base", () => {
           it("adds the base to the generated string", () => {
             const { stringify } = locationUtils({
@@ -409,24 +401,12 @@ describe("locationFactory", () => {
       });
 
       describe("beginning with a pathname", () => {
-        it("prefixes pathname that is missing a forward slash", () => {
-          expect(stringify("test")).toBe("/test");
-        });
-
         it("prefixes with base", () => {
           const { stringify } = locationUtils({
             base: createBase("/prefix")
           });
           const path = stringify("/one/two/three#four");
           expect(path).toBe("/prefix/one/two/three#four");
-        });
-
-        it("prefixes pathname when joining with base", () => {
-          const { stringify } = locationUtils({
-            base: createBase("/prefix")
-          });
-          const path = stringify("one");
-          expect(path).toBe("/prefix/one");
         });
 
         describe("base with emptyRoot = true", () => {
