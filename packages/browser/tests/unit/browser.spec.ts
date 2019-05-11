@@ -130,3 +130,23 @@ describe("url", () => {
     });
   });
 });
+
+describe("destroy", () => {
+  it("doesn't emit navigation after being destroyed", () => {
+    withDOM({ url: "http://example.com/one" }, () => {
+      let navCount = 0;
+      const testHistory = browser(pending => {
+        navCount++;
+        pending.finish();
+      });
+      testHistory.navigate({ url: "/two" });
+
+      expect(navCount).toBe(1);
+
+      testHistory.destroy();
+      testHistory.navigate({ url: "/three" });
+
+      expect(navCount).toBe(1);
+    });
+  });
+});
