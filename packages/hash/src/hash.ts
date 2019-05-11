@@ -67,7 +67,7 @@ export function hash(
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
 
-  const {
+  let {
     emitNavigation,
     cancelPending,
     createNavigation,
@@ -156,6 +156,7 @@ export function hash(
     },
     destroy() {
       window.removeEventListener("popstate", popstate);
+      emitNavigation = noop;
     },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       const navigation = prepare(to, navType);

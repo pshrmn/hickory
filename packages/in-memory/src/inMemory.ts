@@ -50,7 +50,7 @@ export function inMemory(
 
   let lastAction: Action = "push";
 
-  const {
+  let {
     emitNavigation,
     cancelPending,
     createNavigation,
@@ -96,6 +96,7 @@ export function inMemory(
     },
     destroy(): void {
       destroyLocation();
+      emitNavigation = noop;
     },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       const navigation = prepare(to, navType);

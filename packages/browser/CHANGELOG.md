@@ -1,3 +1,7 @@
+## Next
+
+- Destroyed `history` instance no longer emits navigation.
+
 ## 2.0.0-beta.14
 
 - `url` function expects pathname to be absolute.
