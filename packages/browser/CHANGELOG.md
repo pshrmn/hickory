@@ -1,4 +1,4 @@
-## Next
+## 2.0.0-beta.15
 
 - Destroyed `history` instance no longer emits navigation.
 
