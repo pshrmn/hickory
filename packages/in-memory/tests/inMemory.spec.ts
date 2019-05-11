@@ -354,3 +354,26 @@ describe("reset()", () => {
     });
   });
 });
+
+describe("destroy", () => {
+  it("doesn't emit navigation after being destroyed", () => {
+    let navCount = 0;
+    const testHistory = inMemory(
+      pending => {
+        navCount++;
+        pending.finish();
+      },
+      {
+        locations: [{ url: "/one" }]
+      }
+    );
+    testHistory.navigate({ url: "/two" });
+
+    expect(navCount).toBe(1);
+
+    testHistory.destroy();
+    testHistory.navigate({ url: "/three" });
+
+    expect(navCount).toBe(1);
+  });
+});
