@@ -1,4 +1,4 @@
-## Next
+## 2.0.0
 
 The following is a consolidation of the pre-v2 changes.
 
