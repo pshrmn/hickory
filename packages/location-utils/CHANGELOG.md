@@ -1,22 +1,9 @@
-## 2.0.0-beta.14
+## Next
+
+The following is a consolidation of the pre-v2 changes.
 
 - Remove `complete___` exports.
-
-## 2.0.0-beta.13
-
 - Remove `stripBase` function.
-
-## 2.0.0-beta.11
-
-- Revert snake casing.
-
-## 2.0.0-beta.5
-
-- Snake case export names: `ensureBeginsWith` -> `ensure_begins_with`, `completePathname` -> `complete_pathname`, `completeQuery` -> `complete_query`, `completeHash` -> `complete_hash`, `stripPrefix` -> `strip_prefix`, `hasBaseSegment` -> `has_base_segment`, and `stripBaseSegment` -> `strip_base_segment`.
-
-## 2.0.0-alpha.2
-
-- `strict` types
 
 ## 1.0.2
 

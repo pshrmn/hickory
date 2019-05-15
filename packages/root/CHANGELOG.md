@@ -1,99 +1,35 @@
-## 2.0.0-beta.14
+## Next
 
+The following is a consolidation of the pre-v2 changes.
+
+### Exports
+
+The module's exports have been broken up into modular functions.
+
+#### `locationUtils`
+
+- A function that creates functions for working with locations.
+- The `stringify` function from `locationUtils` can receive a location object or a string.
 - Location util's `stringify` function expects pathname to be absolute.
-
-## 2.0.0-beta.13
-
-- `location` function only takes object with `url` property as its first argument. It also takes an optional second argument, which is a location object to inherit properties from.
-- Export `createBase` function for using a base segment with URLs.
+- Rename `baseSegment` option to `base`.
 - `base` option for `locationUtils` is an object with `add` and `remove` properties (object returned by `createBase`).
-
-## 2.0.0-beta.12
-
 - `locationUtils.location` can take an object of shape `{ url: string, state: any }`.
-- Remove `string` option from first argument to `locationUtils.location`.
-- Remove `state` argument from `locationUtils.location`.
 
-## 2.0.0-beta.11
+#### `keyGenerator`
 
-- Revert snake casing
+- A function that sets up keys for locations.
 
-## 2.0.0-beta.10
+#### `navigationConfirmation`
 
-- Rename `base_segment` option to `base`.
+- A function that sets up the ability to block navigation until a user confirms that navigation.
 
-## 2.0.0-beta.9
+#### `navigateWith`
 
-- `navigate_with` receives `utils`, not `location_utils`.
-- Internal cleanup
+- A function for setting up cancellable/finishable navigation.
 
-## 2.0.0-beta.8
+#### `createBase`
 
-- The `stringify` function from `location_utils` can receive a location object or a string.
-- Remove `AnyLocation` type, add `Hrefable` type.
-
-## 2.0.0-beta.7
-
-- Remove `pathname` option.
-
-## 2.0.0-beta.5
-
-- Rename `locationUtils` to `location_utils`; its API is also now snake cased.
-- Rename `keyGenerator` to `key_generator`
-- Rename `navigateWith` to `navigate_with`; its API is also now snake cased.
-- Rename `navigationConfirmation` to `navigation_confirmation`; its API is also now snake cased.
-
-## 2.0.0-beta.4
-
-- Rename `raw` option to `pathname`.
-
-## 2.0.0-beta.2
-
-- Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
-- Remove `RawLocation` type.
-
-## 2.0.0-beta.0
-
-- `HistoryOptions` and `HistoryConstructor` types.
-
-## 2.0.0-alpha.5
-
-- Rename `Location` type to `RawLocation`.
-- Convert key to a two number tuple (`[1, 0]` instead of `1.0`). (**Note:** `pathname` is almost always better than `key` for a "unique" identifier)
-- `history.current` function will emit a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
-- Unify `prepare` with pending navigation handlers. Users now create a "pending" history; the "real" history is created by passing a response handler to the "pending" history function.
-
-## 2.0.0-alpha.4
-
-- Add `cancel` method to `History` interface
-
-## 2.0.0-alpha.3
-
-- Remove generic `query` type.
-
-## 2.0.0-alpha.2
-
-- Export `locationUtils` function for creating a history's location utility functions
-- Export `keyGenerator` function for creating a key generator.
-- Export `navigationConfirmation` function for creating a navigation blocker.
-- Remove `Common` export
-- Export `prepNavigate` method for history `navigate` methods.
-- Remove `location.url`
-- `strict` types
-- Rename `LocationDetails` to `LocationComponents`
-- Rename `HickoryLocation` to `SessionLocation`
-- Rename `KeylessLocation` to `Location`
-- Change location factory API: `createPath` -> `stringify`, `createLocation` -> `genericLocation` (with `keyed` to add a key).
-
-## 2.0.0-alpha.1
-
-- Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.
-
-## 2.0.0-alpha.0
-
-- Add `url` string property to `HickoryLocation` objects.
-- Export `PUSH`, `REPLACE`, `ANCHOR`, and `POP` constants.
-- Move `Common` to a named export.
+- A function for creating a "base" object for applications that are not served from the "root" of a server.
 
 ## 1.0.2
 

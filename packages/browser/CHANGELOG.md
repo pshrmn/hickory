@@ -1,98 +1,50 @@
-## 2.0.0-beta.15
+## Next
+
+The following is a consolidation of the pre-v2 changes.
+
+### Exports
+
+- The function to create a browser history is now a named export: `browser`.
+- The `browser` function takes a `ResponseHandler` as its first argument and an optional options object as its second argument.
+- Remove navigation blocking from `browser` history.
+- Add `createBase` export, which is a function that creates a base object to be passed as the `base` option (see options below).
+
+### `history.url`
+
+- Rename `history.toHref` to `history.url`. The `url` function expects the provided `pathname` to be absolute.
+- `url` function can take a location object or a string.
+
+### `history.navigate`
+
+- The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
+- The history object will automatically cancel the pending navigation when another navigation happens.
+
+### `history.current`
+
+- Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
+
+### `history.cancel`
+
+- Add `history.cancel` function for cancelling the active navigation.
+
+### `history.destroy`
 
 - Destroyed `history` instance no longer emits navigation.
 
-## 2.0.0-beta.14
+### locations
 
-- `url` function expects pathname to be absolute.
-
-## 2.0.0-beta.13
-
-- Rename `history.href` to `history.url`.
-- The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
-- Add `createBase` export.
-
-## 2.0.0-beta.12
-
-- `history.navigate()` takes one argument, an object with an optional `state` property. The object can either contain URL components (`pathname`, `query`, and `hash`) or a URL string under the `url` property.
-
-## 2.0.0-beta.10
-
-- Rename `base_segment` option to `base`.
-
-## 2.0.0-beta.9
-
-- Clean up internals
-
-## 2.0.0-beta.8
-
-- Rename `to_href` to `href`.
-- `href` function can take a location object or a string.
-
-## 2.0.0-beta.7
-
-- Remove `pathname` option.
-
-## 2.0.0-beta.6
-
-- Lowercase export (`Browser` to `browser`).
-
-## 2.0.0-beta.5
-
-- Rename `toHref` property to `to_href`.
-- Rename `baseSegment` option to `base_segment`.
-
-## 2.0.0-beta.4
-
-- Rename `raw` option to `pathname`.
-
-## 2.0.0-beta.3
-
-- Use `encodeurl` package to ensure proper encoding across browsers.
-
-## 2.0.0-beta.2
-
-- Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
-- Remove `RawLocation` type.
-
-## 2.0.0-beta.0
-
-- Pass `ResponseHandler` as first argument to `Browser`.
-- Remove `PendingHistory` (`history` returned by calling `Browser` function).
-
-## 2.0.0-alpha.5
-
-- Rename `Location` type to `RawLocation`.
 - `location.key` is now a two number tuple (`[1, 0]` instead of `1.0`).
-- Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
-- `Browser` returns a pending history function. The "real" history object is created by passing a response handler to the pending history.
-
-## 2.0.0-alpha.4
-
-- Add `history.cancel` function for cancelling the active navigation.
-- The history object will automatically cancel the pending navigation when another navigation happens.
-
-## 2.0.0-alpha.3
-
-- Remove generic `query` type.
-
-## 2.0.0-alpha.2
-
-- Remove navigation blocking from `Browser`
-- Use modular `@hickory/root` exports
+- Remove `location.rawPathname`.
 - Remove `location.url`
+
+### `options`
+
+- Rename `baseSegment` option to `base`.
+- Remove `raw` option.
+
+### Other
+
 - Remove event coordinator (handle events manually)
-- `strict` types
-- Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.
-
-## 2.0.0-alpha.1
-
-- Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.
-
-## 2.0.0-alpha.0
-
-- `Browser` is now a named export.
-- Export `PUSH`, `REPLACE`, `ANCHOR`, and `POP` constants
 
 ## 1.0.2
 

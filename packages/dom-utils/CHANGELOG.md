@@ -1,17 +1,9 @@
-## 2.0.0-beta.5
+## Next
 
-- Rename `domExists` to `dom_exists`
-- Rename `ignorablePopstateEvent` to `ignorable_popstate_event`
-- Rename `getStateFromHistory` to `get_state_from_history`
+The following is a consolidation of the pre-v2 changes.
 
-## 2.0.0-beta.3
-
-- Remove `ensureEncodedPathname` function.
-
-## 2.0.0-alpha.2
-
-- Remove `createEventCoordinator`
-- `strict` types
+- Removed `createEventCoordinator` export.
+- Remove `ensureEncodedPathname` export.
 
 ## 1.0.2
 

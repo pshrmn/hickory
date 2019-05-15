@@ -1,97 +1,51 @@
-## 2.0.0-beta.15
+## Next
+
+The following is a consolidation of the pre-v2 changes.
+
+### Exports
+
+- The function to create an in-memory history is now a named export: `inMemory`.
+- Add a `createReusable` export, which is a function that creates a reusable history constructor for server-side rendering.
+- The `inMemory` function takes a `ResponseHandler` as its first argument and an optional options object as its second argument.
+- Remove navigation blocking from `inMemory` history.
+- Add `createBase` export, which is a function that creates a base object to be passed as the `base` option (see options below).
+
+### `history.url`
+
+- Rename `history.toHref` to `history.url`. The `url` function expects the provided `pathname` to be absolute.
+- `url` function can take a location object or a string.
+
+### `history.navigate`
+
+- The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
+- The history object will automatically cancel the pending navigation when another navigation happens.
+
+### `history.current`
+
+- Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
+
+### `history.cancel`
+
+- Add `history.cancel` function for cancelling the active navigation.
+
+### `history.destroy`
 
 - Destroyed `history` instance no longer emits navigation.
 
-## 2.0.0-beta.14
+### locations
 
-- `url` function expects pathname to be absolute.
-
-## 2.0.0-beta.13
-
-- Rename `history.href` to `history.url`.
-- The first argument to `history.navigate` is an object with shape `{ url: string, state?: any }`.
-- Add `createBase` export.
-
-## 2.0.0-beta.12
-
-- `history.navigate()` takes one argument, an object with an optional `state` property. The object can either contain URL components (`pathname`, `query`, and `hash`) or a URL string under the `url` property.
-- `inMemory`'s `locations` option no longer takes strings. Now, must be a URL object or a URL components object.
-- `createReusable`'s return function's `location` option no longer takes strings. Now, must be a URL object or a URL components object.
-
-## 2.0.0-beta.11
-
-- Rename `in_memory` to `inMemory`.
-- Rename `reusable_server_history` to `createReusable`.
-
-## 2.0.0-beta.10
-
-- Rename `base_segment` option to `base`.
-
-## 2.0.0-beta.9
-
-- Rename `create_server_history` to `reusable_server_history`.
-- Clean up internals
-
-## 2.0.0-beta.8
-
-- Rename `to_href` to `href`.
-- `href` function can take a location object or a string.
-
-## 2.0.0-beta.6
-
-- Lowercase export (`InMemory` to `in_memory`).
-
-## 2.0.0-beta.5
-
-- Rename `toHref` property to `to_href`.
-
-## 2.0.0-beta.2
-
-- Remove `location.rawPathname`. Rely on the `raw` option to correctly format the provided pathname.
-- Remove `RawLocation` type.
-
-## 2.0.0-beta.1
-
-- Export `createServerHistory` function, for creating many lightweight history constructors, for server-side rendering.
-
-## 2.0.0-beta.0
-
-- Pass `ResponseHandler` as first argument to `InMemory`.
-- Remove `PendingHistory` (`history` returned by calling `InMemory` function).
-
-## 2.0.0-alpha.5
-
-- Rename `Location` type to `RawLocation`.
 - `location.key` is now a two number tuple (`[1, 0]` instead of `1.0`).
-- Add `history.current` function that emits a navigation for the current location (with a no-op functions for finishing and cancelling the navigation).
-- `InMemory` returns a pending history function. The "real" history object is created by passing a response handler to the pending history.
-
-## 2.0.0-alpha.4
-
-- Add `history.cancel` function for cancelling the active navigation.
-- The history object will automatically cancel the pending navigation when another navigation happens.
-- Remove `history.locations` and `history.index` values.
-- `go` emulates browser behavior by setting `index` immediately instead of when the navigation is finished. This means that a subsequent `go` call will be based on the pending `index`, not the index of the current `history.location`.
-
-## 2.0.0-alpha.3
-
-- Remove generic `query` type.
-
-## 2.0.0-alpha.2
-
-- Remove navigation blocking from `InMemory`
+- Remove `location.rawPathname`.
 - Remove `location.url`
-- `strict` types
-- Export `Location` type, rename `HickoryLocation` to `SessionLocation` and `LocationDetails` to `LocationComponents`.
 
-## 2.0.0-alpha.1
+### `options`
 
-- Remove `PUSH`, `REPLACE`, `ANCHOR`, and `POP` exports.
+- Rename `baseSegment` option to `base`.
+- Remove `raw` option.
 
-## 2.0.0-alpha.0
+### Other
 
-- `InMemory` is now a named export.
-- Export `PUSH`, `REPLACE`, `ANCHOR`, and `POP` constants
+- Remove event coordinator (handle events manually)
 
 ## 1.0.2
 
