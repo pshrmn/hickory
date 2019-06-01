@@ -4,7 +4,7 @@
   "description": "Hickory's hash history",
   "main": "dist/hickory-hash.js",
   "module": "dist/hickory-hash.es.js",
-  "types": "types/index.d.ts",
+  "types": "types/hash.d.ts",
   "files": [
     "dist",
     "types",

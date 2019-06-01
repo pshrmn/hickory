@@ -4,7 +4,7 @@
   "description": "Hickory's browser history",
   "main": "dist/hickory-browser.js",
   "module": "dist/hickory-browser.es.js",
-  "types": "types/index.d.ts",
+  "types": "types/browser.d.ts",
   "files": [
     "dist",
     "types",
