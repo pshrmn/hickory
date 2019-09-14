@@ -18,9 +18,9 @@ This repository is a monorepo for the Hickory packages. Unless you are creating 
 
 | Package   | Version                                          | Repo                                       | API                           |
 | --------- | ------------------------------------------------ | ------------------------------------------ | ----------------------------- |
-| browser   | [![npm][browser-version-badge]][npm-browser]     | [packages/browser](./packages/browser)     | [API](./docs/api/Browser.md)  |
-| hash      | [![npm][hash-version-badge]][npm-hash]           | [packages/hash](./packages/hash)           | [API](./docs/api/Hash.md)     |
-| in-memory | [![npm][in-memory-version-badge]][npm-in-memory] | [packages/in-memory](./packages/in-memory) | [API](./docs/api/InMemory.md) |
+| browser   | [![npm][browser-version-badge]][npm-browser]     | [packages/browser](./packages/browser)     | [API](./docs/api/browser.md)  |
+| hash      | [![npm][hash-version-badge]][npm-hash]           | [packages/hash](./packages/hash)           | [API](./docs/api/hash.md)     |
+| in-memory | [![npm][in-memory-version-badge]][npm-in-memory] | [packages/in-memory](./packages/in-memory) | [API](./docs/api/in-memory.md) |
 
 [browser-version-badge]: https://img.shields.io/npm/v/@hickory/browser.svg
 [npm-browser]: https://npmjs.com/package/@hickory/browser
