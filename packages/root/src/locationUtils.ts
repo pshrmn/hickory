@@ -20,7 +20,7 @@ function defaultStringifyQuery(query?: any): string {
 export default function locationUtils(
   options: LocationUtilOptions = {}
 ): LocationUtils {
-  const {
+  let {
     query: {
       parse: parseQuery = defaultParseQuery,
       stringify: stringifyQuery = defaultStringifyQuery
@@ -39,7 +39,7 @@ export default function locationUtils(
         if (!current) {
           current = { pathname: "/", hash: "", query: parseQuery() };
         }
-        const details: LocationComponents = {
+        let details: LocationComponents = {
           pathname: current.pathname,
           hash: url.charAt(0) === "#" ? url.substring(1) : current.hash,
           query: current.query
@@ -51,7 +51,7 @@ export default function locationUtils(
       }
 
       // hash is always after query, so split it off first
-      const hashIndex = url.indexOf("#");
+      let hashIndex = url.indexOf("#");
       let hash;
       if (hashIndex !== -1) {
         hash = url.substring(hashIndex + 1);
@@ -60,20 +60,20 @@ export default function locationUtils(
         hash = "";
       }
 
-      const queryIndex = url.indexOf("?");
+      let queryIndex = url.indexOf("?");
       let rawQuery;
       if (queryIndex !== -1) {
         rawQuery = url.substring(queryIndex + 1);
         url = url.substring(0, queryIndex);
       }
-      const query = parseQuery(rawQuery);
+      let query = parseQuery(rawQuery);
 
       let pathname = base ? base.remove(url) : url;
       if (pathname === "") {
         pathname = "/";
       }
 
-      const details: LocationComponents = {
+      let details: LocationComponents = {
         hash,
         query,
         pathname
@@ -91,14 +91,14 @@ export default function locationUtils(
     },
     stringify(location: Hrefable): string {
       if (typeof location === "string") {
-        const firstChar = location.charAt(0);
+        let firstChar = location.charAt(0);
         if (firstChar === "#" || firstChar === "?") {
           return location;
         }
         return base ? base.add(location) : location;
       }
 
-      const pathname =
+      let pathname =
         location.pathname !== undefined
           ? base
             ? base.add(location.pathname)

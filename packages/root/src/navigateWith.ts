@@ -14,7 +14,7 @@ import {
 } from "./types/navigate";
 
 export default function navigateWith(args: NavigateArgs): NavigateHelpers {
-  const { responseHandler, utils, keygen, current, push, replace } = args;
+  let { responseHandler, utils, keygen, current, push, replace } = args;
   let pending: PendingNavigation | undefined;
 
   function createNavigation(
@@ -23,7 +23,7 @@ export default function navigateWith(args: NavigateArgs): NavigateHelpers {
     finish: FinishNavigation,
     cancel: CancelNavigation
   ): PendingNavigation {
-    const navigation = {
+    let navigation = {
       location,
       action,
       finish() {
@@ -59,8 +59,8 @@ export default function navigateWith(args: NavigateArgs): NavigateHelpers {
   }
 
   function prepare(to: URLWithState, navType: NavType) {
-    const currentLocation = current();
-    const location = utils.location(to, currentLocation);
+    let currentLocation = current();
+    let location = utils.location(to, currentLocation);
     switch (navType) {
       case "anchor":
         return utils.stringify(location) === utils.stringify(currentLocation)
@@ -76,7 +76,7 @@ export default function navigateWith(args: NavigateArgs): NavigateHelpers {
   }
 
   function replaceNav(location: LocationComponents): PendingNavigation {
-    const keyed = utils.keyed(location, keygen.minor(current().key));
+    let keyed = utils.keyed(location, keygen.minor(current().key));
     return createNavigation(
       keyed,
       "replace",
@@ -86,7 +86,7 @@ export default function navigateWith(args: NavigateArgs): NavigateHelpers {
   }
 
   function pushNav(location: LocationComponents): PendingNavigation {
-    const keyed = utils.keyed(location, keygen.major(current().key));
+    let keyed = utils.keyed(location, keygen.major(current().key));
     return createNavigation(keyed, "push", push.finish(keyed), push.cancel);
   }
 

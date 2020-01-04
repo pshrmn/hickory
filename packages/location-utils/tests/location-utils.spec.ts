@@ -8,12 +8,12 @@ describe("location utils", () => {
     });
 
     it("prepends second argument if first argument does not begin with it", () => {
-      const input = "test=ing";
+      let input = "test=ing";
       expect(ensureBeginsWith(input, "?")).toBe(`?${input}`);
     });
 
     it("returns first argument if it begins with the second argument", () => {
-      const input = "?test=ing";
+      let input = "?test=ing";
       expect(ensureBeginsWith(input, "?")).toBe(input);
     });
   });

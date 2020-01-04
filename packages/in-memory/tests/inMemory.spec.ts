@@ -54,7 +54,7 @@ function runSuite(suite: Suite) {
 
 describe("Memory constructor", () => {
   it("initializes with root location (/) if none provided", () => {
-    const testHistory = inMemory(pending => {
+    let testHistory = inMemory(pending => {
       pending.finish();
     });
     expect(testHistory.location).toMatchObject({
@@ -65,7 +65,7 @@ describe("Memory constructor", () => {
   });
 
   it("creates locations from url strings", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -80,7 +80,7 @@ describe("Memory constructor", () => {
   });
 
   it("uses the provided index to select initial location", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -96,7 +96,7 @@ describe("Memory constructor", () => {
 
   it("defaults to index 0 if provided index is out of bounds", () => {
     [-1, 3].forEach(value => {
-      const testHistory = inMemory(
+      let testHistory = inMemory(
         pending => {
           pending.finish();
         },
@@ -112,7 +112,7 @@ describe("Memory constructor", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -140,7 +140,7 @@ describe("go suite", () => {
 describe("go", () => {
   describe("with no value", () => {
     it('calls response handler with current location and "pop" action', done => {
-      const testHistory = inMemory(pending => {
+      let testHistory = inMemory(pending => {
         expect(pending.location).toMatchObject({
           pathname: "/"
         });
@@ -154,8 +154,8 @@ describe("go", () => {
 
   describe("with a value", () => {
     it("does nothing if the value is outside of the range", () => {
-      const router = jest.fn();
-      const testHistory = inMemory(router);
+      let router = jest.fn();
+      let testHistory = inMemory(router);
       testHistory.go(10);
       // just verifying that a popstate event hasn't emitted to
       // trigger the history's event handler
@@ -166,7 +166,7 @@ describe("go", () => {
 
 describe("url", () => {
   it("returns the location formatted as a string", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -174,7 +174,7 @@ describe("url", () => {
         locations: [{ url: "/one?test=query" }]
       }
     );
-    const currentPath = testHistory.url(testHistory.location);
+    let currentPath = testHistory.url(testHistory.location);
     expect(currentPath).toBe("/one?test=query");
   });
 });
@@ -182,7 +182,7 @@ describe("url", () => {
 describe("reset()", () => {
   describe("locations", () => {
     it("creates locations from url strings", () => {
-      const testHistory = inMemory(
+      let testHistory = inMemory(
         pending => {
           pending.finish();
         },
@@ -203,7 +203,7 @@ describe("reset()", () => {
     });
 
     it("uses default '/' location if no locations are provided", () => {
-      const testHistory = inMemory(
+      let testHistory = inMemory(
         pending => {
           pending.finish();
         },
@@ -222,8 +222,8 @@ describe("reset()", () => {
     });
 
     it("reset removes existing locations", () => {
-      const router = jest.fn();
-      const testHistory = inMemory(router, {
+      let router = jest.fn();
+      let testHistory = inMemory(router, {
         locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
@@ -247,7 +247,7 @@ describe("reset()", () => {
   });
 
   it("sets location using provided index value", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -266,7 +266,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if index is not provided", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -284,7 +284,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if provided index < 0", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -303,7 +303,7 @@ describe("reset()", () => {
   });
 
   it("uses location at index 0 if index is larger than length of locations array", () => {
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         pending.finish();
       },
@@ -323,8 +323,8 @@ describe("reset()", () => {
 
   describe("emitting new location", () => {
     it("emits the new location", () => {
-      const router = jest.fn();
-      const testHistory = inMemory(router, {
+      let router = jest.fn();
+      let testHistory = inMemory(router, {
         locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
@@ -340,8 +340,8 @@ describe("reset()", () => {
     });
 
     it('emits the action as "push"', () => {
-      const router = jest.fn();
-      const testHistory = inMemory(router, {
+      let router = jest.fn();
+      let testHistory = inMemory(router, {
         locations: [{ url: "/one" }, { url: "/two" }, { url: "/three" }]
       });
 
@@ -358,7 +358,7 @@ describe("reset()", () => {
 describe("destroy", () => {
   it("doesn't emit navigation after being destroyed", () => {
     let navCount = 0;
-    const testHistory = inMemory(
+    let testHistory = inMemory(
       pending => {
         navCount++;
         pending.finish();

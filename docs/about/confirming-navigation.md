@@ -8,15 +8,15 @@ Normally, when a user clicks a link to another location within your application,
 
 Your confirmation function can be anything you want it to be. It will be given three arguments: `info`, `confirm`, and `prevent`.
 
-* `info` is an object with three properties: `to` is the location that the user is attempting to navigate to, `from` is the current location, and `action` is the type of navigation (`PUSH`, `REPLACE`, or `POP`).
+- `info` is an object with three properties: `to` is the location that the user is attempting to navigate to, `from` is the current location, and `action` is the type of navigation (`PUSH`, `REPLACE`, or `POP`).
 
-* `confirm` is the function that the confirmation function should call when you want to allow the navigation to happen.
+- `confirm` is the function that the confirmation function should call when you want to allow the navigation to happen.
 
-* `prevent` is the function that the confirmation function should call when you want to stop the navigation.
+- `prevent` is the function that the confirmation function should call when you want to stop the navigation.
 
 ```js
 function confirmation(info, confirm, prevent) {
-  const allow = window.confirm('Are you sure that you want to navigate?');
+  let allow = window.confirm("Are you sure that you want to navigate?");
   if (allow) {
     confirm();
   } else {
@@ -24,6 +24,7 @@ function confirmation(info, confirm, prevent) {
   }
 }
 ```
+
 In the example code above, we use `window.confirm` to get the user's confirmation. While you can do anything you want in your confirmation function, a blocking function like `window.confirm` is recommended so that the user cannot perform another navigation action before confirming/preventing the current navigation.
 
 ## Registering

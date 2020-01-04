@@ -3,7 +3,7 @@
 ```js
 import { hash } from "@hickory/hash";
 
-const history = hash(responseHandler, options);
+let history = hash(responseHandler, options);
 ```
 
 ## Response Handler
@@ -39,13 +39,13 @@ The response handler function will be passed a "pending navigation" object. This
 **Note:** While you _can_ use the `base` with a `hash` history, you probably should not. The `base` only affects the `pathname` of location objects (and the URIs those produce). For example, if you create a history like this:
 
 ```js
-const history = hash({ base: "/test" });
+let history = hash({ base: "/test" });
 ```
 
 The `/test` segment will be stripped from and included in the hash segment of the full URI.
 
 ```js
-const uri = history.url({ pathname: "/pathname" });
+let uri = history.url({ pathname: "/pathname" });
 // uri === '#/test/pathname'
 ```
 
@@ -116,8 +116,8 @@ The `go` function is used to jump forward and backward to already visited locati
 history.url({ pathname: "/spamalot" });
 // /spamalot
 
-const base = createBase("/hip/hip");
-const hiptory = browser(fn, { base });
+let base = createBase("/hip/hip");
+let hiptory = browser(fn, { base });
 hiptory.url("/hooray");
 // /hip/hip/hooray
 ```

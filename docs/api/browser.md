@@ -3,7 +3,7 @@
 ```js
 import { browser } from "@hickory/browser";
 
-const history = browser(responseHandler, options);
+let history = browser(responseHandler, options);
 ```
 
 ## Response Handler
@@ -93,8 +93,8 @@ The `go` function is used to jump forward and backward to already visited locati
 history.url({ pathname: "/spamalot" });
 // /spamalot
 
-const base = createBase("/hip/hip");
-const hiptory = browser(fn, { base });
+let base = createBase("/hip/hip");
+let hiptory = browser(fn, { base });
 hiptory.url("/hooray");
 // /hip/hip/hooray
 ```

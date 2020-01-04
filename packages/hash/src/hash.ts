@@ -37,10 +37,10 @@ export function hash(
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
-  const utils = locationUtils(options);
-  const keygen = keyGenerator();
+  let utils = locationUtils(options);
+  let keygen = keyGenerator();
 
-  const {
+  let {
     decode: decodeHashPath,
     encode: encodeHashPath
   } = hashEncoderAndDecoder(options.hashType);
@@ -49,14 +49,14 @@ export function hash(
 
   function fromBrowser(providedState?: object): SessionLocation {
     let { hash } = window.location;
-    const url = decodeHashPath(hash);
+    let url = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    const location = utils.location({ url, state });
+    let location = utils.location({ url, state });
     return utils.keyed(location, key);
   }
 
@@ -80,8 +80,8 @@ export function hash(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = url(location);
-          const { key, state } = location;
+          let path = url(location);
+          let { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
           } catch (e) {
@@ -96,8 +96,8 @@ export function hash(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = url(location);
-          const { key, state } = location;
+          let path = url(location);
+          let { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
           } catch (e) {
@@ -119,8 +119,8 @@ export function hash(
     }
     cancelPending("pop");
 
-    const location: SessionLocation = fromBrowser(event.state);
-    const diff = hashHistory.location.key[0] - location.key[0];
+    let location: SessionLocation = fromBrowser(event.state);
+    let diff = hashHistory.location.key[0] - location.key[0];
 
     emitNavigation(
       createNavigation(
@@ -143,7 +143,7 @@ export function hash(
 
   window.addEventListener("popstate", popstate, false);
 
-  const hashHistory: HashHistory = {
+  let hashHistory: HashHistory = {
     location: fromBrowser(),
     current() {
       emitNavigation(
@@ -159,7 +159,7 @@ export function hash(
       emitNavigation = noop;
     },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
-      const navigation = prepare(to, navType);
+      let navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);
     },

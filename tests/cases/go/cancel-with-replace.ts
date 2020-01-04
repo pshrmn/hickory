@@ -9,7 +9,7 @@ export default {
   assertions: 1,
   fn: function({ constructor, resolve, options = {} }: AsyncTestCaseArgs) {
     let calls = 0;
-    const history = constructor(pending => {
+    let history = constructor(pending => {
       let localHistory = history;
       switch (calls++) {
         case 0:

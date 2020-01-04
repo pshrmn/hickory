@@ -1,8 +1,8 @@
-const typescript = require("rollup-plugin-typescript2");
-const resolve = require("rollup-plugin-node-resolve");
-const commonjs = require("rollup-plugin-commonjs");
+let typescript = require("rollup-plugin-typescript2");
+let resolve = require("rollup-plugin-node-resolve");
+let commonjs = require("rollup-plugin-commonjs");
 
-const customLaunchers = {
+let customLaunchers = {
   // windows
   bs_chrome: {
     base: "BrowserStack",
@@ -62,7 +62,7 @@ const customLaunchers = {
   */
 };
 
-const tsConfig = {
+let tsConfig = {
   compilerOptions: {
     lib: ["es5", "es6", "dom"],
     target: "es5",
@@ -75,8 +75,8 @@ const tsConfig = {
 };
 
 module.exports = function(config) {
-  const username = process.env.BROWSER_STACK_USERNAME;
-  const accessKey = process.env.BROWSER_STACK_ACCESS_KEY;
+  let username = process.env.BROWSER_STACK_USERNAME;
+  let accessKey = process.env.BROWSER_STACK_ACCESS_KEY;
 
   if (!username || !accessKey) {
     throw new Error(

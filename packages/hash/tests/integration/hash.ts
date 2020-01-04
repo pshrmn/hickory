@@ -55,7 +55,7 @@ describe("hash integration tests", () => {
         testHistory = hash(pending => {
           pending.finish();
         });
-        const providedState = { isSet: true };
+        let providedState = { isSet: true };
         testHistory.navigate(
           {
             url: "/next",
@@ -63,7 +63,7 @@ describe("hash integration tests", () => {
           },
           "push"
         );
-        const { state, key } = testHistory.location;
+        let { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
         expect(window.history.state.key).toEqual(key);
       });
@@ -86,7 +86,7 @@ describe("hash integration tests", () => {
         testHistory = hash(pending => {
           pending.finish();
         });
-        const providedState = { isSet: true };
+        let providedState = { isSet: true };
         testHistory.navigate(
           {
             url: "/next",
@@ -94,7 +94,7 @@ describe("hash integration tests", () => {
           },
           "replace"
         );
-        const { state, key } = testHistory.location;
+        let { state, key } = testHistory.location;
         expect(window.history.state.state).toEqual(state);
         expect(window.history.state.key).toEqual(key);
       });

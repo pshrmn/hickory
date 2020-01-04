@@ -9,9 +9,9 @@ function runTestCases(fn, cases) {
 
 describe("hash types", () => {
   describe("basic", () => {
-    const { encode, decode } = hashEncoderAndDecoder("basic");
+    let { encode, decode } = hashEncoderAndDecoder("basic");
     it("decode removes #, ensures leading /", () => {
-      const testCases = [
+      let testCases = [
         ["#/with-slash", "/with-slash"],
         ["#without-slash", "/without-slash"]
       ];
@@ -19,7 +19,7 @@ describe("hash types", () => {
     });
 
     it("encode returns string that begins with #/", () => {
-      const testCases = [
+      let testCases = [
         ["/with-slash", "#/with-slash"],
         ["without-slash", "#/without-slash"]
       ];
@@ -27,9 +27,9 @@ describe("hash types", () => {
     });
 
     describe("basic is the default option", () => {
-      const { encode, decode } = hashEncoderAndDecoder();
+      let { encode, decode } = hashEncoderAndDecoder();
       it("decode removes #, ensures leading /", () => {
-        const testCases = [
+        let testCases = [
           ["#/with-slash", "/with-slash"],
           ["#without-slash", "/without-slash"]
         ];
@@ -37,7 +37,7 @@ describe("hash types", () => {
       });
 
       it("encode returns string that begins with #/", () => {
-        const testCases = [
+        let testCases = [
           ["/with-slash", "#/with-slash"],
           ["without-slash", "#/without-slash"]
         ];
@@ -46,9 +46,9 @@ describe("hash types", () => {
     });
 
     describe("basic is used when provided an invalid hash type", () => {
-      const { encode, decode } = hashEncoderAndDecoder("invalid-type");
+      let { encode, decode } = hashEncoderAndDecoder("invalid-type");
       it("decode removes #, ensures leading /", () => {
-        const testCases = [
+        let testCases = [
           ["#/with-slash", "/with-slash"],
           ["#without-slash", "/without-slash"]
         ];
@@ -56,7 +56,7 @@ describe("hash types", () => {
       });
 
       it("encode returns string that begins with #/", () => {
-        const testCases = [
+        let testCases = [
           ["/with-slash", "#/with-slash"],
           ["without-slash", "#/without-slash"]
         ];
@@ -66,9 +66,9 @@ describe("hash types", () => {
   });
 
   describe("clean", () => {
-    const { encode, decode } = hashEncoderAndDecoder("clean");
+    let { encode, decode } = hashEncoderAndDecoder("clean");
     it("decode removes #, ensures leading /", () => {
-      const testCases = [
+      let testCases = [
         ["#/with-slash", "/with-slash"],
         ["#without-slash", "/without-slash"]
       ];
@@ -76,7 +76,7 @@ describe("hash types", () => {
     });
 
     it("encode returns string that begins with #, but no slash", () => {
-      const testCases = [
+      let testCases = [
         ["/with-slash", "#with-slash"],
         ["without-slash", "#without-slash"]
       ];
@@ -84,7 +84,7 @@ describe("hash types", () => {
     });
 
     it("encodes with leading slash when at the root", () => {
-      const testCases = [
+      let testCases = [
         ["/", "#/"],
         ["/?query=true", "#/?query=true"],
         ,
@@ -95,9 +95,9 @@ describe("hash types", () => {
   });
 
   describe("bang", () => {
-    const { encode, decode } = hashEncoderAndDecoder("bang");
+    let { encode, decode } = hashEncoderAndDecoder("bang");
     it("decode removes # and !, ensures leading /", () => {
-      const testCases = [
+      let testCases = [
         ["#/with-slash", "/with-slash"],
         ["#without-slash", "/without-slash"]
       ];
@@ -105,7 +105,7 @@ describe("hash types", () => {
     });
 
     it("encode returns string that begins with #!/", () => {
-      const testCases = [
+      let testCases = [
         ["/with-slash", "#!/with-slash"],
         ["without-slash", "#!/without-slash"]
       ];

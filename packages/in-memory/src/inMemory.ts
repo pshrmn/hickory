@@ -22,8 +22,8 @@ export function inMemory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): InMemoryHistory {
-  const utils = locationUtils(options);
-  const keygen = keyGenerator();
+  let utils = locationUtils(options);
+  let keygen = keyGenerator();
 
   let locations = initializeLocations(options.locations);
   let index = validIndex(options.index) ? options.index : 0;
@@ -39,7 +39,7 @@ export function inMemory(
     );
   }
 
-  const destroyLocation = () => {
+  let destroyLocation = () => {
     locations = [];
     index = -1;
   };
@@ -83,7 +83,7 @@ export function inMemory(
     }
   });
 
-  const memoryHistory: InMemoryHistory = {
+  let memoryHistory: InMemoryHistory = {
     location: locations[index],
     current() {
       emitNavigation(
@@ -99,7 +99,7 @@ export function inMemory(
       emitNavigation = noop;
     },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
-      const navigation = prepare(to, navType);
+      let navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);
     },
@@ -116,8 +116,8 @@ export function inMemory(
           )
         );
       } else {
-        const originalIndex = index;
-        const newIndex = originalIndex + num;
+        let originalIndex = index;
+        let newIndex = originalIndex + num;
         if (newIndex < 0 || newIndex >= locations.length) {
           return;
         }
@@ -125,7 +125,7 @@ export function inMemory(
         // Immediately update the index; this simulates browser behavior.
         index = newIndex;
 
-        const location: SessionLocation = locations[newIndex];
+        let location: SessionLocation = locations[newIndex];
         emitNavigation(
           createNavigation(
             location,

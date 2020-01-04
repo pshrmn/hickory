@@ -9,7 +9,7 @@ At the root of your project, you will create a history object. There are three c
 ```js
 import { browser } from "@hickory/browser";
 
-const history = browser(responseHandler, options);
+let history = browser(responseHandler, options);
 ```
 
 When creating a history object, it must be passed a response handler function. This is a function that will be called whenever there is navigation (as well as immediately with the initial location).
