@@ -3,7 +3,7 @@
 ```js
 import { inMemory } from "@hickory/in-memory";
 
-const history = inMemory(responseHandler, options);
+let history = inMemory(responseHandler, options);
 ```
 
 ## Response Handler
@@ -115,8 +115,8 @@ An object with the following (optional) properties:
 history.url({ pathname: "/spamalot" });
 // /spamalot
 
-const base = createBase("/hip/hip");
-const hiptory = browser(fn, { base });
+let base = createBase("/hip/hip");
+let hiptory = browser(fn, { base });
 hiptory.url("/hooray");
 // /hip/hip/hooray
 ```

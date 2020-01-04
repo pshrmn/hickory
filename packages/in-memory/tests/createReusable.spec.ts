@@ -5,8 +5,8 @@ import { createReusable } from "../src";
 
 describe("createReusable", () => {
   it("creates initial location from location.url", () => {
-    const history = createReusable();
-    const testHistory = history(
+    let history = createReusable();
+    let testHistory = history(
       pending => {
         pending.finish();
       },
@@ -21,8 +21,8 @@ describe("createReusable", () => {
   });
 
   it('sets initial action to "push"', () => {
-    const history = createReusable();
-    const testHistory = history(
+    let history = createReusable();
+    let testHistory = history(
       pending => {
         expect(pending.action).toBe("push");
         pending.finish();
@@ -34,8 +34,8 @@ describe("createReusable", () => {
   });
 
   it("sets key to [0,0]", () => {
-    const history = createReusable();
-    const testHistory = history(
+    let history = createReusable();
+    let testHistory = history(
       pending => {
         expect(pending.location.key).toEqual([0, 0]);
         pending.finish();
@@ -47,13 +47,13 @@ describe("createReusable", () => {
   });
 
   it("uses the provided query parsing function to make the query value", () => {
-    const history = createReusable({
+    let history = createReusable({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = history(
+    let testHistory = history(
       pending => {
         pending.finish();
       },
@@ -68,8 +68,8 @@ describe("createReusable", () => {
 describe("no-op functions", () => {
   describe("go", () => {
     it("doesn't throw", () => {
-      const history = createReusable();
-      const testHistory = history(
+      let history = createReusable();
+      let testHistory = history(
         pending => {
           pending.finish();
         },
@@ -85,8 +85,8 @@ describe("no-op functions", () => {
 
   describe("navigate", () => {
     it("doesn't throw", () => {
-      const history = createReusable();
-      const testHistory = history(
+      let history = createReusable();
+      let testHistory = history(
         pending => {
           pending.finish();
         },
@@ -102,8 +102,8 @@ describe("no-op functions", () => {
 
   describe("cancel", () => {
     it("doesn't throw", () => {
-      const history = createReusable();
-      const testHistory = history(
+      let history = createReusable();
+      let testHistory = history(
         pending => {
           pending.finish();
         },
@@ -120,8 +120,8 @@ describe("no-op functions", () => {
 
 describe("url", () => {
   it("returns the location formatted as a string", () => {
-    const history = createReusable();
-    const testHistory = history(
+    let history = createReusable();
+    let testHistory = history(
       pending => {
         pending.finish();
       },
@@ -129,18 +129,18 @@ describe("url", () => {
         location: { url: "/one?test=query" }
       }
     );
-    const currentPath = testHistory.url(testHistory.location);
+    let currentPath = testHistory.url(testHistory.location);
     expect(currentPath).toBe("/one?test=query");
   });
 
   it("uses the provided query stringifying function to stringify the query value", () => {
-    const history = createReusable({
+    let history = createReusable({
       query: {
         parse: qs.parse,
         stringify: qs.stringify
       }
     });
-    const testHistory = history(
+    let testHistory = history(
       pending => {
         pending.finish();
       },
@@ -148,7 +148,7 @@ describe("url", () => {
         location: { url: "/" }
       }
     );
-    const url = testHistory.url({ pathname: "/yo", query: { one: 1 } });
+    let url = testHistory.url({ pathname: "/yo", query: { one: 1 } });
     expect(url).toEqual("/yo?one=1");
   });
 });

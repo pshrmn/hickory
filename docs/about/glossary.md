@@ -1,11 +1,11 @@
 # Hickory Glossary
 
-* [hash](#hash)
-* [key](#key)
-* [location](#location)
-* [pathname](#pathname)
-* [query](#query)
-* [state](#state)
+- [hash](#hash)
+- [key](#key)
+- [location](#location)
+- [pathname](#pathname)
+- [query](#query)
+- [state](#state)
 
 ## hash
 
@@ -13,7 +13,9 @@ The hash property of a location object is the hash string from the URI (with the
 
 ```js
 // https://example.com/hello#goodbye
-{ hash: 'goodbye' }
+{
+  hash: "goodbye";
+}
 ```
 
 ## key
@@ -34,7 +36,9 @@ The pathname property of a location is an absolute string (begins with a forward
 
 ```js
 // https://example.com/ni+hao
-{ pathname: '/ni+hao' }
+{
+  pathname: "/ni+hao";
+}
 ```
 
 ## query
@@ -42,20 +46,26 @@ The pathname property of a location is an absolute string (begins with a forward
 The query property of a location represents the `window.location`'s `search` string, but possibly in a more digestible format. The default type of the query property is a string, but if you provide a `parse` function option when you create your history, that function will be used to transform the string.
 
 ```js
-import { parse } from 'qs';
-const history = Browser({ parse });
+import { parse } from "qs";
+let history = Browser({ parse });
 
 // https://example.com/hola?language=es
-{ query: { language: 'es' }}
+{
+  query: {
+    language: "es";
+  }
+}
 ```
 
 If you do not provide a `parse` function, the one thing to remember is that the `query` string will not have a leading question mark (?), which is different from `window.location.search`.
 
 ```js
-const history = Browser();
+let history = Browser();
 
 // https://example.com/hola?language=es
-{ query: 'language=es' }
+{
+  query: "language=es";
+}
 ```
 
 ## state

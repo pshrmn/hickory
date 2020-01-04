@@ -3,7 +3,7 @@ import { TestCaseArgs } from "../../types";
 export default {
   msg: "throws when given an invalid nav method",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
-    const history = constructor(pending => {}, options);
+    let history = constructor(pending => {}, options);
 
     expect(() => {
       // @ts-ignore

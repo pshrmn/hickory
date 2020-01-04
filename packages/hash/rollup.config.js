@@ -1,12 +1,12 @@
-const plugins = require("../../rollup/plugins");
-const getDeps = require("../../rollup/deps");
+let plugins = require("../../rollup/plugins");
+let getDeps = require("../../rollup/deps");
 
-const pkg = require("./package.json");
-const deps = getDeps(pkg);
+let pkg = require("./package.json");
+let deps = getDeps(pkg);
 
-const input = "src/hash.ts";
-const sourcemap = false;
-const name = "HickoryHash";
+let input = "src/hash.ts";
+let sourcemap = false;
+let name = "HickoryHash";
 
 module.exports = [
   {

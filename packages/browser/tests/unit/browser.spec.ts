@@ -44,7 +44,7 @@ function runSuite(suite: Suite) {
 describe("browser", () => {
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
-      const testHistory = browser(pending => {
+      let testHistory = browser(pending => {
         pending.finish();
       });
       expect(testHistory.location).toMatchObject({
@@ -58,7 +58,7 @@ describe("browser", () => {
   it("throws if there is no DOM", () => {
     withDOM({ url: "http://example.com/one", setGlobal: false }, () => {
       expect(() => {
-        const testHistory = browser(pending => {
+        let testHistory = browser(pending => {
           pending.finish();
         });
       }).toThrow();
@@ -68,7 +68,7 @@ describe("browser", () => {
   it('sets initial action to "push" when page has not been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState(null, "", "/has-no-key");
-      const testHistory = browser(pending => {
+      let testHistory = browser(pending => {
         expect(pending.action).toBe("push");
         pending.finish();
       });
@@ -78,7 +78,7 @@ describe("browser", () => {
   it('sets initial action to "pop" when page has been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/has-key");
-      const testHistory = browser(pending => {
+      let testHistory = browser(pending => {
         expect(pending.action).toBe("pop");
         pending.finish();
       });
@@ -102,9 +102,9 @@ describe("browser history.go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
-      const realGo = window.history.go;
-      const mockGo = (window.history.go = jest.fn());
-      const testHistory = browser(pending => {
+      let realGo = window.history.go;
+      let mockGo = (window.history.go = jest.fn());
+      let testHistory = browser(pending => {
         pending.finish();
       });
 
@@ -119,10 +119,10 @@ describe("browser history.go", () => {
 describe("url", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/one" }, () => {
-      const testHistory = browser(pending => {
+      let testHistory = browser(pending => {
         pending.finish();
       });
-      const path = testHistory.url({
+      let path = testHistory.url({
         pathname: "/one",
         query: "test=query"
       });
@@ -135,7 +135,7 @@ describe("destroy", () => {
   it("doesn't emit navigation after being destroyed", () => {
     withDOM({ url: "http://example.com/one" }, () => {
       let navCount = 0;
-      const testHistory = browser(pending => {
+      let testHistory = browser(pending => {
         navCount++;
         pending.finish();
       });

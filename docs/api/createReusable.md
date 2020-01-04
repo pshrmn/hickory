@@ -11,10 +11,10 @@ The `createReusable` function is used to create a lightweight history function. 
 ```js
 import { createReusable } from "@hickory/in-memory";
 
-const reusable = createReusable();
+let reusable = createReusable();
 
 function handler(req, res) {
-  const history = reusable({
+  let history = reusable({
     location: { url: req.url }
   });
 }

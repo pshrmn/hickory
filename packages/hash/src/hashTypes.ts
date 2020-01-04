@@ -34,19 +34,19 @@ export default function hashEncoderAndDecoder(
           return "#" + noSlash;
         },
         decode: (path: string): string => {
-          const noHash = stripPrefix(path, "#");
+          let noHash = stripPrefix(path, "#");
           return ensureBeginsWith(noHash, "/");
         }
       };
     case BANG:
       return {
         encode: (path: string): string => {
-          const withSlash = ensureBeginsWith(path, "/");
+          let withSlash = ensureBeginsWith(path, "/");
           return "#" + ensureBeginsWith(withSlash, "!");
         },
         decode: (path: string): string => {
-          const noHash = stripPrefix(path, "#");
-          const noBang = stripPrefix(noHash, "!");
+          let noHash = stripPrefix(path, "#");
+          let noBang = stripPrefix(noHash, "!");
           return ensureBeginsWith(noBang, "/");
         }
       };
@@ -57,7 +57,7 @@ export default function hashEncoderAndDecoder(
           return "#" + ensureBeginsWith(path, "/");
         },
         decode: (path: string): string => {
-          const noHash = stripPrefix(path, "#");
+          let noHash = stripPrefix(path, "#");
           return ensureBeginsWith(noHash, "/");
         }
       };

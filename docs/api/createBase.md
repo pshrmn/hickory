@@ -10,8 +10,8 @@ Hickory provides a `createBase` function for setting up a base segment for a his
 import { browser, createBase } from "@hickory/browser";
 // the in-memory and hash packages also export createBase
 
-const base = createBase("/my-application");
-const history = browser(fn, { base });
+let base = createBase("/my-application");
+let history = browser(fn, { base });
 ```
 
 The base has two functionalities:
@@ -28,14 +28,14 @@ In addition to the base segment, `createBase` can take an options object to conf
 An application typically has a root location whose pathname is `/`. Given an application whose base segment is `/my-application` and a location whose pathname is `/`, creating a URL from those would yield the string `/my-application/`. If you prefer for the root location to be represented without a trailing slash, `emptyRoot` can be set to `true`.
 
 ```js
-const nonEmptyRoot = createBase("/my-application"); // emptyRoot = false
-const history = browser(fn, { base: nonEmptyRoot });
-const url = history.url({ pathname: "/" });
+let nonEmptyRoot = createBase("/my-application"); // emptyRoot = false
+let history = browser(fn, { base: nonEmptyRoot });
+let url = history.url({ pathname: "/" });
 // url = "/my-appliction/"
 
-const emptyRoot = createBase("/my-application"), { emptyRoot: true });
-const history = browser(fn, { base: emptyRoot });
-const url = history.url({ pathname: "/" });
+let emptyRoot = createBase("/my-application"), { emptyRoot: true });
+let history = browser(fn, { base: emptyRoot });
+let url = history.url({ pathname: "/" });
 // url = "/my-appliction"
 ```
 
@@ -46,15 +46,15 @@ This option only affects the root location `/`; any other location pathnames wil
 When `strict` is true (it defaults to false), it causes the application to throw when given an invalid URL.
 
 ```js
-const nonStrict = createBase("/my-application");
-const history = browser(fn, { base: nonStrict });
+let nonStrict = createBase("/my-application");
+let history = browser(fn, { base: nonStrict });
 history.navigate({ url: "/my-application/test" });
 // navigates to location { pathname: "/test" }
 history.navigate({ url: "/test" });
 // navigates to location { pathname: "/test" }
 
-const strict = createBase("/my-application");
-const history = browser(fn, { base: strict });
+let strict = createBase("/my-application");
+let history = browser(fn, { base: strict });
 history.navigate({ url: "/my-application/test" });
 // navigates to location { pathname: "/test" }
 history.navigate({ url: "/test" });
@@ -64,18 +64,18 @@ history.navigate({ url: "/test" });
 Additionally, when `emptyRoot` is false, `strict` will cause the application to throw when navigating to the root location if it is missing the trailing slash.
 
 ```js
-const nonEmptyRoot = createBase("/my-application", { strict: true });
-const history = browser(fn, { base: nonEmptyRoot });
+let nonEmptyRoot = createBase("/my-application", { strict: true });
+let history = browser(fn, { base: nonEmptyRoot });
 history.navigate({ url: "/my-application" });
 // throws
 history.navigate({ url: "/my-application/" });
 // navigates to location { pathname: "/" }
 
-const emptyRoot = createBase("/my-application", {
+let emptyRoot = createBase("/my-application", {
   strict: true,
   emptyRoot: true
 });
-const history = browser(fn, { base: strict });
+let history = browser(fn, { base: strict });
 history.navigate({ url: "/my-application" });
 // navigates to location { pathname: "/" }
 history.navigate({ url: "/my-application/" });

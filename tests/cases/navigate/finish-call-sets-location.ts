@@ -4,7 +4,7 @@ import { TestCaseArgs } from "../../types";
 export default {
   msg: "updates history's location when finish function is called",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
-    const history = constructor(pending => {
+    let history = constructor(pending => {
       expect(history.location.pathname).toBe("/one");
       pending.finish();
       expect(history.location.pathname).toBe("/two");

@@ -7,7 +7,7 @@ import { LocationComponents, Key } from "../src/types";
 describe("location utils", () => {
   describe("constructor", () => {
     describe("query option", () => {
-      const consoleWarn = console.warn;
+      let consoleWarn = console.warn;
 
       beforeEach(() => {
         console.warn = jest.fn();
@@ -19,10 +19,10 @@ describe("location utils", () => {
 
       describe("undefined", () => {
         it("returns object with default parse/stringify fns", () => {
-          const common = locationUtils();
-          const parsed = common.location({ url: "/test?one=two" });
+          let common = locationUtils();
+          let parsed = common.location({ url: "/test?one=two" });
           expect(parsed.query).toBe("one=two");
-          const stringified = common.stringify({
+          let stringified = common.stringify({
             pathname: "/test",
             query: "?three=four"
           });
@@ -32,22 +32,22 @@ describe("location utils", () => {
 
       describe("valid query option", () => {
         it("calls parse when creating a location", () => {
-          const parse = jest.fn();
-          const stringify = jest.fn();
-          const common = locationUtils({
+          let parse = jest.fn();
+          let stringify = jest.fn();
+          let common = locationUtils({
             query: { parse, stringify }
           });
-          const loc = common.location({ url: "/test?two=dos" });
+          let loc = common.location({ url: "/test?two=dos" });
           expect(parse.mock.calls.length).toBe(1);
         });
 
         it("calls stringify when creating a path", () => {
-          const parse = jest.fn();
-          const stringify = jest.fn();
-          const common = locationUtils({
+          let parse = jest.fn();
+          let stringify = jest.fn();
+          let common = locationUtils({
             query: { parse, stringify }
           });
-          const path = common.stringify({ pathname: "/test" });
+          let path = common.stringify({ pathname: "/test" });
           expect(stringify.mock.calls.length).toBe(1);
         });
       });
@@ -55,30 +55,30 @@ describe("location utils", () => {
   });
 
   describe("location", () => {
-    const { location } = locationUtils();
+    let { location } = locationUtils();
 
     describe("pathname", () => {
       describe("base", () => {
-        const { location } = locationUtils({
+        let { location } = locationUtils({
           base: createBase("/prefix")
         });
 
         it("strips the base off of the string", () => {
-          const loc = location({ url: "/prefix/this/is/the/rest" });
+          let loc = location({ url: "/prefix/this/is/the/rest" });
           expect(loc.pathname).toBe("/this/is/the/rest");
         });
 
         it('sets pathname to "/" if pathname exactly equals base', () => {
-          const loc = location({ url: "/prefix" });
+          let loc = location({ url: "/prefix" });
           expect(loc.pathname).toBe("/");
         });
 
         it("throws if URL begins with a pathname but no base and base is strict", () => {
-          const { location } = locationUtils({
+          let { location } = locationUtils({
             base: createBase("/prefix", { strict: true })
           });
           expect(() => {
-            const loc = location({ url: "/this/is/the/rest" });
+            let loc = location({ url: "/this/is/the/rest" });
           }).toThrow(
             'Expected a string that begins with "/prefix", but received "/this/is/the/rest".'
           );
@@ -86,30 +86,30 @@ describe("location utils", () => {
 
         it("does not throw if URL begins with a query", () => {
           expect(() => {
-            const loc = location({ url: "?test=ing" });
+            let loc = location({ url: "?test=ing" });
           }).not.toThrow();
         });
 
         it("does not throw if URL begins with a hash", () => {
           expect(() => {
-            const loc = location({ url: "#test" });
+            let loc = location({ url: "#test" });
           }).not.toThrow();
         });
       });
 
       it("is parsed from the url string", () => {
-        const loc = location({ url: "/pathname?query=this#hash" });
+        let loc = location({ url: "/pathname?query=this#hash" });
         expect(loc.pathname).toBe("/pathname");
       });
 
       describe("other parts", () => {
         it("does not include a hash", () => {
-          const output = location({ url: "/Kendrick#Lamar" });
+          let output = location({ url: "/Kendrick#Lamar" });
           expect(output.pathname).toBe("/Kendrick");
         });
 
         it("does not include a query", () => {
-          const output = location({ url: "/Chance?the=Rapper" });
+          let output = location({ url: "/Chance?the=Rapper" });
           expect(output.pathname).toBe("/Chance");
         });
       });
@@ -117,24 +117,24 @@ describe("location utils", () => {
 
     describe("query", () => {
       it("is parsed from the url string", () => {
-        const loc = location({ url: "/pathname?query=this" });
+        let loc = location({ url: "/pathname?query=this" });
         expect(loc.query).toBe("query=this");
       });
 
       it("does not include a hash", () => {
-        const loc = location({ url: "/pathname?query=this#hash" });
+        let loc = location({ url: "/pathname?query=this#hash" });
         expect(loc.query).toBe("query=this");
       });
 
       describe("query.parse option", () => {
         it("uses the provided query parsing function to make the query value", () => {
-          const { location } = locationUtils({
+          let { location } = locationUtils({
             query: {
               parse: qs.parse,
               stringify: qs.stringify
             }
           });
-          const loc = location({ url: "/pathname?query=this#hash" });
+          let loc = location({ url: "/pathname?query=this#hash" });
           expect(loc.query).toEqual({ query: "this" });
         });
       });
@@ -142,27 +142,27 @@ describe("location utils", () => {
 
     describe("hash", () => {
       it("is parsed from the url string", () => {
-        const loc = location({ url: "/pathname?query=this#hash" });
+        let loc = location({ url: "/pathname?query=this#hash" });
         expect(loc.hash).toBe("hash");
       });
     });
 
     describe("state", () => {
       it("is the state property from the object", () => {
-        const state = {
+        let state = {
           omg: "bff"
         };
-        const input = {
+        let input = {
           url: "/",
           state
         };
-        const output = location(input);
+        let output = location(input);
         expect(output.state).toBeDefined();
         expect(output.state).toMatchObject(state);
       });
 
       it("is undefined if not provided", () => {
-        const output = location({ url: "/" });
+        let output = location({ url: "/" });
         expect(output.state).toBeUndefined();
       });
     });
@@ -170,41 +170,41 @@ describe("location utils", () => {
     describe("special cases", () => {
       describe("hash fragment URLs", () => {
         describe("with current", () => {
-          const current: LocationComponents = {
+          let current: LocationComponents = {
             pathname: "/test",
             query: "one=two",
             hash: "hooray"
           };
 
           it("re-uses current pathname", () => {
-            const loc = location({ url: "#hash" }, current);
+            let loc = location({ url: "#hash" }, current);
             expect(loc.pathname).toBe("/test");
           });
 
           it("re-uses current query", () => {
-            const loc = location({ url: "#hash" }, current);
+            let loc = location({ url: "#hash" }, current);
             expect(loc.query).toBe("one=two");
           });
 
           it("uses provided hash", () => {
-            const loc = location({ url: "#hash" }, current);
+            let loc = location({ url: "#hash" }, current);
             expect(loc.hash).toBe("hash");
           });
         });
 
         describe("without current", () => {
           it('pathname is "/"', () => {
-            const loc = location({ url: "#hash" });
+            let loc = location({ url: "#hash" });
             expect(loc.pathname).toBe("/");
           });
 
           it("query is an empty value", () => {
-            const loc = location({ url: "#hash" });
+            let loc = location({ url: "#hash" });
             expect(loc.query).toBe("");
           });
 
           it("uses provided hash", () => {
-            const loc = location({ url: "#hash" });
+            let loc = location({ url: "#hash" });
             expect(loc.hash).toBe("hash");
           });
         });
@@ -212,40 +212,40 @@ describe("location utils", () => {
 
       describe("empty string", () => {
         describe("with current", () => {
-          const current: LocationComponents = {
+          let current: LocationComponents = {
             pathname: "/test",
             query: "one=two",
             hash: "hey"
           };
           it("re-uses current pathname", () => {
-            const loc = location({ url: "" }, current);
+            let loc = location({ url: "" }, current);
             expect(loc.pathname).toBe("/test");
           });
 
           it("re-uses current query", () => {
-            const loc = location({ url: "" }, current);
+            let loc = location({ url: "" }, current);
             expect(loc.query).toBe("one=two");
           });
 
           it("re-uses current hash", () => {
-            const loc = location({ url: "" }, current);
+            let loc = location({ url: "" }, current);
             expect(loc.hash).toBe("hey");
           });
         });
 
         describe("without current", () => {
           it('pathname is "/"', () => {
-            const loc = location({ url: "" });
+            let loc = location({ url: "" });
             expect(loc.pathname).toBe("/");
           });
 
           it("query is empty value", () => {
-            const loc = location({ url: "" });
+            let loc = location({ url: "" });
             expect(loc.query).toBe("");
           });
 
           it("hash is empty string", () => {
-            const loc = location({ url: "" });
+            let loc = location({ url: "" });
             expect(loc.hash).toBe("");
           });
         });
@@ -254,58 +254,58 @@ describe("location utils", () => {
   });
 
   describe("keyed", () => {
-    const { keyed, location } = locationUtils();
+    let { keyed, location } = locationUtils();
 
     it("attaches a key to a keyless location", () => {
-      const key: Key = [3, 14];
-      const keyless = location({ url: "/test" });
-      const loc = keyed(keyless, key);
+      let key: Key = [3, 14];
+      let keyless = location({ url: "/test" });
+      let loc = keyed(keyless, key);
       expect(loc.key).toBe(key);
     });
   });
 
   describe("stringify", () => {
-    const { stringify } = locationUtils();
+    let { stringify } = locationUtils();
 
     describe("object", () => {
       describe("pathname", () => {
         it("begins the returned URI with the pathname", () => {
-          const input = {
+          let input = {
             pathname: "/test"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output).toBe("/test");
         });
 
         it("uses empty string for pathname if pathname is not provided", () => {
-          const input = { hash: "test" };
-          const output = stringify(input);
+          let input = { hash: "test" };
+          let output = stringify(input);
           expect(output).toBe("#test");
         });
 
         describe("base", () => {
           it("adds the base to the generated string", () => {
-            const { stringify } = locationUtils({
+            let { stringify } = locationUtils({
               base: createBase("/prefix")
             });
-            const loc = {
+            let loc = {
               pathname: "/one/two/three",
               query: "",
               hash: "four"
             };
-            const path = stringify(loc);
+            let path = stringify(loc);
             expect(path).toBe("/prefix/one/two/three#four");
           });
 
           it("does not include the base if there is no pathname", () => {
-            const { stringify } = locationUtils({
+            let { stringify } = locationUtils({
               base: createBase("/prefix")
             });
-            const loc = {
+            let loc = {
               query: "?test=ing",
               hash: "four"
             };
-            const path = stringify(loc);
+            let path = stringify(loc);
             expect(path).toBe("?test=ing#four");
           });
         });
@@ -313,44 +313,44 @@ describe("location utils", () => {
 
       describe("query", () => {
         it("adds a question mark to the beginning of the query string (if not empty)", () => {
-          const input = {
+          let input = {
             pathname: "/",
             query: "one=two"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output).toBe("/?one=two");
         });
 
         it("does not add question mark if it already exists", () => {
-          const input = {
+          let input = {
             pathname: "/",
             query: "?one=two"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output).toBe("/?one=two");
         });
 
         it("does not include the query if stringified version is empty string", () => {
-          const input = {
+          let input = {
             pathname: "/"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output.indexOf("?")).toBe(-1);
         });
 
         describe("query.stringify option", () => {
           it("uses the provided stringify function to turn query into a string", () => {
-            const { stringify } = locationUtils({
+            let { stringify } = locationUtils({
               query: {
                 parse: qs.parse,
                 stringify: qs.stringify
               }
             });
-            const input = {
+            let input = {
               pathname: "/",
               query: { one: "two" }
             };
-            const output = stringify(input);
+            let output = stringify(input);
             expect(output).toBe("/?one=two");
           });
         });
@@ -358,38 +358,38 @@ describe("location utils", () => {
 
       describe("hash", () => {
         it("adds a pound sign to the beginning of the hash (if not empty)", () => {
-          const input = {
+          let input = {
             pathname: "/",
             hash: "yes"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output).toBe("/#yes");
         });
 
         it("does not add pound sign if it already exists", () => {
-          const input = {
+          let input = {
             pathname: "/",
             hash: "#no"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output).toBe("/#no");
         });
 
         it("does not include the hash if it is falsy", () => {
-          const falsyValues = ["", null, undefined];
+          let falsyValues = ["", null, undefined];
           falsyValues.forEach(v => {
-            const output = stringify({ pathname: "/", hash: v });
+            let output = stringify({ pathname: "/", hash: v });
             expect(output.indexOf("#")).toBe(-1);
           });
         });
 
         it("places the hash after the query string", () => {
-          const input = {
+          let input = {
             pathname: "/",
             query: "before=true",
             hash: "after"
           };
-          const output = stringify(input);
+          let output = stringify(input);
           expect(output.indexOf("?")).toBeLessThan(output.indexOf("#"));
         });
       });
@@ -402,27 +402,27 @@ describe("location utils", () => {
 
       describe("beginning with a pathname", () => {
         it("prefixes with base", () => {
-          const { stringify } = locationUtils({
+          let { stringify } = locationUtils({
             base: createBase("/prefix")
           });
-          const path = stringify("/one/two/three#four");
+          let path = stringify("/one/two/three#four");
           expect(path).toBe("/prefix/one/two/three#four");
         });
 
         describe("base with emptyRoot = true", () => {
           it("for root location with query, strips initial slash", () => {
-            const { stringify } = locationUtils({
+            let { stringify } = locationUtils({
               base: createBase("/prefix", { emptyRoot: true })
             });
-            const path = stringify("/?test=one");
+            let path = stringify("/?test=one");
             expect(path).toBe("/prefix?test=one");
           });
 
           it("for root location with hash, strips initial slash", () => {
-            const { stringify } = locationUtils({
+            let { stringify } = locationUtils({
               base: createBase("/prefix", { emptyRoot: true })
             });
-            const path = stringify("/#test");
+            let path = stringify("/#test");
             expect(path).toBe("/prefix#test");
           });
         });
@@ -430,30 +430,30 @@ describe("location utils", () => {
 
       describe("beginning with a query", () => {
         it("returns the provided string", () => {
-          const { stringify } = locationUtils();
+          let { stringify } = locationUtils();
           expect(stringify("?test=true")).toBe("?test=true");
         });
 
         it("if there is a base, it is not prepended", () => {
-          const { stringify } = locationUtils({
+          let { stringify } = locationUtils({
             base: createBase("/prefix")
           });
-          const path = stringify("?test=true");
+          let path = stringify("?test=true");
           expect(path).toBe("?test=true");
         });
       });
 
       describe("beginning with a hash", () => {
         it("returns the provided string", () => {
-          const { stringify } = locationUtils();
+          let { stringify } = locationUtils();
           expect(stringify("#test")).toBe("#test");
         });
 
         it("if there is a base, it is not prepended", () => {
-          const { stringify } = locationUtils({
+          let { stringify } = locationUtils({
             base: createBase("/prefix")
           });
-          const path = stringify("#test");
+          let path = stringify("#test");
           expect(path).toBe("#test");
         });
       });

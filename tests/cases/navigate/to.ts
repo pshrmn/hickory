@@ -5,7 +5,7 @@ import { TestCaseArgs } from "../../types";
 export default {
   msg: "creates object from url string",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
-    const history = constructor(pending => {
+    let history = constructor(pending => {
       expect(pending.location).toMatchObject({
         pathname: "/two",
         query: "test=ing"

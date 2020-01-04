@@ -15,13 +15,13 @@ function noop() {}
 export function createReusable(
   options: HistoryOptions = {}
 ): HistoryConstructor<LocationOptions> {
-  const utils = locationUtils(options);
+  let utils = locationUtils(options);
   function url(location: Hrefable): string {
     return utils.stringify(location);
   }
 
   return function(fn: ResponseHandler, options: LocationOptions): History {
-    const location = utils.keyed(utils.location(options.location), [0, 0]);
+    let location = utils.keyed(utils.location(options.location), [0, 0]);
 
     return {
       location,

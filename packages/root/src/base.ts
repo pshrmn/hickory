@@ -22,7 +22,7 @@ export default function createBase(
     );
   }
 
-  const { emptyRoot = false, strict = false } = options || {};
+  let { emptyRoot = false, strict = false } = options || {};
   return {
     add(path: string) {
       if (emptyRoot) {
@@ -40,7 +40,7 @@ export default function createBase(
       if (pathname === "") {
         return "";
       }
-      const exists = hasBase(pathname, base);
+      let exists = hasBase(pathname, base);
       if (!exists) {
         if (strict) {
           throw new Error(

@@ -16,10 +16,10 @@ Hickory is heavily inspired by the [history](https://github.com/ReactTraining/hi
 
 This repository is a monorepo for the Hickory packages. Unless you are creating your own customized history type, you only need to know about three of them:
 
-| Package   | Version                                          | Repo                                       | API                           |
-| --------- | ------------------------------------------------ | ------------------------------------------ | ----------------------------- |
-| browser   | [![npm][browser-version-badge]][npm-browser]     | [packages/browser](./packages/browser)     | [API](./docs/api/browser.md)  |
-| hash      | [![npm][hash-version-badge]][npm-hash]           | [packages/hash](./packages/hash)           | [API](./docs/api/hash.md)     |
+| Package   | Version                                          | Repo                                       | API                            |
+| --------- | ------------------------------------------------ | ------------------------------------------ | ------------------------------ |
+| browser   | [![npm][browser-version-badge]][npm-browser]     | [packages/browser](./packages/browser)     | [API](./docs/api/browser.md)   |
+| hash      | [![npm][hash-version-badge]][npm-hash]           | [packages/hash](./packages/hash)           | [API](./docs/api/hash.md)      |
 | in-memory | [![npm][in-memory-version-badge]][npm-in-memory] | [packages/in-memory](./packages/in-memory) | [API](./docs/api/in-memory.md) |
 
 [browser-version-badge]: https://img.shields.io/npm/v/@hickory/browser.svg
@@ -36,7 +36,7 @@ Below is a quick introduction to the API of a history object.
 ```js
 import { Browser } from "@hickory/browser";
 
-const history = Browser();
+let history = Browser();
 
 // You must add a respond handler function. Whenever there
 // is navigation, that function will be called. It is responsible
@@ -81,7 +81,7 @@ history.go(-2);
 // confirmWith method.
 
 history.confirmWith(function(info, confirm, prevent) {
-  const confirmed = window.confirm("Are you sure you want to navigate?");
+  let confirmed = window.confirm("Are you sure you want to navigate?");
   if (confirmed) {
     confirm();
   } else {

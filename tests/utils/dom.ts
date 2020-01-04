@@ -18,9 +18,9 @@ export interface AsyncDOMArgs extends DOMArgs {
 }
 
 export function withDOM(meta: MetaArgs, callback: (args: DOMArgs) => void) {
-  const { url, setGlobal = true } = meta;
-  const dom = new JSDOM("", { url });
-  const window = dom.window;
+  let { url, setGlobal = true } = meta;
+  let dom = new JSDOM("", { url });
+  let window = dom.window;
 
   if (setGlobal) {
     global.window = window;
@@ -39,9 +39,9 @@ export function asyncWithDOM(
   meta: MetaArgs,
   callback: (args: AsyncDOMArgs) => void
 ) {
-  const { url, setGlobal = true } = meta;
-  const dom = new JSDOM("", { url });
-  const window = dom.window;
+  let { url, setGlobal = true } = meta;
+  let dom = new JSDOM("", { url });
+  let window = dom.window;
 
   if (setGlobal) {
     global.window = window;

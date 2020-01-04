@@ -3,7 +3,7 @@ import { TestCaseArgs } from "../../types";
 export default {
   msg: "calling pending.finish() sets history's location",
   fn: function({ constructor, options = {} }: TestCaseArgs) {
-    const history = constructor(pending => {
+    let history = constructor(pending => {
       pending.finish();
     }, options);
     history.navigate({ url: "/next" });

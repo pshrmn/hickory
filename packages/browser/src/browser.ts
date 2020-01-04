@@ -34,18 +34,18 @@ export function browser(
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
-  const utils = locationUtils(options);
-  const keygen = keyGenerator();
+  let utils = locationUtils(options);
+  let keygen = keyGenerator();
 
   function fromBrowser(providedState?: object): SessionLocation {
-    const { pathname, search, hash } = window.location;
-    const url = pathname + search + hash;
+    let { pathname, search, hash } = window.location;
+    let url = pathname + search + hash;
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
       window.history.replaceState({ key, state }, "", url);
     }
-    const location = utils.location({ url, state });
+    let location = utils.location({ url, state });
     return utils.keyed(location, key);
   }
 
@@ -71,8 +71,8 @@ export function browser(
     push: {
       finish(location: SessionLocation) {
         return () => {
-          const path = url(location);
-          const { key, state } = location;
+          let path = url(location);
+          let { key, state } = location;
           try {
             window.history.pushState({ key, state }, "", path);
           } catch (e) {
@@ -87,8 +87,8 @@ export function browser(
     replace: {
       finish(location: SessionLocation) {
         return () => {
-          const path = url(location);
-          const { key, state } = location;
+          let path = url(location);
+          let { key, state } = location;
           try {
             window.history.replaceState({ key, state }, "", path);
           } catch (e) {
@@ -114,8 +114,8 @@ export function browser(
     }
     cancelPending("pop");
 
-    const location = fromBrowser(event.state);
-    const diff = browserHistory.location.key[0] - location.key[0];
+    let location = fromBrowser(event.state);
+    let diff = browserHistory.location.key[0] - location.key[0];
     emitNavigation(
       createNavigation(
         location,
@@ -137,7 +137,7 @@ export function browser(
 
   window.addEventListener("popstate", popstate, false);
 
-  const browserHistory: BrowserHistory = {
+  let browserHistory: BrowserHistory = {
     location: fromBrowser(),
     current() {
       emitNavigation(
@@ -153,7 +153,7 @@ export function browser(
       emitNavigation = noop;
     },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
-      const navigation = prepare(to, navType);
+      let navigation = prepare(to, navType);
       cancelPending(navigation.action);
       emitNavigation(navigation);
     },

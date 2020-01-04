@@ -46,9 +46,9 @@ How do you make your server capable of working with the browser history? There i
 A simple example of this can be demonstrated with Express:
 
 ```js
-const express = require("express");
+let express = require("express");
 
-const app = express();
+let app = express();
 
 // we want to catch any requests for static files and
 // actually serve those files
@@ -81,7 +81,7 @@ npm install @hickory/in-memory
 ```js
 import { in_memory } from "@hickory/in-memory";
 
-const history = in_memory(responseHandler);
+let history = in_memory(responseHandler);
 ```
 
 The in-memory history does not have a browser to rely on to keep track of visited locations, so it does this itself. This is done by storing visited locations in an array and keeping an index value to track the current position. This mimics the behavior of a browser, but the code can be run anywhere. This makes in-memory a great choice if you are doing server side rendering for an application, testing out some code that needs to be location-aware, or running in a mobile application. The in-memory history could also be used in a browser if you have an application that needs to perform navigation, but you don't want it to affect the URI.
@@ -89,7 +89,7 @@ The in-memory history does not have a browser to rely on to keep track of visite
 There is a small amount of additional functionality that the in-memory history provides. When creating an in-memory history, you can pass initial locations and the initial index. This can be helpful for restoring a session. You are also able to directly access these values as the `locations` and `index` properties of the history object.
 
 ```js
-const history = in_memory(responseHandler, {
+let history = in_memory(responseHandler, {
   locations: ["/one", "/two", { pathname: "/three" }],
   index: 2
 });
