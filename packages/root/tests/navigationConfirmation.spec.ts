@@ -115,23 +115,5 @@ describe("navigationConfirmation", () => {
         );
       }).not.toThrow();
     });
-
-    it("does not set confirm function if confirmWith is passed a non-function", () => {
-      const { confirmWith } = navigationConfirmation();
-
-      const nonFuncs = [
-        null,
-        undefined,
-        "test",
-        1,
-        [1, 2, 3],
-        { key: "value" }
-      ];
-      nonFuncs.forEach(nf => {
-        expect(() => {
-          confirmWith();
-        }).toThrow("confirmWith can only be passed a function");
-      });
-    });
   });
 });
