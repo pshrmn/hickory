@@ -1,8 +1,13 @@
 import "jest";
-import { browser } from "../../src/browser";
+import { blockingBrowser } from "../../src";
 
 import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
-import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
+import {
+  navigateSuite,
+  goSuite,
+  cancelSuite,
+  blockingSuite
+} from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
@@ -11,7 +16,7 @@ function runAsyncTest(test: TestCase) {
     expect.assertions(test.assertions);
     await asyncWithDOM({ url: "http://example.com/one" }, ({ resolve }) => {
       test.fn({
-        constructor: browser,
+        constructor: blockingBrowser,
         resolve
       });
     });
@@ -22,7 +27,7 @@ function runTest(test: TestCase) {
   it(test.msg, () => {
     withDOM({ url: "http://example.com/one" }, () => {
       test.fn({
-        constructor: browser
+        constructor: blockingBrowser
       });
     });
   });
@@ -38,10 +43,10 @@ function runSuite(suite: Suite) {
   });
 }
 
-describe("browser", () => {
+describe("blockingBrowser", () => {
   it("initializes using window.location", () => {
     withDOM({ url: "http://example.com/one" }, () => {
-      let testHistory = browser(pending => {
+      let testHistory = blockingBrowser(pending => {
         pending.finish();
       });
       expect(testHistory.location).toMatchObject({
@@ -55,7 +60,7 @@ describe("browser", () => {
   it("throws if there is no DOM", () => {
     withDOM({ url: "http://example.com/one", setGlobal: false }, () => {
       expect(() => {
-        let testHistory = browser(pending => {
+        let testHistory = blockingBrowser(pending => {
           pending.finish();
         });
       }).toThrow();
@@ -65,7 +70,7 @@ describe("browser", () => {
   it('sets initial action to "push" when page has not been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState(null, "", "/has-no-key");
-      let testHistory = browser(pending => {
+      let testHistory = blockingBrowser(pending => {
         expect(pending.action).toBe("push");
         pending.finish();
       });
@@ -75,7 +80,7 @@ describe("browser", () => {
   it('sets initial action to "pop" when page has been previously visited', () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       window.history.pushState({ key: "17.0" }, "", "/has-key");
-      let testHistory = browser(pending => {
+      let testHistory = blockingBrowser(pending => {
         expect(pending.action).toBe("pop");
         pending.finish();
       });
@@ -91,8 +96,25 @@ describe("navigate()", () => {
   runSuite(navigateSuite);
 });
 
+describe("blocking", () => {
+  runSuite(blockingSuite);
+});
+
 describe("go", () => {
   runSuite(goSuite);
+});
+
+describe("browser history.navigate", () => {
+  it("throws if trying to navigate with a non-encoded pathname", () => {
+    withDOM({ url: "http://example.com/one" }, () => {
+      let testHistory = blockingBrowser(pending => {
+        pending.finish();
+      });
+      expect(() => {
+        testHistory.navigate({ url: "/test ing" });
+      }).toThrow();
+    });
+  });
 });
 
 describe("browser history.go", () => {
@@ -101,7 +123,7 @@ describe("browser history.go", () => {
     withDOM({ url: "http://example.com/one" }, ({ window }) => {
       let realGo = window.history.go;
       let mockGo = (window.history.go = jest.fn());
-      let testHistory = browser(pending => {
+      let testHistory = blockingBrowser(pending => {
         pending.finish();
       });
 
@@ -118,7 +140,7 @@ describe("browser history.go", () => {
 describe("url", () => {
   it("returns the location formatted as a string", () => {
     withDOM({ url: "http://example.com/one" }, () => {
-      let testHistory = browser(pending => {
+      let testHistory = blockingBrowser(pending => {
         pending.finish();
       });
       let path = testHistory.url({
@@ -126,26 +148,6 @@ describe("url", () => {
         query: "test=query"
       });
       expect(path).toBe("/one?test=query");
-    });
-  });
-});
-
-describe("destroy", () => {
-  it("doesn't emit navigation after being destroyed", () => {
-    withDOM({ url: "http://example.com/one" }, () => {
-      let navCount = 0;
-      let testHistory = browser(pending => {
-        navCount++;
-        pending.finish();
-      });
-      testHistory.navigate({ url: "/two" });
-
-      expect(navCount).toBe(1);
-
-      testHistory.destroy();
-      testHistory.navigate({ url: "/three" });
-
-      expect(navCount).toBe(1);
     });
   });
 });

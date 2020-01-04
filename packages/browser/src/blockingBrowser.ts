@@ -1,4 +1,9 @@
-import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  navigateWith,
+  navigationConfirmation
+} from "@hickory/root";
 import {
   ignorablePopstateEvent,
   getStateFromHistory,
@@ -13,20 +18,21 @@ import {
   NavType,
   Action
 } from "@hickory/root";
-import { BrowserHistoryOptions, BrowserHistory } from "./types";
+import { BrowserHistoryOptions, BlockingBrowserHistory } from "./types";
 
 function noop() {}
 
 export function blockingBrowser(
   fn: ResponseHandler,
   options: BrowserHistoryOptions = {}
-): BrowserHistory {
+): BlockingBrowserHistory {
   if (!domExists()) {
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
   let utils = locationUtils(options);
   let keygen = keyGenerator();
+  let blocking = navigationConfirmation();
 
   function fromBrowser(providedState?: object): SessionLocation {
     let { pathname, search, hash } = window.location;
@@ -107,28 +113,41 @@ export function blockingBrowser(
 
     let location = fromBrowser(event.state);
     let diff = browserHistory.location.key[0] - location.key[0];
-    emitNavigation(
-      createNavigation(
-        location,
-        "pop",
-        () => {
-          browserHistory.location = location;
-          lastAction = "pop";
-        },
-        (nextAction?: Action) => {
-          if (nextAction === "pop") {
-            return;
-          }
-          reverting = true;
-          window.history.go(diff);
-        }
-      )
+    let revert = () => {
+      reverting = true;
+      window.history.go(diff);
+    };
+    blocking.confirmNavigation(
+      {
+        to: location,
+        from: browserHistory.location,
+        action: "pop"
+      },
+      () => {
+        emitNavigation(
+          createNavigation(
+            location,
+            "pop",
+            () => {
+              browserHistory.location = location;
+              lastAction = "pop";
+            },
+            (nextAction?: Action) => {
+              if (nextAction === "pop") {
+                return;
+              }
+              revert();
+            }
+          )
+        );
+      },
+      revert
     );
   }
 
   window.addEventListener("popstate", popstate, false);
 
-  let browserHistory: BrowserHistory = {
+  let browserHistory: BlockingBrowserHistory = {
     location: fromBrowser(),
     current() {
       emitNavigation(
@@ -136,6 +155,8 @@ export function blockingBrowser(
       );
     },
     url,
+    confirmWith: blocking.confirmWith,
+    removeConfirmation: blocking.removeConfirmation,
     cancel() {
       cancelPending();
     },
@@ -146,7 +167,16 @@ export function blockingBrowser(
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      emitNavigation(navigation);
+      blocking.confirmNavigation(
+        {
+          to: navigation.location,
+          from: browserHistory.location,
+          action: navigation.action
+        },
+        () => {
+          emitNavigation(navigation);
+        }
+      );
     },
     go(num: number): void {
       window.history.go(num);
