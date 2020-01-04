@@ -23,9 +23,6 @@ export default function createNavigationConfirmation(): ConfirmationMethods {
     },
 
     confirmWith(fn: ConfirmationFunction): void {
-      if (typeof fn !== "function") {
-        throw new Error("confirmWith can only be passed a function");
-      }
       confirmFn = fn;
     },
 
