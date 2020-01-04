@@ -17,7 +17,7 @@ import { BrowserHistoryOptions, BrowserHistory } from "./types";
 
 function noop() {}
 
-export function browser(
+export function blockingBrowser(
   fn: ResponseHandler,
   options: BrowserHistoryOptions = {}
 ): BrowserHistory {
