@@ -1,3 +1,8 @@
+## Next
+
+- Add navigation blocking to each history type. Blocker is added using `history.confirm(fn)` and removed using `history.confirm()` (no argument).
+- Rename `navigationConfirmation` to `confirmation`. `navigationConfirmation` still exists, but will be removed in next major.
+
 ## 2.0.0
 
 The following is a consolidation of the pre-v2 changes.

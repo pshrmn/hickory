@@ -2,11 +2,11 @@ import {
   ConfirmationFunction,
   ConfirmationMethods,
   NavigationInfo
-} from "./types/navigationConfirmation";
+} from "./types/confirmation";
 
 function noop(): void {}
 
-export default function createNavigationConfirmation(): ConfirmationMethods {
+export default function confirmation(): ConfirmationMethods {
   let confirmFn: ConfirmationFunction | null;
 
   return {

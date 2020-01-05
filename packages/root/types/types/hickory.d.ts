@@ -1,7 +1,7 @@
 import { SessionLocation, URLWithState, Hrefable } from "./location";
 import { ResponseHandler, NavType } from "./navigate";
 import { LocationUtilOptions } from "./locationUtils";
-import { ConfirmationFunction } from "./navigationConfirmation";
+import { ConfirmationFunction } from "./confirmation";
 export declare type HistoryOptions = LocationUtilOptions;
 export declare type HistoryConstructor<O> = (fn: ResponseHandler, options: O) => History;
 export interface History {

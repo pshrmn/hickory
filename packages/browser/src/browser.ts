@@ -2,7 +2,7 @@ import {
   locationUtils,
   keyGenerator,
   navigateWith,
-  navigationConfirmation,
+  confirmation,
   createBase
 } from "@hickory/root";
 import {
@@ -37,7 +37,7 @@ export function browser(
 
   let locations = locationUtils(options);
   let keygen = keyGenerator();
-  let blocking = navigationConfirmation();
+  let { confirm, confirmNavigation } = confirmation();
 
   function fromBrowser(providedState?: object): SessionLocation {
     let { pathname, search, hash } = window.location;
@@ -122,7 +122,7 @@ export function browser(
       reverting = true;
       window.history.go(diff);
     };
-    blocking.confirmNavigation(
+    confirmNavigation(
       {
         to: location,
         from: browserHistory.location,
@@ -163,7 +163,7 @@ export function browser(
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      blocking.confirmNavigation(
+      confirmNavigation(
         {
           to: navigation.location,
           from: browserHistory.location,
@@ -177,7 +177,7 @@ export function browser(
     go(num: number): void {
       window.history.go(num);
     },
-    confirm: blocking.confirm,
+    confirm,
     cancel() {
       cancelPending();
     },

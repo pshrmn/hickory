@@ -2,7 +2,7 @@ import {
   locationUtils,
   keyGenerator,
   navigateWith,
-  navigationConfirmation,
+  confirmation,
   createBase
 } from "@hickory/root";
 
@@ -34,7 +34,7 @@ export function inMemory(
 ): InMemoryHistory {
   let lu = locationUtils(options);
   let keygen = keyGenerator();
-  let blocking = navigationConfirmation();
+  let { confirm, confirmNavigation } = confirmation();
 
   let locations = initializeLocations(options.locations);
   let index = validIndex(options.index) ? options.index : 0;
@@ -105,7 +105,7 @@ export function inMemory(
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      blocking.confirmNavigation(
+      confirmNavigation(
         {
           to: navigation.location,
           from: memoryHistory.location,
@@ -118,7 +118,7 @@ export function inMemory(
     },
     go(num?: number): void {
       if (num == null || num === 0) {
-        blocking.confirmNavigation(
+        confirmNavigation(
           {
             to: memoryHistory.location,
             from: memoryHistory.location,
@@ -150,7 +150,7 @@ export function inMemory(
           index = originalIndex;
         };
         let location: SessionLocation = locations[newIndex];
-        blocking.confirmNavigation(
+        confirmNavigation(
           {
             to: location,
             from: memoryHistory.location,
@@ -189,7 +189,7 @@ export function inMemory(
         createNavigation(memoryHistory.location, lastAction, noop, noop)
       );
     },
-    confirm: blocking.confirm,
+    confirm,
     cancel() {
       cancelPending();
     },

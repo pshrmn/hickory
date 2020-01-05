@@ -21,7 +21,7 @@ export {
   NavigationInfo,
   ConfirmationFunction,
   ConfirmationMethods
-} from "./navigationConfirmation";
+} from "./confirmation";
 
 export {
   Action,

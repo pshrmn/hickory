@@ -2,7 +2,7 @@ import {
   locationUtils,
   keyGenerator,
   navigateWith,
-  navigationConfirmation,
+  confirmation,
   createBase
 } from "@hickory/root";
 import { getStateFromHistory, domExists } from "@hickory/dom-utils";
@@ -40,7 +40,7 @@ export function hash(
 
   let locations = locationUtils(options);
   let keygen = keyGenerator();
-  let blocking = navigationConfirmation();
+  let { confirm, confirmNavigation } = confirmation();
 
   let {
     decode: decodeHashPath,
@@ -127,7 +127,7 @@ export function hash(
       reverting = true;
       window.history.go(diff);
     };
-    blocking.confirmNavigation(
+    confirmNavigation(
       {
         to: location,
         from: hashHistory.location,
@@ -168,7 +168,7 @@ export function hash(
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      blocking.confirmNavigation(
+      confirmNavigation(
         {
           to: navigation.location,
           from: hashHistory.location,
@@ -182,7 +182,7 @@ export function hash(
     go(num: number): void {
       window.history.go(num);
     },
-    confirm: blocking.confirm,
+    confirm,
     cancel() {
       cancelPending();
     },
