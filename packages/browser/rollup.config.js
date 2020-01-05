@@ -4,7 +4,7 @@ let getDeps = require("../../rollup/deps");
 let pkg = require("./package.json");
 let deps = getDeps(pkg);
 
-let input = "src/browser.ts";
+let input = "src/index.ts";
 let sourcemap = false;
 let name = "HickoryBrowser";
 

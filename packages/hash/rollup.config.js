@@ -4,7 +4,7 @@ let getDeps = require("../../rollup/deps");
 let pkg = require("./package.json");
 let deps = getDeps(pkg);
 
-let input = "src/hash.ts";
+let input = "src/index.ts";
 let sourcemap = false;
 let name = "HickoryHash";
 
