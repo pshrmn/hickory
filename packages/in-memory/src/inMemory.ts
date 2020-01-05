@@ -1,4 +1,10 @@
-import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  navigateWith,
+  navigationConfirmation,
+  createBase
+} from "@hickory/root";
 
 import {
   SessionLocation,
@@ -16,14 +22,19 @@ import {
   SessionOptions
 } from "./types";
 
+export * from "./types";
+
+export { createBase };
+
 function noop() {}
 
 export function inMemory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): InMemoryHistory {
-  let utils = locationUtils(options);
+  let lu = locationUtils(options);
   let keygen = keyGenerator();
+  let blocking = navigationConfirmation();
 
   let locations = initializeLocations(options.locations);
   let index = validIndex(options.index) ? options.index : 0;
@@ -35,7 +46,7 @@ export function inMemory(
     locs: InputLocations = [{ url: "/" }]
   ): Array<SessionLocation> {
     return locs.map((loc: URLWithState) =>
-      utils.keyed(utils.location(loc), keygen.major())
+      lu.keyed(lu.location(loc), keygen.major())
     );
   }
 
@@ -45,7 +56,7 @@ export function inMemory(
   };
 
   function url(location: Hrefable): string {
-    return utils.stringify(location);
+    return lu.stringify(location);
   }
 
   let lastAction: Action = "push";
@@ -57,7 +68,7 @@ export function inMemory(
     prepare
   } = navigateWith({
     responseHandler: fn,
-    utils,
+    utils: lu,
     keygen,
     current: () => memoryHistory.location,
     push: {
@@ -91,29 +102,40 @@ export function inMemory(
       );
     },
     url,
-    cancel() {
-      cancelPending();
-    },
-    destroy(): void {
-      destroyLocation();
-      emitNavigation = noop;
-    },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      emitNavigation(navigation);
+      blocking.confirmNavigation(
+        {
+          to: navigation.location,
+          from: memoryHistory.location,
+          action: navigation.action
+        },
+        () => {
+          emitNavigation(navigation);
+        }
+      );
     },
     go(num?: number): void {
       if (num == null || num === 0) {
-        emitNavigation(
-          createNavigation(
-            memoryHistory.location,
-            "pop",
-            () => {
-              lastAction = "pop";
-            },
-            noop
-          )
+        blocking.confirmNavigation(
+          {
+            to: memoryHistory.location,
+            from: memoryHistory.location,
+            action: "pop"
+          },
+          () => {
+            emitNavigation(
+              createNavigation(
+                memoryHistory.location,
+                "pop",
+                () => {
+                  lastAction = "pop";
+                },
+                noop
+              )
+            );
+          }
         );
       } else {
         let originalIndex = index;
@@ -124,23 +146,35 @@ export function inMemory(
 
         // Immediately update the index; this simulates browser behavior.
         index = newIndex;
-
+        let revert = () => {
+          index = originalIndex;
+        };
         let location: SessionLocation = locations[newIndex];
-        emitNavigation(
-          createNavigation(
-            location,
-            "pop",
-            () => {
-              memoryHistory.location = location;
-              lastAction = "pop";
-            },
-            (nextAction?: Action) => {
-              if (nextAction === "pop") {
-                return;
-              }
-              index = originalIndex;
-            }
-          )
+        blocking.confirmNavigation(
+          {
+            to: location,
+            from: memoryHistory.location,
+            action: "pop"
+          },
+          () => {
+            emitNavigation(
+              createNavigation(
+                location,
+                "pop",
+                () => {
+                  memoryHistory.location = location;
+                  lastAction = "pop";
+                },
+                (nextAction?: Action) => {
+                  if (nextAction === "pop") {
+                    return;
+                  }
+                  revert();
+                }
+              )
+            );
+          },
+          revert
         );
       }
     },
@@ -154,6 +188,14 @@ export function inMemory(
       emitNavigation(
         createNavigation(memoryHistory.location, lastAction, noop, noop)
       );
+    },
+    confirm: blocking.confirm,
+    cancel() {
+      cancelPending();
+    },
+    destroy(): void {
+      destroyLocation();
+      emitNavigation = noop;
     }
   };
 

@@ -5,8 +5,7 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  Hrefable,
-  BlockingHistory
+  Hrefable
 } from "@hickory/root";
 
 export {
@@ -21,4 +20,3 @@ export {
 
 export type BrowserHistoryOptions = HistoryOptions;
 export type BrowserHistory = History;
-export type BlockingBrowserHistory = BrowserHistory & BlockingHistory;

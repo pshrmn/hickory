@@ -21,7 +21,3 @@ export interface ConfirmationMethods {
   ): void;
   confirm(fn?: ConfirmationFunction): void;
 }
-
-export interface BlockingHistory {
-  confirm(fn?: ConfirmationFunction): void;
-}

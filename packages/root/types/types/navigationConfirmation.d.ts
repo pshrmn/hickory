@@ -10,6 +10,3 @@ export interface ConfirmationMethods {
     confirmNavigation(info: NavigationInfo, allow: () => void, prevent?: () => void): void;
     confirm(fn?: ConfirmationFunction): void;
 }
-export interface BlockingHistory {
-    confirm(fn?: ConfirmationFunction): void;
-}

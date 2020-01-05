@@ -32,7 +32,6 @@ export type InMemoryOptions = HistoryOptions & SessionOptions;
 export interface InMemoryHistory extends History {
   reset(options?: SessionOptions): void;
 }
-export type BlockingInMemoryHistory = InMemoryHistory & BlockingHistory;
 
 export interface LocationOptions {
   location: URLWithState;

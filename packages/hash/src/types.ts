@@ -5,8 +5,7 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  Hrefable,
-  BlockingHistory
+  Hrefable
 } from "@hickory/root";
 
 export {
@@ -24,4 +23,3 @@ export interface HashTypeOptions {
 }
 export type HashOptions = HistoryOptions & HashTypeOptions;
 export type HashHistory = History;
-export type BlockingHashHistory = HashHistory & BlockingHistory;

@@ -20,8 +20,7 @@ export {
 export {
   NavigationInfo,
   ConfirmationFunction,
-  ConfirmationMethods,
-  BlockingHistory
+  ConfirmationMethods
 } from "./navigationConfirmation";
 
 export {

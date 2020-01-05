@@ -2,7 +2,12 @@ import "jest";
 import { browser } from "../../src/browser";
 
 import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
-import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
+import {
+  navigateSuite,
+  goSuite,
+  cancelSuite,
+  blockingSuite
+} from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
@@ -93,6 +98,10 @@ describe("navigate()", () => {
 
 describe("go", () => {
   runSuite(goSuite);
+});
+
+describe("blocking", () => {
+  runSuite(blockingSuite);
 });
 
 describe("browser history.go", () => {

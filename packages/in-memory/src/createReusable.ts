@@ -37,7 +37,8 @@ export function createReusable(
       cancel: noop,
       destroy: noop,
       navigate: noop,
-      go: noop
+      go: noop,
+      confirm: noop
     };
   };
 }
