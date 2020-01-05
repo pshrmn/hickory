@@ -25,7 +25,7 @@ export function browser(
     throw new Error("Cannot use @hickory/browser without a DOM");
   }
 
-  let utils = locationUtils(options);
+  let locations = locationUtils(options);
   let keygen = keyGenerator();
 
   function fromBrowser(providedState?: object): SessionLocation {
@@ -36,12 +36,12 @@ export function browser(
       key = keygen.major();
       window.history.replaceState({ key, state }, "", url);
     }
-    let location = utils.location({ url, state });
-    return utils.keyed(location, key);
+    let location = locations.location({ url, state });
+    return locations.keyed(location, key);
   }
 
   function url(location: Hrefable): string {
-    return utils.stringify(location);
+    return locations.stringify(location);
   }
 
   // set action before location because fromBrowser enforces
@@ -56,7 +56,7 @@ export function browser(
     prepare
   } = navigateWith({
     responseHandler: fn,
-    utils,
+    utils: locations,
     keygen,
     current: () => browserHistory.location,
     push: {

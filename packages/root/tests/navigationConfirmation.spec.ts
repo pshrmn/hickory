@@ -1,6 +1,7 @@
 import "jest";
 import { navigationConfirmation } from "../src";
 import { SessionLocation } from "../src/types/location";
+import { Action } from "../src/types/navigate";
 
 describe("navigationConfirmation", () => {
   describe("confirmWith", () => {
@@ -69,7 +70,7 @@ describe("navigationConfirmation", () => {
       let prevent = () => {};
       let toLocation = { pathname: "/this-is-only-a-test" };
       let fromLocation = { pathname: "/this-was-not-a-test" };
-      let action = "push";
+      let action: Action = "push";
 
       confirmWith(allow);
       confirmNavigation(
@@ -101,7 +102,7 @@ describe("navigationConfirmation", () => {
       let confirm = () => {};
       let toLocation = { pathname: "/this-is-only-a-test" };
       let fromLocation = { pathname: "/this-was-not-a-test" };
-      let action = "push";
+      let action: Action = "push";
 
       confirmWith(autoPrevent);
       expect(() => {

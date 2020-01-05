@@ -6,7 +6,8 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  Hrefable
+  Hrefable,
+  ConfirmationFunction
 } from "@hickory/root";
 
 export {
@@ -30,6 +31,10 @@ export interface SessionOptions {
 export type InMemoryOptions = HistoryOptions & SessionOptions;
 export interface InMemoryHistory extends History {
   reset(options?: SessionOptions): void;
+}
+export interface BlockingInMemoryHistory extends InMemoryHistory {
+  confirmWith(fn?: ConfirmationFunction): void;
+  removeConfirmation(): void;
 }
 
 export interface LocationOptions {

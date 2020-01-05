@@ -4,54 +4,63 @@ import {
   navigateWith,
   navigationConfirmation
 } from "@hickory/root";
-import {
-  ignorablePopstateEvent,
-  getStateFromHistory,
-  domExists
-} from "@hickory/dom-utils";
+import { getStateFromHistory, domExists } from "@hickory/dom-utils";
+import hashEncoderAndDecoder from "./hashTypes";
 
 import {
   SessionLocation,
   Hrefable,
-  ResponseHandler,
   URLWithState,
-  NavType,
-  Action
+  ResponseHandler,
+  Action,
+  NavType
 } from "@hickory/root";
-import { BrowserHistoryOptions, BlockingBrowserHistory } from "./types";
+import { HashOptions, BlockingHashHistory } from "./types";
+
+function ensureHash(encode: (path: string) => string): void {
+  if (window.location.hash === "") {
+    window.history.replaceState(null, "", encode("/"));
+  }
+}
 
 function noop() {}
 
-export function blockingBrowser(
+export function blockingHash(
   fn: ResponseHandler,
-  options: BrowserHistoryOptions = {}
-): BlockingBrowserHistory {
+  options: HashOptions = {}
+): BlockingHashHistory {
   if (!domExists()) {
-    throw new Error("Cannot use @hickory/browser without a DOM");
+    throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
   let locations = locationUtils(options);
   let keygen = keyGenerator();
   let blocking = navigationConfirmation();
 
+  let {
+    decode: decodeHashPath,
+    encode: encodeHashPath
+  } = hashEncoderAndDecoder(options.hashType);
+
+  ensureHash(encodeHashPath);
+
   function fromBrowser(providedState?: object): SessionLocation {
-    let { pathname, search, hash } = window.location;
-    let url = pathname + search + hash;
+    let { hash } = window.location;
+    let url = decodeHashPath(hash);
     let { key, state } = providedState || getStateFromHistory();
     if (!key) {
       key = keygen.major();
-      window.history.replaceState({ key, state }, "", url);
+      // replace with the hash we received, not the decoded path
+      window.history.replaceState({ key, state }, "", hash);
     }
     let location = locations.location({ url, state });
     return locations.keyed(location, key);
   }
 
   function url(location: Hrefable): string {
-    return locations.stringify(location);
+    return encodeHashPath(locations.stringify(location));
   }
 
-  // set action before location because fromBrowser enforces
-  // that the location has a key
   let lastAction: Action =
     getStateFromHistory().key !== undefined ? "pop" : "push";
 
@@ -64,7 +73,7 @@ export function blockingBrowser(
     responseHandler: fn,
     utils: locations,
     keygen,
-    current: () => browserHistory.location,
+    current: () => hashHistory.location,
     push: {
       finish(location: SessionLocation) {
         return () => {
@@ -75,7 +84,7 @@ export function blockingBrowser(
           } catch (e) {
             window.location.assign(path);
           }
-          browserHistory.location = location;
+          hashHistory.location = location;
           lastAction = "push";
         };
       },
@@ -91,7 +100,7 @@ export function blockingBrowser(
           } catch (e) {
             window.location.replace(path);
           }
-          browserHistory.location = location;
+          hashHistory.location = location;
           lastAction = "replace";
         };
       },
@@ -99,20 +108,16 @@ export function blockingBrowser(
     }
   });
 
-  // when true, pop will ignore the navigation
   let reverting = false;
   function popstate(event: PopStateEvent) {
     if (reverting) {
       reverting = false;
       return;
     }
-    if (ignorablePopstateEvent(event)) {
-      return;
-    }
     cancelPending("pop");
 
-    let location = fromBrowser(event.state);
-    let diff = browserHistory.location.key[0] - location.key[0];
+    let location: SessionLocation = fromBrowser(event.state);
+    let diff = hashHistory.location.key[0] - location.key[0];
     let revert = () => {
       reverting = true;
       window.history.go(diff);
@@ -120,7 +125,7 @@ export function blockingBrowser(
     blocking.confirmNavigation(
       {
         to: location,
-        from: browserHistory.location,
+        from: hashHistory.location,
         action: "pop"
       },
       () => {
@@ -129,7 +134,7 @@ export function blockingBrowser(
             location,
             "pop",
             () => {
-              browserHistory.location = location;
+              hashHistory.location = location;
               lastAction = "pop";
             },
             (nextAction?: Action) => {
@@ -147,11 +152,11 @@ export function blockingBrowser(
 
   window.addEventListener("popstate", popstate, false);
 
-  let browserHistory: BlockingBrowserHistory = {
+  let hashHistory: BlockingHashHistory = {
     location: fromBrowser(),
     current() {
       emitNavigation(
-        createNavigation(browserHistory.location, lastAction, noop, noop)
+        createNavigation(hashHistory.location, lastAction, noop, noop)
       );
     },
     url,
@@ -170,7 +175,7 @@ export function blockingBrowser(
       blocking.confirmNavigation(
         {
           to: navigation.location,
-          from: browserHistory.location,
+          from: hashHistory.location,
           action: navigation.action
         },
         () => {
@@ -183,5 +188,5 @@ export function blockingBrowser(
     }
   };
 
-  return browserHistory;
+  return hashHistory;
 }
