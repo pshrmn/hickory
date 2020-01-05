@@ -23,7 +23,7 @@ import {
 
 function noop() {}
 
-export function inMemory(
+export function blockingInMemory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): BlockingInMemoryHistory {
