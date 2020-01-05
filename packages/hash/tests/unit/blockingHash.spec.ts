@@ -223,19 +223,6 @@ describe("go suite", () => {
   runSuite(goSuite);
 });
 
-describe("hash history.navigate", () => {
-  it("throws if trying to navigate with a non-encoded pathname", () => {
-    withDOM({ url: "http://example.com/one" }, ({ window }) => {
-      const testHistory = blockingHash(pending => {
-        pending.finish();
-      });
-      expect(() => {
-        testHistory.navigate({ url: "/test ing" });
-      }).toThrow();
-    });
-  });
-});
-
 describe("go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
