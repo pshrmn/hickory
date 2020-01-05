@@ -9,21 +9,19 @@ export interface NavigationInfo {
 
 export type ConfirmationFunction = (
   info: NavigationInfo,
-  confirm: () => void,
+  allow: () => void,
   prevent?: () => void
 ) => void;
 
 export interface ConfirmationMethods {
   confirmNavigation(
     info: NavigationInfo,
-    confirm: () => void,
+    allow: () => void,
     prevent?: () => void
   ): void;
-  confirmWith(fn?: ConfirmationFunction): void;
-  removeConfirmation(): void;
+  confirm(fn?: ConfirmationFunction): void;
 }
 
 export interface BlockingHistory {
-  confirmWith(fn?: ConfirmationFunction): void;
-  removeConfirmation(): void;
+  confirm(fn?: ConfirmationFunction): void;
 }

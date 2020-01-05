@@ -97,8 +97,7 @@ export function blockingInMemory(
       );
     },
     url,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
+    confirm: blocking.confirm,
     cancel() {
       cancelPending();
     },

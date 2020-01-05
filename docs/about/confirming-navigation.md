@@ -1,6 +1,6 @@
 # Confirming Navigation
 
-Normally, when a user clicks a link to another location within your application, hickory will transition directly to the new location. However, there are times that this behavior is undesirable. For example, if you have a page with a form, you may want to confirm that the user wants to leave the page while the form is being filled out. To handle this, Hickory's history objects provide you a `confirmWith` function, which allows you to register a function that will determine whether to confirm or prevent the navigation.
+Normally, when a user clicks a link to another location within your application, hickory will transition directly to the new location. However, there are times that this behavior is undesirable. For example, if you have a page with a form, you may want to confirm that the user wants to leave the page while the form is being filled out. To handle this, Hickory's history objects provide you a `confirm` function, which allows you to register a function that will determine whether to confirm or prevent the navigation.
 
 <img src='../../static/Confirmation-Flow.png' />
 
@@ -15,10 +15,10 @@ Your confirmation function can be anything you want it to be. It will be given t
 - `prevent` is the function that the confirmation function should call when you want to stop the navigation.
 
 ```js
-function confirmation(info, confirm, prevent) {
-  let allow = window.confirm("Are you sure that you want to navigate?");
-  if (allow) {
-    confirm();
+function confirmation(info, allow, prevent) {
+  let confirmed = window.confirm("Are you sure that you want to navigate?");
+  if (confirmed) {
+    allow();
   } else {
     prevent();
   }
@@ -29,13 +29,25 @@ In the example code above, we use `window.confirm` to get the user's confirmatio
 
 ## Registering
 
-Once you have created your confirmation function, all that you have to do to ensure that it is run is to pass it to a `history.confirmWith` call (where `history` is your Hickory history object).
+Once you have created your confirmation function, all that you have to do to ensure that it is run is to pass it to a `history.confirm` call (where `history` is your Hickory history object).
 
 ```js
-history.confirmWith(confirmation);
+history.confirm(confirmation);
 ```
 
-If you call `confirmWith` a second time, the new confirmation function will replace the current confirmation function.
+If you call `confirm` a second time, the new confirmation function will replace the current confirmation function.
+
+### Unregistering
+
+The confirmation block is removed by calling `confirm` with no arguments.
+
+```js
+history.confirm(confirmation);
+// now blocking
+
+history.confirm();
+// no longer blocking
+```
 
 ## Queued confirmations
 
@@ -71,14 +83,6 @@ export default function confirmNavigation(info, confirm, prevent) {
 ```
 
 This of course is not the only solution to the queued confirmation problem. For other design choices, such as dropping old navigation and only performing the newset one, you will need to come up with your own implementation. The important thing to remember is that if you do not use a blocking function, you _will_ need to consider what happens in this situation.
-
-## Unregistering
-
-While it can be useful to have a confirmation function in place some of the time, you probably do not want to force the user to confirm all navigation. When you want to remove the confirmation function, all you have to do is call your history object's `removeConfirmation` function. After you have done that, any new navigation calls will happen automatically (until you register a new confirmation function).
-
-```js
-history.removeConfirmation();
-```
 
 ## Page Unload
 

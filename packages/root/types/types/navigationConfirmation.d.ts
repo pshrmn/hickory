@@ -5,13 +5,11 @@ export interface NavigationInfo {
     from: SessionLocation;
     action: Action;
 }
-export declare type ConfirmationFunction = (info: NavigationInfo, confirm: () => void, prevent?: () => void) => void;
+export declare type ConfirmationFunction = (info: NavigationInfo, allow: () => void, prevent?: () => void) => void;
 export interface ConfirmationMethods {
-    confirmNavigation(info: NavigationInfo, confirm: () => void, prevent?: () => void): void;
-    confirmWith(fn?: ConfirmationFunction): void;
-    removeConfirmation(): void;
+    confirmNavigation(info: NavigationInfo, allow: () => void, prevent?: () => void): void;
+    confirm(fn?: ConfirmationFunction): void;
 }
 export interface BlockingHistory {
-    confirmWith(fn?: ConfirmationFunction): void;
-    removeConfirmation(): void;
+    confirm(fn?: ConfirmationFunction): void;
 }

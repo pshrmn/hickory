@@ -160,8 +160,7 @@ export function blockingHash(
       );
     },
     url,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
+    confirm: blocking.confirm,
     cancel() {
       cancelPending();
     },

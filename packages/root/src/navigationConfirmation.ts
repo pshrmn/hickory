@@ -12,22 +12,18 @@ export default function createNavigationConfirmation(): ConfirmationMethods {
   return {
     confirmNavigation(
       info: NavigationInfo,
-      confirm: () => void,
+      allow: () => void,
       prevent?: () => void
     ): void {
       if (!confirmFn) {
-        confirm();
+        allow();
       } else {
-        confirmFn(info, confirm, prevent || noop);
+        confirmFn(info, allow, prevent || noop);
       }
     },
 
-    confirmWith(fn: ConfirmationFunction): void {
-      confirmFn = fn;
-    },
-
-    removeConfirmation(): void {
-      confirmFn = null;
+    confirm(fn?: ConfirmationFunction): void {
+      confirmFn = fn ? fn : null;
     }
   };
 }

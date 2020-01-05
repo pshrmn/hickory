@@ -6,7 +6,7 @@ import {
   SessionLocation,
   PartialLocation,
   Hrefable,
-  ConfirmationFunction
+  BlockingHistory
 } from "@hickory/root";
 
 export {
@@ -24,7 +24,4 @@ export interface HashTypeOptions {
 }
 export type HashOptions = HistoryOptions & HashTypeOptions;
 export type HashHistory = History;
-export interface BlockingHashHistory extends HashHistory {
-  confirmWith(fn?: ConfirmationFunction): void;
-  removeConfirmation(): void;
-}
+export type BlockingHashHistory = HashHistory & BlockingHistory;

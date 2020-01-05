@@ -155,8 +155,7 @@ export function blockingBrowser(
       );
     },
     url,
-    confirmWith: blocking.confirmWith,
-    removeConfirmation: blocking.removeConfirmation,
+    confirm: blocking.confirm,
     cancel() {
       cancelPending();
     },

@@ -21,7 +21,7 @@ export default {
     history.navigate({ url: "/three" }, "push");
     expect(calls).toBe(2);
 
-    history.confirmWith((_info, _confirm, prevent) => {
+    history.confirm((_info, _allow, prevent) => {
       prevent();
     });
 

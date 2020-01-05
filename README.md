@@ -78,12 +78,12 @@ history.go(-2);
 
 // You might want to have you users confirm navigation before actually
 // switching pages. To do this, pass a confirmation function to the
-// confirmWith method.
+// confirm method.
 
-history.confirmWith(function(info, confirm, prevent) {
+history.confirm(function(info, allow, prevent) {
   let confirmed = window.confirm("Are you sure you want to navigate?");
   if (confirmed) {
-    confirm();
+    allow();
   } else {
     prevent();
   }
@@ -97,10 +97,10 @@ history.confirmWith(function(info, confirm, prevent) {
 // "confirm" popup, then the navigation will be cancelled. If the user clicks
 // the "OK" button, then the navigation will occur.
 
-// If/when you no longer want the user to have to confirm navigation, just call
-// the removeConfirmation function and navigation will always happen.
+// If/when you no longer want the user to have to confirm navigation, call
+// the confirm function with no argument and navigation will always happen.
 
-history.removeConfirmation();
+history.confirm();
 ```
 
 ### Browser Support
