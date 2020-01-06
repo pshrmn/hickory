@@ -1,4 +1,10 @@
-import { locationUtils, keyGenerator, navigateWith } from "@hickory/root";
+import {
+  locationUtils,
+  keyGenerator,
+  navigateWith,
+  confirmation,
+  createBase
+} from "@hickory/root";
 
 import {
   SessionLocation,
@@ -16,6 +22,10 @@ import {
   SessionOptions
 } from "./types";
 
+export * from "./types";
+
+export { createBase };
+
 function noop() {}
 
 export function inMemory(
@@ -24,6 +34,7 @@ export function inMemory(
 ): InMemoryHistory {
   let utils = locationUtils(options);
   let keygen = keyGenerator();
+  let { confirm, confirmNavigation } = confirmation();
 
   let locations = initializeLocations(options.locations);
   let index = validIndex(options.index) ? options.index : 0;
@@ -91,29 +102,40 @@ export function inMemory(
       );
     },
     url,
-    cancel() {
-      cancelPending();
-    },
-    destroy(): void {
-      destroyLocation();
-      emitNavigation = noop;
-    },
     navigate(to: URLWithState, navType: NavType = "anchor"): void {
       let navigation = prepare(to, navType);
       cancelPending(navigation.action);
-      emitNavigation(navigation);
+      confirmNavigation(
+        {
+          to: navigation.location,
+          from: memoryHistory.location,
+          action: navigation.action
+        },
+        () => {
+          emitNavigation(navigation);
+        }
+      );
     },
     go(num?: number): void {
       if (num == null || num === 0) {
-        emitNavigation(
-          createNavigation(
-            memoryHistory.location,
-            "pop",
-            () => {
-              lastAction = "pop";
-            },
-            noop
-          )
+        confirmNavigation(
+          {
+            to: memoryHistory.location,
+            from: memoryHistory.location,
+            action: "pop"
+          },
+          () => {
+            emitNavigation(
+              createNavigation(
+                memoryHistory.location,
+                "pop",
+                () => {
+                  lastAction = "pop";
+                },
+                noop
+              )
+            );
+          }
         );
       } else {
         let originalIndex = index;
@@ -124,23 +146,34 @@ export function inMemory(
 
         // Immediately update the index; this simulates browser behavior.
         index = newIndex;
-
+        let revert = () => {
+          index = originalIndex;
+        };
         let location: SessionLocation = locations[newIndex];
-        emitNavigation(
-          createNavigation(
-            location,
-            "pop",
-            () => {
-              memoryHistory.location = location;
-              lastAction = "pop";
-            },
-            (nextAction?: Action) => {
-              if (nextAction === "pop") {
-                return;
-              }
-              index = originalIndex;
-            }
-          )
+        confirmNavigation(
+          {
+            to: location,
+            from: memoryHistory.location,
+            action: "pop"
+          },
+          () => {
+            emitNavigation(
+              createNavigation(
+                location,
+                "pop",
+                () => {
+                  memoryHistory.location = location;
+                  lastAction = "pop";
+                },
+                (nextAction?: Action) => {
+                  if (nextAction !== "pop") {
+                    revert();
+                  }
+                }
+              )
+            );
+          },
+          revert
         );
       }
     },
@@ -154,6 +187,14 @@ export function inMemory(
       emitNavigation(
         createNavigation(memoryHistory.location, lastAction, noop, noop)
       );
+    },
+    confirm,
+    cancel() {
+      cancelPending();
+    },
+    destroy(): void {
+      destroyLocation();
+      emitNavigation = noop;
     }
   };
 

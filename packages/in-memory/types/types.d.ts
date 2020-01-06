@@ -6,9 +6,10 @@ export interface SessionOptions {
     index?: number;
 }
 export declare type InMemoryOptions = HistoryOptions & SessionOptions;
-export interface InMemoryHistory extends History {
+interface ResettingHistory {
     reset(options?: SessionOptions): void;
 }
+export declare type InMemoryHistory = History & ResettingHistory;
 export interface LocationOptions {
     location: URLWithState;
 }

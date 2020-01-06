@@ -1,49 +1,45 @@
 import "jest";
-import { navigationConfirmation } from "../src";
+import { confirmation } from "../src";
 import { SessionLocation } from "../src/types/location";
+import { Action } from "../src/types/navigate";
 
-describe("navigationConfirmation", () => {
-  describe("confirmWith", () => {
+describe("confirmation", () => {
+  describe("confirm", () => {
     it("registers the function passed to it", () => {
-      let { confirmWith, confirmNavigation } = navigationConfirmation();
-      let allow = jest.fn();
-      let confirm = () => {};
+      let { confirm, confirmNavigation } = confirmation();
+      let fn = jest.fn();
+      let allow = () => {};
       let prevent = () => {};
 
-      confirmWith(allow);
-      expect(allow.mock.calls.length).toBe(0);
+      confirm(fn);
+      expect(fn.mock.calls.length).toBe(0);
 
-      confirmNavigation(null, confirm, prevent);
-      expect(allow.mock.calls.length).toBe(1);
+      confirmNavigation(null, allow, prevent);
+      expect(fn.mock.calls.length).toBe(1);
     });
-  });
 
-  describe("removeConfirmation", () => {
-    it("does not call confirmation function after it has been removed", () => {
-      let {
-        confirmWith,
-        confirmNavigation,
-        removeConfirmation
-      } = navigationConfirmation();
-      let allow = jest.fn();
-      let confirm = () => {};
+    it("removes confirmation function when called with no argument", () => {
+      let { confirm, confirmNavigation } = confirmation();
+      let fn = jest.fn();
+      let allow = () => {};
       let prevent = () => {};
 
-      confirmWith(allow);
-      expect(allow.mock.calls.length).toBe(0);
+      confirm(fn);
+      expect(fn.mock.calls.length).toBe(0);
 
-      confirmNavigation(null, confirm, prevent);
-      expect(allow.mock.calls.length).toBe(1);
+      confirmNavigation(null, allow, prevent);
+      expect(fn.mock.calls.length).toBe(1);
 
-      removeConfirmation();
-      confirmNavigation(null, confirm, prevent);
-      expect(allow.mock.calls.length).toBe(1);
+      confirm();
+
+      confirmNavigation(null, allow, prevent);
+      expect(fn.mock.calls.length).toBe(1);
     });
   });
 
   describe("confirmNavigation", () => {
     it("calls confirm function if there is no confirmation function", () => {
-      let { confirmNavigation } = navigationConfirmation();
+      let { confirmNavigation } = confirmation();
 
       let confirm = jest.fn();
       let prevent = jest.fn();
@@ -62,48 +58,48 @@ describe("navigationConfirmation", () => {
     });
 
     it("calls the confirm function with the info confirm/prevent fns", () => {
-      let { confirmWith, confirmNavigation } = navigationConfirmation();
+      let { confirm, confirmNavigation } = confirmation();
 
-      let allow = jest.fn();
-      let confirm = () => {};
+      let fn = jest.fn();
+      let allow = () => {};
       let prevent = () => {};
       let toLocation = { pathname: "/this-is-only-a-test" };
       let fromLocation = { pathname: "/this-was-not-a-test" };
-      let action = "push";
+      let action: Action = "push";
 
-      confirmWith(allow);
+      confirm(fn);
       confirmNavigation(
         {
           to: toLocation as SessionLocation,
           from: fromLocation as SessionLocation,
           action
         },
-        confirm,
+        allow,
         prevent
       );
-      let args = allow.mock.calls[0];
+      let args = fn.mock.calls[0];
       expect(args[0]).toEqual({
         to: toLocation,
         from: fromLocation,
         action
       });
-      expect(args[1]).toBe(confirm);
+      expect(args[1]).toBe(allow);
       expect(args[2]).toBe(prevent);
     });
 
     it("will call a no-op function when cancelling if prevent function not provided", () => {
-      let { confirmWith, confirmNavigation } = navigationConfirmation();
+      let { confirm, confirmNavigation } = confirmation();
 
-      function autoPrevent(info: any, confirm: any, prevent: () => void) {
+      function autoPrevent(_info: any, _allow: any, prevent: () => void) {
         prevent();
       }
 
-      let confirm = () => {};
+      let allow = () => {};
       let toLocation = { pathname: "/this-is-only-a-test" };
       let fromLocation = { pathname: "/this-was-not-a-test" };
-      let action = "push";
+      let action: Action = "push";
 
-      confirmWith(autoPrevent);
+      confirm(autoPrevent);
       expect(() => {
         confirmNavigation(
           {
@@ -111,7 +107,7 @@ describe("navigationConfirmation", () => {
             from: fromLocation as SessionLocation,
             action
           },
-          confirm
+          allow
         );
       }).not.toThrow();
     });

@@ -2,6 +2,7 @@ import {
   locationUtils,
   keyGenerator,
   navigateWith,
+  confirmation,
   createBase
 } from "@hickory/root";
 import {
@@ -36,6 +37,7 @@ export function browser(
 
   let utils = locationUtils(options);
   let keygen = keyGenerator();
+  let { confirm, confirmNavigation } = confirmation();
 
   function fromBrowser(providedState?: object): SessionLocation {
     let { pathname, search, hash } = window.location;
@@ -116,22 +118,34 @@ export function browser(
 
     let location = fromBrowser(event.state);
     let diff = browserHistory.location.key[0] - location.key[0];
-    emitNavigation(
-      createNavigation(
-        location,
-        "pop",
-        () => {
-          browserHistory.location = location;
-          lastAction = "pop";
-        },
-        (nextAction?: Action) => {
-          if (nextAction === "pop") {
-            return;
-          }
-          reverting = true;
-          window.history.go(diff);
-        }
-      )
+    let revert = () => {
+      reverting = true;
+      window.history.go(diff);
+    };
+    confirmNavigation(
+      {
+        to: location,
+        from: browserHistory.location,
+        action: "pop"
+      },
+      () => {
+        emitNavigation(
+          createNavigation(
+            location,
+            "pop",
+            () => {
+              browserHistory.location = location;
+              lastAction = "pop";
+            },
+            (nextAction?: Action) => {
+              if (nextAction !== "pop") {
+                revert();
+              }
+            }
+          )
+        );
+      },
+      revert
     );
   }
 
@@ -145,20 +159,30 @@ export function browser(
       );
     },
     url,
+    navigate(to: URLWithState, navType: NavType = "anchor"): void {
+      let navigation = prepare(to, navType);
+      cancelPending(navigation.action);
+      confirmNavigation(
+        {
+          to: navigation.location,
+          from: browserHistory.location,
+          action: navigation.action
+        },
+        () => {
+          emitNavigation(navigation);
+        }
+      );
+    },
+    go(num: number): void {
+      window.history.go(num);
+    },
+    confirm,
     cancel() {
       cancelPending();
     },
     destroy() {
       window.removeEventListener("popstate", popstate);
       emitNavigation = noop;
-    },
-    navigate(to: URLWithState, navType: NavType = "anchor"): void {
-      let navigation = prepare(to, navType);
-      cancelPending(navigation.action);
-      emitNavigation(navigation);
-    },
-    go(num: number): void {
-      window.history.go(num);
     }
   };
 

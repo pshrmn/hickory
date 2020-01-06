@@ -2,6 +2,7 @@ import {
   locationUtils,
   keyGenerator,
   navigateWith,
+  confirmation,
   createBase
 } from "@hickory/root";
 import { getStateFromHistory, domExists } from "@hickory/dom-utils";
@@ -39,6 +40,7 @@ export function hash(
 
   let utils = locationUtils(options);
   let keygen = keyGenerator();
+  let { confirm, confirmNavigation } = confirmation();
 
   let {
     decode: decodeHashPath,
@@ -121,23 +123,34 @@ export function hash(
 
     let location: SessionLocation = fromBrowser(event.state);
     let diff = hashHistory.location.key[0] - location.key[0];
-
-    emitNavigation(
-      createNavigation(
-        location,
-        "pop",
-        () => {
-          hashHistory.location = location;
-          lastAction = "pop";
-        },
-        (nextAction?: Action) => {
-          if (nextAction === "pop") {
-            return;
-          }
-          reverting = true;
-          window.history.go(diff);
-        }
-      )
+    let revert = () => {
+      reverting = true;
+      window.history.go(diff);
+    };
+    confirmNavigation(
+      {
+        to: location,
+        from: hashHistory.location,
+        action: "pop"
+      },
+      () => {
+        emitNavigation(
+          createNavigation(
+            location,
+            "pop",
+            () => {
+              hashHistory.location = location;
+              lastAction = "pop";
+            },
+            (nextAction?: Action) => {
+              if (nextAction !== "pop") {
+                revert();
+              }
+            }
+          )
+        );
+      },
+      revert
     );
   }
 
@@ -151,20 +164,30 @@ export function hash(
       );
     },
     url,
+    navigate(to: URLWithState, navType: NavType = "anchor"): void {
+      let navigation = prepare(to, navType);
+      cancelPending(navigation.action);
+      confirmNavigation(
+        {
+          to: navigation.location,
+          from: hashHistory.location,
+          action: navigation.action
+        },
+        () => {
+          emitNavigation(navigation);
+        }
+      );
+    },
+    go(num: number): void {
+      window.history.go(num);
+    },
+    confirm,
     cancel() {
       cancelPending();
     },
     destroy() {
       window.removeEventListener("popstate", popstate);
       emitNavigation = noop;
-    },
-    navigate(to: URLWithState, navType: NavType = "anchor"): void {
-      let navigation = prepare(to, navType);
-      cancelPending(navigation.action);
-      emitNavigation(navigation);
-    },
-    go(num: number): void {
-      window.history.go(num);
     }
   };
 

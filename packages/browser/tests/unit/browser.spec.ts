@@ -2,28 +2,30 @@ import "jest";
 import { browser } from "../../src/browser";
 
 import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
-import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
+import {
+  navigateSuite,
+  goSuite,
+  cancelSuite,
+  confirmationSuite
+} from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
 function runAsyncTest(test: TestCase) {
   it(test.msg, async () => {
     expect.assertions(test.assertions);
-    await asyncWithDOM(
-      { url: "http://example.com/one" },
-      ({ window, resolve }) => {
-        test.fn({
-          constructor: browser,
-          resolve
-        });
-      }
-    );
+    await asyncWithDOM({ url: "http://example.com/one" }, ({ resolve }) => {
+      test.fn({
+        constructor: browser,
+        resolve
+      });
+    });
   });
 }
 
 function runTest(test: TestCase) {
   it(test.msg, () => {
-    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+    withDOM({ url: "http://example.com/one" }, () => {
       test.fn({
         constructor: browser
       });
@@ -43,7 +45,7 @@ function runSuite(suite: Suite) {
 
 describe("browser", () => {
   it("initializes using window.location", () => {
-    withDOM({ url: "http://example.com/one" }, ({ window }) => {
+    withDOM({ url: "http://example.com/one" }, () => {
       let testHistory = browser(pending => {
         pending.finish();
       });
@@ -98,6 +100,10 @@ describe("go", () => {
   runSuite(goSuite);
 });
 
+describe("confirmation", () => {
+  runSuite(confirmationSuite);
+});
+
 describe("browser history.go", () => {
   // integration?
   it("calls window.history.go with provided value", () => {
@@ -112,6 +118,8 @@ describe("browser history.go", () => {
         testHistory.go(value);
         expect(mockGo.mock.calls[index][0]).toBe(value);
       });
+
+      window.history.go = realGo;
     });
   });
 });

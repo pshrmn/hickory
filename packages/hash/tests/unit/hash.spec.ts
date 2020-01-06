@@ -2,7 +2,12 @@ import "jest";
 import { hash } from "../../src/hash";
 
 import { withDOM, asyncWithDOM } from "../../../../tests/utils/dom";
-import { navigateSuite, goSuite, cancelSuite } from "../../../../tests/cases";
+import {
+  navigateSuite,
+  goSuite,
+  cancelSuite,
+  confirmationSuite
+} from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
 
@@ -212,6 +217,10 @@ describe("navigate()", () => {
 
 describe("go suite", () => {
   runSuite(goSuite);
+});
+
+describe("confirmation suite", () => {
+  runSuite(confirmationSuite);
 });
 
 describe("go", () => {
