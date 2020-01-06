@@ -6,7 +6,7 @@ import {
   navigateSuite,
   goSuite,
   cancelSuite,
-  blockingSuite
+  confirmationSuite
 } from "../../../../tests/cases";
 
 import { TestCase, Suite } from "../../../../tests/types";
@@ -219,8 +219,8 @@ describe("go suite", () => {
   runSuite(goSuite);
 });
 
-describe("blocking suite", () => {
-  runSuite(blockingSuite);
+describe("confirmation suite", () => {
+  runSuite(confirmationSuite);
 });
 
 describe("go", () => {

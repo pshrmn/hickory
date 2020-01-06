@@ -1,6 +1,6 @@
 {
   "dist/hickory-hash.es.js": {
-    "bundled": 7449,
+    "bundled": 7404,
     "minified": 2860,
     "gzipped": 1091,
     "treeshaked": {
@@ -14,17 +14,17 @@
     }
   },
   "dist/hickory-hash.js": {
-    "bundled": 7635,
+    "bundled": 7590,
     "minified": 3041,
     "gzipped": 1141
   },
   "dist/hickory-hash.umd.js": {
-    "bundled": 18146,
+    "bundled": 18097,
     "minified": 5417,
     "gzipped": 2151
   },
   "dist/hickory-hash.min.js": {
-    "bundled": 18146,
+    "bundled": 18097,
     "minified": 5417,
     "gzipped": 2151
   }

@@ -38,7 +38,7 @@ export function hash(
     throw new Error("Cannot use @hickory/hash without a DOM");
   }
 
-  let locations = locationUtils(options);
+  let utils = locationUtils(options);
   let keygen = keyGenerator();
   let { confirm, confirmNavigation } = confirmation();
 
@@ -58,12 +58,12 @@ export function hash(
       // replace with the hash we received, not the decoded path
       window.history.replaceState({ key, state }, "", hash);
     }
-    let location = locations.location({ url, state });
-    return locations.keyed(location, key);
+    let location = utils.location({ url, state });
+    return utils.keyed(location, key);
   }
 
   function url(location: Hrefable): string {
-    return encodeHashPath(locations.stringify(location));
+    return encodeHashPath(utils.stringify(location));
   }
 
   let lastAction: Action =
@@ -76,7 +76,7 @@ export function hash(
     prepare
   } = navigateWith({
     responseHandler: fn,
-    utils: locations,
+    utils,
     keygen,
     current: () => hashHistory.location,
     push: {
@@ -143,10 +143,9 @@ export function hash(
               lastAction = "pop";
             },
             (nextAction?: Action) => {
-              if (nextAction === "pop") {
-                return;
+              if (nextAction !== "pop") {
+                revert();
               }
-              revert();
             }
           )
         );

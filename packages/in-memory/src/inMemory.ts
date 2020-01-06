@@ -32,7 +32,7 @@ export function inMemory(
   fn: ResponseHandler,
   options: InMemoryOptions = {}
 ): InMemoryHistory {
-  let lu = locationUtils(options);
+  let utils = locationUtils(options);
   let keygen = keyGenerator();
   let { confirm, confirmNavigation } = confirmation();
 
@@ -46,7 +46,7 @@ export function inMemory(
     locs: InputLocations = [{ url: "/" }]
   ): Array<SessionLocation> {
     return locs.map((loc: URLWithState) =>
-      lu.keyed(lu.location(loc), keygen.major())
+      utils.keyed(utils.location(loc), keygen.major())
     );
   }
 
@@ -56,7 +56,7 @@ export function inMemory(
   };
 
   function url(location: Hrefable): string {
-    return lu.stringify(location);
+    return utils.stringify(location);
   }
 
   let lastAction: Action = "push";
@@ -68,7 +68,7 @@ export function inMemory(
     prepare
   } = navigateWith({
     responseHandler: fn,
-    utils: lu,
+    utils,
     keygen,
     current: () => memoryHistory.location,
     push: {
@@ -166,10 +166,9 @@ export function inMemory(
                   lastAction = "pop";
                 },
                 (nextAction?: Action) => {
-                  if (nextAction === "pop") {
-                    return;
+                  if (nextAction !== "pop") {
+                    revert();
                   }
-                  revert();
                 }
               )
             );

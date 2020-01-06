@@ -43,10 +43,10 @@ The confirmation block is removed by calling `confirm` with no arguments.
 
 ```js
 history.confirm(confirmation);
-// now blocking
+// user will be prompted to confirm navigation
 
 history.confirm();
-// no longer blocking
+// navigation will happen without confirmation
 ```
 
 ## Queued confirmations
@@ -58,24 +58,24 @@ How should you deal with this? The simplest solution would be to create a module
 ```js
 // confirm.js
 
-let blocking = false;
+let active = false;
 
 export default function confirmNavigation(info, confirm, prevent) {
-  if (blocking) {
+  if (active) {
     prevent();
   }
-  blocking = true;
+  active = true;
   // Your confirmation code would be run here. For instance, you might
   // render a form with confirm/prevent buttons. It is important that after
-  // confirming/preventing the navigation, you also reset the blocking variable
+  // confirming/preventing the navigation, you also reset the active variable
   // to false.
   renderConfirmationForm(
     () => {
-      blocking = false;
+      active = false;
       confirm();
     },
     () => {
-      blocking = false;
+      active = false;
       prevent();
     }
   );

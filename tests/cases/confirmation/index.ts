@@ -4,7 +4,7 @@ import NavigateConfirmNavigation from "./navigate-confirm-navigation";
 import NavigatePreventNavigation from "./navigate-prevent-navigation";
 import { Suite } from "../../types";
 
-export const blockingSuite: Suite = [
+export const confirmationSuite: Suite = [
   PopConfirmNavigation,
   PopPreventNavigation,
   NavigateConfirmNavigation,

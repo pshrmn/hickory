@@ -6,8 +6,7 @@ import {
   LocationComponents,
   SessionLocation,
   PartialLocation,
-  Hrefable,
-  BlockingHistory
+  Hrefable
 } from "@hickory/root";
 
 export {
@@ -29,9 +28,11 @@ export interface SessionOptions {
 }
 
 export type InMemoryOptions = HistoryOptions & SessionOptions;
-export interface InMemoryHistory extends History {
+interface ResettingHistory {
   reset(options?: SessionOptions): void;
 }
+
+export type InMemoryHistory = History & ResettingHistory;
 
 export interface LocationOptions {
   location: URLWithState;

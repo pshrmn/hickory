@@ -1,6 +1,6 @@
 {
   "dist/hickory-in-memory.es.js": {
-    "bundled": 6053,
+    "bundled": 6035,
     "minified": 2062,
     "gzipped": 809,
     "treeshaked": {
@@ -14,17 +14,17 @@
     }
   },
   "dist/hickory-in-memory.js": {
-    "bundled": 6132,
+    "bundled": 6114,
     "minified": 2138,
     "gzipped": 860
   },
   "dist/hickory-in-memory.umd.js": {
-    "bundled": 16338,
+    "bundled": 16316,
     "minified": 4838,
     "gzipped": 1956
   },
   "dist/hickory-in-memory.min.js": {
-    "bundled": 16338,
+    "bundled": 16316,
     "minified": 4838,
     "gzipped": 1956
   }
