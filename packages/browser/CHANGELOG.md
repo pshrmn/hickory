@@ -1,4 +1,4 @@
-## Next
+## 2.1.0
 
 - Added `confirm` method for adding and removing navigation confirmation.
 

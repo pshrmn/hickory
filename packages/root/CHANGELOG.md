@@ -1,4 +1,4 @@
-## Next
+## 2.1.0
 
 - Add navigation confirmation to each history type. Confirmation function is added using `history.confirm(fn)` and removed using `history.confirm()` (no argument).
 - Rename `navigationConfirmation` to `confirmation`. `navigationConfirmation` still exists, but will be removed in next major.
